@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/nagios/nagiostv/",
   "dependencies": {
+    "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.5",

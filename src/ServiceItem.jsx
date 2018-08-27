@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import './ServiceItem.css';
 import { Transition, animated } from 'react-spring';
+import { formatDateTime, formatDateTimeAgo } from './helpers/moment.js';
+import { wrapperClass, stateClass } from './helpers/colors.js';
+import { nagiosStateType, nagiosServiceStatus } from './helpers/nagios.js';
 
 const defaultStyles = {
   overflow: 'hidden',
   //width: '100%',
   backgroundColor: '#111',
-  padding: '10px',
-  border: '2px solid yellow',
+  //padding: '10px',
+  //border: '2px solid yellow',
   color: 'white',
-  display: 'flex',
-  justifyContent: 'center',
-  fontSize: '1.3em',
-  margin: '5px 5px 0 5px',
-  borderRadius: '10px'
+  //display: 'flex',
+  justifyContent: 'center'
+  //fontSize: '1.2em',
+  //margin: '5px 5px 0 5px',
+  //borderRadius: '10px'
 }
 
 class ServiceItem extends Component {
@@ -27,7 +30,6 @@ class ServiceItem extends Component {
 
     return (
       <div className="ServiceItems">
-        ServiceItems
 
         <Transition
           native
@@ -42,12 +44,23 @@ class ServiceItem extends Component {
             //const item = this.props.item[e];
 
             return (
-              <animated.div style={{ ...defaultStyles, ...styles }} className="ServiceItem">
-              {e.host_name}
-              {e.description}
-              {e.plugin_output}
-              Last Check: {e.last_check}
-              Next Check: {e.next_check}
+              <animated.div style={{ ...defaultStyles, ...styles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
+                <div style={{ float: 'right' }}>
+                  {nagiosStateType(e.state_type)}{' '}
+                  {nagiosServiceStatus(e.status)}
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  {e.host_name}{' '}
+                  <span className={stateClass(e.status)}>
+                    <span className="color-orange">{e.description}</span>{' - '}
+                    {e.plugin_output}
+                  </span>
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  Last Check: {formatDateTimeAgo(e.last_check)} ago{' - '}
+                  Next Check in {formatDateTime(e.next_check)}{' - '}
+                  {e.next_check}
+                </div>
               </animated.div>
             );
             

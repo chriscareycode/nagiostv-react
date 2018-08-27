@@ -1,4 +1,60 @@
+.ServiceItems {
+  margin-top: 10px;
+}
+
 .ServiceItem {
+  border: 1px solid gray;
+  font-size: 1.0em;
+  padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+
+/* border */
+
+.border-white {
+  border: 1px solid white;
+}
+
+.border-green {
+  border: 1px solid lime;
+}
+
+.border-yellow {
+  border: 1px solid yellow;
+}
+
+.border-orange {
   border: 1px solid orange;
 }
 
+.border-red {
+  border: 1px solid red;
+}
+
+.border-gray {
+  border: 1px solid gray;
+}
+
+/* color */
+
+.color-green {
+  color: lime;
+}
+
+.color-yellow {
+  color: yellow;
+}
+
+.color-orange {
+  color: orange;
+}
+
+.color-red {
+  color: #FD7272;
+}
+
+.color-gray {
+  color: gray;
+}
