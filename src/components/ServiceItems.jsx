@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './animation.css';
-import './HostItems.css';
-import { formatDateTime, formatDateTimeAgo } from './helpers/moment.js';
-import { wrapperClass, stateClass } from './helpers/colors.js';
-import { nagiosStateType, nagiosServiceStatus } from './helpers/nagios.js';
+import './ServiceItems.css';
+import { formatDateTime, formatDateTimeAgo } from '../helpers/moment.js';
+import { wrapperClass, stateClass } from '../helpers/colors.js';
+import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -21,12 +21,12 @@ const defaultStyles = {
   //borderRadius: '10px'
 }
 
-class HostItems extends Component {
+class ServiceItem extends Component {
 
   render() {
 
-    console.log('this.props.hostProblemsArray is', this.props.hostProblemsArray);
-    console.log(Object.keys(this.props.hostProblemsArray));
+    //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
+    //console.log(Object.keys(this.props.serviceProblemsArray));
 
     return (
       <div className="ServiceItems">
@@ -35,22 +35,22 @@ class HostItems extends Component {
           transitionName="example"
           transitionEnterTimeout={500}
           transitionLeaveTimeout={300}>
-          {this.props.hostProblemsArray.map((e, i) => {
-            console.log('HostItem item');
-            console.log(e, i);
-            //console.log(this.props.item[e]);
-            //const item = this.props.item[e];
+          {this.props.serviceProblemsArray.map((e, i) => {
+            //console.log('ServiceItem item');
+            //console.log(e, i);
 
             return (
               <div key={i} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
+                  ({e.state_type}){' '}
                   {nagiosStateType(e.state_type)}{' '}
+                  ({e.status}){' '}
                   {nagiosServiceStatus(e.status)}{' '}
                   {e.problem_has_been_acknowledged && <span>ACKED</span>}
                   {e.is_flapping && <span>FLAPPING</span>}
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  {e.name}{' '}
+                  {e.host_name}{' '}
                   <span className={stateClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}
@@ -58,8 +58,7 @@ class HostItems extends Component {
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   Last Check: {formatDateTimeAgo(e.last_check)} ago{' - '}
-                  Next Check in {formatDateTime(e.next_check)}{' - '}
-                  {e.next_check}
+                  Next Check in {formatDateTime(e.next_check)}
                 </div>
               </div>
             );
@@ -71,4 +70,4 @@ class HostItems extends Component {
   }
 }
 
-export default HostItems;
+export default ServiceItem;

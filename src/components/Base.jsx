@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Base.css';
 import ServiceItem from './ServiceItems.jsx';
 import HostItems from './HostItems.jsx';
-import { prettyDateTime } from './helpers/moment.js';
+import { prettyDateTime } from '../helpers/moment.js';
 
 class Base extends Component {
 
@@ -39,10 +39,9 @@ class Base extends Component {
         return response.json();
       })
       .then((myJson) => {
-        console.log('fetchServiceData() myJson');
-        console.log(myJson.data.servicelist);
+        //console.log('fetchServiceData() myJson');
+        //console.log(myJson.data.servicelist);
         
-
         // Make an array from the object
         const hostlist = myJson.data.servicelist;
 
@@ -55,7 +54,7 @@ class Base extends Component {
           });
         });
 
-        console.log('serviceProblemsArray', serviceProblemsArray);
+        //console.log('serviceProblemsArray', serviceProblemsArray);
 
         this.setState({
         	servicelistLastUpdate: new Date().getTime(),
@@ -74,9 +73,8 @@ class Base extends Component {
         return response.json();
       })
       .then((myJson) => {
-        console.log('fetchHostData() myJson');
-        console.log(myJson.data.hostlist);
-        
+        //console.log('fetchHostData() myJson');
+        //console.log(myJson.data.hostlist);
 
         // Make an array from the object
         const hostlist = myJson.data.hostlist;
@@ -88,7 +86,7 @@ class Base extends Component {
           }
         });
 
-        console.log('hostProblemsArray', hostProblemsArray);
+        //console.log('hostProblemsArray', hostProblemsArray);
 
         this.setState({
         	hostlistLastUpdate: new Date().getTime(),
@@ -107,7 +105,7 @@ class Base extends Component {
 
         <div style={{ marginTop: '10px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
         
-        {this.state.hostProblemsArray.length === 0 && <div className="border-green color-green ServiceItem">
+        {this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="border-green color-green ServiceItem">
         	All Hosts are OK
         </div>}
 
@@ -123,7 +121,6 @@ class Base extends Component {
         
         <div className="color-orange">Alert History: 0</div>
 
-        
         <br />
         <br />
       </div>
