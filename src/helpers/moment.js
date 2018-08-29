@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+export function prettyDateTime(date) {
+	var m = moment(date).format('MMMM Do YYYY, h:mm:ss a');
+  return m;
+}
+
 export function formatDateTime(date) {
 	var m = moment(date);
   const diff = m.diff(moment());

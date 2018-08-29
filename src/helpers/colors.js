@@ -15,6 +15,9 @@ export function wrapperClass(status) {
     case 16:
       classString = 'border-red'; // critical
       break;
+    default:
+      classString = '';
+      break;
   }
   return classString;
 }
@@ -34,6 +37,9 @@ export function stateClass(status) {
       break;
     case 16:
       classString = 'color-red'; // critical
+      break;
+    default:
+      classString = '';
       break;
   }
   return classString;

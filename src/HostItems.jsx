@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import './ServiceItem.css';
-import { Transition, animated, config } from 'react-spring';
+import './animation.css';
+import './HostItems.css';
 import { formatDateTime, formatDateTimeAgo } from './helpers/moment.js';
 import { wrapperClass, stateClass } from './helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from './helpers/nagios.js';
+
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -19,44 +21,36 @@ const defaultStyles = {
   //borderRadius: '10px'
 }
 
-class ServiceItem extends Component {
+class HostItems extends Component {
 
   render() {
 
-    console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
-
-    //const serviceProblemsArray = this.props.serviceProblemsArray;
-    console.log(Object.keys(this.props.serviceProblemsArray));
-
-    console.log('config');
-    console.log(config);
+    console.log('this.props.hostProblemsArray is', this.props.hostProblemsArray);
+    console.log(Object.keys(this.props.hostProblemsArray));
 
     return (
       <div className="ServiceItems">
 
-        <Transition
-          native
-          keys={Object.keys(this.props.serviceProblemsArray)}
-          from={{ opacity: 0, maxHeight: 0 }}
-          enter={{ opacity: 1, maxHeight: 100 }}
-          leave={{ opacity: 0, maxHeight: 0 }}
-          config={config.molasses}
-          speed={0.01}
-        >
-          {this.props.serviceProblemsArray.map((e, i) => styles => {
-            console.log('ServiceItem item');
-            console.log(e, i, styles);
+        <ReactCSSTransitionGroup
+          transitionName="example"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}>
+          {this.props.hostProblemsArray.map((e, i) => {
+            console.log('HostItem item');
+            console.log(e, i);
             //console.log(this.props.item[e]);
             //const item = this.props.item[e];
 
             return (
-              <animated.div style={{ ...defaultStyles, ...styles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
+              <div key={i} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
                   {nagiosStateType(e.state_type)}{' '}
-                  {nagiosServiceStatus(e.status)}
+                  {nagiosServiceStatus(e.status)}{' '}
+                  {e.problem_has_been_acknowledged && <span>ACKED</span>}
+                  {e.is_flapping && <span>FLAPPING</span>}
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  {e.host_name}{' '}
+                  {e.name}{' '}
                   <span className={stateClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}
@@ -67,14 +61,14 @@ class ServiceItem extends Component {
                   Next Check in {formatDateTime(e.next_check)}{' - '}
                   {e.next_check}
                 </div>
-              </animated.div>
+              </div>
             );
             
           })}
-        </Transition>
+        </ReactCSSTransitionGroup>
       </div>
     );
   }
 }
 
-export default ServiceItem;
+export default HostItems;

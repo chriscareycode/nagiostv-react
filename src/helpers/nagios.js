@@ -4,9 +4,10 @@ export function nagiosStateType(state) {
       return 'SOFT';
     case 1:
       return 'HARD';
-
+    default:
+     	return 'Unknown state ' + state;
   }
-  return 'Unknown state '+state;
+  return 'Unknown state ' + state;
 }
 
 export function nagiosServiceStatus(status) {
@@ -21,6 +22,8 @@ export function nagiosServiceStatus(status) {
       return 'UNKNOWN';
     case 16:
       return 'CRITICAL';
+    default:
+     	return 'Unknown status ' + status;
   }
-  return 'Unknown status '+status;
+  return 'Unknown status ' + status;
 }
