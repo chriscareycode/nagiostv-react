@@ -57,8 +57,8 @@ class ServiceItem extends Component {
                   </span>
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  Last Check: {formatDateTimeAgo(e.last_check)} ago{' - '}
-                  Next Check in {formatDateTime(e.next_check)}
+                  Last check was {formatDateTimeAgo(e.last_check)} ago{' - '}
+                  Next check in: {formatDateTime(e.next_check)}
                 </div>
               </div>
             );
