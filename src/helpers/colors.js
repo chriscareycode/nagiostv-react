@@ -1,3 +1,4 @@
+// TODO: Should rename this to serviceBorderClass
 export function wrapperClass(status) {
   //const status = this.get('servicedetail.status');
   let classString = '';
@@ -22,6 +23,7 @@ export function wrapperClass(status) {
   return classString;
 }
 
+// TODO: Should rename this to serviceTextClass
 export function stateClass(status) {
   let classString = '';
 
@@ -37,6 +39,65 @@ export function stateClass(status) {
       break;
     case 16:
       classString = 'color-red'; // critical
+      break;
+    default:
+      classString = '';
+      break;
+  }
+  return classString;
+}
+
+
+export function alertBorderClass(state) {
+  let classString = '';
+
+  switch(state) {
+    case 2:
+      classString = 'border-purple'; // ?
+      break;
+    case 4:
+      classString = 'border-purple'; // ?
+      break;
+    case 8:
+      classString = 'border-green'; // OK
+      break;
+    case 16:
+      classString = 'border-yellow'; // WARNING
+      break;
+    case 32:
+      classString = 'border-red'; // CRITICAL
+      break;
+    case 64:
+      classString = 'border-gray'; // UNKNOWN
+      break;
+    default:
+      classString = '';
+      break;
+  }
+  return classString;
+}
+
+export function alertTextClass(state) {
+  let classString = '';
+
+  switch(state) {
+    case 2:
+      classString = 'color-purple'; // ?
+      break;
+    case 4:
+      classString = 'color-purple'; // ?
+      break;
+    case 8:
+      classString = 'color-green'; // OK
+      break;
+    case 16:
+      classString = 'color-yellow'; // WARNING
+      break;
+    case 32:
+      classString = 'color-red'; // CRITICAL
+      break;
+    case 64:
+      classString = 'color-gray'; // UNKNOWN
       break;
     default:
       classString = '';

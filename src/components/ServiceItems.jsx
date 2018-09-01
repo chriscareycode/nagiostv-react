@@ -33,14 +33,14 @@ class ServiceItem extends Component {
 
         <ReactCSSTransitionGroup
           transitionName="example"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
+          transitionEnterTimeout={1000}
+          transitionLeaveTimeout={1000}>
           {this.props.serviceProblemsArray.map((e, i) => {
             //console.log('ServiceItem item');
             //console.log(e, i);
 
             return (
-              <div key={i} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
+              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
                   ({e.state_type}){' '}
                   {nagiosStateType(e.state_type)}{' '}
@@ -50,7 +50,7 @@ class ServiceItem extends Component {
                   {e.is_flapping && <span>FLAPPING</span>}
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  {e.host_name}{' '}
+                  {e.host_name}{' - '}
                   <span className={stateClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}

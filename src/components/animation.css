@@ -6,7 +6,7 @@
 .example-enter.example-enter-active {
   opacity: 1;
   max-height: 75px;
-  transition: all 500ms ease-in;
+  transition: all 1000ms ease-in;
 }
 
 .example-leave {
@@ -17,5 +17,5 @@
 .example-leave.example-leave-active {
   opacity: 0.01;
   max-height: 0px;
-  transition: all 300ms ease-in;
+  transition: all 1000ms ease-in;
 }
