@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './animation.css';
 import './ServiceItems.css';
 import './AlertItems.css';
-import { formatDateTime, formatDateTimeAgo, prettyDateTime } from '../helpers/moment.js';
-import { alertBorderClass, alertTextClass } from '../helpers/colors.js';
+import { prettyDateTime } from '../helpers/moment.js';
+import { alertTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
 
@@ -33,7 +33,7 @@ class AlertItems extends Component {
         {/* loop through the items */}
         {this.props.items.map((e, i) => {
           return (
-            <div key={'alert' + '-' + e.host_name + '-' + e.description + e.timestamp}>
+            <div key={'alert-' + e.host_name + '-' + e.description + e.timestamp}>
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
               <div  style={{ ...defaultStyles }} className="AlertItem">
                 <div style={{ float: 'right' }}>

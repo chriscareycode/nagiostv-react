@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './QuietFor.css';
-import { prettyDateTime } from '../helpers/moment.js';
+//import { prettyDateTime } from '../helpers/moment.js';
 
 class QuietFor extends Component {
   render() {
   	const quietForText = (date_now, date_future) => {
-  		var diff = date_now - date_future;
-  		var total_minutes = (diff/(60*1000)).toFixed(0);
+  		//var diff = date_now - date_future;
+  		//var total_minutes = (diff/(60*1000)).toFixed(0);
 
 	    // calculate days, hours, minutes, seconds
 	    // get total seconds between the times

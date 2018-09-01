@@ -72,9 +72,9 @@ class Base extends Component {
 
     fetch(url)
       .then((response) => {
-        console.log(response);
-        console.log(response.type); // cors or basic
-        console.log(response.headers);
+        //console.log(response);
+        //console.log(response.type); // cors or basic
+        //console.log(response.headers);
         if (response.status === 200 && response.type === 'cors') {
           this.setState({servicelistError: false, servicelistErrorMessage: ''});
           return response.json();
@@ -86,8 +86,8 @@ class Base extends Component {
         console.log('error json', err);
       })
       .then((myJson) => {
-        console.log('fetchServiceData() myJson');
-        console.log(myJson);
+        //console.log('fetchServiceData() myJson');
+        //console.log(myJson);
         //console.log(myJson.data.servicelist);
         
         // Make an array from the object
@@ -181,7 +181,7 @@ class Base extends Component {
   }
 
   baseUrlChanged(event) {
-    console.log('baseUrlChanged ' + event.target.value);
+    //console.log('baseUrlChanged ' + event.target.value);
     this.setState({ baseUrl: event.target.value });
   }
 
