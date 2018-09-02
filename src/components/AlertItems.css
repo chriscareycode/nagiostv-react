@@ -4,6 +4,7 @@
 }
 
 .AlertItem {
+  border: 1px solid #9c9c9c;
   font-size: 1em;
   padding: 5px;
   border-radius: 5px;
