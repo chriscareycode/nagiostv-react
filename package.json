@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/nagios/nagiostv/",
   "dependencies": {
+    "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
     "moment": "^2.22.2",
     "react": "^16.4.2",

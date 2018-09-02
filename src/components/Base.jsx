@@ -5,6 +5,7 @@ import AlertItems from './AlertItems.jsx';
 import HostItems from './HostItems.jsx';
 import { prettyDateTime } from '../helpers/moment.js';
 import Cookie from 'js-cookie';
+import $ from 'jquery';
 
 class Base extends Component {
 
@@ -78,114 +79,97 @@ class Base extends Component {
     const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 
     //console.log('Requesting Service Data: ' + url);
-    fetch(url)
-      .then((response) => {
-        //console.log(response);
-        //console.log(response.type); // cors or basic
-        //console.log(response.headers);
-        if (response.status === 200) {
-          this.setState({servicelistError: false, servicelistErrorMessage: ''});
-          return response.json();
-        } else {
-          this.setState({servicelistError: true, servicelistErrorMessage: 'Problem'});
-          return { data: { servicelist: [] } };
-        }
-      }, (err) => {
-        console.log('error json', err);
-      })
-      .then((myJson) => {
-        //console.log('fetchServiceData() myJson');
-        //console.log(myJson);
-        //console.log(myJson.data.servicelist);
-        
-        // Make an array from the object
-        const servicelist = myJson && myJson.data && myJson.data.servicelist;
 
-        const serviceProblemsArray = [];
-        Object.keys(servicelist).map((k) => {
-          Object.keys(servicelist[k]).map((l) => {
-            if (servicelist[k][l].status !== 2 || servicelist[k][l].is_flapping) {
-              serviceProblemsArray.push(servicelist[k][l]);
-            }
-          });
-        });
+    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+      //console.log('ajax success');
+      //console.log(data);
+      // Make an array from the object
+      const servicelist = myJson && myJson.data && myJson.data.servicelist;
 
-        //console.log('serviceProblemsArray', serviceProblemsArray);
-
-        this.setState({
-          servicelistLastUpdate: new Date().getTime(),
-          servicelist,
-          serviceProblemsArray: serviceProblemsArray
+      const serviceProblemsArray = [];
+      Object.keys(servicelist).map((k) => {
+        Object.keys(servicelist[k]).map((l) => {
+          if (servicelist[k][l].status !== 2 || servicelist[k][l].is_flapping) {
+            serviceProblemsArray.push(servicelist[k][l]);
+          }
         });
       });
+
+      this.setState({
+        servicelistError: false,
+        servicelistErrorMessage: '',
+        servicelistLastUpdate: new Date().getTime(),
+        servicelist,
+        serviceProblemsArray: serviceProblemsArray
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      //console.log('ajax fail');
+      //console.log(textStatus, errorThrown);
+      this.setState({
+        servicelistError: true,
+        servicelistErrorMessage: errorThrown
+      });
+    });
   }
 
   fetchHostData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
 
-    fetch(url)
-      .then((response) => {
-        //console.log(response);
-        if (response.status === 200) {
-          this.setState({hostlistError: false, hostlistErrorMessage: ''});
-          return response.json();
-        } else {
-          this.setState({hostlistError: true, hostlistErrorMessage: 'Problem'});
-          return { data: { hostlist: [] } };
+    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+      //console.log('ajax success');
+      //console.log(data);
+      // Make an array from the object
+      const hostlist = myJson.data.hostlist;
+
+      const hostProblemsArray = [];
+      Object.keys(hostlist).map((k) => {
+        if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
+          hostProblemsArray.push(hostlist[k]);
         }
-      })
-      .then((myJson) => {
-        //console.log('fetchHostData() myJson');
-        //console.log(myJson.data.hostlist);
-
-        // Make an array from the object
-        const hostlist = myJson.data.hostlist;
-
-        const hostProblemsArray = [];
-        Object.keys(hostlist).map((k) => {
-          if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
-            hostProblemsArray.push(hostlist[k]);
-          }
-        });
-
-        //console.log('hostProblemsArray', hostProblemsArray);
-
-        this.setState({
-          hostlistLastUpdate: new Date().getTime(),
-          hostlist,
-          hostProblemsArray: hostProblemsArray
-        });
       });
+
+      this.setState({
+        hostlistError: false,
+        hostlistErrorMessage: '',
+        hostlistLastUpdate: new Date().getTime(),
+        hostlist,
+        hostProblemsArray: hostProblemsArray
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      //console.log('ajax fail');
+      //console.log(textStatus, errorThrown);
+      this.setState({
+        hostlistError: true,
+        hostlistErrorMessage: errorThrown
+      });
+    });
   }
 
   fetchAlertData() {
     const url = this.state.baseUrl + 'archivejson.cgi?query=alertlist&starttime=-200000&endtime=%2B0';
 
-    fetch(url)
-      .then((response) => {
-        //console.log(response);
-        if (response.status === 200) {
-          this.setState({alertlistError: false, alertlistErrorMessage: ''});
-          return response.json();
-        } else {
-          this.setState({alertlistError: true, alertlistErrorMessage: 'Problem'});
-          return { data: { alertlist: [] } };
-        }
-      })
-      .then((myJson) => {
-        //console.log('fetchAlertData() myJson');
-        //console.log(myJson);
-
-        // Make an array from the object
-        const alertlist = myJson.data.alertlist.reverse();
-
-        //console.log('alertlist', alertlist);
-
-        this.setState({
-          alertlistLastUpdate: new Date().getTime(),
-          alertlist // it's already an array
-        });
+    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+      //console.log('ajax success');
+      //console.log(data);
+      // Make an array from the object
+      const alertlist = myJson.data.alertlist.reverse();
+      this.setState({
+        alertlistError: false,
+        alertlistErrorMessage: '',
+        alertlistLastUpdate: new Date().getTime(),
+        alertlist // it's already an array
       });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      //console.log('ajax fail');
+      //console.log(textStatus, errorThrown);
+      this.setState({
+        alertlistError: true,
+        alertlistErrorMessage: errorThrown
+      });
+    });
   }
 
   baseUrlChanged(event) {
