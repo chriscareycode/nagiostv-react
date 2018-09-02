@@ -2,23 +2,16 @@ import React, { Component } from 'react';
 import './animation.css';
 import './HostItems.css';
 import { formatDateTime, formatDateTimeAgo } from '../helpers/moment.js';
-import { wrapperClass, stateClass } from '../helpers/colors.js';
-import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
+import { hostBorderClass, hostTextClass } from '../helpers/colors.js';
+import { nagiosStateType, nagiosHostStatus } from '../helpers/nagios.js';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const defaultStyles = {
   overflow: 'hidden',
-  //width: '100%',
   backgroundColor: '#111',
-  //padding: '10px',
-  //border: '2px solid yellow',
   color: 'white',
-  //display: 'flex',
   justifyContent: 'center'
-  //fontSize: '1.2em',
-  //margin: '5px 5px 0 5px',
-  //borderRadius: '10px'
 }
 
 class HostItems extends Component {
@@ -33,23 +26,25 @@ class HostItems extends Component {
 
         <ReactCSSTransitionGroup
           transitionName="example"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={300}>
+          transitionEnterTimeout={1000}
+          transitionLeaveTimeout={1000}>
           {this.props.hostProblemsArray.map((e, i) => {
             //console.log('HostItem item');
             //console.log(e, i);
 
             return (
-              <div key={i} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
+              <div key={i} style={{ ...defaultStyles }} className={`HostItem ${hostBorderClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
+                ({e.state_type})
                   {nagiosStateType(e.state_type)}{' '}
-                  {nagiosServiceStatus(e.status)}{' '}
+                  ({e.status})
+                  {nagiosHostStatus(e.status)}{' '}
                   {e.problem_has_been_acknowledged && <span>ACKED</span>}
                   {e.is_flapping && <span>FLAPPING</span>}
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   {e.name}{' '}
-                  <span className={stateClass(e.status)}>
+                  <span className={hostTextClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}
                   </span>

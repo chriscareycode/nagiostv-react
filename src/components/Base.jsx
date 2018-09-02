@@ -250,17 +250,17 @@ class Base extends Component {
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
-        {!this.state.hostlistError && this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="border-green color-green ServiceItem">
+        {!this.state.hostlistError && this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="color-green AllOkItem">
           All {Object.keys(this.state.hostlist).length} hosts are UP
         </div>}
 
         <HostItems hostProblemsArray={this.state.hostProblemsArray} />
 
-        <div className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
+        <div style={{ marginTop: '10px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
-        {!this.state.servicelistError && this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 border-green color-green ServiceItem">
+        {!this.state.servicelistError && this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           All {Object.keys(this.state.servicelist).length} services are OK
         </div>}
 
@@ -270,7 +270,7 @@ class Base extends Component {
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
-        {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 border-green color-green ServiceItem">
+        {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           No alerts
         </div>}
 

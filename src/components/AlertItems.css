@@ -4,9 +4,10 @@
 }
 
 .AlertItem {
-  border: 1px solid #9c9c9c;
-  font-size: 1em;
-  padding: 5px;
+  background-color: #222;
+  border: 0px solid #9c9c9c;
+  font-size: 0.9em;
+  padding: 4px;
   border-radius: 5px;
   margin-bottom: 5px;
 }

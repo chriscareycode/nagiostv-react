@@ -1,3 +1,12 @@
 .HostItems {
-	
+  margin-top: 10px;
+  opacity: 0.8;
+}
+
+.HostItem {
+  background-color: #222;
+  font-size: 0.9em;
+  padding: 4px;
+  border-radius: 5px;
+  margin-bottom: 5px;
 }

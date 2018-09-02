@@ -1,13 +1,31 @@
-export function nagiosStateType(state) {
-  switch(state) {
+
+
+export function nagiosHostStatus(status) {
+  switch(status) {
+    case 1:
+      return 'NOT CHECKED';
+    case 2:
+      return 'UP';
+    case 4:
+      return 'DOWN';
+    case 8:
+      return 'UNREACHABLE';
+    default:
+      return 'Unknown host status ' + status;
+  }
+  return 'Unknown host status ' + status;
+}
+
+export function nagiosStateType(state_type) {
+  switch(state_type) {
     case 0:
       return 'SOFT';
     case 1:
       return 'HARD';
     default:
-     	return 'Unknown state ' + state;
+     	return 'Unknown state_type ' + state_type;
   }
-  return 'Unknown state ' + state;
+  return 'Unknown state_type ' + state_type;
 }
 
 export function nagiosServiceStatus(status) {
@@ -23,9 +41,9 @@ export function nagiosServiceStatus(status) {
     case 16:
       return 'CRITICAL';
     default:
-     	return 'Unknown status ' + status;
+     	return 'Unknown service status ' + status;
   }
-  return 'Unknown status ' + status;
+  return 'Unknown service status ' + status;
 }
 
 export function nagiosAlertState(state) {

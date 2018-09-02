@@ -1,5 +1,51 @@
-// TODO: Should rename this to serviceBorderClass
-export function wrapperClass(status) {
+export function hostBorderClass(status) {
+  //const status = this.get('servicedetail.status');
+  let classString = '';
+
+  switch(status) {
+    case 2:
+      classString = 'border-green'; // UP
+      break;
+    case 4:
+      classString = 'border-red'; // DOWN
+      break;
+    case 8:
+      classString = 'border-orange'; // UNREACHABLE
+      break;
+    case 16:
+      classString = 'border-gray'; // PENDING
+      break;
+    default:
+      classString = '';
+      break;
+  }
+  return classString;
+}
+
+export function hostTextClass(status) {
+  let classString = '';
+
+  switch(status) {
+    case 2:
+      classString = 'color-green'; // UP
+      break;
+    case 4:
+      classString = 'color-red'; // DOWN
+      break;
+    case 8:
+      classString = 'color-orange'; // UNREACHABLE
+      break;
+    case 16:
+      classString = 'color-gray'; // PENDING
+      break;
+    default:
+      classString = '';
+      break;
+  }
+  return classString;
+}
+
+export function serviceBorderClass(status) {
   //const status = this.get('servicedetail.status');
   let classString = '';
 
@@ -23,8 +69,7 @@ export function wrapperClass(status) {
   return classString;
 }
 
-// TODO: Should rename this to serviceTextClass
-export function stateClass(status) {
+export function serviceTextClass(status) {
   let classString = '';
 
   switch(status) {

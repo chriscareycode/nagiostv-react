@@ -2,23 +2,16 @@ import React, { Component } from 'react';
 import './animation.css';
 import './ServiceItems.css';
 import { formatDateTime, formatDateTimeAgo } from '../helpers/moment.js';
-import { wrapperClass, stateClass } from '../helpers/colors.js';
+import { serviceBorderClass, serviceTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const defaultStyles = {
   overflow: 'hidden',
-  //width: '100%',
   backgroundColor: '#111',
-  //padding: '10px',
-  //border: '2px solid yellow',
   color: 'white',
-  //display: 'flex',
   justifyContent: 'center'
-  //fontSize: '1.2em',
-  //margin: '5px 5px 0 5px',
-  //borderRadius: '10px'
 }
 
 class ServiceItem extends Component {
@@ -40,7 +33,7 @@ class ServiceItem extends Component {
             //console.log(e, i);
 
             return (
-              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
+              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${serviceBorderClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
                   {nagiosStateType(e.state_type)}{' '}
                   {nagiosServiceStatus(e.status)}{' '}
@@ -49,7 +42,7 @@ class ServiceItem extends Component {
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   <strong>{e.host_name}</strong>{' - '}
-                  <span className={stateClass(e.status)}>
+                  <span className={serviceTextClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}
                   </span>

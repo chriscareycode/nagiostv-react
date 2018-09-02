@@ -32,8 +32,9 @@ class AlertItems extends Component {
         {this.props.items.length > 1 && <QuietFor nowtime={new Date().getTime()} prevtime={this.props.items[0].timestamp} />}
         {/* loop through the items */}
         {this.props.items.map((e, i) => {
+          const host = (e.object_type === 1 ? e.name : e.host_name);
           return (
-            <div key={'alert-' + e.host_name + '-' + e.description + e.timestamp}>
+            <div key={'alert-' + host + '-' + e.timestamp}>
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
               <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.state)}`}>
                 <div style={{ float: 'right' }}>
