@@ -1,6 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 /releases
+deploy-to-bigwood.sh
 
 # dependencies
 /node_modules
