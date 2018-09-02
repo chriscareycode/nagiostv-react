@@ -35,9 +35,9 @@ class HostItems extends Component {
             return (
               <div key={i} style={{ ...defaultStyles }} className={`HostItem ${hostBorderClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
-                ({e.state_type})
+                  {1 === 2 && <span>({e.state_type})</span>}
                   {nagiosStateType(e.state_type)}{' '}
-                  ({e.status})
+                  {1 === 2 && <span>({e.status})</span>}
                   {nagiosHostStatus(e.status)}{' '}
                   {e.problem_has_been_acknowledged && <span>ACKED</span>}
                   {e.is_flapping && <span>FLAPPING</span>}

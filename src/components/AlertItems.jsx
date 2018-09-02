@@ -15,7 +15,6 @@ const defaultStyles = {
 }
 
 const ifQuietFor = (nowtime, prevtime, minutes) => {
-  //let previousTimestamp = notificationlist[index-1].timestamp;
   let diff = prevtime - nowtime;
   if (diff > minutes * 60 * 1000) {
     return true;
@@ -38,9 +37,9 @@ class AlertItems extends Component {
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
               <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.state)}`}>
                 <div style={{ float: 'right' }}>
-                  ({e.state_type})
+                  {1 === 2 && <span>({e.state_type})</span>}
                   {nagiosAlertStateType(e.state_type)}{' '}
-                  ({e.state})
+                  {1 === 2 && <span>({e.state})</span>}
                   {nagiosAlertState(e.state)}{' '}
                 </div>
                 <span style={{ textAlign: 'left' }}>
