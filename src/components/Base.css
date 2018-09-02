@@ -20,8 +20,54 @@ input[type=text] {
   font-size: 1.1em;
 }
 
+.HeaderArea {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: 40px;
+  z-index: 10;
+  background-color: rgba(20,20,20,0.8);
+  border-bottom: 1px solid #333;
+}
+.HeaderArea > div {
+  margin: 10px;
+}
+
+.FooterArea {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 40px;
+  z-index: 10;
+  background-color: rgba(20,20,20,0.8);
+  border-top: 1px solid #333;
+  text-align: center;
+}
+.FooterArea > div {
+  margin: 10px;
+}
+
+.ApplicationName {
+  font-size: 1.2em;
+  margin-right: 10px;
+}
+
 .AllOkItem {
   background-color: #222;
+  font-size: 1.0em;
+  padding: 4px;
+  border-radius: 5px;
+  margin-bottom: 7px;
+}
+
+.SettingsButtonDiv {
+  float: right;
+}
+.SettingsArea {
+  border: 1px solid gray;
+  background-color: #111;
   font-size: 1.0em;
   padding: 4px;
   border-radius: 5px;

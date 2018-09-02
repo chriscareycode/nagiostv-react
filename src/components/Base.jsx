@@ -225,28 +225,38 @@ class Base extends Component {
   render() {
     return (
       <div className="Base">
-        <h3>NagiosTV</h3>
 
-        <div>
-          <span>Last Update: {prettyDateTime(this.state.servicelistLastUpdate)} - </span>
-          <span>{this.state.fetchFrequency}s update - </span>
-          <span>Version: {this.state.currentVersionString} - </span>
-          {this.state.latestVersion > this.state.currentVersion && <span className="color-green">Update {this.state.latestVersionString} available</span>}
+        <div className="HeaderArea">
+          <div>
+            <span className="ApplicationName">NagiosTV</span>
+            
+            <div className="SettingsButtonDiv">
+            {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
+            {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
+            </div>
+
+            {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white SettingsArea">
+              <div>Settings</div>
+              <span>Nagios UI path: </span>
+              <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
+              <button onClick={this.setCookie.bind(this)}>Save</button>
+            </div>}
+
+          </div>
         </div>
 
-        <div className="margin-top-10">
-        {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
-        {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
+        <div className="FooterArea">
+          <div>
+            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
+            <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
+            <span>Version: <span className="color-orange">{this.state.currentVersionString}</span> - </span>
+            {this.state.latestVersion > this.state.currentVersion && <span className="color-green">Update {this.state.latestVersionString} available</span>}
+          </div>
         </div>
 
-        {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white ServiceItem">
-          <div>Settings</div>
-          <span>Nagios UI path: </span>
-          <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
-          <button onClick={this.setCookie.bind(this)}>Save</button>
-        </div>}
+            
 
-        <div style={{ marginTop: '10px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
+        <div style={{ marginTop: '50px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
