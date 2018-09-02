@@ -45,8 +45,9 @@ Running NagiosTV
 - Extract the NagiosTV release using tar (tar xvfz nagiostv-0.1.1.tar.gz)
 - Copy/Move the nagiostv folder into your Nagios web ui folder.
 - The Nagios web ui folder will contain statusjson.cgi so you can look for the folder where this is found.
-- In my case this is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
-- If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
+- In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
+- Once you have copied the files, you should chown the files to the web user
+- Load the app! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
 
 Upgrading
 ------------
