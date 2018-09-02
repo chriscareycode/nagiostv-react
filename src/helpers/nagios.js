@@ -27,3 +27,35 @@ export function nagiosServiceStatus(status) {
   }
   return 'Unknown status ' + status;
 }
+
+export function nagiosAlertState(state) {
+  switch(state) {
+    case 1:
+      return 'HOST OK';
+    case 2:
+      return 'HOST WARNING';
+    case 4:
+      return 'HOST CRITICAL';
+    case 8:
+      return 'SERVICE OK';
+    case 16:
+      return 'SERVICE WARNING';
+    case 32:
+      return 'SERVICE CRITICAL';
+    default:
+      return 'Unknown state ' + state;
+  }
+  return 'Unknown alert state ' + state;
+}
+
+export function nagiosAlertStateType(state_type) {
+  switch(state_type) {
+    case 1:
+      return 'HARD';
+    case 2:
+      return 'SOFT';
+    default:
+      return 'Unknown state_type ' + state_type;
+  }
+  return 'Unknown alert state_type ' + state_type;
+}

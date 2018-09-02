@@ -1,21 +1,21 @@
 .Base {
-	text-align: left;
-	margin: 0 15px;
+  text-align: left;
+  margin: 0 10px;
 }
 input[type=text] {
-	width: 50%;
+  width: 50%;
 }
 .margin-top-10 {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 .settings {
 
 }
 .settings input {
-	font-size: 1.1em;
+  font-size: 1.1em;
 }
 .settings button {
-	margin-left: 5px;
-	font-size: 1.1em;
+  margin-left: 5px;
+  font-size: 1.1em;
 }

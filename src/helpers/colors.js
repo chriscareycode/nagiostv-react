@@ -52,6 +52,9 @@ export function alertBorderClass(state) {
   let classString = '';
 
   switch(state) {
+    case 1:
+      classString = 'border-green'; // HOST OK
+      break;
     case 2:
       classString = 'border-purple'; // ?
       break;
@@ -81,20 +84,23 @@ export function alertTextClass(state) {
   let classString = '';
 
   switch(state) {
+    case 1:
+      classString = 'color-green'; // HOST OK
+      break;
     case 2:
-      classString = 'color-purple'; // ?
+      classString = 'color-yellow'; // HOST WARNING
       break;
     case 4:
       classString = 'color-purple'; // ?
       break;
     case 8:
-      classString = 'color-green'; // OK
+      classString = 'color-green'; // SERVICE OK
       break;
     case 16:
-      classString = 'color-yellow'; // WARNING
+      classString = 'color-yellow'; // SERVICE WARNING
       break;
     case 32:
-      classString = 'color-red'; // CRITICAL
+      classString = 'color-red'; // SERVICE CRITICAL
       break;
     case 64:
       classString = 'color-gray'; // UNKNOWN

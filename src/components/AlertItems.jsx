@@ -4,7 +4,7 @@ import './ServiceItems.css';
 import './AlertItems.css';
 import { prettyDateTime } from '../helpers/moment.js';
 import { alertTextClass } from '../helpers/colors.js';
-import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
+import { nagiosAlertState, nagiosAlertStateType, nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
 
 const defaultStyles = {
@@ -37,22 +37,24 @@ class AlertItems extends Component {
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
               <div  style={{ ...defaultStyles }} className="AlertItem">
                 <div style={{ float: 'right' }}>
-                  State Type: ({e.state_type}){' '}
-                  {nagiosStateType(e.state_type)}{' '}
-                  State: ({e.state}){' '}
-                  {nagiosServiceStatus(e.state)}{' '}
-                  ({e.object_type})
+                  ({e.state_type})
+                  {nagiosAlertStateType(e.state_type)}{' '}
+                  ({e.state})
+                  {nagiosAlertState(e.state)}{' '}
                 </div>
-                <div style={{ textAlign: 'left' }}>
-                  {e.host_name}{' - '}
+                <span style={{ textAlign: 'left' }}>
+                  ({e.object_type})
+                  {e.object_type === 1 && <span>{e.name}</span>}
+                  {e.object_type === 2 && <span>{e.host_name}</span>}
+                  {' - '}
                   <span className={alertTextClass(e.state)}>
-                    <span className="color-orange">{e.description}</span>{' - '}
+                    {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}
                     {e.plugin_output}
                   </span>
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  {prettyDateTime(e.timestamp)}
-                </div>
+                </span>
+                <span style={{ textAlign: 'left' }}>
+                  {' '}- {prettyDateTime(e.timestamp)}
+                </span>
               </div>
             </div>
           );

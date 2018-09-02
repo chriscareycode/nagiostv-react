@@ -16,6 +16,11 @@ class Base extends Component {
 
     showSettings: false,
 
+    currentVersion: 1,
+    currentVersionString: '0.1.0',
+    latestVersion: 0,
+    latestVersionString: '',
+
     servicelistError: false,
     servicelistErrorMessage: '',
     servicelistLastUpdate: 0,
@@ -36,6 +41,8 @@ class Base extends Component {
 
   componentDidMount() {
     this.getCookie();
+
+    this.versionCheck();
 
     setTimeout(() => {
       this.fetchServiceData();
@@ -194,12 +201,36 @@ class Base extends Component {
     this.setState({ showSettings: false });
   }
 
+  versionCheck() {
+    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/';
+    fetch(url)
+      .then((response) => {
+        //console.log(response);
+        if (response.status === 200) {
+          //this.setState({alertlistError: false, alertlistErrorMessage: ''});
+          return response.json();
+        }
+      })
+      .then((myJson) => {
+        console.log('version myJson');
+        console.log(myJson);
+
+        this.setState({
+          latestVersion: myJson.version,
+          latestVersionString: myJson.version_string
+        });
+      })
+  }
+
   render() {
     return (
       <div className="Base">
         <h3>NagiosTV</h3>
         <div>Last Update: {prettyDateTime(this.state.servicelistLastUpdate)}</div>
         <div>Update every {this.state.fetchFrequency} seconds</div>
+
+        <div>Version: {this.state.currentVersionString} - Latest Version: {this.state.latestVersionString}</div>
+
         {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
         {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
 

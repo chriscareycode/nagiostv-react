@@ -42,21 +42,19 @@ class ServiceItem extends Component {
             return (
               <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${wrapperClass(e.status)}`}>
                 <div style={{ float: 'right' }}>
-                  ({e.state_type}){' '}
                   {nagiosStateType(e.state_type)}{' '}
-                  ({e.status}){' '}
                   {nagiosServiceStatus(e.status)}{' '}
                   {e.problem_has_been_acknowledged && <span>ACKED</span>}
                   {e.is_flapping && <span>FLAPPING</span>}
                 </div>
                 <div style={{ textAlign: 'left' }}>
-                  {e.host_name}{' - '}
+                  <strong>{e.host_name}</strong>{' - '}
                   <span className={stateClass(e.status)}>
                     <span className="color-orange">{e.description}</span>{' - '}
                     {e.plugin_output}
                   </span>
                 </div>
-                <div style={{ textAlign: 'left' }}>
+                <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
                   Last check was {formatDateTimeAgo(e.last_check)} ago{' - '}
                   Next check in: {formatDateTime(e.next_check)}
                 </div>
