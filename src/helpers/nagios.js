@@ -60,6 +60,8 @@ export function nagiosAlertState(state) {
       return 'SERVICE WARNING';
     case 32:
       return 'SERVICE CRITICAL';
+    case 64:
+      return 'SERVICE UNKNOWN';
     default:
       return 'Unknown state ' + state;
   }
