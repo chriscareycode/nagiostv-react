@@ -49,11 +49,11 @@ export function nagiosServiceStatus(status) {
 export function nagiosAlertState(state) {
   switch(state) {
     case 1:
-      return 'HOST OK';
+      return 'HOST UP';
     case 2:
-      return 'HOST WARNING';
+      return 'HOST DOWN';
     case 4:
-      return 'HOST CRITICAL';
+      return 'HOST UNREACHABLE';
     case 8:
       return 'SERVICE OK';
     case 16:

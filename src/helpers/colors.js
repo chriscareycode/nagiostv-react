@@ -93,7 +93,7 @@ export function serviceTextClass(status) {
 }
 
 
-export function alertBorderClass(state) {
+export function alertBorderClass(object_type, state) {
   let classString = '';
 
   switch(state) {
@@ -101,10 +101,10 @@ export function alertBorderClass(state) {
       classString = 'border-green'; // HOST OK
       break;
     case 2:
-      classString = 'border-yellow'; // HOST WARNING
+      classString = 'border-red'; // HOST DOWN
       break;
     case 4:
-      classString = 'border-red'; // HOST CRITICAL
+      classString = 'border-orange'; // HOST UNREACHABLE
       break;
     case 8:
       classString = 'border-green'; // SERVICE OK
@@ -125,18 +125,18 @@ export function alertBorderClass(state) {
   return classString;
 }
 
-export function alertTextClass(state) {
+export function alertTextClass(object_type, state) {
   let classString = '';
 
   switch(state) {
     case 1:
-      classString = 'color-green'; // HOST OK
+      classString = 'color-green'; // HOST UP
       break;
     case 2:
-      classString = 'color-yellow'; // HOST WARNING
+      classString = 'color-red'; // HOST DOWN
       break;
     case 4:
-      classString = 'color-purple'; // ?
+      classString = 'color-orange'; // HOST UNREACHABKE
       break;
     case 8:
       classString = 'color-green'; // SERVICE OK

@@ -35,25 +35,25 @@ class AlertItems extends Component {
           return (
             <div key={'alert-' + host + '-' + e.timestamp}>
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
-              <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.state)}`}>
+              <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
                 <div style={{ float: 'right' }}>
                   {1 === 2 && <span>({e.state_type})</span>}
                   {nagiosAlertStateType(e.state_type)}{' '}
                   {1 === 2 && <span>({e.state})</span>}
-                  {nagiosAlertState(e.state)}{' '}
+                  {1 === 2 && <span>({e.object_type})</span>}
+                  <span className={alertTextClass(e.object_type, e.state)}>{nagiosAlertState(e.state)}{' '}</span>
+                  {' - '}{prettyDateTime(e.timestamp)}
                 </div>
                 <span style={{ textAlign: 'left' }}>
-                  {e.object_type === 1 && <span>HOST {e.name}</span>}
-                  {e.object_type === 2 && <span>SERVICE {e.host_name}</span>}
+                  {e.object_type === 1 && <span>{e.name}</span>}
+                  {e.object_type === 2 && <span>{e.host_name}</span>}
                   {' - '}
-                  <span className={alertTextClass(e.state)}>
+                  <span className={alertTextClass(e.object_type, e.state)}>
                     {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}
                     {e.plugin_output}
                   </span>
                 </span>
-                <span style={{ textAlign: 'left' }}>
-                  {' '}- {prettyDateTime(e.timestamp)}
-                </span>
+                
               </div>
             </div>
           );
