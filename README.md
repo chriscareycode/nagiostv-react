@@ -49,6 +49,7 @@ Running NagiosTV
 - Once you have copied the folder, you should chown the files to change the owner of the nagiostv folder so it's not owned by root.
   - Example: $ chown -R nagios:nagios /usr/local/nagios/share/nagiostv
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
+  - Since nagiostv is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
 Upgrading
 ------------
