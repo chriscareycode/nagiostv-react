@@ -35,13 +35,9 @@ This can be accomplished with a simple iframe tag for each region
 
 ![Display](http://chriscarey.com/projects/ajax-monitor-for-nagios/nagios-5-in-1.png)
 
-Download NagiosTV
+Installing NagiosTV
 -------------
-Download NagiosTV releases from https://github.com/chriscareycode/nagiostv-react/releases
-
-Running NagiosTV
--------------
-- Download NagiosTV release.
+- Download NagiosTV releases from https://github.com/chriscareycode/nagiostv-react/releases
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
   - Example: $ tar xvfz nagiostv-0.1.1.tar.gz
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/ . The Nagios web ui folder will contain statusjson.cgi so if you can find that file, you know you have the right place.
@@ -49,11 +45,11 @@ Running NagiosTV
 - Once you have copied the folder, you should chown the files to change the owner of the nagiostv folder so it's not owned by root.
   - Example: $ chown -R nagios:nagios /usr/local/nagios/share/nagiostv
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
-  - Since nagiostv is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
+  - Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
 Upgrading
 ------------
-TODO
+Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
 
 Development Requirements
 ------------
