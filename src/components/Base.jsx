@@ -10,7 +10,7 @@ class Base extends Component {
 
   state = {
     //baseUrl: 'http://10.69.0.19:3000/nagios/',
-    baseUrl: '/nagios/',
+    baseUrl: '/nagios/cgi-bin/',
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
 
@@ -70,12 +70,13 @@ class Base extends Component {
   fetchServiceData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 
+    //console.log('Requesting Service Data: ' + url);
     fetch(url)
       .then((response) => {
         //console.log(response);
         //console.log(response.type); // cors or basic
         //console.log(response.headers);
-        if (response.status === 200 && response.type === 'cors') {
+        if (response.status === 200) {
           this.setState({servicelistError: false, servicelistErrorMessage: ''});
           return response.json();
         } else {
@@ -118,7 +119,7 @@ class Base extends Component {
     fetch(url)
       .then((response) => {
         //console.log(response);
-        if (response.status === 200 && response.type === 'cors') {
+        if (response.status === 200) {
           this.setState({hostlistError: false, hostlistErrorMessage: ''});
           return response.json();
         } else {
@@ -156,7 +157,7 @@ class Base extends Component {
     fetch(url)
       .then((response) => {
         //console.log(response);
-        if (response.status === 200 && response.type === 'cors') {
+        if (response.status === 200) {
           this.setState({alertlistError: false, alertlistErrorMessage: ''});
           return response.json();
         } else {
