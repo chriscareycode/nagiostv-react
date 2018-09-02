@@ -17,8 +17,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 1,
-    currentVersionString: '0.1.0',
+    currentVersion: 2,
+    currentVersionString: '0.1.1',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -233,8 +233,8 @@ class Base extends Component {
           <div>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
-            <span>Version: <span className="color-orange">{this.state.currentVersionString}</span> - </span>
-            {this.state.latestVersion > this.state.currentVersion && <span className="color-green">Update {this.state.latestVersionString} available</span>}
+            <span>Version: <span className="color-orange">{this.state.currentVersionString}</span></span>
+            {this.state.latestVersion > this.state.currentVersion && <span> - <span className="color-green">Update {this.state.latestVersionString} available</span></span>}
           </div>
         </div>
 
