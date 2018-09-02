@@ -226,13 +226,18 @@ class Base extends Component {
     return (
       <div className="Base">
         <h3>NagiosTV</h3>
-        <div>Last Update: {prettyDateTime(this.state.servicelistLastUpdate)}</div>
-        <div>Update every {this.state.fetchFrequency} seconds</div>
 
-        <div>Version: {this.state.currentVersionString} - Latest Version: {this.state.latestVersionString}</div>
+        <div>
+          <span>Last Update: {prettyDateTime(this.state.servicelistLastUpdate)} - </span>
+          <span>{this.state.fetchFrequency}s update - </span>
+          <span>Version: {this.state.currentVersionString} - </span>
+          {this.state.latestVersion > this.state.currentVersion && <span className="color-green">Update {this.state.latestVersionString} available</span>}
+        </div>
 
+        <div className="margin-top-10">
         {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
         {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
+        </div>
 
         {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white ServiceItem">
           <div>Settings</div>
