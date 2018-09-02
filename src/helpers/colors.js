@@ -56,19 +56,19 @@ export function alertBorderClass(state) {
       classString = 'border-green'; // HOST OK
       break;
     case 2:
-      classString = 'border-purple'; // ?
+      classString = 'border-yellow'; // HOST WARNING
       break;
     case 4:
-      classString = 'border-purple'; // ?
+      classString = 'border-red'; // HOST CRITICAL
       break;
     case 8:
-      classString = 'border-green'; // OK
+      classString = 'border-green'; // SERVICE OK
       break;
     case 16:
-      classString = 'border-yellow'; // WARNING
+      classString = 'border-yellow'; // SERVICE WARNING
       break;
     case 32:
-      classString = 'border-red'; // CRITICAL
+      classString = 'border-red'; // SERVICE CRITICAL
       break;
     case 64:
       classString = 'border-gray'; // UNKNOWN

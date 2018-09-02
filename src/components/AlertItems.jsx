@@ -3,7 +3,7 @@ import './animation.css';
 import './ServiceItems.css';
 import './AlertItems.css';
 import { prettyDateTime } from '../helpers/moment.js';
-import { alertTextClass } from '../helpers/colors.js';
+import { alertTextClass, alertBorderClass } from '../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType, nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
 
@@ -35,7 +35,7 @@ class AlertItems extends Component {
           return (
             <div key={'alert-' + e.host_name + '-' + e.description + e.timestamp}>
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} />}
-              <div  style={{ ...defaultStyles }} className="AlertItem">
+              <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.state)}`}>
                 <div style={{ float: 'right' }}>
                   ({e.state_type})
                   {nagiosAlertStateType(e.state_type)}{' '}
@@ -43,9 +43,8 @@ class AlertItems extends Component {
                   {nagiosAlertState(e.state)}{' '}
                 </div>
                 <span style={{ textAlign: 'left' }}>
-                  ({e.object_type})
-                  {e.object_type === 1 && <span>{e.name}</span>}
-                  {e.object_type === 2 && <span>{e.host_name}</span>}
+                  {e.object_type === 1 && <span>HOST {e.name}</span>}
+                  {e.object_type === 2 && <span>SERVICE {e.host_name}</span>}
                   {' - '}
                   <span className={alertTextClass(e.state)}>
                     {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}

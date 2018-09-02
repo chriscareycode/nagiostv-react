@@ -37,6 +37,10 @@
   border: 1px solid gray;
 }
 
+.border-purple {
+  border: 1px solid purple;
+}
+
 /* color */
 
 .color-green {
@@ -57,4 +61,8 @@
 
 .color-gray {
   color: gray;
+}
+
+.color-purple {
+  color: purple;
 }

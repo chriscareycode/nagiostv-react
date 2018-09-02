@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 export function prettyDateTime(date) {
-	var m = moment(date).format('MMMM Do YYYY, h:mm:ss a');
+	var m = moment(date).format('MMM Do YYYY, h:mm:ss a');
   return m;
 }
 
