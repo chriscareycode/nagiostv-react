@@ -10,15 +10,14 @@ import $ from 'jquery';
 class Base extends Component {
 
   state = {
-    //baseUrl: 'http://10.69.0.19:3000/nagios/',
     baseUrl: '/nagios/cgi-bin/',
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
 
     showSettings: false,
 
-    currentVersion: 3,
-    currentVersionString: '0.1.2',
+    currentVersion: 4,
+    currentVersionString: '0.1.3',
     latestVersion: 0,
     latestVersionString: '',
 
