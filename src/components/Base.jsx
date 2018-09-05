@@ -61,6 +61,11 @@ class Base extends Component {
     setInterval(() => {
       this.fetchAlertData();
     }, this.state.fetchAlertFrequency * 1000);
+
+    // version check (this needs to move to settings)
+    setInterval(() => {
+      this.versionCheck();
+    }, 24 * 60 * 1000);
   }
 
   getCookie() {
@@ -73,7 +78,6 @@ class Base extends Component {
   setCookie() {
     Cookie.set('baseUrl', this.state.baseUrl);
   }
-
 
   fetchServiceData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
@@ -240,7 +244,7 @@ class Base extends Component {
 
             
 
-        <div style={{ marginTop: '50px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
+        <div style={{ marginTop: '55px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
@@ -260,7 +264,7 @@ class Base extends Component {
 
         <ServiceItems serviceProblemsArray={this.state.serviceProblemsArray} />
         
-        <div className="color-orange margin-top-10">Alert History: {this.state.alertlist.length}</div>
+        <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">Alert History: {this.state.alertlist.length}</div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
