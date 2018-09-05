@@ -213,7 +213,7 @@ class Base extends Component {
 
     let howManyServices = 0;
     Object.keys(this.state.servicelist).forEach((host) => {
-      howManyServices += Object.keys(host).length;
+      howManyServices += Object.keys(this.state.servicelist[host]).length;
     });
     return (
       <div className="Base">
