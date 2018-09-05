@@ -224,7 +224,7 @@ class Base extends Component {
 
             {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white SettingsArea">
               <div>Settings</div>
-              <span>Nagios UI path: </span>
+              <span>Nagios cgi-bin path: </span>
               <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
               <button onClick={this.setCookie.bind(this)}>Save</button>
             </div>}
