@@ -210,6 +210,11 @@ class Base extends Component {
   }
 
   render() {
+
+    let howManyServices = 0;
+    Object.keys(this.state.servicelist).forEach((host) => {
+      howManyServices += Object.keys(host).length;
+    });
     return (
       <div className="Base">
 
@@ -241,8 +246,6 @@ class Base extends Component {
           </div>
         </div>
 
-            
-
         <div style={{ marginTop: '55px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
@@ -258,7 +261,7 @@ class Base extends Component {
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
 
         {!this.state.servicelistError && this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
-          All {Object.keys(this.state.servicelist).length} services are OK
+          All {howManyServices} services are OK
         </div>}
 
         <ServiceItems serviceProblemsArray={this.state.serviceProblemsArray} />
