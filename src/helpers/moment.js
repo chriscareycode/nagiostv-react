@@ -11,6 +11,7 @@ export function formatDateTime(date) {
   const tempTime = moment.duration(diff);
 
   let ret = '';
+  if (tempTime.days()) { ret += tempTime.days() + 'd '}
   if (tempTime.hours()) { ret += tempTime.hours() + 'h '}
   if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '}
 
@@ -23,6 +24,7 @@ export function formatDateTimeAgo(date) {
   const tempTime = moment.duration(diff);
 
   let ret = '';
+  if (tempTime.days()) { ret += tempTime.days() + 'd '}
   if (tempTime.hours()) { ret += tempTime.hours() + 'h '}
   if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '}
 
