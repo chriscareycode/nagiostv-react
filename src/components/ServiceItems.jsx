@@ -9,9 +9,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const defaultStyles = {
   overflow: 'hidden',
-  backgroundColor: '#111',
-  color: 'white',
-  justifyContent: 'center'
+  color: 'white'
 }
 
 class ServiceItem extends Component {
@@ -33,10 +31,12 @@ class ServiceItem extends Component {
             //console.log('ServiceItem item');
             //console.log(e, i);
             let comment = '';
+            let comment_author = '';
             const commentlist = this.props.commentlist;
             Object.keys(commentlist).forEach((id) => {
               if (e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
                 comment = commentlist[id].comment_data;
+                comment_author = commentlist[id].author;
               }
             });
 
@@ -64,7 +64,7 @@ class ServiceItem extends Component {
                 </div>
 
                 {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
-                  Comment: <span className="color-comment">{comment}</span>
+                  Comment: <span className="color-comment">({comment_author}): {comment}</span>
                 </div>}
 
               </div>

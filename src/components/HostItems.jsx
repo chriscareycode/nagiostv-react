@@ -9,9 +9,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const defaultStyles = {
   overflow: 'hidden',
-  backgroundColor: '#111',
-  color: 'white',
-  justifyContent: 'center'
+  color: 'white'
 }
 
 class HostItems extends Component {
@@ -34,13 +32,14 @@ class HostItems extends Component {
 
             return (
               <div key={i} style={{ ...defaultStyles }} className={`HostItem ${hostBorderClass(e.status)}`}>
-                <div style={{ float: 'right' }}>
+                <div style={{ float: 'right', textAlign: 'right' }}>
                   {1 === 2 && <span>({e.state_type})</span>}
                   {nagiosStateType(e.state_type)}{' '}
                   {1 === 2 && <span>({e.status})</span>}
-                  {nagiosHostStatus(e.status)}{' '}
-                  {e.problem_has_been_acknowledged && <span>ACKED</span>}
-                  {e.is_flapping && <span>FLAPPING</span>}
+                  <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
+                  {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
+                  {e.is_flapping && <span className="color-orange">FLAPPING</span>}
+                  <div><span className="lastOk">Last UP</span> <span className="color-peach">{formatDateTimeAgo(e.last_time_up)}</span> ago</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   {e.name}{' '}
@@ -49,9 +48,9 @@ class HostItems extends Component {
                     {e.plugin_output}
                   </span>
                 </div>
-                <div style={{ textAlign: 'left' }}>
-                  Last Check: {formatDateTimeAgo(e.last_check)} ago{' - '}
-                  Next Check in {formatDateTime(e.next_check)}
+                <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
+                  Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+                  Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
                 </div>
               </div>
             );

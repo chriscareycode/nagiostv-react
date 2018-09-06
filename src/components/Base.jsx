@@ -16,8 +16,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 7,
-    currentVersionString: '0.1.6',
+    currentVersion: 8,
+    currentVersionString: '0.1.7',
     latestVersion: 0,
     latestVersionString: '',
 
