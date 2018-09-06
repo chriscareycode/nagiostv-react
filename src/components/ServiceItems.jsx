@@ -47,7 +47,7 @@ class ServiceItem extends Component {
                   <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
                   {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
                   {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                  <div>Down for <span className="color-orange">{formatDateTimeAgo(e.last_time_ok)}</span></div>
+                  <div>Last OK <span className="color-peach">{formatDateTimeAgo(e.last_time_ok)}</span> ago</div>
                 </div>
 
                 <div style={{ textAlign: 'left' }}>
@@ -59,8 +59,8 @@ class ServiceItem extends Component {
                 </div>
 
                 <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
-                  Last check was {formatDateTimeAgo(e.last_check)} ago{' - '}
-                  Next check in: {formatDateTime(e.next_check)}
+                  Last check was <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+                  Next check in: <span className="color-peach">{formatDateTime(e.next_check)}</span>
                 </div>
 
                 {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>

@@ -20,6 +20,13 @@ input[type=text] {
   font-size: 1.1em;
 }
 
+.SettingsButtonDiv button {
+  background-color: #222;
+  color: #999;
+  border-color: #888;
+  border-radius: 4px;
+}
+
 .HeaderArea {
   position: fixed;
   top: 0;
