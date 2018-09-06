@@ -16,8 +16,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 5,
-    currentVersionString: '0.1.4',
+    currentVersion: 6,
+    currentVersionString: '0.1.5',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -36,7 +36,12 @@ class Base extends Component {
     alertlistError: false,
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
-    alertlist: []
+    alertlist: [],
+
+    commentlistError: false,
+    commentlistErrorMessage: '',
+    commentlistLastUpdate: 0,
+    commentlist: {}
   };
 
   componentDidMount() {
@@ -48,12 +53,14 @@ class Base extends Component {
       this.fetchServiceData();
       this.fetchHostData();
       this.fetchAlertData();
+      this.fetchCommentData();
     }, 1000);
 
     // fetch host problems and service problems on an interval
     setInterval(() => {
       this.fetchServiceData();
       this.fetchHostData();
+      this.fetchCommentData();
     }, this.state.fetchFrequency * 1000);
 
     // we fetch alerts on a slower frequency interval
@@ -175,6 +182,31 @@ class Base extends Component {
     });
   }
 
+  fetchCommentData() {
+    const url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
+
+    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+      //console.log('ajax success');
+      //console.log(data);
+      // Make an array from the object
+      const commentlist = myJson.data.commentlist;
+      this.setState({
+        commentlistError: false,
+        commentlistErrorMessage: '',
+        commentlistLastUpdate: new Date().getTime(),
+        commentlist // object
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      //console.log('ajax fail');
+      //console.log(textStatus, errorThrown);
+      this.setState({
+        commentlistError: true,
+        commentlistErrorMessage: errorThrown
+      });
+    });
+  }
+
   baseUrlChanged(event) {
     //console.log('baseUrlChanged ' + event.target.value);
     this.setState({ baseUrl: event.target.value });
@@ -264,7 +296,10 @@ class Base extends Component {
           All {howManyServices} services are OK
         </div>}
 
-        <ServiceItems serviceProblemsArray={this.state.serviceProblemsArray} />
+        <ServiceItems
+          serviceProblemsArray={this.state.serviceProblemsArray}
+          commentlist={this.state.commentlist}
+        />
         
         <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">Alert History: {this.state.alertlist.length}</div>
 

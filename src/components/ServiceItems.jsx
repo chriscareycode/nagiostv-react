@@ -21,6 +21,7 @@ class ServiceItem extends Component {
     //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
     //console.log(Object.keys(this.props.serviceProblemsArray));
 
+
     return (
       <div className="ServiceItems">
 
@@ -31,15 +32,24 @@ class ServiceItem extends Component {
           {this.props.serviceProblemsArray.map((e, i) => {
             //console.log('ServiceItem item');
             //console.log(e, i);
+            let comment = '';
+            const commentlist = this.props.commentlist;
+            Object.keys(commentlist).forEach((id) => {
+              if (e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
+                comment = commentlist[id].comment_data;
+              }
+            });
 
             return (
               <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${serviceBorderClass(e.status)}`}>
-                <div style={{ float: 'right' }}>
+                <div style={{ float: 'right', textAlign: 'right' }}>
                   {nagiosStateType(e.state_type)}{' '}
                   {nagiosServiceStatus(e.status)}{' '}
-                  {e.problem_has_been_acknowledged && <span>ACKED</span>}
+                  {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
                   {e.is_flapping && <span>FLAPPING</span>}
+                  <div>Down for <span className="color-orange">{formatDateTimeAgo(e.last_time_ok)}</span></div>
                 </div>
+
                 <div style={{ textAlign: 'left' }}>
                   <strong>{e.host_name}</strong>{' - '}
                   <span className={serviceTextClass(e.status)}>
@@ -47,10 +57,16 @@ class ServiceItem extends Component {
                     {e.plugin_output}
                   </span>
                 </div>
+
                 <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
                   Last check was {formatDateTimeAgo(e.last_check)} ago{' - '}
                   Next check in: {formatDateTime(e.next_check)}
                 </div>
+
+                {comment && <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
+                  Comment: <span className="color-orange">{comment}</span>
+                </div>}
+
               </div>
             );
             
