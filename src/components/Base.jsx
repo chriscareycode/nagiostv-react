@@ -286,7 +286,10 @@ class Base extends Component {
           All {Object.keys(this.state.hostlist).length} hosts are UP
         </div>}
 
-        <HostItems hostProblemsArray={this.state.hostProblemsArray} />
+        <HostItems
+          hostProblemsArray={this.state.hostProblemsArray}
+          commentlist={this.state.commentlist}
+        />
 
         <div style={{ marginTop: '10px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
         

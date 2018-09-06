@@ -30,6 +30,16 @@ class HostItems extends Component {
             //console.log('HostItem item');
             //console.log(e, i);
 
+            let comment = '';
+            let comment_author = '';
+            const commentlist = this.props.commentlist;
+            Object.keys(commentlist).forEach((id) => {
+              if (e.name === commentlist[id].host_name) {
+                comment = commentlist[id].comment_data;
+                comment_author = commentlist[id].author;
+              }
+            });
+
             return (
               <div key={i} style={{ ...defaultStyles }} className={`HostItem ${hostBorderClass(e.status)}`}>
                 <div style={{ float: 'right', textAlign: 'right' }}>
@@ -52,6 +62,11 @@ class HostItems extends Component {
                   Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
                   Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
                 </div>
+
+                {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
+                  Comment: <span className="color-comment">({comment_author}): {comment}</span>
+                </div>}
+
               </div>
             );
             
