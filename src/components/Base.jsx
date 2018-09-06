@@ -64,7 +64,7 @@ class Base extends Component {
     // version check (this needs to move to settings)
     setInterval(() => {
       this.versionCheck();
-    }, 24 * 60 * 1000);
+    }, 24 * 60 * 60 * 1000);
   }
 
   getCookie() {
@@ -199,7 +199,7 @@ class Base extends Component {
         }
       })
       .then((myJson) => {
-        console.log('version myJson');
+        console.log('latest version check ' + new Date());
         console.log(myJson);
 
         this.setState({
