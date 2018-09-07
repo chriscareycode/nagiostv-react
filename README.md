@@ -21,19 +21,7 @@ The frontend is using the React JavaScript framework.
 Screenshot of NagiosTV on desktop
 ------------
 
-![Display](https://chriscarey.com/software/nagiostv-4/images/nagiostv-screen.png)
-
-Screenshot of NagiosTV on mobile
-------------
-
-<img src="https://chriscarey.com/software/nagiostv-4/images/nagiostv-iphone.png" width="300" />
-
-Screenshot of 5 Nagios servers on one TV
-------------
-
-This can be accomplished with a simple iframe tag for each region
-
-![Display](http://chriscarey.com/projects/ajax-monitor-for-nagios/nagios-5-in-1.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react.png)
 
 Installing NagiosTV
 -------------
