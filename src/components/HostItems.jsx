@@ -30,11 +30,12 @@ class HostItems extends Component {
             //console.log('HostItem item');
             //console.log(e, i);
 
+            // find comment for this hostitem
             let comment = '';
             let comment_author = '';
             const commentlist = this.props.commentlist;
             Object.keys(commentlist).forEach((id) => {
-              if (e.name === commentlist[id].host_name) {
+              if (commentlist[id].comment_type === 1 && e.name === commentlist[id].host_name) {
                 comment = commentlist[id].comment_data;
                 comment_author = commentlist[id].author;
               }

@@ -30,11 +30,13 @@ class ServiceItem extends Component {
           {this.props.serviceProblemsArray.map((e, i) => {
             //console.log('ServiceItem item');
             //console.log(e, i);
+
+            // find comment for this serviceitem
             let comment = '';
             let comment_author = '';
             const commentlist = this.props.commentlist;
             Object.keys(commentlist).forEach((id) => {
-              if (e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
+              if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
                 comment = commentlist[id].comment_data;
                 comment_author = commentlist[id].author;
               }
