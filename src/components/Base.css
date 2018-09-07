@@ -70,7 +70,9 @@ input[type=text] {
 }
 
 .SettingsButtonDiv {
-  float: right;
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
 }
 .SettingsArea {
   border: 1px solid gray;
@@ -79,4 +81,11 @@ input[type=text] {
   padding: 4px;
   border-radius: 5px;
   margin-bottom: 7px;
+}
+
+.FlynnWrapper {
+  position: absolute;
+  top: 10px;
+  right: 18px;
+  z-index: 11;
 }

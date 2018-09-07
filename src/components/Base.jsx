@@ -6,6 +6,7 @@ import HostItems from './HostItems.jsx';
 import { prettyDateTime } from '../helpers/moment.js';
 import Cookie from 'js-cookie';
 import $ from 'jquery';
+import Flynn from './Flynn/Flynn.jsx';
 
 class Base extends Component {
 
@@ -250,26 +251,35 @@ class Base extends Component {
     return (
       <div className="Base">
 
+        <div className="FlynnWrapper">
+          <Flynn howManyDown={this.state.serviceProblemsArray.length} />
+        </div>
+
         <div className="HeaderArea">
           <div>
             <span className="ApplicationName">NagiosTV</span>
             
-            <div className="SettingsButtonDiv">
-            {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
-            {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
-            </div>
+            
 
-            {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white SettingsArea">
-              <div>Settings</div>
-              <span>Nagios cgi-bin path: </span>
-              <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
-              <button onClick={this.setCookie.bind(this)}>Save</button>
-            </div>}
+            
 
           </div>
         </div>
 
         <div className="FooterArea">
+
+          <div className="SettingsButtonDiv">
+          {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
+          {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
+          </div>
+
+          {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white SettingsArea">
+            <div>Settings</div>
+            <span>Nagios cgi-bin path: </span>
+            <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
+            <button onClick={this.setCookie.bind(this)}>Save</button>
+          </div>}
+            
           <div>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
