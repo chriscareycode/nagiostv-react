@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
 import './Flynn.css';
+import flynnImage from './flynn.png';
+/*
+ Flynn will be happy at 0 services down
+ Flynn will be angry at < 4 services down
+ Flynn will be bloody at >= 4 services down
+*/
+
 
 class Flynn extends Component {
 
@@ -25,10 +32,10 @@ class Flynn extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-  	console.log('componentDidUpdate');
-  	console.log(prevProps);
+  	//console.log('componentDidUpdate');
+  	//console.log(prevProps);
   	if (this.state.howManyDown !== this.props.howManyDown) {
-  		console.log('setting state');
+  		//console.log('setting state');
   		this.setState({ howManyDown: this.props.howManyDown });
   	}
   }
@@ -58,10 +65,10 @@ class Flynn extends Component {
     const item = classes[Math.floor(Math.random()*classes.length)];
     flynnClass = 'flynn ' + item;
   	
-  	console.log('flynnClass is ' + flynnClass + ' ' + new Date());
+  	//console.log('flynnClass is ' + flynnClass + ' ' + new Date());
 
     return (
-      <div className={flynnClass}></div>
+      <div style={{ backgroundImage: 'url(' + flynnImage + ')' }} className={flynnClass}></div>
     );
   }
 }
