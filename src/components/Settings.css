@@ -1,0 +1,55 @@
+.SettingsBox {
+    border: 2px solid #ccc;
+    position: fixed;
+    height: 50px;
+    width: 50px;
+    bottom: 10px;
+    right: 10px;
+    z-index: 11;
+    transition: all 200ms ease-in;
+    background-color: rgba(0,0,0,0.85);
+    border-radius: 8px;
+    background-color: #222;
+}
+.SettingsBox.open {
+    /*border: 2px solid #222;*/
+    position: fixed;
+    height: calc(100vh - 50px);
+    width: calc(100vw - 100px);
+    bottom: 10px;
+    right: 50px;
+    z-index: 11;
+    border-radius: 10px;
+}
+.SettingsBox > .SettingsSmall {
+    display: block;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    
+}
+.SettingsBox.open > .SettingsSmall {
+    display: none;
+}
+.SettingsBox > .SettingsBig {
+    display: none;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 1px solid orange;
+}
+.SettingsBox.open > .SettingsBig {
+    display: block;
+}
+.SettingsScroll {
+    overflow: scroll;
+    border: 1px solid green;
+    height: calc(100vh - 100px);
+    margin-top: 10px;
+}
+.SettingSave {
+    text-align: right;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}

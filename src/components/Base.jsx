@@ -7,6 +7,7 @@ import { prettyDateTime } from '../helpers/moment.js';
 import Cookie from 'js-cookie';
 import $ from 'jquery';
 import Flynn from './Flynn/Flynn.jsx';
+import Settings from './Settings.jsx';
 
 class Base extends Component {
 
@@ -42,7 +43,12 @@ class Base extends Component {
     commentlistError: false,
     commentlistErrorMessage: '',
     commentlistLastUpdate: 0,
-    commentlist: {}
+    commentlist: {},
+
+    flynnEnabled: true,
+    flynnConcernedAt: 1,
+    flynnAngryAt: 4,
+    flynnBloodyAt: 8
   };
 
   componentDidMount() {
@@ -76,35 +82,39 @@ class Base extends Component {
   }
 
   getCookie() {
-    const baseUrl = Cookie.get('baseUrl');
-    if (baseUrl) {
-      this.setState({ baseUrl });
+    const settings = Cookie.get('settings');
+    if (settings) {
+      if (settings.hasOwnProperty('baseUrl')) {
+        this.setState({ baseUrl: settings.baseUrl });
+      }
     }
   }
 
-  setCookie() {
-    Cookie.set('baseUrl', this.state.baseUrl);
-  }
+  // setCookie() {
+  //   Cookie.set('baseUrl', this.state.baseUrl);
+  // }
 
   fetchServiceData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 
-    //console.log('Requesting Service Data: ' + url);
+    console.log('Requesting Service Data: ' + url);
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
       //console.log('ajax success');
       //console.log(data);
       // Make an array from the object
       const servicelist = myJson && myJson.data && myJson.data.servicelist;
-
       const serviceProblemsArray = [];
-      Object.keys(servicelist).map((k) => {
-        Object.keys(servicelist[k]).map((l) => {
-          if (servicelist[k][l].status !== 2 || servicelist[k][l].is_flapping) {
-            serviceProblemsArray.push(servicelist[k][l]);
-          }
+
+      if (servicelist) {
+        Object.keys(servicelist).map((k) => {
+          Object.keys(servicelist[k]).map((l) => {
+            if (servicelist[k][l].status !== 2 || servicelist[k][l].is_flapping) {
+              serviceProblemsArray.push(servicelist[k][l]);
+            }
+          });
         });
-      });
+      }
 
       this.setState({
         servicelistError: false,
@@ -131,14 +141,19 @@ class Base extends Component {
       //console.log('ajax success');
       //console.log(data);
       // Make an array from the object
-      const hostlist = myJson.data.hostlist;
-
+      let hostlist = {};
+      if (myJson && myJson.data && myJson.data.hostlist) {
+        hostlist = myJson.data.hostlist;
+      }
       const hostProblemsArray = [];
-      Object.keys(hostlist).map((k) => {
-        if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
-          hostProblemsArray.push(hostlist[k]);
-        }
-      });
+
+      if (hostlist) {
+        Object.keys(hostlist).map((k) => {
+          if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
+            hostProblemsArray.push(hostlist[k]);
+          }
+        });
+      }
 
       this.setState({
         hostlistError: false,
@@ -244,12 +259,28 @@ class Base extends Component {
 
   render() {
 
+    const settingsObject = {
+      baseUrl: this.state.baseUrl,
+      flynnEnabled: this.state.flynnEnabled,
+      flynnConcernedAt: this.state.flynnConcernedAt,
+      flynnAngryAt: this.state.flynnAngryAt,
+      flynnBloodyAt: this.state.flynnBloodyAt
+    };
+
     let howManyServices = 0;
-    Object.keys(this.state.servicelist).forEach((host) => {
-      howManyServices += Object.keys(this.state.servicelist[host]).length;
-    });
+    if (this.state.servicelist) {
+      Object.keys(this.state.servicelist).forEach((host) => {
+        howManyServices += Object.keys(this.state.servicelist[host]).length;
+      });
+    }
     return (
       <div className="Base">
+
+        <Settings
+          baseUrl={this.state.baseUrl}
+          baseUrlChanged={this.baseUrlChanged.bind(this)}
+          settings={settingsObject}
+        />
 
         <div className="FlynnWrapper">
           <Flynn howManyDown={this.state.serviceProblemsArray.length} />
@@ -258,27 +289,10 @@ class Base extends Component {
         <div className="HeaderArea">
           <div>
             <span className="ApplicationName">NagiosTV</span>
-            
-            
-
-            
-
           </div>
         </div>
 
         <div className="FooterArea">
-
-          <div className="SettingsButtonDiv">
-          {!this.state.showSettings && <button onClick={this.showSettings.bind(this)}>Show Settings</button>}
-          {this.state.showSettings && <button onClick={this.hideSettings.bind(this)}>Hide Settings</button>}
-          </div>
-
-          {this.state.showSettings && <div className="margin-top-10 settings border-gray color-white SettingsArea">
-            <div>Settings</div>
-            <span>Nagios cgi-bin path: </span>
-            <input type="text" value={this.state.baseUrl} onChange={this.baseUrlChanged.bind(this)} />
-            <button onClick={this.setCookie.bind(this)}>Save</button>
-          </div>}
             
           <div>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
@@ -286,6 +300,7 @@ class Base extends Component {
             <span>Version: <span className="color-orange">{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> - <span className="color-green">Update {this.state.latestVersionString} available</span></span>}
           </div>
+
         </div>
 
         <div style={{ marginTop: '55px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
