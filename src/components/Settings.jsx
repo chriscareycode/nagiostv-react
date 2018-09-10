@@ -19,6 +19,7 @@ class Settings extends Component {
   }
 
   loadLocalStateFromProps() {
+      console.log('loadLocalStateFromProps()', this.props.settings.baseUrl);
     this.setState({
         baseUrl: this.props.settings.baseUrl,
         flynnEnabled: this.props.settings.flynnEnabled,
@@ -28,7 +29,7 @@ class Settings extends Component {
     })
   }
   toggle() {
-      if (this.state.open) {
+      if (!this.state.open) {
           this.loadLocalStateFromProps();
       }
     this.setState({ open: !this.state.open }, () => {
@@ -44,15 +45,20 @@ class Settings extends Component {
 
   saveCookie() {
     const cookieObject = {
-        baseUrl: 'abc'
+        baseUrl: this.state.baseUrl
     };
     Cookie.set('settings', cookieObject);
+    console.log('Saved cookie', cookieObject);
+    this.props.updateStateFromSettings(cookieObject);
   }
 
   handleChange(propName, event) {
       console.log('handleChange');
       console.log(event);
       console.log(propName);
+      this.setState({
+          [propName]: event.target.value
+      });
   }
 
   render() {
@@ -63,12 +69,12 @@ class Settings extends Component {
             SettingsBig
             <div className="SettingsScroll">
                 <span>Nagios cgi-bin path: </span>
-                <input type="text" defaultValue={this.props.settings.baseUrl} />
+                <input type="text" defaultValue={this.state.baseUrl} onChange={this.handleChange.bind(this, 'baseUrl')} />
                 <div></div>
-                <div>Flynn {(this.props.settings.flynnEnabled ? <span>on</span> : <span>off</span>)}</div>
-                <div>Flynn concerned at <input type="text" defaultValue={this.props.settings.flynnConcernedAt} onChange={this.handleChange.bind(this, 'flynnConcernedAt')} /></div>
-                <div>Flynn angry at <input type="text" defaultValue={this.props.settings.flynnAngryAt} onChange={this.handleChange.bind(this)} /></div>
-                <div>Flynn bloody at <input type="text" defaultValue={this.props.settings.flynnBloodyAt} onChange={this.handleChange.bind(this)} /></div>
+                <div>Flynn {(this.state.flynnEnabled ? <span>on</span> : <span>off</span>)}</div>
+                <div>Flynn concerned at <input type="text" defaultValue={this.state.flynnConcernedAt} onChange={this.handleChange.bind(this, 'flynnConcernedAt')} /></div>
+                <div>Flynn angry at <input type="text" defaultValue={this.state.flynnAngryAt} onChange={this.handleChange.bind(this)} /></div>
+                <div>Flynn bloody at <input type="text" defaultValue={this.state.flynnBloodyAt} onChange={this.handleChange.bind(this)} /></div>
                 <div></div>
                 <div>Version Check: Off/24h</div>
                 <div>Update hosts/services every 15s</div>

@@ -18,8 +18,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 9,
-    currentVersionString: '0.1.8',
+    currentVersion: 10,
+    currentVersionString: '0.1.9',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -82,10 +82,17 @@ class Base extends Component {
   }
 
   getCookie() {
-    const settings = Cookie.get('settings');
-    if (settings) {
-      if (settings.hasOwnProperty('baseUrl')) {
-        this.setState({ baseUrl: settings.baseUrl });
+    const cookie = Cookie.get('settings');
+    let cookieObject = {};
+    try {
+      cookieObject = JSON.parse(cookie);
+      console.log('Got coookie', cookieObject);
+    } catch (e) {
+      console.log('No cookie');
+    }
+    if (cookieObject) {
+      if (cookieObject.hasOwnProperty('baseUrl')) {
+        this.setState({ baseUrl: cookieObject.baseUrl });
       }
     }
   }
@@ -94,14 +101,33 @@ class Base extends Component {
   //   Cookie.set('baseUrl', this.state.baseUrl);
   // }
 
+  updateStateFromSettings(settingsObject) {
+    this.setState({
+      baseUrl: settingsObject.baseUrl
+    });
+  }
+
   fetchServiceData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 
-    console.log('Requesting Service Data: ' + url);
+    //console.log('Requesting Service Data: ' + url);
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('ajax success');
-      //console.log(data);
+      //console.log('fetchServiceData() ajax success');
+      //console.log(myJson);
+      //console.log(textStatus);
+      //console.log(jqXHR);
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          servicelistError: true,
+          servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
+
       // Make an array from the object
       const servicelist = myJson && myJson.data && myJson.data.servicelist;
       const serviceProblemsArray = [];
@@ -125,11 +151,11 @@ class Base extends Component {
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      //console.log('ajax fail');
-      //console.log(textStatus, errorThrown);
+      console.log('fetchServiceData() ajax fail');
+      console.log(jqXHR, textStatus, errorThrown);
       this.setState({
         servicelistError: true,
-        servicelistErrorMessage: errorThrown
+        servicelistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
       });
     });
   }
@@ -140,6 +166,17 @@ class Base extends Component {
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
       //console.log('ajax success');
       //console.log(data);
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          hostlistError: true,
+          hostlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
+
       // Make an array from the object
       let hostlist = {};
       if (myJson && myJson.data && myJson.data.hostlist) {
@@ -168,7 +205,7 @@ class Base extends Component {
       //console.log(textStatus, errorThrown);
       this.setState({
         hostlistError: true,
-        hostlistErrorMessage: errorThrown
+        hostlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
       });
     });
   }
@@ -177,8 +214,21 @@ class Base extends Component {
     const url = this.state.baseUrl + 'archivejson.cgi?query=alertlist&starttime=-200000&endtime=%2B0';
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('ajax success');
-      //console.log(data);
+      //console.log('fetchAlertData() ajax success');
+      //console.log(myJson);
+      //console.log(textStatus);
+      //console.log(jqXHR);
+      //console.log(jqXHR.getResponseHeader('content-type'));
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          alertlistError: true,
+          alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
       // Make an array from the object
       const alertlist = myJson.data.alertlist.reverse();
       this.setState({
@@ -193,7 +243,7 @@ class Base extends Component {
       //console.log(textStatus, errorThrown);
       this.setState({
         alertlistError: true,
-        alertlistErrorMessage: errorThrown
+        alertlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
       });
     });
   }
@@ -204,6 +254,18 @@ class Base extends Component {
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
       //console.log('ajax success');
       //console.log(data);
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchCommentData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          commentlistError: true,
+          commentlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
+
+
       // Make an array from the object
       const commentlist = myJson.data.commentlist;
       this.setState({
@@ -218,7 +280,7 @@ class Base extends Component {
       //console.log(textStatus, errorThrown);
       this.setState({
         commentlistError: true,
-        commentlistErrorMessage: errorThrown
+        commentlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
       });
     });
   }
@@ -280,6 +342,7 @@ class Base extends Component {
           baseUrl={this.state.baseUrl}
           baseUrlChanged={this.baseUrlChanged.bind(this)}
           settings={settingsObject}
+          updateStateFromSettings={this.updateStateFromSettings.bind(this)}
         />
 
         <div className="FlynnWrapper">
@@ -288,7 +351,7 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div>
-            <span className="ApplicationName">NagiosTV</span>
+            <span className="ApplicationName">NagiosTV {settingsObject.baseUrl}</span>
           </div>
         </div>
 
@@ -305,7 +368,7 @@ class Base extends Component {
 
         <div style={{ marginTop: '55px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
         
-        {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
+        {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
 
         {!this.state.hostlistError && this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="color-green AllOkItem">
           All {Object.keys(this.state.hostlist).length} hosts are UP
@@ -318,7 +381,7 @@ class Base extends Component {
 
         <div style={{ marginTop: '10px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
         
-        {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
+        {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
 
         {!this.state.servicelistError && this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           All {howManyServices} services are OK
@@ -331,7 +394,7 @@ class Base extends Component {
         
         <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">Alert History: {this.state.alertlist.length}</div>
 
-        {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">Error connecting</div>}
+        {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
 
         {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           No alerts
