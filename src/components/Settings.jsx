@@ -6,6 +6,7 @@ class Settings extends Component {
 
   state = {
       open: false,
+        saveMessage: '',
 
       baseUrl: '',
       flynnEnabled: true,
@@ -19,7 +20,7 @@ class Settings extends Component {
   }
 
   loadLocalStateFromProps() {
-      console.log('loadLocalStateFromProps()', this.props.settings.baseUrl);
+      console.log('loadLocalStateFromProps()', this.props.settings);
     this.setState({
         baseUrl: this.props.settings.baseUrl,
         flynnEnabled: this.props.settings.flynnEnabled,
@@ -29,35 +30,50 @@ class Settings extends Component {
     })
   }
   toggle() {
+      // load local state from props when we open settings
       if (!this.state.open) {
           this.loadLocalStateFromProps();
       }
-    this.setState({ open: !this.state.open }, () => {
-        // if open, 
-    });
+    this.setState({ open: !this.state.open });
   }
 
-  loadCookie() {
-    const cookie = Cookie.get('settings');
-    console.log('loadCookie');
-    console.log(cookie);
-  }
+//   loadCookie() {
+//     const cookie = Cookie.get('settings');
+//     console.log('loadCookie');
+//     console.log(cookie);
+//   }
 
   saveCookie() {
     const cookieObject = {
-        baseUrl: this.state.baseUrl
+        baseUrl: this.state.baseUrl,
+        flynnEnabled: this.state.flynnEnabled,
+        flynnConcernedAt: this.state.flynnConcernedAt,
+        flynnAngryAt: this.state.flynnAngryAt,
+        flynnBloodyAt: this.state.flynnBloodyAt
     };
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
     this.props.updateStateFromSettings(cookieObject);
+
+    this.setState({ saveMessage: 'Settings saved.' });
+    setTimeout(() => {
+        this.setState({ saveMessage: '' });
+    }, 3000);
   }
 
-  handleChange(propName, event) {
-      console.log('handleChange');
-      console.log(event);
-      console.log(propName);
+  handleChange(propName, dataType, event) {
+      //console.log('handleChange');
+      //console.log(propName);
+      //console.log(event.target.value, typeof event.target.value);
+      let val = '';
+      if (dataType === 'boolean') { val = (event.target.value == 'true'); }
+      else if (dataType === 'number') {
+        val = parseInt(event.target.value, 10);
+      } else {
+          val = event.target.value;
+      }
       this.setState({
-          [propName]: event.target.value
+          [propName]: val
       });
   }
 
@@ -66,21 +82,31 @@ class Settings extends Component {
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
       	<div className="SettingsSmall" onClick={this.toggle.bind(this)}>SS</div>
         <div className="SettingsBig">
-            SettingsBig
+            Settings
             <div className="SettingsScroll">
+
                 <span>Nagios cgi-bin path: </span>
-                <input type="text" defaultValue={this.state.baseUrl} onChange={this.handleChange.bind(this, 'baseUrl')} />
-                <div></div>
-                <div>Flynn {(this.state.flynnEnabled ? <span>on</span> : <span>off</span>)}</div>
-                <div>Flynn concerned at <input type="text" defaultValue={this.state.flynnConcernedAt} onChange={this.handleChange.bind(this, 'flynnConcernedAt')} /></div>
-                <div>Flynn angry at <input type="text" defaultValue={this.state.flynnAngryAt} onChange={this.handleChange.bind(this)} /></div>
-                <div>Flynn bloody at <input type="text" defaultValue={this.state.flynnBloodyAt} onChange={this.handleChange.bind(this)} /></div>
-                <div></div>
-                <div>Version Check: Off/24h</div>
+                <input type="text" value={this.state.baseUrl} onChange={this.handleChange.bind(this, 'baseUrl', 'string')} />
+
+                <div style={{marginTop: '20px'}}>
+                    Flynn
+                    <select value={this.state.flynnEnabled} onChange={this.handleChange.bind(this, 'flynnEnabled', 'boolean')}>
+                        <option value={true}>On</option>
+                        <option value={false}>Off</option>
+                    </select>
+                </div>
+                <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange.bind(this, 'flynnAngryAt', 'number')} /></div>
+                <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange.bind(this, 'flynnBloodyAt', 'number')} /></div>
+                
+                <div style={{marginTop: '20px'}}>Settings coming soon</div>
+                <div>Version Check: On/24h</div>
                 <div>Update hosts/services every 15s</div>
                 <div>Update alerts every 60s</div>
-                <div>fdsafds</div>
-                <div><button onClick={this.saveCookie.bind(this)}>Save Settings</button></div>
+ 
+                <div style={{marginTop: '20px'}}>
+                <button onClick={this.saveCookie.bind(this)}>Save Settings</button>
+                {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
+                </div>
                 
             </div>
             <div className="SettingSave">

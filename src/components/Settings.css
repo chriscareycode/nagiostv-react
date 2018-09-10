@@ -36,14 +36,14 @@
     margin-top: 10px;
     margin-left: 10px;
     margin-right: 10px;
-    border: 1px solid orange;
+    /*border: 1px solid orange;*/
 }
 .SettingsBox.open > .SettingsBig {
     display: block;
 }
 .SettingsScroll {
     overflow: scroll;
-    border: 1px solid green;
+    /*border: 1px solid green;*/
     height: calc(100vh - 100px);
     margin-top: 10px;
 }

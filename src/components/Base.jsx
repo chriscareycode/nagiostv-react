@@ -90,10 +90,24 @@ class Base extends Component {
     } catch (e) {
       console.log('No cookie');
     }
-    if (cookieObject) {
-      if (cookieObject.hasOwnProperty('baseUrl')) {
-        this.setState({ baseUrl: cookieObject.baseUrl });
+    const updateIfExist = (prop) => {
+      if (cookieObject.hasOwnProperty(prop)) {
+        console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+        this.setState({ [prop]: cookieObject[prop] });
       }
+    };
+    if (cookieObject) {
+      // if (cookieObject.hasOwnProperty('baseUrl')) {
+      //   this.setState({ baseUrl: cookieObject.baseUrl });
+      // }
+      // if (cookieObject.hasOwnProperty('flynnEnabled')) {
+      //   this.setState({ flynnEnabled: cookieObject.flynnEnabled });
+      // }
+      updateIfExist('baseUrl');
+      updateIfExist('flynnEnabled');
+      updateIfExist('flynnConcernedAt');
+      updateIfExist('flynnAngryAt');
+      updateIfExist('flynnBloodyAt');
     }
   }
 
@@ -103,7 +117,11 @@ class Base extends Component {
 
   updateStateFromSettings(settingsObject) {
     this.setState({
-      baseUrl: settingsObject.baseUrl
+      baseUrl: settingsObject.baseUrl,
+      flynnEnabled: settingsObject.flynnEnabled,
+      flynnConcernedAt: settingsObject.flynnConcernedAt,
+      flynnAngryAt: settingsObject.flynnAngryAt,
+      flynnBloodyAt: settingsObject.flynnBloodyAt
     });
   }
 
@@ -345,13 +363,18 @@ class Base extends Component {
           updateStateFromSettings={this.updateStateFromSettings.bind(this)}
         />
 
-        <div className="FlynnWrapper">
-          <Flynn howManyDown={this.state.serviceProblemsArray.length} />
-        </div>
+        {this.state.flynnEnabled && <div className="FlynnWrapper">
+          <Flynn
+            howManyDown={this.state.serviceProblemsArray.length}
+            flynnConcernedAt={this.state.flynnConcernedAt}
+            flynnAngryAt={this.state.flynnAngryAt}
+            flynnBloodyAt={this.state.flynnBloodyAt}
+          />
+        </div>}
 
         <div className="HeaderArea">
           <div>
-            <span className="ApplicationName">NagiosTV {settingsObject.baseUrl}</span>
+            <span className="ApplicationName">NagiosTV</span>
           </div>
         </div>
 
