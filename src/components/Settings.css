@@ -8,7 +8,7 @@
     z-index: 11;
     transition: all 200ms ease-in;
     background-color: rgba(0,0,0,0.85);
-    border-radius: 8px;
+    border-radius: 16px;
     background-color: #222;
 }
 .SettingsBox.open {
@@ -27,6 +27,10 @@
     width: 50px;
     text-align: center;
     
+}
+.SettingsBox > .SettingsSmall > img {
+    height: 50px;
+    width: 50px;  
 }
 .SettingsBox.open > .SettingsSmall {
     display: none;

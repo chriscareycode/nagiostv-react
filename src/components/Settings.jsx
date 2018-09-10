@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Settings.css';
 import Cookie from 'js-cookie';
+import SettingsIcon from './Settings.png';
 
 class Settings extends Component {
 
@@ -71,7 +72,9 @@ class Settings extends Component {
   render() {
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
-      	<div className="SettingsSmall" onClick={this.toggle.bind(this)}>SS</div>
+      	<div className="SettingsSmall" onClick={this.toggle.bind(this)}>
+            <img src={SettingsIcon} />  
+        </div>
         <div className="SettingsBig">
             Settings
             <div className="SettingsScroll">
@@ -97,9 +100,13 @@ class Settings extends Component {
               <button onClick={this.saveCookie.bind(this)}>Save Settings</button>
               {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
               </div>
+
+                <div>
+                    <button onClick={this.toggle.bind(this)}>Close</button>
+                </div>
             </div>
             <div className="SettingSave">
-                <button onClick={this.toggle.bind(this)}>Close</button>
+                
             </div>
         </div>
       </div>
