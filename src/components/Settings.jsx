@@ -76,7 +76,7 @@ class Settings extends Component {
             <img src={SettingsIcon} />  
         </div>
         <div className="SettingsBig">
-            Settings
+            <h2>Settings</h2>
             <div className="SettingsScroll">
               <span>Nagios cgi-bin path: </span>
               <input type="text" value={this.state.baseUrl} onChange={this.handleChange.bind(this, 'baseUrl', 'string')} />
@@ -91,22 +91,19 @@ class Settings extends Component {
               <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange.bind(this, 'flynnAngryAt', 'number')} /></div>
               <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange.bind(this, 'flynnBloodyAt', 'number')} /></div>
               
-              <div style={{marginTop: '20px'}}>Settings coming soon</div>
+              <div style={{marginTop: '20px'}}>Settings coming soon:</div>
               <div>Version Check: On/24h</div>
               <div>Update hosts/services every 15s</div>
               <div>Update alerts every 60s</div>
 
               <div style={{marginTop: '20px'}}>
-              <button onClick={this.saveCookie.bind(this)}>Save Settings</button>
-              {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
+                <button className="SettingsSaveButton" onClick={this.saveCookie.bind(this)}>Save Settings</button>
+                {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
               </div>
 
-                <div>
-                    <button onClick={this.toggle.bind(this)}>Close</button>
-                </div>
             </div>
             <div className="SettingSave">
-                
+              <button onClick={this.toggle.bind(this)}>[X] CLOSE</button>
             </div>
         </div>
       </div>
