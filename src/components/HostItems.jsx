@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './animation.css';
 import './HostItems.css';
-import { formatDateTime, formatDateTimeAgo } from '../helpers/moment.js';
+import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../helpers/nagios.js';
 
@@ -50,7 +50,7 @@ class HostItems extends Component {
                   <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
                   {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
                   {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                  <div><span className="lastOk">Last UP</span> <span className="color-peach">{formatDateTimeAgo(e.last_time_up)}</span> ago</div>
+                  <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
                 </div>
                 <div style={{ textAlign: 'left' }}>
                   {e.name}{' '}
