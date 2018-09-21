@@ -48,7 +48,8 @@ class Base extends Component {
     flynnEnabled: true,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
-    flynnBloodyAt: 8
+    flynnBloodyAt: 8,
+    flynnCssScale: '1'
   };
 
   componentDidMount() {
@@ -103,11 +104,14 @@ class Base extends Component {
       // if (cookieObject.hasOwnProperty('flynnEnabled')) {
       //   this.setState({ flynnEnabled: cookieObject.flynnEnabled });
       // }
+
+      // When adding new settings they need to go here
       updateIfExist('baseUrl');
       updateIfExist('flynnEnabled');
       updateIfExist('flynnConcernedAt');
       updateIfExist('flynnAngryAt');
       updateIfExist('flynnBloodyAt');
+      updateIfExist('flynnCssScale');
     }
   }
 
@@ -115,13 +119,15 @@ class Base extends Component {
   //   Cookie.set('baseUrl', this.state.baseUrl);
   // }
 
+  // When adding new settings they need to go here
   updateStateFromSettings(settingsObject) {
     this.setState({
       baseUrl: settingsObject.baseUrl,
       flynnEnabled: settingsObject.flynnEnabled,
       flynnConcernedAt: settingsObject.flynnConcernedAt,
       flynnAngryAt: settingsObject.flynnAngryAt,
-      flynnBloodyAt: settingsObject.flynnBloodyAt
+      flynnBloodyAt: settingsObject.flynnBloodyAt,
+      flynnCssScale: settingsObject.flynnCssScale
     });
   }
 
@@ -338,13 +344,15 @@ class Base extends Component {
   }
 
   render() {
-
+  
+    // When adding new settings they need to go here
     const settingsObject = {
       baseUrl: this.state.baseUrl,
       flynnEnabled: this.state.flynnEnabled,
       flynnConcernedAt: this.state.flynnConcernedAt,
       flynnAngryAt: this.state.flynnAngryAt,
-      flynnBloodyAt: this.state.flynnBloodyAt
+      flynnBloodyAt: this.state.flynnBloodyAt,
+      flynnCssScale: this.state.flynnCssScale
     };
 
     let howManyServices = 0;
@@ -369,6 +377,7 @@ class Base extends Component {
             flynnConcernedAt={this.state.flynnConcernedAt}
             flynnAngryAt={this.state.flynnAngryAt}
             flynnBloodyAt={this.state.flynnBloodyAt}
+            flynnCssScale={this.state.flynnCssScale}
           />
         </div>}
 

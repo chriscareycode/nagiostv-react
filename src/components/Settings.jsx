@@ -13,7 +13,8 @@ class Settings extends Component {
     flynnEnabled: true,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
-    flynnBloodyAt: 8
+    flynnBloodyAt: 8,
+    flynnCssScale: ''
   };
 
   constructor(props) {
@@ -24,13 +25,14 @@ class Settings extends Component {
   }
 
   loadLocalStateFromProps() {
-    //console.log('loadLocalStateFromProps()', this.props.settings);
+    console.log('loadLocalStateFromProps()', this.props.settings);
     this.setState({
       baseUrl: this.props.settings.baseUrl,
       flynnEnabled: this.props.settings.flynnEnabled,
       flynnConcernedAt: this.props.settings.flynnConcernedAt,
       flynnAngryAt: this.props.settings.flynnAngryAt,
-      flynnBloodyAt: this.props.settings.flynnBloodyAt
+      flynnBloodyAt: this.props.settings.flynnBloodyAt,
+      flynnCssScale: this.props.settings.flynnCssScale
     })
   }
 
@@ -48,7 +50,8 @@ class Settings extends Component {
       flynnEnabled: this.state.flynnEnabled,
       flynnConcernedAt: this.state.flynnConcernedAt,
       flynnAngryAt: this.state.flynnAngryAt,
-      flynnBloodyAt: this.state.flynnBloodyAt
+      flynnBloodyAt: this.state.flynnBloodyAt,
+      flynnCssScale: this.state.flynnCssScale
     };
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
@@ -104,11 +107,16 @@ class Settings extends Component {
               </div>
               <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /></div>
               <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /></div>
+              <div>
+                Flynn CSS scale <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span>
+              </div>
               
               <div style={{marginTop: '20px'}}>Settings coming soon:</div>
               <div>Version Check: On/24h</div>
               <div>Update hosts/services every 15s</div>
               <div>Update alerts every 60s</div>
+              <div>Alert History - variable time back, max # of items</div>
 
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>

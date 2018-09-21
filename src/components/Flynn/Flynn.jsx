@@ -69,8 +69,10 @@ class Flynn extends Component {
   	
   	//console.log('flynnClass is ' + flynnClass + ' ' + new Date());
 
+    const scale = 'scale(' + this.props.flynnCssScale + ')';
+    
     return (
-      <div style={{ backgroundImage: 'url(' + flynnImage + ')' }} className={flynnClass}></div>
+      <div style={{ backgroundImage: 'url(' + flynnImage + ')', transform: scale }} className={flynnClass}></div>
     );
   }
 }
