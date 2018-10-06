@@ -1,4 +1,4 @@
-# NagiosTV for Nagios 4
+# NagiosTV (for Nagios 4) React edition
 
 This is a version of NagiosTV for Nagios 4.x servers.
 
