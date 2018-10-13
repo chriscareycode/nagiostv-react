@@ -4,9 +4,9 @@ NagiosTV is an alternate user interface (UI) for the Nagios open source monitori
 
 This user interface is designed to be viewed on a TV or on your desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but an alternate way to look at the “what’s down?” part.
 
-This version adds Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
+New items slide in and out of place with smooth animations.
 
-New items slide in and out of place with animations.
+This version adds Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
 
 Technology
 ------------
