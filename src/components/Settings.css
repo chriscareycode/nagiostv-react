@@ -52,6 +52,9 @@
     font-size: 1.2em;
 }
 
+.SettingsBox select {
+    border: 1px solid #ccc;
+}
 .SettingsScroll {
     overflow-y: scroll;
     /*border: 1px solid green;*/
@@ -59,17 +62,18 @@
     margin-top: 10px;
 }
 .SettingSave {
-    text-align: right;
+    /*text-align: right;
     position: absolute;
     right: 15px;
-    bottom: 10px;
+    bottom: 10px;*/
+    margin-top: 10px;
 }
 .SettingSave > button {
     background-color: #333;
     color: red;
     font-size: 1.1em;
     font-weight: bold;
-    border: 2px solid white;
+    border: 2px solid red;
     padding: 5px 10px;
     
 }

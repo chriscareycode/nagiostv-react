@@ -18,8 +18,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 10,
-    currentVersionString: '0.1.9',
+    currentVersion: 11,
+    currentVersionString: '0.2.0',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -45,18 +45,19 @@ class Base extends Component {
     commentlistLastUpdate: 0,
     commentlist: {},
 
+    // settings (defaults are set here also)
     flynnEnabled: true,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
-    flynnCssScale: '1'
+    flynnCssScale: '1',
+    versionCheckDays: 1
   };
 
   componentDidMount() {
     this.getCookie();
 
-    this.versionCheck();
-
+    
     setTimeout(() => {
       this.fetchServiceData();
       this.fetchHostData();
@@ -76,10 +77,22 @@ class Base extends Component {
       this.fetchAlertData();
     }, this.state.fetchAlertFrequency * 1000);
 
-    // version check (this needs to move to settings)
-    setInterval(() => {
-      this.versionCheck();
-    }, 24 * 60 * 60 * 1000);
+    // this is not super clean but I'm going to delay this by 2s to give the setState() in the getCookie()
+    // time to complete. It's async so we could have a race condition getting the version check setting
+    // to arrive in this.state.versionCheckDays
+    // I want to default to having version check on, but if someone turns it off, it should never check
+    setTimeout(() => {
+      // version check - run once on app boot
+      if (this.state.versionCheckDays > 0) {
+        this.versionCheck();
+      }
+      // version check - run every n days
+      if (this.state.versionCheckDays > 0) {
+        setInterval(() => {
+          this.versionCheck();
+        }, this.state.versionCheckDays * 24 * 60 * 60 * 1000);
+      }
+    }, 2000);
   }
 
   getCookie() {
@@ -98,13 +111,6 @@ class Base extends Component {
       }
     };
     if (cookieObject) {
-      // if (cookieObject.hasOwnProperty('baseUrl')) {
-      //   this.setState({ baseUrl: cookieObject.baseUrl });
-      // }
-      // if (cookieObject.hasOwnProperty('flynnEnabled')) {
-      //   this.setState({ flynnEnabled: cookieObject.flynnEnabled });
-      // }
-
       // When adding new settings they need to go here
       updateIfExist('baseUrl');
       updateIfExist('flynnEnabled');
@@ -112,6 +118,7 @@ class Base extends Component {
       updateIfExist('flynnAngryAt');
       updateIfExist('flynnBloodyAt');
       updateIfExist('flynnCssScale');
+      updateIfExist('versionCheckDays');
     }
   }
 
@@ -127,7 +134,8 @@ class Base extends Component {
       flynnConcernedAt: settingsObject.flynnConcernedAt,
       flynnAngryAt: settingsObject.flynnAngryAt,
       flynnBloodyAt: settingsObject.flynnBloodyAt,
-      flynnCssScale: settingsObject.flynnCssScale
+      flynnCssScale: settingsObject.flynnCssScale,
+      versionCheckDays: settingsObject.versionCheckDays
     });
   }
 
@@ -352,7 +360,8 @@ class Base extends Component {
       flynnConcernedAt: this.state.flynnConcernedAt,
       flynnAngryAt: this.state.flynnAngryAt,
       flynnBloodyAt: this.state.flynnBloodyAt,
-      flynnCssScale: this.state.flynnCssScale
+      flynnCssScale: this.state.flynnCssScale,
+      versionCheckDays: this.state.versionCheckDays
     };
 
     let howManyServices = 0;
@@ -424,7 +433,10 @@ class Base extends Component {
           commentlist={this.state.commentlist}
         />
         
-        <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">Alert History: {this.state.alertlist.length}</div>
+        <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">
+        Alert History: {this.state.alertlist.length}
+        {' '}going back 24h max 5000 items
+        </div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
 

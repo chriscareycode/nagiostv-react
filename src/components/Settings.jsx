@@ -14,7 +14,8 @@ class Settings extends Component {
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
-    flynnCssScale: ''
+    flynnCssScale: '',
+    versionCheckDays: 0
   };
 
   constructor(props) {
@@ -32,7 +33,8 @@ class Settings extends Component {
       flynnConcernedAt: this.props.settings.flynnConcernedAt,
       flynnAngryAt: this.props.settings.flynnAngryAt,
       flynnBloodyAt: this.props.settings.flynnBloodyAt,
-      flynnCssScale: this.props.settings.flynnCssScale
+      flynnCssScale: this.props.settings.flynnCssScale,
+      versionCheckDays: this.props.settings.versionCheckDays
     })
   }
 
@@ -51,7 +53,8 @@ class Settings extends Component {
       flynnConcernedAt: this.state.flynnConcernedAt,
       flynnAngryAt: this.state.flynnAngryAt,
       flynnBloodyAt: this.state.flynnBloodyAt,
-      flynnCssScale: this.state.flynnCssScale
+      flynnCssScale: this.state.flynnCssScale,
+      versionCheckDays: this.state.versionCheckDays
     };
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
@@ -71,7 +74,7 @@ class Settings extends Component {
     //console.log(event.target.value);
 
     let val = '';
-    if (dataType === 'boolean') { val = (event.target.value == 'true'); }
+    if (dataType === 'boolean') { val = (event.target.value === 'true'); }
     else if (dataType === 'number') {
       val = parseInt(event.target.value, 10);
     } else {
@@ -93,13 +96,15 @@ class Settings extends Component {
             <div className="SettingsScroll">
               <span>Nagios cgi-bin path: </span>
               <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
-                <div className="Note">
+              <div className="Note" style={{ marginTop: '10px' }}>
                 This path needs to point to where the cgi files are being served by the Nagios web-ui.
-                If you are hosting NagiosTV on the same web server as the Nagios web-ui, then the default path will work without additional authentication.
+                If you are hosting NagiosTV on the same web server as the Nagios web-ui, then the default path will work without additional authentication.<br />
+                <br />
                 <div>More advanced: If you want to host NagiosTV on off-box then you would need to enter a proxy URL here which performs authentication for you and serves the cgi files.</div>
-                </div>
+              </div>
+
               <div style={{marginTop: '20px'}}>
-                  Flynn
+                  Flynn:{' '}
                   <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
                       <option value={true}>On</option>
                       <option value={false}>Off</option>
@@ -112,21 +117,32 @@ class Settings extends Component {
                 <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span>
               </div>
               
+              <div style={{ marginTop: '20px' }}>
+                New Version Check:{' '}
+                <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
+                    <option value={0}>Off</option>
+                    <option value={1}>1 day</option>
+                    <option value={7}>1 week</option>
+                    <option value={30}>1 month</option>
+                </select>
+              </div>
+
               <div style={{marginTop: '20px'}}>Settings coming soon:</div>
-              <div>Version Check: On/24h</div>
               <div>Update hosts/services every 15s</div>
               <div>Update alerts every 60s</div>
               <div>Alert History - variable time back, max # of items</div>
+              <div>Variable quiet time delay time</div>
 
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
                 {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
               </div>
+              <div className="SettingSave">
+                <button onClick={this.toggle}>Close Settings</button>
+              </div>
 
             </div>
-            <div className="SettingSave">
-              <button onClick={this.toggle}>[X] CLOSE</button>
-            </div>
+            
         </div>
       </div>
     );
