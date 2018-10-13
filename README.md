@@ -1,15 +1,10 @@
 # NagiosTV (for Nagios 4) React edition
 
-This is a version of NagiosTV for Nagios 4.x servers.
+NagiosTV is an alternate user interface (UI) for the Nagios open source monitoring system. This is a version of NagiosTV for Nagios 4.x servers.
 
-Nagios Core 4.0.7 and newer comes with new JSON CGI's
-https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
-out of the box which is a game changer for tapping into the Nagios data from a web application.
-No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
+This user interface is designed to be viewed on a TV or on your desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but an alternate way to look at the “what’s down?” part.
 
-NagiosTV
-------------
-Watch one or more Nagios servers on a wall mounted TV (or your desktop)
+This version adds Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
 
 New items slide in and out of place with animations.
 
@@ -49,6 +44,13 @@ Development Instructions
 - $ npm install
 - $ npm start
 - access your web server on the hostname and port shown, and you can start editing files
+
+History
+------------
+Nagios Core 4.0.7 and newer comes with new JSON CGI's
+https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
+out of the box which is a game changer for tapping into the Nagios data from a web application.
+No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
 
 Credits
 ------------
