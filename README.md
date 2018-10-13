@@ -1,4 +1,4 @@
-# NagiosTV (for Nagios 4) React edition
+# NagiosTV for Nagios 4 (React edition)
 
 NagiosTV is an alternate user interface (UI) for the Nagios open source monitoring system. This is a version of NagiosTV for Nagios 4.x servers.
 
