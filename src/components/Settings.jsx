@@ -10,7 +10,7 @@ class Settings extends Component {
     saveMessage: '',
 
     baseUrl: '',
-    flynnEnabled: true,
+    flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,

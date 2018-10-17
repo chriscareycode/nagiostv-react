@@ -18,8 +18,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 11,
-    currentVersionString: '0.2.0',
+    currentVersion: 12,
+    currentVersionString: '0.2.1',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -46,7 +46,7 @@ class Base extends Component {
     commentlist: {},
 
     // settings (defaults are set here also)
-    flynnEnabled: true,
+    flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
