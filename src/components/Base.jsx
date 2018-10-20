@@ -18,8 +18,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 12,
-    currentVersionString: '0.2.1',
+    currentVersion: 13,
+    currentVersionString: '0.2.2',
     latestVersion: 0,
     latestVersionString: '',
 
