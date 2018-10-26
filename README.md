@@ -45,6 +45,13 @@ Development Instructions
 - $ npm start
 - access your web server on the hostname and port shown, and you can start editing files
 
+Committing to this project
+------------
+- Fork the project
+- Create a feature branch and do your changes there
+- Push your feature branch up to origin
+- Submit a Pull Request
+
 History
 ------------
 Nagios Core 4.0.7 and newer comes with new JSON CGI's
