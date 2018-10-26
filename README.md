@@ -45,7 +45,7 @@ Development Instructions
 - $ npm start
 - access your web server on the hostname and port shown, and you can start editing files
 
-Committing to this project
+Development - Committing your changes to this project
 ------------
 - Fork the project
 - Create a feature branch and do your changes there
@@ -58,6 +58,10 @@ Nagios Core 4.0.7 and newer comes with new JSON CGI's
 https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
 out of the box which is a game changer for tapping into the Nagios data from a web application.
 No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
+
+Help
+------------
+Feel free to reach out to me for help! I'm happy to help you get this project installed and work through installation issues.
 
 Credits
 ------------
