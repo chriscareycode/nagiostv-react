@@ -7,15 +7,7 @@ class Settings extends Component {
 
   state = {
     open: false,
-    saveMessage: '',
-
-    baseUrl: '',
-    flynnEnabled: false,
-    flynnConcernedAt: 1,
-    flynnAngryAt: 4,
-    flynnBloodyAt: 8,
-    flynnCssScale: '',
-    versionCheckDays: 0
+    saveMessage: ''
   };
 
   constructor(props) {
@@ -23,19 +15,19 @@ class Settings extends Component {
 
     this.toggle = this.toggle.bind(this);
     this.saveCookie = this.saveCookie.bind(this);
+
+    // load the settingsFields into state
+    this.props.settingsFields.forEach(field => this.state[field] = this.props.settings[field]);
   }
 
   loadLocalStateFromProps() {
     console.log('loadLocalStateFromProps()', this.props.settings);
+
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.props.settings[field]);
     this.setState({
-      baseUrl: this.props.settings.baseUrl,
-      flynnEnabled: this.props.settings.flynnEnabled,
-      flynnConcernedAt: this.props.settings.flynnConcernedAt,
-      flynnAngryAt: this.props.settings.flynnAngryAt,
-      flynnBloodyAt: this.props.settings.flynnBloodyAt,
-      flynnCssScale: this.props.settings.flynnCssScale,
-      versionCheckDays: this.props.settings.versionCheckDays
-    })
+      ...settingsObject
+    });
   }
 
   toggle() {
@@ -47,15 +39,8 @@ class Settings extends Component {
   }
 
   saveCookie() {
-    const cookieObject = {
-      baseUrl: this.state.baseUrl,
-      flynnEnabled: this.state.flynnEnabled,
-      flynnConcernedAt: this.state.flynnConcernedAt,
-      flynnAngryAt: this.state.flynnAngryAt,
-      flynnBloodyAt: this.state.flynnBloodyAt,
-      flynnCssScale: this.state.flynnCssScale,
-      versionCheckDays: this.state.versionCheckDays
-    };
+    const cookieObject = {};
+    this.props.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
     this.props.updateStateFromSettings(cookieObject);
@@ -130,7 +115,10 @@ class Settings extends Component {
               <div style={{marginTop: '20px'}}>Settings coming soon:</div>
               <div>Update hosts/services every 15s</div>
               <div>Update alerts every 60s</div>
-              <div>Alert History - variable time back, max # of items</div>
+              <div>
+                <div>Alert History Days Back <input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></div>
+                <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
+              </div>
               <div>Variable quiet time delay time</div>
 
               <div style={{marginTop: '20px'}}>

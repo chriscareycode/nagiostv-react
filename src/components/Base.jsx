@@ -13,6 +13,7 @@ class Base extends Component {
 
   state = {
     baseUrl: '/nagios/cgi-bin/',
+
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
 
@@ -40,6 +41,9 @@ class Base extends Component {
     alertlistLastUpdate: 0,
     alertlist: [],
 
+    alertDaysBack: 30,
+    alertMaxItems: 501,
+
     commentlistError: false,
     commentlistErrorMessage: '',
     commentlistLastUpdate: 0,
@@ -51,6 +55,7 @@ class Base extends Component {
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
     flynnCssScale: '1',
+
     versionCheckDays: 1
   };
 
@@ -95,6 +100,18 @@ class Base extends Component {
     }, 2000);
   }
 
+  settingsFields = [
+    'baseUrl',
+    'flynnEnabled',
+    'flynnConcernedAt',
+    'flynnAngryAt',
+    'flynnBloodyAt',
+    'flynnCssScale',
+    'versionCheckDays',
+    'alertDaysBack',
+    'alertMaxItems'
+  ];
+
   getCookie() {
     const cookie = Cookie.get('settings');
     let cookieObject = {};
@@ -111,14 +128,7 @@ class Base extends Component {
       }
     };
     if (cookieObject) {
-      // When adding new settings they need to go here
-      updateIfExist('baseUrl');
-      updateIfExist('flynnEnabled');
-      updateIfExist('flynnConcernedAt');
-      updateIfExist('flynnAngryAt');
-      updateIfExist('flynnBloodyAt');
-      updateIfExist('flynnCssScale');
-      updateIfExist('versionCheckDays');
+      this.settingsFields.forEach(setting => updateIfExist(setting));
     }
   }
 
@@ -126,16 +136,9 @@ class Base extends Component {
   //   Cookie.set('baseUrl', this.state.baseUrl);
   // }
 
-  // When adding new settings they need to go here
   updateStateFromSettings(settingsObject) {
     this.setState({
-      baseUrl: settingsObject.baseUrl,
-      flynnEnabled: settingsObject.flynnEnabled,
-      flynnConcernedAt: settingsObject.flynnConcernedAt,
-      flynnAngryAt: settingsObject.flynnAngryAt,
-      flynnBloodyAt: settingsObject.flynnBloodyAt,
-      flynnCssScale: settingsObject.flynnCssScale,
-      versionCheckDays: settingsObject.versionCheckDays
+      ...settingsObject
     });
   }
 
@@ -243,8 +246,9 @@ class Base extends Component {
   }
 
   fetchAlertData() {
-    const url = this.state.baseUrl + 'archivejson.cgi?query=alertlist&starttime=-200000&endtime=%2B0';
-
+    const starttime = this.state.alertDaysBack * 60 * 60 * 24;
+    const url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+    //console.log('url', url);
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
       //console.log('fetchAlertData() ajax success');
       //console.log(myJson);
@@ -261,8 +265,15 @@ class Base extends Component {
         });
         return;
       }
+
       // Make an array from the object
       const alertlist = myJson.data.alertlist.reverse();
+
+      // trim
+      if (alertlist.length > this.state.alertMaxItems) {
+        alertlist.length = this.state.alertMaxItems;
+      }
+
       this.setState({
         alertlistError: false,
         alertlistErrorMessage: '',
@@ -352,17 +363,8 @@ class Base extends Component {
   }
 
   render() {
-  
-    // When adding new settings they need to go here
-    const settingsObject = {
-      baseUrl: this.state.baseUrl,
-      flynnEnabled: this.state.flynnEnabled,
-      flynnConcernedAt: this.state.flynnConcernedAt,
-      flynnAngryAt: this.state.flynnAngryAt,
-      flynnBloodyAt: this.state.flynnBloodyAt,
-      flynnCssScale: this.state.flynnCssScale,
-      versionCheckDays: this.state.versionCheckDays
-    };
+    const settingsObject = {};
+    this.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
     let howManyServices = 0;
     if (this.state.servicelist) {
@@ -377,6 +379,7 @@ class Base extends Component {
           baseUrl={this.state.baseUrl}
           baseUrlChanged={this.baseUrlChanged.bind(this)}
           settings={settingsObject}
+          settingsFields={this.settingsFields}
           updateStateFromSettings={this.updateStateFromSettings.bind(this)}
         />
 
@@ -435,7 +438,7 @@ class Base extends Component {
         
         <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">
         Alert History: {this.state.alertlist.length}
-        {' '}going back 24h max 5000 items
+        {' '} - going back {this.state.alertDaysBack} days, max {this.state.alertMaxItems} items
         </div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
