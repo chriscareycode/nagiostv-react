@@ -28,7 +28,7 @@ class AlertItems extends Component {
     return (
       <div className="AlertItems">
         {/* always show one quiet for (if we have at least 1 item) */}
-        {this.props.items.length > 1 && <QuietFor nowtime={new Date().getTime()} prevtime={this.props.items[0].timestamp} />}
+        {this.props.items.length > 1 && <QuietFor first nowtime={new Date().getTime()} prevtime={this.props.items[0].timestamp} />}
         {/* loop through the items */}
         {this.props.items.map((e, i) => {
           const host = (e.object_type === 1 ? e.name : e.host_name);

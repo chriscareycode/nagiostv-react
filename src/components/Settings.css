@@ -77,6 +77,10 @@
     padding: 5px 10px;
     
 }
+.SettingSaveMessage {
+    margin-left: 20px;
+    display: inline-block;
+}
 .SettingsSaveButton {
     background-color: #333;
     color: lime;
@@ -84,4 +88,11 @@
     font-weight: bold;
     border: 2px solid green;
     padding: 5px 10px;
+}
+.SettingsSection {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    background-color: #444;
 }

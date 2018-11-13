@@ -19,8 +19,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 13,
-    currentVersionString: '0.2.2',
+    currentVersion: 14,
+    currentVersionString: '0.2.3beta',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -41,8 +41,8 @@ class Base extends Component {
     alertlistLastUpdate: 0,
     alertlist: [],
 
-    alertDaysBack: 30,
-    alertMaxItems: 501,
+    alertDaysBack: 7,
+    alertMaxItems: 1000,
 
     commentlistError: false,
     commentlistErrorMessage: '',
@@ -402,8 +402,8 @@ class Base extends Component {
         <div className="FooterArea">
             
           <div>
-            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
+            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
             <span>Version: <span className="color-orange">{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> - <span className="color-green">Update {this.state.latestVersionString} available</span></span>}
           </div>
@@ -423,7 +423,7 @@ class Base extends Component {
           commentlist={this.state.commentlist}
         />
 
-        <div style={{ marginTop: '10px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
+        <div style={{ marginTop: '20px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
 
@@ -436,9 +436,8 @@ class Base extends Component {
           commentlist={this.state.commentlist}
         />
         
-        <div style={{ marginTop: '10px' }} className="color-orange margin-top-10">
+        <div style={{ marginTop: '20px' }} className="color-orange margin-top-10">
         Alert History: {this.state.alertlist.length}
-        {' '} - going back {this.state.alertDaysBack} days, max {this.state.alertMaxItems} items
         </div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}

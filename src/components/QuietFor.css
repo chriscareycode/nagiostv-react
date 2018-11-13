@@ -7,3 +7,9 @@
 	border-radius: 5px;
 	font-size: 1.3em;
 }
+.QuietForStars {
+	float: right;
+}
+.QuietForClock {
+	margin-right: 5px;
+}

@@ -45,7 +45,7 @@ class Settings extends Component {
     console.log('Saved cookie', cookieObject);
     this.props.updateStateFromSettings(cookieObject);
 
-    this.setState({ saveMessage: 'Settings saved.' });
+    this.setState({ saveMessage: 'Settings saved' });
     setTimeout(() => {
         this.setState({ saveMessage: '' });
     }, 3000);
@@ -79,30 +79,42 @@ class Settings extends Component {
         <div className="SettingsBig">
             <h2>Settings</h2>
             <div className="SettingsScroll">
-              <span>Nagios cgi-bin path: </span>
-              <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
-              <div className="Note" style={{ marginTop: '10px' }}>
-                This path needs to point to where the cgi files are being served by the Nagios web-ui.
-                If you are hosting NagiosTV on the same web server as the Nagios web-ui, then the default path will work without additional authentication.<br />
-                <br />
-                <div>More advanced: If you want to host NagiosTV on off-box then you would need to enter a proxy URL here which performs authentication for you and serves the cgi files.</div>
+
+              <div className="SettingsSection">
+                <span>Nagios cgi-bin path: </span>
+                <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
+                <div className="Note" style={{ marginTop: '10px' }}>
+                  This path needs to point to where the cgi files are being served by the Nagios web user interface.
+                  If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path /nagios/cgi-bin/ should work without additional authentication.<br />
+                  <br />
+                  <div>More advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</div>
+                </div>
               </div>
 
-              <div style={{marginTop: '20px'}}>
-                  Flynn:{' '}
-                  <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
-                      <option value={true}>On</option>
-                      <option value={false}>Off</option>
-                  </select>
+              <div className="SettingsSection">
+                <div>Alert History Days Back <input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></div>
+                <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
               </div>
-              <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /></div>
-              <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /></div>
-              <div>
-                Flynn CSS scale <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
-                <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span>
+
+              <div className="SettingsSection">
+                <div>
+                    Flynn:{' '}
+                    <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
+                        <option value={true}>On</option>
+                        <option value={false}>Off</option>
+                    </select>
+                </div>
+                {this.state.flynnEnabled && <div>
+                  <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /></div>
+                  <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /></div>
+                  <div>
+                    Flynn CSS scale <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                    <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span>
+                  </div>
+                </div>}
               </div>
               
-              <div style={{ marginTop: '20px' }}>
+              <div className="SettingsSection">
                 New Version Check:{' '}
                 <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
                     <option value={0}>Off</option>
@@ -112,18 +124,9 @@ class Settings extends Component {
                 </select>
               </div>
 
-              <div style={{marginTop: '20px'}}>Settings coming soon:</div>
-              <div>Update hosts/services every 15s</div>
-              <div>Update alerts every 60s</div>
-              <div>
-                <div>Alert History Days Back <input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></div>
-                <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
-              </div>
-              <div>Variable quiet time delay time</div>
-
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
-                {this.state.saveMessage && <span className="color-green">{this.state.saveMessage}</span>}
+                {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}
               </div>
               <div className="SettingSave">
                 <button onClick={this.toggle}>Close Settings</button>
