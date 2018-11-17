@@ -182,7 +182,7 @@ class Base extends Component {
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (hours >= 6) {
+      if (hours >= 1) {
         this.setState({
           servicelistError: true,
           servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
@@ -247,7 +247,7 @@ class Base extends Component {
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (hours >= 6) {
+      if (hours >= 1) {
         this.setState({
           hostlistError: true,
           hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
