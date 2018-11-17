@@ -8,6 +8,7 @@ import Cookie from 'js-cookie';
 import $ from 'jquery';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
+import moment from 'moment';
 
 class Base extends Component {
 
@@ -19,8 +20,8 @@ class Base extends Component {
 
     showSettings: false,
 
-    currentVersion: 14,
-    currentVersionString: '0.2.3beta',
+    currentVersion: 13,
+    currentVersionString: '0.2.2',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -148,10 +149,10 @@ class Base extends Component {
     //console.log('Requesting Service Data: ' + url);
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('fetchServiceData() ajax success');
-      //console.log(myJson);
-      //console.log(textStatus);
-      //console.log(jqXHR);
+      // console.log('fetchServiceData() ajax success');
+      // console.log(myJson);
+      // console.log(textStatus);
+      // console.log(jqXHR);
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -177,13 +178,28 @@ class Base extends Component {
         });
       }
 
-      this.setState({
-        servicelistError: false,
-        servicelistErrorMessage: '',
-        servicelistLastUpdate: new Date().getTime(),
-        servicelist,
-        serviceProblemsArray: serviceProblemsArray
-      });
+      // check for old data (nagios down?)
+      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+      const hours = duration.asHours().toFixed(1);
+
+      if (hours >= 6) {
+        this.setState({
+          servicelistError: true,
+          servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+          servicelistLastUpdate: new Date().getTime(),
+          servicelist,
+          serviceProblemsArray: serviceProblemsArray
+        });
+      } else {
+        this.setState({
+          servicelistError: false,
+          servicelistErrorMessage: '',
+          servicelistLastUpdate: new Date().getTime(),
+          servicelist,
+          serviceProblemsArray: serviceProblemsArray
+        });
+      }
+        
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       console.log('fetchServiceData() ajax fail');
@@ -227,13 +243,27 @@ class Base extends Component {
         });
       }
 
-      this.setState({
-        hostlistError: false,
-        hostlistErrorMessage: '',
-        hostlistLastUpdate: new Date().getTime(),
-        hostlist,
-        hostProblemsArray: hostProblemsArray
-      });
+      // check for old data (nagios down?)
+      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+      const hours = duration.asHours().toFixed(1);
+
+      if (hours >= 6) {
+        this.setState({
+          hostlistError: true,
+          hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+          hostlistLastUpdate: new Date().getTime(),
+          hostlist,
+          hostProblemsArray: hostProblemsArray
+        });
+      } else {
+        this.setState({
+          hostlistError: false,
+          hostlistErrorMessage: '',
+          hostlistLastUpdate: new Date().getTime(),
+          hostlist,
+          hostProblemsArray: hostProblemsArray
+        });
+      }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       //console.log('ajax fail');
@@ -414,7 +444,7 @@ class Base extends Component {
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
 
-        {!this.state.hostlistError && this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="color-green AllOkItem">
+        {this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="color-green AllOkItem">
           All {Object.keys(this.state.hostlist).length} hosts are UP
         </div>}
 
@@ -427,7 +457,7 @@ class Base extends Component {
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
 
-        {!this.state.servicelistError && this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
+        {this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           All {howManyServices} services are OK
         </div>}
 
