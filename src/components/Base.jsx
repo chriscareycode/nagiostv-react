@@ -13,11 +13,6 @@ import moment from 'moment';
 class Base extends Component {
 
   state = {
-    baseUrl: '/nagios/cgi-bin/',
-
-    fetchFrequency: 15, // seconds
-    fetchAlertFrequency: 60, // seconds
-
     showSettings: false,
 
     currentVersion: 13,
@@ -42,22 +37,29 @@ class Base extends Component {
     alertlistLastUpdate: 0,
     alertlist: [],
 
-    alertDaysBack: 7,
-    alertMaxItems: 1000,
-
     commentlistError: false,
     commentlistErrorMessage: '',
     commentlistLastUpdate: 0,
     commentlist: {},
 
     // settings (defaults are set here also)
+    baseUrl: '/nagios/cgi-bin/',
+
+    fetchFrequency: 15, // seconds
+    fetchAlertFrequency: 60, // seconds
+
+    alertDaysBack: 7,
+    alertMaxItems: 1000,
+
     flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
     flynnCssScale: '1',
 
-    versionCheckDays: 1
+    versionCheckDays: 1,
+
+    showEmoji: false
   };
 
   componentDidMount() {
@@ -110,7 +112,8 @@ class Base extends Component {
     'flynnCssScale',
     'versionCheckDays',
     'alertDaysBack',
-    'alertMaxItems'
+    'alertMaxItems',
+    'showEmoji'
   ];
 
   getCookie() {
@@ -476,7 +479,7 @@ class Base extends Component {
           No alerts
         </div>}
 
-        <AlertItems items={this.state.alertlist} />
+        <AlertItems items={this.state.alertlist} showEmoji={this.state.showEmoji} />
 
         <br />
         <br />

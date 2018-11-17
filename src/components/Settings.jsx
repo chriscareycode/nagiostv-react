@@ -21,7 +21,7 @@ class Settings extends Component {
   }
 
   loadLocalStateFromProps() {
-    console.log('loadLocalStateFromProps()', this.props.settings);
+    //console.log('loadLocalStateFromProps()', this.props.settings);
 
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.props.settings[field]);
@@ -121,6 +121,14 @@ class Settings extends Component {
                     <option value={1}>1 day</option>
                     <option value={7}>1 week</option>
                     <option value={30}>1 month</option>
+                </select>
+              </div>
+
+              <div className="SettingsSection">
+                Show Emojis:{' '}
+                <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
                 </select>
               </div>
 

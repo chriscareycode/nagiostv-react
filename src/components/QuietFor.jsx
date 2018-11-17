@@ -75,7 +75,7 @@ class QuietFor extends Component {
   	//console.log('quietFor render');
     return (
       <div className="QuietFor">
-      	<div className="QuietForStars">{stars(this.props.nowtime, this.props.prevtime, this.props.first)}</div>
+      	{this.props.showEmoji && <div className="QuietForStars">{stars(this.props.nowtime, this.props.prevtime, this.props.first)}</div>}
       	{this.props.first && <span className="QuietForClock">⏱</span>}
       	Quiet for {quietForText(this.props.nowtime, this.props.prevtime)}
       	{/* - {' '}
