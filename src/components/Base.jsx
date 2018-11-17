@@ -42,25 +42,35 @@ class Base extends Component {
     commentlistLastUpdate: 0,
     commentlist: {},
 
-    // settings (defaults are set here also)
-    baseUrl: '/nagios/cgi-bin/',
-
+    // add to settings?
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
-
+    
+    // settings (defaults are set here also)
+    baseUrl: '/nagios/cgi-bin/',
+    versionCheckDays: 1,
     alertDaysBack: 7,
     alertMaxItems: 1000,
-
     flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
     flynnCssScale: '1',
-
-    versionCheckDays: 1,
-
     showEmoji: false
   };
+
+  settingsFields = [
+    'baseUrl',
+    'versionCheckDays',
+    'alertDaysBack',
+    'alertMaxItems',
+    'flynnEnabled',
+    'flynnConcernedAt',
+    'flynnAngryAt',
+    'flynnBloodyAt',
+    'flynnCssScale',
+    'showEmoji'
+  ];
 
   componentDidMount() {
     this.getCookie();
@@ -103,18 +113,7 @@ class Base extends Component {
     }, 2000);
   }
 
-  settingsFields = [
-    'baseUrl',
-    'flynnEnabled',
-    'flynnConcernedAt',
-    'flynnAngryAt',
-    'flynnBloodyAt',
-    'flynnCssScale',
-    'versionCheckDays',
-    'alertDaysBack',
-    'alertMaxItems',
-    'showEmoji'
-  ];
+
 
   getCookie() {
     const cookie = Cookie.get('settings');
@@ -127,7 +126,7 @@ class Base extends Component {
     }
     const updateIfExist = (prop) => {
       if (cookieObject.hasOwnProperty(prop)) {
-        console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+        //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
         this.setState({ [prop]: cookieObject[prop] });
       }
     };

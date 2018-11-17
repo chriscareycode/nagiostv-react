@@ -42,7 +42,7 @@ class Settings extends Component {
     const cookieObject = {};
     this.props.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
     Cookie.set('settings', cookieObject);
-    console.log('Saved cookie', cookieObject);
+    //console.log('Saved cookie', cookieObject);
     this.props.updateStateFromSettings(cookieObject);
 
     this.setState({ saveMessage: 'Settings saved' });
