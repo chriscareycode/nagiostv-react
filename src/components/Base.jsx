@@ -374,7 +374,7 @@ class Base extends Component {
   }
 
   versionCheck() {
-    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/';
+    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
     fetch(url)
       .then((response) => {
         //console.log(response);
