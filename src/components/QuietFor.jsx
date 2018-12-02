@@ -12,7 +12,7 @@ class QuietFor extends Component {
 
         // calculate days, hours, minutes, seconds
         // get total seconds between the times
-        let delta = (Math.abs(date_future - date_now) / 1000).toFixed(0);
+        let delta = Math.abs(date_future - date_now) / 1000;
 
         // calculate (and subtract) whole days
         const days = Math.floor(delta / 86400);
@@ -46,7 +46,7 @@ class QuietFor extends Component {
 
     const stars = (date_now, date_future, first) => {
         const duration = moment.duration(date_future - date_now );
-        const hours = duration.asHours().toFixed(0);
+        const hours = Math.floor(duration.asHours());
         let ret = '';
         if (hours > 24) { // max out at 24
             ret += '❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️';
