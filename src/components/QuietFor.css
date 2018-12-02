@@ -1,7 +1,7 @@
 .QuietFor {
 	color: lime;
 	padding: 8px 8px;
-	margin: 15px 0px;
+	margin: 20px 0px;
 	text-align: left;
 	background-color: #222;
 	border-radius: 5px;
@@ -9,6 +9,7 @@
 }
 .QuietForStars {
 	float: right;
+	opacity: 0.4;
 }
 .QuietForClock {
 	margin-right: 5px;
