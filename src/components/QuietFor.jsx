@@ -5,6 +5,16 @@ import './QuietFor.css';
 //import { prettyDateTime } from '../helpers/moment.js';
 
 class QuietFor extends Component {
+
+  shouldComponentUpdate(nextProps, nextState) {
+    //console.log('shouldComponentUpdate', nextProps, nextState);
+    if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   render() {
     const quietForText = (date_now, date_future) => {
         //var diff = date_now - date_future;
@@ -13,6 +23,7 @@ class QuietFor extends Component {
         // calculate days, hours, minutes, seconds
         // get total seconds between the times
         let delta = Math.abs(date_future - date_now) / 1000;
+        //console.log('QuietFor render() delta', delta);
 
         // calculate (and subtract) whole days
         const days = Math.floor(delta / 86400);
@@ -46,7 +57,7 @@ class QuietFor extends Component {
 
     const stars = (date_now, date_future, first) => {
         const duration = moment.duration(date_future - date_now );
-        const hours = Math.floor(duration.asHours());
+        const hours = Math.abs(Math.floor(duration.asHours()));
         let ret = '';
         if (hours > 24) { // max out at 24
             ret += '❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️';
@@ -63,7 +74,7 @@ class QuietFor extends Component {
     //console.log('quietFor render');
     return (
       <div className="QuietFor">
-        {this.props.showEmoji && <div className="QuietForStars">{stars(this.props.nowtime, this.props.prevtime, this.props.first)}</div>}
+        {this.props.showEmoji && <div className="QuietForStars">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>}
         <span className="QuietForClock">⏱</span>
         Quiet for {quietForText(this.props.nowtime, this.props.prevtime)}
         {/* - {' '}
