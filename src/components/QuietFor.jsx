@@ -12,7 +12,7 @@ class QuietFor extends Component {
 
         // calculate days, hours, minutes, seconds
         // get total seconds between the times
-        let delta = Math.abs(date_future - date_now) / 1000;
+        let delta = (Math.abs(date_future - date_now) / 1000).toFixed(0);
 
         // calculate (and subtract) whole days
         const days = Math.floor(delta / 86400);
