@@ -15,8 +15,8 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 13,
-    currentVersionString: '0.2.2',
+    currentVersion: 14,
+    currentVersionString: '0.2.3',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -98,7 +98,7 @@ class Base extends Component {
     // this is not super clean but I'm going to delay this by 2s to give the setState() in the getCookie()
     // time to complete. It's async so we could have a race condition getting the version check setting
     // to arrive in this.state.versionCheckDays
-    // I want to default to having version check on, but if someone turns it off, it should never check
+    // if someone turns off the version check, it should never check
     setTimeout(() => {
       // version check - run once on app boot
       if (this.state.versionCheckDays > 0) {
@@ -120,9 +120,9 @@ class Base extends Component {
     let cookieObject = {};
     try {
       cookieObject = JSON.parse(cookie);
-      console.log('Got coookie', cookieObject);
+      //console.log('Got coookie', cookieObject);
     } catch (e) {
-      console.log('No cookie');
+      //console.log('No cookie');
     }
     const updateIfExist = (prop) => {
       if (cookieObject.hasOwnProperty(prop)) {
@@ -135,10 +135,7 @@ class Base extends Component {
     }
   }
 
-  // setCookie() {
-  //   Cookie.set('baseUrl', this.state.baseUrl);
-  // }
-
+  // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
   updateStateFromSettings(settingsObject) {
     this.setState({
       ...settingsObject

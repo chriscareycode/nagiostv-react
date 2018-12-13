@@ -98,6 +98,20 @@ class Settings extends Component {
                 <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
               </div>
 
+              
+              
+              <div className="SettingsSection">
+                New Version Check:{' '}
+                <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
+                    <option value={0}>Off</option>
+                    <option value={1}>1 day</option>
+                    <option value={7}>1 week</option>
+                    <option value={30}>1 month</option>
+                </select>
+              </div>
+
+              <h5>Fun Stuff</h5>
+
               <div className="SettingsSection">
                 <div>
                     Flynn:{' '}
@@ -115,16 +129,6 @@ class Settings extends Component {
                   </div>
                 </div>}
               </div>
-              
-              <div className="SettingsSection">
-                New Version Check:{' '}
-                <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
-                    <option value={0}>Off</option>
-                    <option value={1}>1 day</option>
-                    <option value={7}>1 week</option>
-                    <option value={30}>1 month</option>
-                </select>
-              </div>
 
               <div className="SettingsSection">
                 Show Emojis:{' '}
@@ -133,6 +137,8 @@ class Settings extends Component {
                     <option value={false}>Off</option>
                 </select>
               </div>
+
+              <h5>Save and Close</h5>
 
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>

@@ -29,6 +29,7 @@
     top: 0;
     left: 0;
     text-align: center;
+    cursor: pointer;
 }
 .SettingsBox > .SettingsSmall > img {
     height: 40px;
@@ -75,7 +76,8 @@
     font-weight: bold;
     border: 2px solid red;
     padding: 5px 10px;
-    
+    cursor: pointer;
+
 }
 .SettingSaveMessage {
     margin-left: 20px;
@@ -88,6 +90,7 @@
     font-weight: bold;
     border: 2px solid green;
     padding: 5px 10px;
+    cursor: pointer;
 }
 .SettingsSection {
     border: 1px solid #eee;
@@ -95,4 +98,7 @@
     padding: 5px;
     margin-bottom: 10px;
     background-color: #444;
+}
+.SettingsSection button {
+    
 }
