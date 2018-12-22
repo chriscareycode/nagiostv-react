@@ -1,14 +1,18 @@
 .ServiceItems {
-  /*margin-top: 10px;*/
-  border: 1px solid yellow;
+
 }
 
 .ServiceItem {
+  
+}
+
+.ServiceItemBorder {
   border: 1px solid gray;
   font-size: 1.0em;
-  /*padding: 4px;*/
+  padding: 4px;
   border-radius: 5px;
-  /*margin-bottom: 7px;*/
+  margin-bottom: 8px;
+  margin-top: 0px;
 }
 
 .lastOk {
@@ -79,4 +83,5 @@
 }
 .color-comment {
   color: #88c1ff;
+  color: #00d8ff; /* blueish */
 }

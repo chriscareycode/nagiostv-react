@@ -61,33 +61,37 @@ class ServiceItem extends Component {
             });
 
             return (
-              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${serviceBorderClass(e.status)}`}>
-                {e.status}
-                <div style={{ float: 'right', textAlign: 'right' }}>
-                  {nagiosStateType(e.state_type)}{' '}
-                  <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
-                  {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
-                  {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                  <div><span className="lastOk">Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
+              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem`}>
+                <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
+                  {/* e.status */}
+                  <div style={{ float: 'right', textAlign: 'right' }}>
+                    {nagiosStateType(e.state_type)}{' '}
+                    <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
+                    {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
+                    {e.is_flapping && <span className="color-orange">FLAPPING</span>}
+                    <div><span className="lastOk">Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
+                  </div>
+
+                  <div style={{ textAlign: 'left' }}>
+                    <strong>{e.host_name}</strong>{' - '}
+                    <span className={serviceTextClass(e.status)}>
+                      <span className="color-orange">{e.description}</span>{' - '}
+                      {e.plugin_output}
+                    </span>
+                  </div>
+
+                  <div style={{ textAlign: 'left', fontSize: '0.9em', marginBottom: '2px' }}>
+                    Last check was <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+                    Next check in: <span className="color-peach">{formatDateTime(e.next_check)}</span>
+                  </div>
+
+                  {e.problem_has_been_acknowledged && <span className="color-green" style={{ marginRight: '5px' }}>ACKED</span>}
+
+                  {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
+                    Comment: <span className="color-comment">({comment_author}): {formatDateTimeAgo(comment_entry_time)} ago - {comment}</span>
+                  </span>}
+
                 </div>
-
-                <div style={{ textAlign: 'left' }}>
-                  <strong>{e.host_name}</strong>{' - '}
-                  <span className={serviceTextClass(e.status)}>
-                    <span className="color-orange">{e.description}</span>{' - '}
-                    {e.plugin_output}
-                  </span>
-                </div>
-
-                <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
-                  Last check was <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
-                  Next check in: <span className="color-peach">{formatDateTime(e.next_check)}</span>
-                </div>
-
-                {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
-                  Comment: <span className="color-comment">({comment_author}): {formatDateTimeAgo(comment_entry_time)} ago - {comment}</span>
-                </div>}
-
               </div>
             );
             

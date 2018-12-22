@@ -15,8 +15,8 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 14,
-    currentVersionString: '0.2.3',
+    currentVersion: 15,
+    currentVersionString: '0.2.4',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -128,9 +128,15 @@ class Base extends Component {
       }
       // version check - run every n days
       if (this.state.versionCheckDays > 0) {
-        setInterval(() => {
-          this.versionCheck();
-        }, this.state.versionCheckDays * 24 * 60 * 60 * 1000);
+        const intervalTime = this.state.versionCheckDays * 24 * 60 * 60 * 1000;
+        // safety check that interval > 1hr
+        if (intervalTime > (60 * 60 * 1000)) {
+          setInterval(() => {
+            this.versionCheck();
+          }, intervalTime);
+        } else {
+          console.log('Invalid versionCheckDays. Not starting check interval.');
+        }
       }
     }, 2000);
   }
@@ -422,23 +428,23 @@ class Base extends Component {
   }
 
   handleChange = (propName, dataType) => (event) => {
-    console.log('handleChange new');
-    console.log(propName, dataType);
-    console.log('value', event.target.value);
-    console.log('checked', event.target.checked);
+    //console.log('handleChange new');
+    //console.log(propName, dataType);
+    //console.log('value', event.target.value);
+    //console.log('checked', event.target.checked);
 
     let val = '';
-    if (dataType === 'boolean') { val = (event.target.value === 'true'); }
-    else if (dataType === 'checkbox') {
+    if (dataType === 'checkbox') {
       val = (!event.target.checked);
-    } else if (dataType === 'number') {
-      val = parseInt(event.target.value, 10);
     } else {
       val = event.target.value;
     }
+    // Save to state
     this.setState({
       [propName]: val
     });
+    // TODO: Save to cookie
+
   }
 
   render() {
@@ -538,19 +544,36 @@ class Base extends Component {
           commentlist={this.state.commentlist}
         />
 
-        <div style={{ marginTop: '20px' }} className="color-orange">
-          <strong>{howManyServices}</strong> services{' '}
-          {this.state.serviceProblemsArray.length} Service Problems{' '}
-          <input type="checkbox" defaultChecked={!this.state.hideServiceWarning} onChange={this.handleChange('hideServiceWarning', 'checkbox')} />
-          <strong>{howManyServiceWarning}</strong> WARNING{' '}
-          <input type="checkbox" defaultChecked={!this.state.hideServiceUnknown} onChange={this.handleChange('hideServiceUnknown', 'checkbox')} />
-          <strong>{howManyServiceUnknown}</strong> UNKNOWN{' '}
-          <input type="checkbox" defaultChecked={!this.state.hideServiceCritical} onChange={this.handleChange('hideServiceCritical', 'checkbox')} />
-          <strong>{howManyServiceCritical}</strong> CRITICAL{' '}
-          <input type="checkbox" defaultChecked={!this.state.hideServiceAcked} onChange={this.handleChange('hideServiceAcked', 'checkbox')} />
-          <strong>{howManyServiceAcked}</strong> ACKED{' '}
-          <input type="checkbox" defaultChecked={!this.state.hideServiceScheduled} onChange={this.handleChange('hideServiceScheduled', 'checkbox')} />
-          <strong>{howManyServiceDowntime}</strong> SCHEDULED
+        <div className="service-summary color-orange">
+          
+          <strong>{howManyServices}</strong> services{' - '}
+          <strong>{this.state.serviceProblemsArray.length}</strong> service problems{' '}
+          
+          <div className="service-hide-problems">
+            <label className="warning" onClick={this.handleChange('hideServiceWarning', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideServiceWarning}  />
+              <strong>{howManyServiceWarning}</strong> WARNING
+            </label>{' '}
+            <label className="unknown" onClick={this.handleChange('hideServiceUnknown', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideServiceUnknown} />
+              <strong>{howManyServiceUnknown}</strong> UNKNOWN
+            </label>{' '}
+            
+            <label className="critical" onClick={this.handleChange('hideServiceCritical', 'checkbox')}>  
+              <input type="checkbox" defaultChecked={!this.state.hideServiceCritical} />
+              <strong>{howManyServiceCritical}</strong> CRITICAL
+            </label>{' '}
+
+            <label className="acked" onClick={this.handleChange('hideServiceAcked', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideServiceAcked} />
+              <strong>{howManyServiceAcked}</strong> ACKED
+            </label>{' '}
+            
+            <label className="scheduled" onClick={this.handleChange('hideServiceScheduled', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideServiceScheduled} />
+              <strong>{howManyServiceDowntime}</strong> SCHEDULED
+            </label>
+          </div>
         </div>
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}

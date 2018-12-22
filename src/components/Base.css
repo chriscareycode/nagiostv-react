@@ -89,3 +89,45 @@ input[type=text] {
   right: 18px;
   z-index: 11;
 }
+
+.service-summary {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.service-hide-problems {
+  float: right;
+}
+.service-hide-problems label {
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 3px 7px;
+  background-color: rgba(250, 250, 250, 0.3);
+}
+.service-hide-problems label > input[type=checkbox] {
+  margin-left: 3px;
+  margin-right: 6px;
+  font-size: 1em;
+  position: relative;
+  top: -1px;
+}
+.service-hide-problems label.warning {
+  border: 0px solid yellow;
+  background-color: #585804;
+  color: yellow;
+}
+.service-hide-problems label.unknown {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}
+.service-hide-problems label.critical {
+  border: 0px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.service-hide-problems label.acked {
+  border: 0px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+}
+.service-hide-problems label.scheduled {
+  border: 0px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+}
