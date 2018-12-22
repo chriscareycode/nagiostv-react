@@ -138,8 +138,6 @@ class Settings extends Component {
                 </select>
               </div>
 
-              <h5>Save and Close</h5>
-
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
                 {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}

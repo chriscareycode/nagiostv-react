@@ -51,6 +51,17 @@ class Base extends Component {
     versionCheckDays: 1,
     alertDaysBack: 7,
     alertMaxItems: 1000,
+    // optionally hide some items
+    hideAckedProblems: false,
+    hideDowntimeProblems: false,
+
+    hideServiceWarning: false,
+    hideServiceUnknown: false,
+    hideServiceCritical: false,
+    hideServiceAcked: false,
+    hideServiceScheduled: false,
+
+    // fun stuff
     flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
@@ -64,6 +75,17 @@ class Base extends Component {
     'versionCheckDays',
     'alertDaysBack',
     'alertMaxItems',
+    // optionally hide some items
+    'hideAckedProblems',
+    'hideDowntimeProblems',
+
+    'hideServiceWarning',
+    'hideServiceUnknown',
+    'hideServiceCritical',
+    'hideServiceAcked',
+    'hideServiceScheduled',
+
+    // fun stuff
     'flynnEnabled',
     'flynnConcernedAt',
     'flynnAngryAt',
@@ -170,7 +192,12 @@ class Base extends Component {
       if (servicelist) {
         Object.keys(servicelist).map((k) => {
           Object.keys(servicelist[k]).map((l) => {
-            if (servicelist[k][l].status !== 2 || servicelist[k][l].is_flapping) {
+            // if service status is NOT OK
+            // or service is flapping,
+            // we add it to the array
+            if (servicelist[k][l].status !== 2 ||
+              servicelist[k][l].is_flapping) {
+              // add it to the array of service problems
               serviceProblemsArray.push(servicelist[k][l]);
             }
           });
@@ -236,6 +263,9 @@ class Base extends Component {
 
       if (hostlist) {
         Object.keys(hostlist).map((k) => {
+          // if host status is NOT UP
+          // or host is flapping,
+          // we add it to the array
           if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
             hostProblemsArray.push(hostlist[k]);
           }
@@ -391,16 +421,65 @@ class Base extends Component {
       })
   }
 
+  handleChange = (propName, dataType) => (event) => {
+    console.log('handleChange new');
+    console.log(propName, dataType);
+    console.log('value', event.target.value);
+    console.log('checked', event.target.checked);
+
+    let val = '';
+    if (dataType === 'boolean') { val = (event.target.value === 'true'); }
+    else if (dataType === 'checkbox') {
+      val = (!event.target.checked);
+    } else if (dataType === 'number') {
+      val = parseInt(event.target.value, 10);
+    } else {
+      val = event.target.value;
+    }
+    this.setState({
+      [propName]: val
+    });
+  }
+
   render() {
     const settingsObject = {};
     this.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
     let howManyServices = 0;
+    let howManyServiceWarning = 0;
+    let howManyServiceUnknown = 0;
+    let howManyServiceCritical = 0;
+    let howManyServiceAcked = 0;
+    let howManyServiceDowntime = 0;
+
     if (this.state.servicelist) {
       Object.keys(this.state.servicelist).forEach((host) => {
         howManyServices += Object.keys(this.state.servicelist[host]).length;
+        Object.keys(this.state.servicelist[host]).forEach((service) => {
+          if (this.state.servicelist[host][service].status === 4) {
+            howManyServiceWarning++;
+          }
+          if (this.state.servicelist[host][service].status === 8) {
+            howManyServiceUnknown++;
+          }
+          if (this.state.servicelist[host][service].status === 16) {
+            howManyServiceCritical++;
+          }
+          if (this.state.servicelist[host][service].problem_has_been_acknowledged) {
+            howManyServiceAcked++;
+          }
+          if (this.state.servicelist[host][service].scheduled_downtime_depth > 0) {
+            howManyServiceDowntime++;
+          }
+        });
       });
     }
+
+    let howManyHostUp = 0;
+    let howManyHostDown = 0;
+    let howManyHostUnreachable = 0;
+    let howManyHostPending = 0;
+
     return (
       <div className="Base">
 
@@ -439,7 +518,14 @@ class Base extends Component {
 
         </div>
 
-        <div style={{ marginTop: '55px' }} className="color-orange">Host Problems: {this.state.hostProblemsArray.length}</div>
+        <div style={{ marginTop: '55px' }} className="color-orange">
+          Hosts: {Object.keys(this.state.hostlist).length}{' '}
+          Host Problems: {this.state.hostProblemsArray.length}{' '}
+          UP: <strong>{howManyHostUp}</strong>{' '}
+          DOWN: <strong>{howManyHostDown}</strong>{' '}
+          UNREACHABLE: <strong>{howManyHostUnreachable}</strong>{' '}
+          PENDING: <strong>{howManyHostPending}</strong>{' '}
+        </div>
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
 
@@ -452,7 +538,20 @@ class Base extends Component {
           commentlist={this.state.commentlist}
         />
 
-        <div style={{ marginTop: '20px' }} className="color-orange">Service Problems: {this.state.serviceProblemsArray.length}</div>
+        <div style={{ marginTop: '20px' }} className="color-orange">
+          <strong>{howManyServices}</strong> services{' '}
+          {this.state.serviceProblemsArray.length} Service Problems{' '}
+          <input type="checkbox" defaultChecked={!this.state.hideServiceWarning} onChange={this.handleChange('hideServiceWarning', 'checkbox')} />
+          <strong>{howManyServiceWarning}</strong> WARNING{' '}
+          <input type="checkbox" defaultChecked={!this.state.hideServiceUnknown} onChange={this.handleChange('hideServiceUnknown', 'checkbox')} />
+          <strong>{howManyServiceUnknown}</strong> UNKNOWN{' '}
+          <input type="checkbox" defaultChecked={!this.state.hideServiceCritical} onChange={this.handleChange('hideServiceCritical', 'checkbox')} />
+          <strong>{howManyServiceCritical}</strong> CRITICAL{' '}
+          <input type="checkbox" defaultChecked={!this.state.hideServiceAcked} onChange={this.handleChange('hideServiceAcked', 'checkbox')} />
+          <strong>{howManyServiceAcked}</strong> ACKED{' '}
+          <input type="checkbox" defaultChecked={!this.state.hideServiceScheduled} onChange={this.handleChange('hideServiceScheduled', 'checkbox')} />
+          <strong>{howManyServiceDowntime}</strong> SCHEDULED
+        </div>
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
 
@@ -463,6 +562,7 @@ class Base extends Component {
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}
           commentlist={this.state.commentlist}
+          settings={settingsObject}
         />
         
         <div style={{ marginTop: '20px' }} className="color-orange margin-top-10">

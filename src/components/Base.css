@@ -64,9 +64,9 @@ input[type=text] {
 .AllOkItem {
   background-color: #222;
   font-size: 1.5em;
-  padding: 4px;
+  /*padding: 4px;*/
   border-radius: 5px;
-  margin-bottom: 7px;
+  /*margin-bottom: 7px;*/
 }
 
 .SettingsButtonDiv {

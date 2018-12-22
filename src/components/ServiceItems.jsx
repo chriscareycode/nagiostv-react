@@ -18,16 +18,32 @@ class ServiceItem extends Component {
 
     //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
     //console.log(Object.keys(this.props.serviceProblemsArray));
-
+    const filteredServiceProblemsArray = this.props.serviceProblemsArray.filter(item => {
+      if (this.props.settings.hideServiceWarning) {
+        if (item.status === 4) { return false; }
+      }
+      if (this.props.settings.hideServiceCritical) {
+        if (item.status === 16) { return false; }
+      }
+      if (this.props.settings.hideServiceAcked) {
+        if (item.problem_has_been_acknowledged) { return false; }
+      }
+      return true;
+    });
 
     return (
       <div className="ServiceItems">
 
+        {/*filteredServiceProblemsArray.length === 0 && <div key={'ok'} className="margin-top-10 color-green AllOkItem">
+          All - services are OK
+        </div>*/}
+
         <ReactCSSTransitionGroup
           transitionName="example"
-          transitionEnterTimeout={1000}
-          transitionLeaveTimeout={1000}>
-          {this.props.serviceProblemsArray.map((e, i) => {
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}>
+
+          {filteredServiceProblemsArray.map((e, i) => {
             //console.log('ServiceItem item');
             //console.log(e, i);
 
@@ -35,7 +51,6 @@ class ServiceItem extends Component {
             let comment = '';
             let comment_author = '';
             let comment_entry_time = 0;
-
             const commentlist = this.props.commentlist;
             Object.keys(commentlist).forEach((id) => {
               if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
@@ -47,6 +62,7 @@ class ServiceItem extends Component {
 
             return (
               <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${serviceBorderClass(e.status)}`}>
+                {e.status}
                 <div style={{ float: 'right', textAlign: 'right' }}>
                   {nagiosStateType(e.state_type)}{' '}
                   <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
