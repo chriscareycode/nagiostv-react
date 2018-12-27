@@ -131,3 +131,25 @@ input[type=text] {
   border: 0px solid green;
   background-color: rgba(0, 253, 43, 0.3);
 }
+.service-hide-problems label.flapping {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+  margin-left: 4px; /* why? */
+}
+
+/* host */
+
+.service-hide-problems label.down {
+  border: 0px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.service-hide-problems label.unreachable {
+  border: 0px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.service-hide-problems label.pending {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}
+
+

@@ -31,6 +31,12 @@ class ServiceItem extends Component {
       if (this.props.settings.hideServiceAcked) {
         if (item.problem_has_been_acknowledged) { return false; }
       }
+      if (this.props.settings.hideServiceDowntime) {
+        if (item.scheduled_downtime_depth > 0) { return false; }
+      }
+      if (this.props.settings.hideServiceFlapping) {
+        if (item.is_flapping) { return false; }
+      }
       return true;
     });
 
@@ -66,9 +72,10 @@ class ServiceItem extends Component {
             return (
               <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem`}>
                 <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
-                  {/* e.status */}
                   <div style={{ float: 'right', textAlign: 'right' }}>
+                    {1 === 2 && <span>({e.state_type})</span>}
                     {nagiosStateType(e.state_type)}{' '}
+                    {1 === 2 && <span>({e.status})</span>}
                     <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
                     {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}

@@ -19,14 +19,36 @@ class HostItems extends Component {
     //console.log('this.props.hostProblemsArray is', this.props.hostProblemsArray);
     //console.log(Object.keys(this.props.hostProblemsArray));
 
+    const filteredHostProblemsArray = this.props.hostProblemsArray.filter(item => {
+      if (this.props.settings.hideHostDown) {
+        if (item.status === 4) { return false; }
+      }
+      if (this.props.settings.hideHostUnreachable) {
+        if (item.status === 8) { return false; }
+      }
+      if (this.props.settings.hideHostPending) {
+        if (item.status === 16) { return false; }
+      }
+      if (this.props.settings.hideHostAcked) {
+        if (item.problem_has_been_acknowledged) { return false; }
+      }
+      if (this.props.settings.hideHostDowntime) {
+        if (item.scheduled_downtime_depth > 0) { return false; }
+      }
+      if (this.props.settings.hideHostFlapping) {
+        if (item.is_flapping) { return false; }
+      }
+      return true;
+    });
+
     return (
       <div className="ServiceItems">
 
         <ReactCSSTransitionGroup
           transitionName="example"
-          transitionEnterTimeout={1000}
-          transitionLeaveTimeout={1000}>
-          {this.props.hostProblemsArray.map((e, i) => {
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}>
+          {filteredHostProblemsArray.map((e, i) => {
             //console.log('HostItem item');
             //console.log(e, i);
 
@@ -42,32 +64,33 @@ class HostItems extends Component {
             });
 
             return (
-              <div key={i} style={{ ...defaultStyles }} className={`HostItem ${hostBorderClass(e.status)}`}>
-                <div style={{ float: 'right', textAlign: 'right' }}>
-                  {1 === 2 && <span>({e.state_type})</span>}
-                  {nagiosStateType(e.state_type)}{' '}
-                  {1 === 2 && <span>({e.status})</span>}
-                  <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
-                  {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
-                  {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                  <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  {e.name}{' '}
-                  <span className={hostTextClass(e.status)}>
-                    <span className="color-orange">{e.description}</span>{' - '}
-                    {e.plugin_output}
-                  </span>
-                </div>
-                <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
-                  Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
-                  Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
-                </div>
+              <div key={i} style={{ ...defaultStyles }} className={`HostItem`}>
+                <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
+                  <div style={{ float: 'right', textAlign: 'right' }}>
+                    {1 === 1 && <span>({e.state_type})</span>}
+                    {nagiosStateType(e.state_type)}{' '}
+                    {1 === 1 && <span>({e.status})</span>}
+                    <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
+                    {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
+                    {e.is_flapping && <span className="color-orange">FLAPPING</span>}
+                    <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
+                  </div>
+                  <div style={{ textAlign: 'left' }}>
+                    {e.name}{' '}
+                    <span className={hostTextClass(e.status)}>
+                      <span className="color-orange">{e.description}</span>{' - '}
+                      {e.plugin_output}
+                    </span>
+                  </div>
+                  <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
+                    Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+                    Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
+                  </div>
 
-                {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
-                  Comment: <span className="color-comment">({comment_author}): {comment}</span>
-                </div>}
-
+                  {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
+                    Comment: <span className="color-comment">({comment_author}): {comment}</span>
+                  </div>}
+                </div>
               </div>
             );
             

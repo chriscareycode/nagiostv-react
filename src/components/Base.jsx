@@ -20,6 +20,8 @@ class Base extends Component {
     latestVersion: 0,
     latestVersionString: '',
 
+    isCookieLoaded: false, // I have this to render things only after cookie is loaded
+
     servicelistError: false,
     servicelistErrorMessage: '',
     servicelistLastUpdate: 0,
@@ -60,6 +62,14 @@ class Base extends Component {
     hideServiceCritical: false,
     hideServiceAcked: false,
     hideServiceScheduled: false,
+    hideServiceFlapping: false,
+
+    hideHostDown: false,
+    hideHostUnreachable: false,
+    hideHostDownPending: false,
+    hideHostAcked: false,
+    hideHostScheduled: false,
+    hideHostFlapping: false,
 
     // fun stuff
     flynnEnabled: false,
@@ -84,7 +94,15 @@ class Base extends Component {
     'hideServiceCritical',
     'hideServiceAcked',
     'hideServiceScheduled',
+    'hideServiceFlapping',
 
+    'hideHostDown',
+    'hideHostUnreachable',
+    'hideHostDownPending',
+    'hideHostAcked',
+    'hideHostScheduled',
+    'hideHostFlapping',
+  
     // fun stuff
     'flynnEnabled',
     'flynnConcernedAt',
@@ -141,25 +159,24 @@ class Base extends Component {
     }, 2000);
   }
 
-
-
   getCookie() {
     const cookie = Cookie.get('settings');
     let cookieObject = {};
     try {
       cookieObject = JSON.parse(cookie);
-      //console.log('Got coookie', cookieObject);
+      console.log('Got coookie', cookieObject);
     } catch (e) {
       //console.log('No cookie');
     }
     const updateIfExist = (prop) => {
       if (cookieObject.hasOwnProperty(prop)) {
-        //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+        console.log('setting state on ' + prop +' to ', cookieObject[prop]);
         this.setState({ [prop]: cookieObject[prop] });
       }
     };
     if (cookieObject) {
       this.settingsFields.forEach(setting => updateIfExist(setting));
+      this.setState({ isCookieLoaded: true });
     }
   }
 
@@ -430,6 +447,7 @@ class Base extends Component {
   handleChange = (propName, dataType) => (event) => {
     //console.log('handleChange new');
     //console.log(propName, dataType);
+    //console.log(this.state[propName]);
     //console.log('value', event.target.value);
     //console.log('checked', event.target.checked);
 
@@ -443,8 +461,16 @@ class Base extends Component {
     this.setState({
       [propName]: val
     });
-    // TODO: Save to cookie
 
+    // Save to cookie
+    this.saveCookie();
+  }
+
+  saveCookie() {
+    const cookieObject = {};
+    this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
+    Cookie.set('settings', cookieObject);
+    //console.log('saved cookie', cookieObject);
   }
 
   render() {
@@ -457,6 +483,7 @@ class Base extends Component {
     let howManyServiceCritical = 0;
     let howManyServiceAcked = 0;
     let howManyServiceDowntime = 0;
+    let howManyServiceFlapping = 0;
 
     if (this.state.servicelist) {
       Object.keys(this.state.servicelist).forEach((host) => {
@@ -477,14 +504,45 @@ class Base extends Component {
           if (this.state.servicelist[host][service].scheduled_downtime_depth > 0) {
             howManyServiceDowntime++;
           }
+          if (this.state.servicelist[host][service].is_flapping) {
+            howManyHostFlapping++;
+          }
         });
       });
     }
 
+    const howManyHosts = Object.keys(this.state.hostlist).length;
     let howManyHostUp = 0;
     let howManyHostDown = 0;
     let howManyHostUnreachable = 0;
     let howManyHostPending = 0;
+    let howManyHostAcked = 0;
+    let howManyHostDowntime = 0;
+    let howManyHostFlapping = 0;
+
+    if (this.state.hostlist) {
+      Object.keys(this.state.hostlist).forEach((host) => {
+
+        if (this.state.hostlist[host].status === 4) {
+          howManyHostDown++;
+        }
+        if (this.state.hostlist[host].status === 8) {
+          howManyHostUnreachable++;
+        }
+        if (this.state.hostlist[host].status === 16) {
+          howManyHostPending++;
+        }
+        if (this.state.hostlist[host].problem_has_been_acknowledged) {
+          howManyHostAcked++;
+        }
+        if (this.state.hostlist[host].scheduled_downtime_depth > 0) {
+          howManyHostDowntime++;
+        }
+        if (this.state.hostlist[host].is_flapping) {
+          howManyHostFlapping++;
+        }
+      });
+    }
 
     return (
       <div className="Base">
@@ -524,14 +582,47 @@ class Base extends Component {
 
         </div>
 
-        <div style={{ marginTop: '55px' }} className="color-orange">
-          Hosts: {Object.keys(this.state.hostlist).length}{' '}
-          Host Problems: {this.state.hostProblemsArray.length}{' '}
-          UP: <strong>{howManyHostUp}</strong>{' '}
-          DOWN: <strong>{howManyHostDown}</strong>{' '}
-          UNREACHABLE: <strong>{howManyHostUnreachable}</strong>{' '}
-          PENDING: <strong>{howManyHostPending}</strong>{' '}
+        <div style={{ marginTop: '55px' }}>
         </div>
+
+        {this.state.isCookieLoaded && <div className="service-summary color-orange">
+          
+          <strong>{howManyHosts}</strong> hosts{' - '}
+          <strong>{this.state.hostProblemsArray.length}</strong> host problems{' '}
+          
+          <div className="service-hide-problems">
+
+            <label className="down" onClick={this.handleChange('hideHostDown', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideHostDown}  />
+              <strong>{howManyHostDown}</strong> DOWN
+            </label>{' '}
+
+            <label className="unreachable" onClick={this.handleChange('hideHostUnreachable', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideHostUnreachable} />
+              <strong>{howManyHostUnreachable}</strong> UNREACHABLE
+            </label>{' '}
+            
+            <label className="pending" onClick={this.handleChange('hideHostPending', 'checkbox')}>  
+              <input type="checkbox" defaultChecked={!this.state.hideHostPending} />
+              <strong>{howManyHostPending}</strong> PENDING
+            </label>{' '}
+
+            <label className="acked" onClick={this.handleChange('hideHostAcked', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideHostAcked} />
+              <strong>{howManyHostAcked}</strong> ACKED
+            </label>{' '}
+            
+            <label className="scheduled" onClick={this.handleChange('hideHostScheduled', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideHostScheduled} />
+              <strong>{howManyHostDowntime}</strong> SCHEDULED
+            </label>
+
+            <label className="flapping" onClick={this.handleChange('hideHostFlapping', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideHostFlapping} />
+              <strong>{howManyHostFlapping}</strong> FLAPPING
+            </label>
+          </div>
+        </div>}
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
 
@@ -542,9 +633,10 @@ class Base extends Component {
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
           commentlist={this.state.commentlist}
+          settings={settingsObject}
         />
 
-        <div className="service-summary color-orange">
+        {this.state.isCookieLoaded && <div className="service-summary color-orange">
           
           <strong>{howManyServices}</strong> services{' - '}
           <strong>{this.state.serviceProblemsArray.length}</strong> service problems{' '}
@@ -573,8 +665,13 @@ class Base extends Component {
               <input type="checkbox" defaultChecked={!this.state.hideServiceScheduled} />
               <strong>{howManyServiceDowntime}</strong> SCHEDULED
             </label>
+
+            <label className="flapping" onClick={this.handleChange('hideServiceFlapping', 'checkbox')}>
+              <input type="checkbox" defaultChecked={!this.state.hideServiceFlapping} />
+              <strong>{howManyServiceFlapping}</strong> FLAPPING
+            </label>
           </div>
-        </div>
+        </div>}
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
 
