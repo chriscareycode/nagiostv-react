@@ -22,6 +22,9 @@ class ServiceItem extends Component {
       if (this.props.settings.hideServiceWarning) {
         if (item.status === 4) { return false; }
       }
+      if (this.props.settings.hideServiceUnknown) {
+        if (item.status === 8) { return false; }
+      }
       if (this.props.settings.hideServiceCritical) {
         if (item.status === 16) { return false; }
       }
