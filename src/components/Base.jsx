@@ -9,6 +9,7 @@ import $ from 'jquery';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import moment from 'moment';
+import Checkbox from './widgets/Checkbox.jsx';
 
 class Base extends Component {
 
@@ -445,11 +446,17 @@ class Base extends Component {
   }
 
   handleChange = (propName, dataType) => (event) => {
-    //console.log('handleChange new');
-    //console.log(propName, dataType);
+    // console.log('handleChange Base.jsx');
+    // console.log(propName, dataType);
+    // console.log('event.target', event.target);
+    // console.log('event.target.checked', event.target.checked);
     //console.log(this.state[propName]);
     //console.log('value', event.target.value);
     //console.log('checked', event.target.checked);
+
+    //event.preventDefault();
+    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
+    if (typeof event.target.checked === 'undefined') { return; }
 
     let val = '';
     if (dataType === 'checkbox') {
@@ -458,12 +465,16 @@ class Base extends Component {
       val = event.target.value;
     }
     // Save to state
+    //console.log('setting state ' + propName + ' to ', val);
     this.setState({
       [propName]: val
+    }, () => {
+      // Save to cookie AFTER state is set
+      this.saveCookie();
     });
 
-    // Save to cookie
-    this.saveCookie();
+
+    
   }
 
   saveCookie() {
@@ -592,35 +603,54 @@ class Base extends Component {
           
           <div className="service-hide-problems">
 
-            <label className="down" onClick={this.handleChange('hideHostDown', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideHostDown}  />
-              <strong>{howManyHostDown}</strong> DOWN
-            </label>{' '}
+            <Checkbox className="Checkbox down"
+              handleChange={this.handleChange}
+              stateName={'hideHostDown'}
+              defaultChecked={!this.state.hideHostDown}
+              howMany={howManyHostDown}
+              howManyText={'DOWN'}
+            />
 
-            <label className="unreachable" onClick={this.handleChange('hideHostUnreachable', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideHostUnreachable} />
-              <strong>{howManyHostUnreachable}</strong> UNREACHABLE
-            </label>{' '}
-            
-            <label className="pending" onClick={this.handleChange('hideHostPending', 'checkbox')}>  
-              <input type="checkbox" defaultChecked={!this.state.hideHostPending} />
-              <strong>{howManyHostPending}</strong> PENDING
-            </label>{' '}
+            <Checkbox className="Checkbox unreachable"
+              handleChange={this.handleChange}
+              stateName={'hideHostUnreachable'}
+              defaultChecked={!this.state.hideHostUnreachable}
+              howMany={howManyHostUnreachable}
+              howManyText={'UNREACHABLE'}
+            />
 
-            <label className="acked" onClick={this.handleChange('hideHostAcked', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideHostAcked} />
-              <strong>{howManyHostAcked}</strong> ACKED
-            </label>{' '}
-            
-            <label className="scheduled" onClick={this.handleChange('hideHostScheduled', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideHostScheduled} />
-              <strong>{howManyHostDowntime}</strong> SCHEDULED
-            </label>
+            <Checkbox className="Checkbox pending"
+              handleChange={this.handleChange}
+              stateName={'hideHostPending'}
+              defaultChecked={!this.state.hideHostPending}
+              howMany={howManyHostPending}
+              howManyText={'PENDING'}
+            />
 
-            <label className="flapping" onClick={this.handleChange('hideHostFlapping', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideHostFlapping} />
-              <strong>{howManyHostFlapping}</strong> FLAPPING
-            </label>
+            <Checkbox className="Checkbox acked"
+              handleChange={this.handleChange}
+              stateName={'hideHostAcked'}
+              defaultChecked={!this.state.hideHostAcked}
+              howMany={howManyHostAcked}
+              howManyText={'ACKED'}
+            />
+
+            <Checkbox className="Checkbox scheduled"
+              handleChange={this.handleChange}
+              stateName={'hideHostScheduled'}
+              defaultChecked={!this.state.hideHostScheduled}
+              howMany={howManyHostDowntime}
+              howManyText={'SCHEDULED'}
+            />
+
+            <Checkbox className="Checkbox flapping"
+              handleChange={this.handleChange}
+              stateName={'hideHostFlapping'}
+              defaultChecked={!this.state.hideHostFlapping}
+              howMany={howManyHostFlapping}
+              howManyText={'FLAPPING'}
+            />
+
           </div>
         </div>}
         
@@ -642,34 +672,55 @@ class Base extends Component {
           <strong>{this.state.serviceProblemsArray.length}</strong> service problems{' '}
           
           <div className="service-hide-problems">
-            <label className="warning" onClick={this.handleChange('hideServiceWarning', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideServiceWarning}  />
-              <strong>{howManyServiceWarning}</strong> WARNING
-            </label>{' '}
-            <label className="unknown" onClick={this.handleChange('hideServiceUnknown', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideServiceUnknown} />
-              <strong>{howManyServiceUnknown}</strong> UNKNOWN
-            </label>{' '}
-            
-            <label className="critical" onClick={this.handleChange('hideServiceCritical', 'checkbox')}>  
-              <input type="checkbox" defaultChecked={!this.state.hideServiceCritical} />
-              <strong>{howManyServiceCritical}</strong> CRITICAL
-            </label>{' '}
 
-            <label className="acked" onClick={this.handleChange('hideServiceAcked', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideServiceAcked} />
-              <strong>{howManyServiceAcked}</strong> ACKED
-            </label>{' '}
-            
-            <label className="scheduled" onClick={this.handleChange('hideServiceScheduled', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideServiceScheduled} />
-              <strong>{howManyServiceDowntime}</strong> SCHEDULED
-            </label>
+            <Checkbox className="Checkbox warning"
+              handleChange={this.handleChange}
+              stateName={'hideServiceWarning'}
+              defaultChecked={!this.state.hideServiceWarning}
+              howMany={howManyServiceWarning}
+              howManyText={'WARNING'}
+            />
 
-            <label className="flapping" onClick={this.handleChange('hideServiceFlapping', 'checkbox')}>
-              <input type="checkbox" defaultChecked={!this.state.hideServiceFlapping} />
-              <strong>{howManyServiceFlapping}</strong> FLAPPING
-            </label>
+            <Checkbox className="Checkbox unknown"
+              handleChange={this.handleChange}
+              stateName={'hideServiceUnknown'}
+              defaultChecked={!this.state.hideServiceUnknown}
+              howMany={howManyServiceUnknown}
+              howManyText={'UNKNOWN'}
+            />
+
+            <Checkbox className="Checkbox critical"
+              handleChange={this.handleChange}
+              stateName={'hideServiceCritical'}
+              defaultChecked={!this.state.hideServiceCritical}
+              howMany={howManyServiceCritical}
+              howManyText={'CRITICAL'}
+            />
+
+            <Checkbox className="Checkbox acked"
+              handleChange={this.handleChange}
+              stateName={'hideServiceAcked'}
+              defaultChecked={!this.state.hideServiceAcked}
+              howMany={howManyServiceAcked}
+              howManyText={'ACKED'}
+            />
+
+            <Checkbox className="Checkbox scheduled"
+              handleChange={this.handleChange}
+              stateName={'hideServiceScheduled'}
+              defaultChecked={!this.state.hideServiceScheduled}
+              howMany={howManyServiceDowntime}
+              howManyText={'SCHEDULED'}
+            />
+
+            <Checkbox className="Checkbox flapping"
+              handleChange={this.handleChange}
+              stateName={'hideServiceFlapping'}
+              defaultChecked={!this.state.hideServiceFlapping}
+              howMany={howManyServiceFlapping}
+              howManyText={'FLAPPING'}
+            />
+
           </div>
         </div>}
         
