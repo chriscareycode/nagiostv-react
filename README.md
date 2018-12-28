@@ -6,7 +6,11 @@ This user interface is designed to be viewed on a TV or on your desktop to quick
 
 New items slide in and out of place with smooth animations.
 
-This version adds Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
+NagiosTV also has some goofy addons:
+
+Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
+
+Emoticons to show happiness the longer you have quiet time between issues
 
 Technology
 ------------
