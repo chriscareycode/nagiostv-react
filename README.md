@@ -16,13 +16,13 @@ The frontend is using the React JavaScript framework.
 Screenshot of NagiosTV on desktop
 ------------
 
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-0.2.4.png)
 
 Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
-  - Example: $ tar xvfz nagiostv-0.2.0.tar.gz
+  - Example: $ tar xvfz nagiostv-0.2.4.tar.gz
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
   - Example: $ mv nagiostv /usr/local/nagios/share/
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
