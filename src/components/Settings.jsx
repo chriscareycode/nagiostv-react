@@ -84,6 +84,11 @@ class Settings extends Component {
               <div style={{ marginBottom: '10px' }}>Settings are saved into a cookie in your browser and are not saved on the server.</div>
 
               <div className="SettingsSection">
+                <span>Title: </span>
+                <input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} />
+              </div>
+
+              <div className="SettingsSection">
                 <span>Nagios cgi-bin path: </span>
                 <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
                 <div className="Note" style={{ marginTop: '10px' }}>

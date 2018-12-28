@@ -50,6 +50,7 @@ class Base extends Component {
     fetchAlertFrequency: 60, // seconds
     
     // settings (defaults are set here also)
+    titleString: 'NagiosTV',
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
     alertDaysBack: 7,
@@ -82,6 +83,7 @@ class Base extends Component {
   };
 
   settingsFields = [
+    'titleString',
     'baseUrl',
     'versionCheckDays',
     'alertDaysBack',
@@ -580,7 +582,7 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div>
-            <span className="ApplicationName">NagiosTV</span>
+            <span className="ApplicationName">{this.state.titleString}</span>
           </div>
         </div>
 
