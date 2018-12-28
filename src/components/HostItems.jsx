@@ -47,7 +47,8 @@ class HostItems extends Component {
       <div className="ServiceItems">
 
         {this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
-          {howManyHidden} hidden host problems{' '}
+          {this.props.howManyHosts} hosts{', '}
+          {howManyHidden} hidden{' '}
           {this.props.howManyHostDown > 0 && <span className="hidden-label down">{this.props.howManyHostDown} DOWN</span>}
           {this.props.howManyHostUnreachable > 0 && <span className="hidden-label unreachable">{this.props.howManyHostUnreachable} UNREACHABLE</span>}
           {this.props.howManyHostPending > 0 && <span className="hidden-label pending">{this.props.howManyHostPending} PENDING</span>}

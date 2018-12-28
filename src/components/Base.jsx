@@ -602,8 +602,8 @@ class Base extends Component {
 
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
           
-          <strong>{howManyHosts}</strong> hosts{' - '}
-          <strong>{this.state.hostProblemsArray.length}</strong> host problems{' '}
+          <strong>{howManyHosts}</strong> hosts{' '}
+          (<strong>{this.state.hostProblemsArray.length}</strong> problems)
           
           <div className="service-hide-problems">
 
@@ -681,8 +681,8 @@ class Base extends Component {
 
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
           
-          <strong>{howManyServices}</strong> services{' - '}
-          <strong>{this.state.serviceProblemsArray.length}</strong> service problems{' '}
+          <strong>{howManyServices}</strong> services{' '}
+          (<strong>{this.state.serviceProblemsArray.length}</strong> problems)
           
           <div className="service-hide-problems">
 

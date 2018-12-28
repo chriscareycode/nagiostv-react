@@ -46,7 +46,8 @@ class ServiceItems extends Component {
       <div className="ServiceItems">
 
         {this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
-          {howManyHidden} hidden service problems{' '}
+          {this.props.howManyServices} services{', '}
+          {howManyHidden} hidden{' '}
           {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
           {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
           {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
