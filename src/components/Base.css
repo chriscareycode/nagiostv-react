@@ -93,7 +93,9 @@ input[type=text] {
 .service-summary {
   margin-top: 20px;
   margin-bottom: 20px;
+  font-size: 1.2em;
 }
+
 .service-hide-problems {
   float: right;
 }
@@ -102,6 +104,7 @@ input[type=text] {
   border-radius: 4px;
   padding: 3px 7px;
   background-color: rgba(250, 250, 250, 0.3);
+  font-size: 0.9em;
 }
 .service-hide-problems label > input[type=checkbox] {
   margin-left: 3px;
@@ -199,3 +202,6 @@ input[type=text] {
   border: 0px solid gray;
   background-color: rgba(250, 250, 250, 0.3);
 }
+
+
+
