@@ -16,8 +16,8 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 15,
-    currentVersionString: '0.2.4',
+    currentVersion: 16,
+    currentVersionString: '0.2.5',
     latestVersion: 0,
     latestVersionString: '',
 
@@ -55,9 +55,6 @@ class Base extends Component {
     versionCheckDays: 1,
     alertDaysBack: 7,
     alertMaxItems: 1000,
-    // optionally hide some items
-    hideAckedProblems: false,
-    hideDowntimeProblems: false,
 
     hideServiceWarning: false,
     hideServiceUnknown: false,
@@ -496,7 +493,7 @@ class Base extends Component {
     let howManyServiceUnknown = 0;
     let howManyServiceCritical = 0;
     let howManyServiceAcked = 0;
-    let howManyServiceDowntime = 0;
+    let howManyServiceScheduled = 0;
     let howManyServiceFlapping = 0;
 
     if (this.state.servicelist) {
@@ -516,7 +513,7 @@ class Base extends Component {
             howManyServiceAcked++;
           }
           if (this.state.servicelist[host][service].scheduled_downtime_depth > 0) {
-            howManyServiceDowntime++;
+            howManyServiceScheduled++;
           }
           if (this.state.servicelist[host][service].is_flapping) {
             howManyHostFlapping++;
@@ -532,7 +529,7 @@ class Base extends Component {
     let howManyHostUnreachable = 0;
     let howManyHostPending = 0;
     let howManyHostAcked = 0;
-    let howManyHostDowntime = 0;
+    let howManyHostScheduled = 0;
     let howManyHostFlapping = 0;
 
     if (this.state.hostlist) {
@@ -551,7 +548,7 @@ class Base extends Component {
           howManyHostAcked++;
         }
         if (this.state.hostlist[host].scheduled_downtime_depth > 0) {
-          howManyHostDowntime++;
+          howManyHostScheduled++;
         }
         if (this.state.hostlist[host].is_flapping) {
           howManyHostFlapping++;
@@ -584,6 +581,13 @@ class Base extends Component {
           <div>
             <span className="ApplicationName">{this.state.titleString}</span>
           </div>
+          <div className="color-gray">
+            <strong>{howManyHosts}</strong> hosts{' '}
+            (<strong>{this.state.hostProblemsArray.length}</strong> problems)
+            {', '}
+            <strong>{howManyServices}</strong> services{' '}
+            (<strong>{this.state.serviceProblemsArray.length}</strong> problems)
+          </div>
         </div>
 
         <div className="FooterArea">
@@ -591,13 +595,13 @@ class Base extends Component {
           <div>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
-            <span>Version: <span className="color-orange">{this.state.currentVersionString}</span></span>
-            {this.state.latestVersion > this.state.currentVersion && <span> - <span className="color-green">Update {this.state.latestVersionString} available</span></span>}
+            <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
+            {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available">NagiosTV v{this.state.latestVersionString} available</span></span>}
           </div>
 
         </div>
 
-        <div style={{ marginTop: '55px' }}>
+        <div style={{ marginTop: '95px' }}>
         </div>
 
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
@@ -643,7 +647,7 @@ class Base extends Component {
               handleChange={this.handleChange}
               stateName={'hideHostScheduled'}
               defaultChecked={!this.state.hideHostScheduled}
-              howMany={howManyHostDowntime}
+              howMany={howManyHostScheduled}
               howManyText={'SCHEDULED'}
             />
 
@@ -675,7 +679,7 @@ class Base extends Component {
           howManyHostUnreachable={howManyHostUnreachable}
           howManyHostPending={howManyHostPending}
           howManyHostAcked={howManyHostAcked}
-          howManyHostDowntime={howManyHostDowntime}
+          howManyHostScheduled={howManyHostScheduled}
           howManyHostFlapping={howManyHostFlapping}
         />
 
@@ -722,7 +726,7 @@ class Base extends Component {
               handleChange={this.handleChange}
               stateName={'hideServiceScheduled'}
               defaultChecked={!this.state.hideServiceScheduled}
-              howMany={howManyServiceDowntime}
+              howMany={howManyServiceScheduled}
               howManyText={'SCHEDULED'}
             />
 
@@ -753,7 +757,7 @@ class Base extends Component {
           howManyServiceUnknown={howManyServiceUnknown}
           howManyServiceCritical={howManyServiceCritical}
           howManyServiceAcked={howManyServiceAcked}
-          howManyServiceDowntime={howManyServiceDowntime}
+          howManyServiceScheduled={howManyServiceScheduled}
           howManyServiceFlapping={howManyServiceFlapping}
         />
         

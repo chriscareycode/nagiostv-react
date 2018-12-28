@@ -32,10 +32,11 @@ input[type=text] {
   top: 0;
   left: 0;
   right: 0;
-  min-height: 40px;
+  min-height: 80px;
   z-index: 10;
   background-color: rgba(20,20,20,0.8);
   border-bottom: 1px solid #333;
+  font-size: 1.1em;
 }
 .HeaderArea > div {
   margin: 10px;
@@ -57,7 +58,7 @@ input[type=text] {
 }
 
 .ApplicationName {
-  font-size: 1.2em;
+  font-size: 1.3em;
   margin-right: 10px;
 }
 
@@ -84,7 +85,7 @@ input[type=text] {
 }
 
 .FlynnWrapper {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 18px;
   z-index: 11;
@@ -204,4 +205,11 @@ input[type=text] {
 }
 
 
-
+.update-available {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  padding: 1px 8px;
+  border-radius: 5px;
+  margin-left: 5px;
+}

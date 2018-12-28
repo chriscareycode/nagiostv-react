@@ -31,7 +31,7 @@ class ServiceItems extends Component {
       if (this.props.settings.hideServiceAcked) {
         if (item.problem_has_been_acknowledged) { return false; }
       }
-      if (this.props.settings.hideServiceDowntime) {
+      if (this.props.settings.hideServiceScheduled) {
         if (item.scheduled_downtime_depth > 0) { return false; }
       }
       if (this.props.settings.hideServiceFlapping) {
@@ -52,7 +52,7 @@ class ServiceItems extends Component {
           {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
           {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
           {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
-          {this.props.howManyServiceDowntime > 0 && <span className="hidden-label downtime">{this.props.howManyServiceDowntime} DOWNTIME</span>}
+          {this.props.howManyServiceScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyServiceScheduled} SCHEDULED</span>}
           {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
         </div>}
 
@@ -87,6 +87,7 @@ class ServiceItems extends Component {
                     {1 === 2 && <span>({e.status})</span>}
                     <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
                     {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
+                    {e.scheduled_downtime_depth > 0 && <span className="color-green">SCHEDULED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}
                     <div><span className="lastOk">Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
                   </div>
@@ -105,6 +106,7 @@ class ServiceItems extends Component {
                   </div>
 
                   {e.problem_has_been_acknowledged && <span className="color-green" style={{ marginRight: '5px' }}>ACKED</span>}
+                  {e.scheduled_downtime_depth > 0 && <span className="color-green" style={{ marginRight: '5px' }}>SCHEDULED</span>}
 
                   {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
                     Comment: <span className="color-comment">({comment_author}): {formatDateTimeAgo(comment_entry_time)} ago - {comment}</span>

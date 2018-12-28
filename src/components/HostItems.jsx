@@ -32,7 +32,7 @@ class HostItems extends Component {
       if (this.props.settings.hideHostAcked) {
         if (item.problem_has_been_acknowledged) { return false; }
       }
-      if (this.props.settings.hideHostDowntime) {
+      if (this.props.settings.hideHostScheduled) {
         if (item.scheduled_downtime_depth > 0) { return false; }
       }
       if (this.props.settings.hideHostFlapping) {
@@ -53,7 +53,7 @@ class HostItems extends Component {
           {this.props.howManyHostUnreachable > 0 && <span className="hidden-label unreachable">{this.props.howManyHostUnreachable} UNREACHABLE</span>}
           {this.props.howManyHostPending > 0 && <span className="hidden-label pending">{this.props.howManyHostPending} PENDING</span>}
           {this.props.howManyHostAcked > 0 && <span className="hidden-label acked">{this.props.howManyHostAcked} ACKED</span>}
-          {this.props.howManyHostDowntime > 0 && <span className="hidden-label downtime">{this.props.howManyHostDowntime} DOWNTIME</span>}
+          {this.props.howManyHostScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyHostScheduled} SCHEDULED</span>}
           {this.props.howManyHostFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyHostFlapping} FLAPPING</span>}
         </div>}
 
@@ -85,6 +85,7 @@ class HostItems extends Component {
                     {1 === 2 && <span>({e.status})</span>}
                     <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
                     {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
+                    {e.scheduled_downtime_depth > 0 && <span className="color-green">SCHEDULED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}
                     <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
                   </div>
@@ -99,6 +100,9 @@ class HostItems extends Component {
                     Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
                     Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
                   </div>
+
+                  {e.problem_has_been_acknowledged && <span className="color-green" style={{ marginRight: '5px' }}>ACKED</span>}
+                  {e.scheduled_downtime_depth > 0 && <span className="color-green" style={{ marginRight: '5px' }}>SCHEDULED</span>}
 
                   {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
                     Comment: <span className="color-comment">({comment_author}): {comment}</span>
