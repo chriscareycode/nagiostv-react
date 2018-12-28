@@ -12,7 +12,7 @@ const defaultStyles = {
   color: 'white'
 }
 
-class ServiceItem extends Component {
+class ServiceItems extends Component {
 
   render() {
 
@@ -40,12 +40,21 @@ class ServiceItem extends Component {
       return true;
     });
 
+    const howManyHidden = this.props.serviceProblemsArray.length - filteredServiceProblemsArray.length;
+
     return (
       <div className="ServiceItems">
 
-        {/*filteredServiceProblemsArray.length === 0 && <div key={'ok'} className="margin-top-10 color-green AllOkItem">
-          All - services are OK
-        </div>*/}
+        {this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
+          {this.props.howManyServices} services{', '}
+          {howManyHidden} hidden{' '}
+          {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
+          {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
+          {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
+          {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
+          {this.props.howManyServiceDowntime > 0 && <span className="hidden-label downtime">{this.props.howManyServiceDowntime} DOWNTIME</span>}
+          {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
+        </div>}
 
         <ReactCSSTransitionGroup
           transitionName="example"
@@ -112,4 +121,4 @@ class ServiceItem extends Component {
   }
 }
 
-export default ServiceItem;
+export default ServiceItems;

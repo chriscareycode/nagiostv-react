@@ -165,13 +165,13 @@ class Base extends Component {
     let cookieObject = {};
     try {
       cookieObject = JSON.parse(cookie);
-      console.log('Got coookie', cookieObject);
+      //console.log('Got coookie', cookieObject);
     } catch (e) {
       //console.log('No cookie');
     }
     const updateIfExist = (prop) => {
       if (cookieObject.hasOwnProperty(prop)) {
-        console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+        //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
         this.setState({ [prop]: cookieObject[prop] });
       }
     };
@@ -435,8 +435,9 @@ class Base extends Component {
         }
       })
       .then((myJson) => {
-        console.log('latest version check ' + new Date());
-        console.log(myJson);
+
+        console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
+        //console.log(myJson);
 
         this.setState({
           latestVersion: myJson.version,
@@ -472,9 +473,6 @@ class Base extends Component {
       // Save to cookie AFTER state is set
       this.saveCookie();
     });
-
-
-    
   }
 
   saveCookie() {
@@ -485,9 +483,12 @@ class Base extends Component {
   }
 
   render() {
+
+    // populate settingsObject with all the settingsFields values (essentially, a subset of all the items in react state)
     const settingsObject = {};
     this.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
+    // count how many items in each of the service states
     let howManyServices = 0;
     let howManyServiceWarning = 0;
     let howManyServiceUnknown = 0;
@@ -522,6 +523,7 @@ class Base extends Component {
       });
     }
 
+    // count how many items in each of the host states
     const howManyHosts = Object.keys(this.state.hostlist).length;
     let howManyHostUp = 0;
     let howManyHostDown = 0;
@@ -664,6 +666,15 @@ class Base extends Component {
           hostProblemsArray={this.state.hostProblemsArray}
           commentlist={this.state.commentlist}
           settings={settingsObject}
+
+          howManyHosts={howManyHosts}
+          howManyHostUp={howManyHostUp}
+          howManyHostDown={howManyHostDown}
+          howManyHostUnreachable={howManyHostUnreachable}
+          howManyHostPending={howManyHostPending}
+          howManyHostAcked={howManyHostAcked}
+          howManyHostDowntime={howManyHostDowntime}
+          howManyHostFlapping={howManyHostFlapping}
         />
 
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
@@ -734,6 +745,14 @@ class Base extends Component {
           serviceProblemsArray={this.state.serviceProblemsArray}
           commentlist={this.state.commentlist}
           settings={settingsObject}
+
+          howManyServices={howManyServices}
+          howManyServiceWarning={howManyServiceWarning}
+          howManyServiceUnknown={howManyServiceUnknown}
+          howManyServiceCritical={howManyServiceCritical}
+          howManyServiceAcked={howManyServiceAcked}
+          howManyServiceDowntime={howManyServiceDowntime}
+          howManyServiceFlapping={howManyServiceFlapping}
         />
         
         <div style={{ marginTop: '20px' }} className="color-orange margin-top-10">

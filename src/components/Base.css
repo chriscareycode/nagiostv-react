@@ -151,4 +151,51 @@ input[type=text] {
   background-color: rgba(250, 250, 250, 0.3);
 }
 
+/* these some-down-items live inside HostItems and ServiceItems */
+/* probably should move to its own component */
+.some-down-items {
+  background-color: #222;
+  font-size: 1.5em;
+  border-radius: 5px;
+}
+.some-down-items .hidden-label {
+  border-radius: 8px;
+  margin-left: 8px;
+  padding: 1px 8px;
+  color: orange;
+}
+.some-down-items .warning {
+  border: 0px solid yellow;
+  background-color: #585804;
+  color: yellow;
+}
+.some-down-items .unknown {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}
+.some-down-items .critical {
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.some-down-items .acked {
+  border: 0px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+}
+.some-down-items .scheduled {
+  border: 0px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+}
+.some-down-items .flapping {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}
 
+.some-down-items .down {
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.some-down-items .unreachable {
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.some-down-items .pending {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}

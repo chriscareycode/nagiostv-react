@@ -41,8 +41,21 @@ class HostItems extends Component {
       return true;
     });
 
+    const howManyHidden = this.props.hostProblemsArray.length - filteredHostProblemsArray.length;
+
     return (
       <div className="ServiceItems">
+
+        {this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
+          {this.props.howManyHosts} hosts{', '}
+          {howManyHidden} hidden{' '}
+          {this.props.howManyHostDown > 0 && <span className="hidden-label down">{this.props.howManyHostDown} DOWN</span>}
+          {this.props.howManyHostUnreachable > 0 && <span className="hidden-label unreachable">{this.props.howManyHostUnreachable} UNREACHABLE</span>}
+          {this.props.howManyHostPending > 0 && <span className="hidden-label pending">{this.props.howManyHostPending} PENDING</span>}
+          {this.props.howManyHostAcked > 0 && <span className="hidden-label acked">{this.props.howManyHostAcked} ACKED</span>}
+          {this.props.howManyHostDowntime > 0 && <span className="hidden-label downtime">{this.props.howManyHostDowntime} DOWNTIME</span>}
+          {this.props.howManyHostFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyHostFlapping} FLAPPING</span>}
+        </div>}
 
         <ReactCSSTransitionGroup
           transitionName="example"
@@ -67,9 +80,9 @@ class HostItems extends Component {
               <div key={i} style={{ ...defaultStyles }} className={`HostItem`}>
                 <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
                   <div style={{ float: 'right', textAlign: 'right' }}>
-                    {1 === 1 && <span>({e.state_type})</span>}
+                    {1 === 2 && <span>({e.state_type})</span>}
                     {nagiosStateType(e.state_type)}{' '}
-                    {1 === 1 && <span>({e.status})</span>}
+                    {1 === 2 && <span>({e.status})</span>}
                     <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
                     {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}
