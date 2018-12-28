@@ -84,9 +84,9 @@ class HostItems extends Component {
                     {nagiosStateType(e.state_type)}{' '}
                     {1 === 2 && <span>({e.status})</span>}
                     <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
-                    {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
-                    {e.scheduled_downtime_depth > 0 && <span className="color-green">SCHEDULED</span>}
-                    {e.is_flapping && <span className="color-orange">FLAPPING</span>}
+                    {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
+                    {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
+                    {e.is_flapping && <span className="color-orange"> FLAPPING</span>}
                     <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
                   </div>
                   <div style={{ textAlign: 'left' }}>
@@ -104,9 +104,9 @@ class HostItems extends Component {
                   {e.problem_has_been_acknowledged && <span className="color-green" style={{ marginRight: '5px' }}>ACKED</span>}
                   {e.scheduled_downtime_depth > 0 && <span className="color-green" style={{ marginRight: '5px' }}>SCHEDULED</span>}
 
-                  {comment && <div style={{ textAlign: 'left', fontSize: '1em' }}>
+                  {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
                     Comment: <span className="color-comment">({comment_author}): {comment}</span>
-                  </div>}
+                  </span>}
                 </div>
               </div>
             );

@@ -86,8 +86,8 @@ class ServiceItems extends Component {
                     {nagiosStateType(e.state_type)}{' '}
                     {1 === 2 && <span>({e.status})</span>}
                     <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
-                    {e.problem_has_been_acknowledged && <span className="color-green">ACKED</span>}
-                    {e.scheduled_downtime_depth > 0 && <span className="color-green">SCHEDULED</span>}
+                    {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
+                    {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}
                     <div><span className="lastOk">Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
                   </div>
