@@ -43,10 +43,12 @@ class HostItems extends Component {
 
     const howManyHidden = this.props.hostProblemsArray.length - filteredHostProblemsArray.length;
 
+    const showSomeDownItems = this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
+
     return (
       <div className="ServiceItems">
 
-        {this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
+        <div className={`margin-top-10 color-green some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
           {this.props.howManyHosts} hosts{', '}
           {howManyHidden} hidden{' '}
           {this.props.howManyHostDown > 0 && <span className="hidden-label down">{this.props.howManyHostDown} DOWN</span>}
@@ -55,7 +57,7 @@ class HostItems extends Component {
           {this.props.howManyHostAcked > 0 && <span className="hidden-label acked">{this.props.howManyHostAcked} ACKED</span>}
           {this.props.howManyHostScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyHostScheduled} SCHEDULED</span>}
           {this.props.howManyHostFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyHostFlapping} FLAPPING</span>}
-        </div>}
+        </div>
 
         <ReactCSSTransitionGroup
           transitionName="example"

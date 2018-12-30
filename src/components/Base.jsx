@@ -578,9 +578,8 @@ class Base extends Component {
         </div>}
 
         <div className="HeaderArea">
-          <div>
-            <span className="ApplicationName">{this.state.titleString}</span>
-          </div>
+          <div className="ApplicationName">{this.state.titleString}</div>
+          
           <div className="color-gray">
             <strong>{howManyHosts}</strong> hosts{' '}
             (<strong>{this.state.hostProblemsArray.length}</strong> problems)

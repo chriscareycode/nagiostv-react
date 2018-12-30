@@ -42,10 +42,12 @@ class ServiceItems extends Component {
 
     const howManyHidden = this.props.serviceProblemsArray.length - filteredServiceProblemsArray.length;
 
+    const showSomeDownItems = this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
+
     return (
       <div className="ServiceItems">
 
-        {this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0 && <div key={'hiddenSummary'} className="margin-top-10 color-green some-down-items">
+        <div className={`margin-top-10 color-green some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
           {this.props.howManyServices} services{', '}
           {howManyHidden} hidden{' '}
           {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
@@ -54,7 +56,7 @@ class ServiceItems extends Component {
           {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
           {this.props.howManyServiceScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyServiceScheduled} SCHEDULED</span>}
           {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
-        </div>}
+        </div>
 
         <ReactCSSTransitionGroup
           transitionName="example"

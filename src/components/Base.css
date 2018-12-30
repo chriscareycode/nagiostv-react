@@ -161,6 +161,17 @@ input[type=text] {
   background-color: #222;
   font-size: 1.5em;
   border-radius: 5px;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+  transition: all 500ms ease-in;
+}
+.some-down-items.hidden {
+
+}
+.some-down-items.visible {
+  max-height: 25px;
+  opacity: 1;
 }
 .some-down-items .hidden-label {
   border-radius: 8px;
