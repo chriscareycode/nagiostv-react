@@ -8,6 +8,9 @@ input[type=text] {
 .margin-top-10 {
   margin-top: 10px;
 }
+.margin-left-10 {
+  margin-left: 10px;
+}
 
 .settings {
 
@@ -18,6 +21,10 @@ input[type=text] {
 .settings button {
   margin-left: 5px;
   font-size: 1.1em;
+}
+
+.display-inline-block {
+  display: inline-block;
 }
 
 .SettingsButtonDiv button {
@@ -62,14 +69,6 @@ input[type=text] {
   margin-right: 10px;
 }
 
-.AllOkItem {
-  background-color: #222;
-  font-size: 1.5em;
-  /*padding: 4px;*/
-  border-radius: 5px;
-  /*margin-bottom: 7px;*/
-}
-
 .SettingsButtonDiv {
   position: absolute;
   bottom: 3px;
@@ -92,8 +91,8 @@ input[type=text] {
 }
 
 .service-summary {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 18px;
+  margin-bottom: 18px;
   font-size: 1.1em;
 }
 
@@ -155,11 +154,29 @@ input[type=text] {
   background-color: rgba(250, 250, 250, 0.3);
 }
 
+.all-ok-item {
+  background-color: #222;
+  font-size: 1.5em;
+  border-radius: 5px;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+  transition: all 500ms ease-in;
+}
+.all-ok-item.hidden {
+
+}
+.all-ok-item.visible {
+  max-height: 34px;
+  opacity: 1;
+}
+
 /* these some-down-items live inside HostItems and ServiceItems */
 /* probably should move to its own component */
 .some-down-items {
+  border: 1px solid orange;
   background-color: #222;
-  font-size: 1.5em;
+  font-size: 1.4em;
   border-radius: 5px;
   overflow: hidden;
   max-height: 0px;
@@ -170,14 +187,17 @@ input[type=text] {
 
 }
 .some-down-items.visible {
-  max-height: 25px;
+  max-height: 36px;
   opacity: 1;
 }
 .some-down-items .hidden-label {
   border-radius: 8px;
   margin-left: 8px;
   padding: 1px 8px;
+  font-size: 0.7em;
   color: orange;
+  position: relative;
+  top: -2px;
 }
 .some-down-items .warning {
   border: 0px solid yellow;

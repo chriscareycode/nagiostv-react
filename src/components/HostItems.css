@@ -15,3 +15,7 @@
   margin-bottom: 8px;
   margin-top: 0px;
 }
+.HostItemBorder:last-of-type {
+  margin-bottom: 0px;
+
+}

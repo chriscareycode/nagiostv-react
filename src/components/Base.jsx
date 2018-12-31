@@ -663,10 +663,6 @@ class Base extends Component {
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
 
-        {this.state.hostProblemsArray.length === 0 && <div style={{ marginTop: '10px' }} className="color-green AllOkItem">
-          All {Object.keys(this.state.hostlist).length} hosts are UP
-        </div>}
-
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
           commentlist={this.state.commentlist}
@@ -741,10 +737,6 @@ class Base extends Component {
         </div>}
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
-
-        {this.state.serviceProblemsArray.length === 0 && <div className="margin-top-10 color-green AllOkItem">
-          All {howManyServices} services are OK
-        </div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}

@@ -47,15 +47,21 @@ class ServiceItems extends Component {
     return (
       <div className="ServiceItems">
 
-        <div className={`margin-top-10 color-green some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-          {this.props.howManyServices} services{', '}
-          {howManyHidden} hidden{' '}
-          {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
-          {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
-          {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
-          {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
-          {this.props.howManyServiceScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyServiceScheduled} SCHEDULED</span>}
-          {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
+        <div className={`all-ok-item ${this.props.serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
+          <span className="margin-left-10 display-inline-block color-green">All {this.props.howManyServices} services OK</span>{' '}
+        </div>
+
+        <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
+          <div style={{ padding: '5px' }}>
+            {howManyHidden} hidden service problem{howManyHidden === 1 ? '' : 's'}{' '}
+            {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
+            {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
+            {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
+            {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
+            {this.props.howManyServiceScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyServiceScheduled} SCHEDULED</span>}
+            {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
+            <span className="margin-left-10 display-inline-block color-green">{this.props.howManyServices - this.props.serviceProblemsArray.length} services OK</span>{' '}
+          </div>
         </div>
 
         <ReactCSSTransitionGroup
