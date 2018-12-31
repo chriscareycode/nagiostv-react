@@ -753,7 +753,7 @@ class Base extends Component {
         />
         
         <div style={{ marginTop: '20px' }} className="color-orange margin-top-10">
-        Alert History: {this.state.alertlist.length}
+          <strong>{this.state.alertlist.length}</strong> alerts in the past <strong>{this.state.alertDaysBack}</strong> days
         </div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
