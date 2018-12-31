@@ -3,7 +3,12 @@
 }
 
 .ServiceItem {
-  
+  margin-top: 0px;
+  margin-bottom: 8px;
+}
+
+.ServiceItem:last-of-type {
+  margin-bottom: 0px;
 }
 
 .ServiceItemBorder {
@@ -11,12 +16,6 @@
   font-size: 1.0em;
   padding: 5px;
   border-radius: 5px;
-  margin-bottom: 8px;
-  margin-top: 0px;
-}
-
-.ServiceItemBorder:last-of-type {
-  margin-bottom: 0px;
 }
 
 .lastOk {
