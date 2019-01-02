@@ -559,6 +559,8 @@ class Base extends Component {
     return (
       <div className="Base">
 
+        {/* settings */}
+
         <Settings
           baseUrl={this.state.baseUrl}
           baseUrlChanged={this.baseUrlChanged.bind(this)}
@@ -566,6 +568,8 @@ class Base extends Component {
           settingsFields={this.settingsFields}
           updateStateFromSettings={this.updateStateFromSettings.bind(this)}
         />
+
+        {/* flynn */}
 
         {this.state.flynnEnabled && <div className="FlynnWrapper">
           <Flynn
@@ -577,37 +581,49 @@ class Base extends Component {
           />
         </div>}
 
+        {/* header */}
+
         <div className="HeaderArea">
           <div className="ApplicationName">{this.state.titleString}</div>
           
-          <div className="color-gray">
+          {/*<div className="color-gray">
             <strong>{howManyHosts}</strong> hosts{' '}
             (<strong>{this.state.hostProblemsArray.length}</strong> problems)
             {', '}
             <strong>{howManyServices}</strong> services{' '}
             (<strong>{this.state.serviceProblemsArray.length}</strong> problems)
-          </div>
+          </div>*/}
         </div>
 
+        {/* footer */}
+
         <div className="FooterArea">
-            
           <div>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available">NagiosTV v{this.state.latestVersionString} available</span></span>}
           </div>
-
         </div>
 
-        <div style={{ marginTop: '95px' }}>
+        {/* spacer to counteract the floating header */}
+
+        <div style={{ marginTop: '75px' }}>
         </div>
+
+        {/*<div style={{ marginTop: '15px' }}>
+        Summary Area
+        </div>*/}
+
+        {/* hosts */}
 
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
           
-          <strong>{howManyHosts}</strong> hosts{' '}
-          (<strong>{this.state.hostProblemsArray.length}</strong> problems)
-          
+          <span className="service-summary-title">
+            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
+            (<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})
+          </span>
+
           <div className="service-hide-problems">
 
             <Checkbox className="Checkbox down"
@@ -678,11 +694,15 @@ class Base extends Component {
           howManyHostFlapping={howManyHostFlapping}
         />
 
+        {/* services */}
+
         {this.state.isCookieLoaded && <div className="service-summary color-orange">
           
-          <strong>{howManyServices}</strong> services{' '}
-          (<strong>{this.state.serviceProblemsArray.length}</strong> problems)
-          
+          <span className="service-summary-title">
+            <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
+            (<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})
+          </span>
+
           <div className="service-hide-problems">
 
             <Checkbox className="Checkbox warning"
@@ -752,8 +772,14 @@ class Base extends Component {
           howManyServiceFlapping={howManyServiceFlapping}
         />
         
-        <div style={{ marginTop: '20px' }} className="color-orange margin-top-10">
-          <strong>{this.state.alertlist.length}</strong> alerts in the past <strong>{this.state.alertDaysBack}</strong> days
+        {/* history (alertlist) */}
+
+        <div className="history-spacer"></div>
+
+        <div className="history-summary color-orange margin-top-10">
+          <span className="service-summary-title">
+            <strong>History: {this.state.alertlist.length}</strong> alerts in the past <strong>{this.state.alertDaysBack}</strong> days
+          </span>
         </div>
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}

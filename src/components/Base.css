@@ -39,7 +39,7 @@ input[type=text] {
   top: 0;
   left: 0;
   right: 0;
-  min-height: 80px;
+  min-height: 40px;
   z-index: 10;
   background-color: rgba(20,20,20,0.8);
   border-bottom: 1px solid #333;
@@ -94,10 +94,27 @@ input[type=text] {
   margin-top: 18px;
   margin-bottom: 18px;
   font-size: 1.1em;
+  clear: both;
+  overflow: hidden;
+}
+.service-summary-title {
+  font-size: 1.2em;
+}
+.history-spacer {
+  margin-top: 20px;
+  margin-left: -20px;
+  margin-right: -20px;
+  border-top: 2px solid #333;
+  background-color: #222;
+  height: 10px;
+}
+.history-summary {
+  margin-top: 20px;
 }
 
 .service-hide-problems {
   float: right;
+  line-height: 30px;
 }
 .service-hide-problems label {
   border: 1px solid gray;
@@ -105,6 +122,7 @@ input[type=text] {
   padding: 3px 7px;
   background-color: rgba(250, 250, 250, 0.3);
   font-size: 0.9em;
+  opacity: 0.7;
 }
 .service-hide-problems label > input[type=checkbox] {
   margin-left: 3px;
