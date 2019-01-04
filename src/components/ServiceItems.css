@@ -5,6 +5,9 @@
 .ServiceItem {
   margin-top: 0px;
   margin-bottom: 8px;
+  position: relative;
+  border: 3px solid gray;
+  border-radius: 5px;
 }
 
 .ServiceItem:last-of-type {
@@ -12,7 +15,7 @@
 }
 
 .ServiceItemBorder {
-  border: 1px solid gray;
+  /*border: 1px solid gray;*/
   font-size: 1.0em;
   padding: 5px;
   border-radius: 5px;

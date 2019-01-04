@@ -202,7 +202,7 @@ input[type=text] {
   transition: all 500ms ease-in;
 }
 .some-down-items.hidden {
-
+  opacity: 0;
 }
 .some-down-items.visible {
   max-height: 36px;

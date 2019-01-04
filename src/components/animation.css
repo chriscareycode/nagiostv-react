@@ -1,5 +1,5 @@
 .example-enter {
-  opacity: 0.01;
+  opacity: 0.1;
   max-height: 0px;
 }
 
@@ -15,7 +15,7 @@
 }
 
 .example-leave.example-leave-active {
-  opacity: 0.01;
+  opacity: 0.1;
   max-height: 0px;
   transition: all 500ms ease-in;
 }

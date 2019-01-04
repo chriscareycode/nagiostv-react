@@ -87,8 +87,8 @@ class ServiceItems extends Component {
             });
 
             return (
-              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem`}>
-                <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
+              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem ${serviceBorderClass(e.status)}`}>
+                <div className={`ServiceItemBorder`}>
                   <div style={{ float: 'right', textAlign: 'right' }}>
                     {1 === 2 && <span>({e.state_type})</span>}
                     {nagiosStateType(e.state_type)}{' '}
