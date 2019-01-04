@@ -4,7 +4,11 @@
 }
 
 .HostItem {
+  margin-bottom: 8px;
+}
 
+.HostItem:last-of-type {
+  margin-bottom: 0px;
 }
 
 .HostItemBorder {
@@ -12,10 +16,7 @@
   font-size: 1.0em;
   padding: 4px;
   border-radius: 5px;
-  margin-bottom: 8px;
-  margin-top: 0px;
 }
 .HostItemBorder:last-of-type {
-  margin-bottom: 0px;
-
+  
 }
