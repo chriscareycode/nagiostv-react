@@ -516,7 +516,7 @@ class Base extends Component {
             howManyServiceScheduled++;
           }
           if (this.state.servicelist[host][service].is_flapping) {
-            howManyHostFlapping++;
+            howManyServiceFlapping++;
           }
         });
       });
