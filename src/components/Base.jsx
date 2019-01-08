@@ -20,6 +20,7 @@ class Base extends Component {
     currentVersionString: '0.2.6',
     latestVersion: 0,
     latestVersionString: '',
+    lastVersionCheckTime: 0,
 
     isCookieLoaded: false, // I have this to render things only after cookie is loaded
 
@@ -83,6 +84,7 @@ class Base extends Component {
     'titleString',
     'baseUrl',
     'versionCheckDays',
+    'lastVersionCheckTime',
     'alertDaysBack',
     'alertMaxItems',
     // optionally hide some items
@@ -424,6 +426,20 @@ class Base extends Component {
   }
 
   versionCheck() {
+
+    // if the last version check was recent then do not check again
+    // this prevents version checks if you refresh the UI over and over
+    // as is common on TV rotation
+    const oneDayInSeconds = (86400 - 3600) * 1000;
+    if (this.state.lastVersionCheckTime !== 0) {
+      const diff = new Date().getTime() - this.state.lastVersionCheckTime;
+      //console.log('version check diff', diff);
+      if (diff < oneDayInSeconds) {
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
+        return;
+      }
+    }
+
     const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
     fetch(url)
       .then((response) => {
@@ -440,7 +456,10 @@ class Base extends Component {
 
         this.setState({
           latestVersion: myJson.version,
-          latestVersionString: myJson.version_string
+          latestVersionString: myJson.version_string,
+          lastVersionCheckTime: new Date().getTime()
+        }, () => {
+          this.saveCookie();
         });
       })
   }
