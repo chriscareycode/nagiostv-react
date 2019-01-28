@@ -98,7 +98,7 @@ class HostItems extends Component {
                     <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
                   </div>
                   <div style={{ textAlign: 'left' }}>
-                    {e.name}{' '}
+                    <strong>{e.name}</strong>{' '}
                     <span className={hostTextClass(e.status)}>
                       <span className="color-orange">{e.description}</span>{' - '}
                       {e.plugin_output}
