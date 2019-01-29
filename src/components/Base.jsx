@@ -212,7 +212,7 @@ class Base extends Component {
 
       // Make an array from the object
       const servicelist = myJson && myJson.data && myJson.data.servicelist;
-      const serviceProblemsArray = [];
+      let serviceProblemsArray = [];
 
       if (servicelist) {
         Object.keys(servicelist).map((k) => {
@@ -228,6 +228,13 @@ class Base extends Component {
           });
         });
       }
+
+      // sort the service problems list by last ok, newest first
+      serviceProblemsArray = serviceProblemsArray.sort((a, b) => {
+        if (a.last_time_ok < b.last_time_ok) { return 1; }
+        if (a.last_time_ok > b.last_time_ok) { return -1; }
+        return 0;
+      });
 
       // check for old data (nagios down?)
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
@@ -284,7 +291,7 @@ class Base extends Component {
       if (myJson && myJson.data && myJson.data.hostlist) {
         hostlist = myJson.data.hostlist;
       }
-      const hostProblemsArray = [];
+      let hostProblemsArray = [];
 
       if (hostlist) {
         Object.keys(hostlist).map((k) => {
@@ -296,6 +303,13 @@ class Base extends Component {
           }
         });
       }
+
+      // sort the service problems list by last ok, newest first
+      hostProblemsArray = hostProblemsArray.sort((a, b) => {
+        if (a.last_time_up < b.last_time_up) { return 1; }
+        if (a.last_time_up > b.last_time_up) { return -1; }
+        return 0;
+      });
 
       // check for old data (nagios down?)
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
