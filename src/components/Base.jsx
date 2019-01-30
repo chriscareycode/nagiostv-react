@@ -64,12 +64,16 @@ class Base extends Component {
     hideServiceScheduled: false,
     hideServiceFlapping: false,
 
+    serviceSortOrder: 'newest',
+
     hideHostDown: false,
     hideHostUnreachable: false,
     hideHostDownPending: false,
     hideHostAcked: false,
     hideHostScheduled: false,
     hideHostFlapping: false,
+
+    hostSortOrder: 'newest',
 
     // fun stuff
     flynnEnabled: false,
@@ -87,9 +91,6 @@ class Base extends Component {
     'lastVersionCheckTime',
     'alertDaysBack',
     'alertMaxItems',
-    // optionally hide some items
-    'hideAckedProblems',
-    'hideDowntimeProblems',
 
     'hideServiceWarning',
     'hideServiceUnknown',
@@ -98,12 +99,16 @@ class Base extends Component {
     'hideServiceScheduled',
     'hideServiceFlapping',
 
+    'serviceSortOrder',
+
     'hideHostDown',
     'hideHostUnreachable',
     'hideHostDownPending',
     'hideHostAcked',
     'hideHostScheduled',
     'hideHostFlapping',
+
+    'hostSortOrder',
   
     // fun stuff
     'flynnEnabled',
@@ -113,6 +118,12 @@ class Base extends Component {
     'flynnCssScale',
     'showEmoji'
   ];
+
+  constructor(props) {
+    super(props);
+
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+  }
 
   componentDidMount() {
     this.getCookie();
@@ -230,9 +241,14 @@ class Base extends Component {
       }
 
       // sort the service problems list by last ok, newest first
+      // TODO: this only updates on the fetch interval.. so when the user changes it
+      // they do not see the sort order change for a few seconds.
+      // It might be nice to decouple it
+      let sort = 1;
+      if (this.state.serviceSortOrder === 'oldest') { sort = -1; }
       serviceProblemsArray = serviceProblemsArray.sort((a, b) => {
-        if (a.last_time_ok < b.last_time_ok) { return 1; }
-        if (a.last_time_ok > b.last_time_ok) { return -1; }
+        if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
+        if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
         return 0;
       });
 
@@ -305,9 +321,14 @@ class Base extends Component {
       }
 
       // sort the service problems list by last ok, newest first
+      // TODO: this only updates on the fetch interval.. so when the user changes it
+      // they do not see the sort order change for a few seconds.
+      // It might be nice to decouple it
+      let sort = 1;
+      if (this.state.hostSortOrder === 'oldest') { sort = -1; }
       hostProblemsArray = hostProblemsArray.sort((a, b) => {
-        if (a.last_time_up < b.last_time_up) { return 1; }
-        if (a.last_time_up > b.last_time_up) { return -1; }
+        if (a.last_time_up < b.last_time_up) { return 1 * sort; }
+        if (a.last_time_up > b.last_time_up) { return -1 * sort; }
         return 0;
       });
 
@@ -483,9 +504,9 @@ class Base extends Component {
     // console.log(propName, dataType);
     // console.log('event.target', event.target);
     // console.log('event.target.checked', event.target.checked);
-    //console.log(this.state[propName]);
-    //console.log('value', event.target.value);
-    //console.log('checked', event.target.checked);
+    // console.log(this.state[propName]);
+    // console.log('value', event.target.value);
+    // console.log('checked', event.target.checked);
 
     //event.preventDefault();
     // we put this to solve the bubble issue where the click goes through the label then to the checkbox
@@ -501,6 +522,20 @@ class Base extends Component {
     //console.log('setting state ' + propName + ' to ', val);
     this.setState({
       [propName]: val
+    }, () => {
+      // Save to cookie AFTER state is set
+      this.saveCookie();
+    });
+  }
+
+  handleSelectChange(event) {
+    // console.log('handleSelectChange Base.jsx');
+    // console.log(event);
+    // console.log(event.target.getAttribute('varname'));
+    // console.log('event.target.value', event.target.value);
+    const varname = event.target.getAttribute('varname');
+    this.setState({
+      [varname]: event.target.value
     }, () => {
       // Save to cookie AFTER state is set
       this.saveCookie();
@@ -659,6 +694,11 @@ class Base extends Component {
 
           <div className="service-hide-problems">
 
+            <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+
             <Checkbox className="Checkbox down"
               handleChange={this.handleChange}
               stateName={'hideHostDown'}
@@ -737,6 +777,11 @@ class Base extends Component {
           </span>
 
           <div className="service-hide-problems">
+
+            <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
 
             <Checkbox className="Checkbox warning"
               handleChange={this.handleChange}
