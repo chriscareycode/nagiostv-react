@@ -58,6 +58,8 @@ Development - Committing your changes to this project
 
 TODO
 ------------
+Mobile support. It looks a little wonky.
+Save settings on the server so all clients don't have to configure.
 Show longest quiet period
 
 History
