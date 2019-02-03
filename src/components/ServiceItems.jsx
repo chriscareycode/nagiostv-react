@@ -48,7 +48,7 @@ class ServiceItems extends Component {
       <div className="ServiceItems">
 
         <div className={`all-ok-item ${this.props.serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-          <span className="margin-left-10 display-inline-block color-green">All {this.props.howManyServices} services OK</span>{' '}
+          <span className="margin-left-10 display-inline-block color-green">All {this.props.howManyServices} services are OK</span>{' '}
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>

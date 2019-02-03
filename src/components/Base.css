@@ -1,7 +1,6 @@
 .Base {
   text-align: left;
   margin: 0 15px 0 15px;
-  overflow: hidden;
 }
 input[type=text] {
   width: 50%;
@@ -47,7 +46,7 @@ input[type=text] {
   font-size: 1.1em;
 }
 .HeaderArea > div {
-  margin: 10px;
+  margin: 10px 0 10px 15px;
 }
 
 .FooterArea {
@@ -63,6 +62,14 @@ input[type=text] {
 }
 .FooterArea > div {
   margin: 10px;
+}
+.FooterAreaLeft {
+  position: absolute;
+  left: 0;
+}
+.FooterAreaRight {
+  position: absolute;
+  right: 50px;
 }
 
 .ApplicationName {
@@ -92,30 +99,39 @@ input[type=text] {
 }
 
 .service-summary {
-  margin-top: 18px;
-  margin-bottom: 18px;
+  margin-top: 8px;
+  margin-bottom: 10px;
   font-size: 1.1em;
   clear: both;
   overflow: hidden;
 }
 .service-summary-title {
-  font-size: 1.2em;
+  font-size: 1.3em;
+  margin-bottom: 5px;
 }
 .history-spacer {
   margin-top: 20px;
-  margin-left: -20px;
-  margin-right: -20px;
-  border-top: 2px solid #333;
+  margin-left: 0px;
+  margin-right: 0px;
+  border-radius: 4px;
+  /*border-top: 2px solid #333;*/
   background-color: #222;
   height: 10px;
+  /*border: 1px solid orange;*/
 }
 .history-summary {
   margin-top: 20px;
 }
 
 .service-hide-problems {
-  float: right;
+  margin-top: 5px;
   line-height: 30px;
+}
+.service-hide-problems select {
+  background-color: orange;
+  font-size: 0.9em;
+  white-space: nowrap;
+  opacity: 0.7;
 }
 .service-hide-problems label {
   border: 1px solid gray;
@@ -125,7 +141,10 @@ input[type=text] {
   font-size: 0.9em;
   opacity: 0.7;
 }
-.service-hide-problems label > input[type=checkbox] {
+.service-hide-problems > label > span {
+  /*white-space: nowrap;*/
+}
+.service-hide-problems > label > input[type=checkbox] {
   margin-left: 3px;
   margin-right: 6px;
   font-size: 1em;
@@ -174,6 +193,7 @@ input[type=text] {
 }
 
 .all-ok-item {
+  border: 1px solid #004c00;
   background-color: #111;
   font-size: 1.5em;
   border-radius: 5px;
@@ -186,7 +206,7 @@ input[type=text] {
 
 }
 .all-ok-item.visible {
-  max-height: 34px;
+  max-height: 38px;
   opacity: 1;
 }
 

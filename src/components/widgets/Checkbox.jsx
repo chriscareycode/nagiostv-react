@@ -16,9 +16,11 @@ class Checkbox extends Component {
     
     return (
       <label className={this.props.className} onClick={this.props.handleChange(this.props.stateName, 'checkbox')}>
-	      <input type="checkbox" defaultChecked={this.props.defaultChecked}  />
-	      <strong>{this.props.howMany}</strong> {this.props.howManyText}
-	    </label>
+        <span>
+          <input type="checkbox" defaultChecked={this.props.defaultChecked}  />
+          <strong>{this.props.howMany}</strong> {this.props.howManyText}
+        </span>
+      </label>
     );
   }
 }

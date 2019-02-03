@@ -1,11 +1,12 @@
 .QuietFor {
 	color: lime;
-	padding: 8px 8px;
+	padding: 5px 5px;
 	margin: 20px 0px;
 	text-align: left;
 	background-color: #111;
 	border-radius: 5px;
-	font-size: 1.3em;
+	font-size: 1.1em;
+	border: 1px solid #004c00;
 }
 .QuietForStars {
 	float: right;

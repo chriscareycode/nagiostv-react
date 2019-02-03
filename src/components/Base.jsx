@@ -49,6 +49,8 @@ class Base extends Component {
     // add to settings?
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
+
+    hideFilters: true,
     
     // settings (defaults are set here also)
     titleString: 'NagiosTV',
@@ -666,6 +668,15 @@ class Base extends Component {
         {/* footer */}
 
         <div className="FooterArea">
+          <div className="FooterAreaLeft">
+            <Checkbox className="Checkbox warning"
+              handleChange={this.handleChange}
+              stateName={'hideFilters'}
+              defaultChecked={!this.state.hideFilters}
+              howManyText={'Show Filters'}
+            />
+          </div>
+          <div className="FooterAreaRight">Settings</div>
           <div>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
@@ -676,7 +687,7 @@ class Base extends Component {
 
         {/* spacer to counteract the floating header */}
 
-        <div style={{ marginTop: '75px' }}>
+        <div style={{ marginTop: '60px' }}>
         </div>
 
         {/*<div style={{ marginTop: '15px' }}>
@@ -689,10 +700,10 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
-            (<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})
+            <span style={{ fontSize: '0.8em' }}>(<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})</span>
           </span>
 
-          <div className="service-hide-problems">
+          {!this.state.hideFilters && <div className="service-hide-problems">
 
             <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
               <option value="newest">Newest First</option>
@@ -747,7 +758,8 @@ class Base extends Component {
               howManyText={'FLAPPING'}
             />
 
-          </div>
+          </div>}
+
         </div>}
         
         {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
@@ -773,10 +785,10 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
-            (<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})
+            <span style={{ fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
           </span>
 
-          <div className="service-hide-problems">
+          {!this.state.hideFilters && <div className="service-hide-problems">
 
             <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
               <option value="newest">Newest First</option>
@@ -831,7 +843,8 @@ class Base extends Component {
               howManyText={'FLAPPING'}
             />
 
-          </div>
+          </div>}
+
         </div>}
         
         {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}

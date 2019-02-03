@@ -36,6 +36,7 @@ class AlertItems extends Component {
             <div key={'alert-' + host + '-' + e.object_type + '-' + e.timestamp + '-' + i}>
               {/* show quiet for */}
               {(i > 1) && ifQuietFor(e.timestamp, this.props.items[i-1].timestamp, 60) && <QuietFor nowtime={e.timestamp} prevtime={this.props.items[i-1].timestamp} showEmoji={this.props.showEmoji} />}
+              {/* show alert item */}
               <div style={{ ...defaultStyles }} className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
                 <div style={{ float: 'right' }}>
                   {1 === 2 && <span>({e.state_type})</span>}
