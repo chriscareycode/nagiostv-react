@@ -2,7 +2,7 @@
   "name": "nagiostv",
   "version": "1.3.0",
   "private": true,
-  "homepage": "/nagios/nagiostv/",
+  "homepage": "./",
   "dependencies": {
     "jquery": "^3.3.1",
     "js-cookie": "^2.2.0",
