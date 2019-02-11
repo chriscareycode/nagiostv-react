@@ -57,7 +57,7 @@ class Flynn extends Component {
       classes = this.smileClasses;
     } else if (howManyDown === 0) {
       classes = this.happyClasses;
-    } else if (howManyDown > this.props.flynnAngryAt && howManyDown < this.props.flynnBloodyAt) {
+    } else if (howManyDown >= this.props.flynnAngryAt && howManyDown < this.props.flynnBloodyAt) {
       classes = this.angryClasses;
     } else if (howManyDown >= this.props.flynnBloodyAt) {
       classes = this.bloodyClasses;
