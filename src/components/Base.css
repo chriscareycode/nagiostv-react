@@ -34,6 +34,9 @@ input[type=text] {
   border-radius: 4px;
 }
 
+
+/* Header */
+
 .HeaderArea {
   position: fixed;
   top: 0;
@@ -49,12 +52,19 @@ input[type=text] {
   margin: 10px 0 10px 15px;
 }
 
+.ApplicationName {
+  font-size: 1.3em;
+  margin-right: 10px;
+}
+
+/* Footer */
+
 .FooterArea {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 40px;
+  min-height: 60px;
   z-index: 10;
   background-color: rgba(20,20,20,0.8);
   border-top: 1px solid #333;
@@ -66,16 +76,17 @@ input[type=text] {
 .FooterAreaLeft {
   position: absolute;
   left: 0;
+  bottom: 0px;
 }
 .FooterAreaRight {
   position: absolute;
   right: 50px;
+  bottom: 0px;
 }
 
-.ApplicationName {
-  font-size: 1.3em;
-  margin-right: 10px;
-}
+
+
+
 
 .SettingsButtonDiv {
   position: absolute;
@@ -91,15 +102,14 @@ input[type=text] {
   margin-bottom: 7px;
 }
 
-.FlynnWrapper {
-  position: fixed;
-  top: 10px;
-  right: 18px;
-  z-index: 11;
-}
+
+
+
+
+/* service summary (17 hosts (0 problems)) */
 
 .service-summary {
-  margin-top: 8px;
+  margin-top: 10px;
   margin-bottom: 10px;
   font-size: 1.1em;
   clear: both;
@@ -109,19 +119,44 @@ input[type=text] {
   font-size: 1.3em;
   margin-bottom: 5px;
 }
+
+/* all ok */
+
+.all-ok-item {
+  border: 1px solid #004c00;
+  background-color: #111;
+  font-size: 1.5em;
+  border-radius: 5px;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+  transition: all 500ms ease-in;
+}
+.all-ok-item.hidden {
+
+}
+.all-ok-item.visible {
+  max-height: 38px;
+  opacity: 1;
+}
+
+/* history */
+
+/*
 .history-spacer {
   margin-top: 20px;
   margin-left: 0px;
   margin-right: 0px;
   border-radius: 4px;
-  /*border-top: 2px solid #333;*/
   background-color: #222;
   height: 10px;
-  /*border: 1px solid orange;*/
 }
+*/
 .history-summary {
   margin-top: 20px;
 }
+
+/**/
 
 .service-hide-problems {
   margin-top: 5px;
@@ -192,24 +227,6 @@ input[type=text] {
   background-color: rgba(250, 250, 250, 0.3);
 }
 
-.all-ok-item {
-  border: 1px solid #004c00;
-  background-color: #111;
-  font-size: 1.5em;
-  border-radius: 5px;
-  overflow: hidden;
-  max-height: 0px;
-  opacity: 0;
-  transition: all 500ms ease-in;
-}
-.all-ok-item.hidden {
-
-}
-.all-ok-item.visible {
-  max-height: 38px;
-  opacity: 1;
-}
-
 /* these some-down-items live inside HostItems and ServiceItems */
 /* probably should move to its own component */
 .some-down-items {
@@ -274,6 +291,17 @@ input[type=text] {
   background-color: rgba(250, 250, 250, 0.3);
 }
 
+
+/* fun stuff */
+
+.FlynnWrapper {
+  position: fixed;
+  top: 10px;
+  right: 18px;
+  z-index: 11;
+}
+
+/* more footer */
 
 .update-available {
   background-color: yellow;

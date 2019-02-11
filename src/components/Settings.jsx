@@ -1,3 +1,5 @@
+/*eslint react/no-direct-mutation-state: "off"*/
+
 import React, { Component } from 'react';
 import './Settings.css';
 import Cookie from 'js-cookie';
@@ -13,8 +15,10 @@ class Settings extends Component {
   constructor(props) {
     super(props);
 
+    // bind functions
     this.toggle = this.toggle.bind(this);
     this.saveCookie = this.saveCookie.bind(this);
+    this.deleteCookie = this.deleteCookie.bind(this);
 
     // load the settingsFields into state
     this.props.settingsFields.forEach(field => this.state[field] = this.props.settings[field]);
@@ -52,6 +56,18 @@ class Settings extends Component {
     }, 3000);
   }
 
+  deleteCookie() {
+    Cookie.remove('settings');
+
+    // show a message then clear the message
+    this.setState({ saveMessage: 'Cookie deleted' });
+    setTimeout(() => {
+        this.setState({ saveMessage: '' });
+    }, 3000);
+
+    console.log('Cookie deleted.');
+  }
+
   // we write this as an anonymous function so we wont have to bind in render
 
   handleChange = (propName, dataType) => (event) => {
@@ -75,13 +91,15 @@ class Settings extends Component {
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
       	<div className="SettingsSmall" onClick={this.toggle}>
-            <img src={SettingsIcon} />  
+            <img src={SettingsIcon} alt="settings icon" />  
         </div>
         <div className="SettingsBig">
             <h2>Settings</h2>
             <div className="SettingsScroll">
 
-              <div style={{ marginBottom: '10px' }}>Settings are saved into a cookie in your browser and are not saved on the server.</div>
+              <div style={{ marginBottom: '10px' }}>
+                Settings are saved into a cookie in your browser and are not saved on the server.
+              </div>
 
               <div className="SettingsSection">
                 <span>Title: </span>
@@ -127,32 +145,46 @@ class Settings extends Component {
                     </select>
                 </div>
                 {this.state.flynnEnabled && <div>
-                  <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /></div>
-                  <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /></div>
+                  <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</div>
+                  <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</div>
                   <div>
                     Flynn CSS scale <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
-                    <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span>
+                    <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
                   </div>
                 </div>}
               </div>
 
               <div className="SettingsSection">
-                Show Emojis:{' '}
+                Emojis:{' '}
                 <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                 </select>
               </div>
 
+              <h5>Save and Close</h5>
+
               <div style={{marginTop: '20px'}}>
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
+ 
+                <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
+
+                <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>
+
                 {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}
               </div>
-              <div className="SettingSave">
-                <button onClick={this.toggle}>Close Settings</button>
+              
+
+
+              <div className="SaveToServerText">
+                <h5>Saving these settings on the server</h5>
+                NagiosTV does not have rights to create a config file on the server. To save these settings on the server, and share this configuration
+                with all users, create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
               </div>
+              <div className="raw-json-settings">{JSON.stringify(this.props.settings)}</div>
 
             </div>
+
             
         </div>
       </div>

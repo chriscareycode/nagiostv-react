@@ -1,4 +1,4 @@
-
+/*eslint no-unreachable: "off"*/
 
 export function nagiosHostStatus(status) {
   switch(status) {

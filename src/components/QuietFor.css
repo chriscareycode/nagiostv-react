@@ -10,7 +10,10 @@
 }
 .QuietForStars {
 	float: right;
+	position: relative;
+	top: 2px;
 	opacity: 0.4;
+	font-size: 0.9em;
 }
 .QuietForClock {
 	margin-right: 5px;

@@ -1,3 +1,5 @@
+/*eslint array-callback-return: "off"*/
+
 import React, { Component } from 'react';
 import './Base.css';
 import ServiceItems from './ServiceItems.jsx';
@@ -16,12 +18,13 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 20,
-    currentVersionString: '0.2.9',
+    currentVersion: 21,
+    currentVersionString: '0.3.0',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
 
+    isRemoteSettingsLoaded: false,
     isCookieLoaded: false, // I have this to render things only after cookie is loaded
 
     servicelistError: false,
@@ -90,7 +93,6 @@ class Base extends Component {
     'titleString',
     'baseUrl',
     'versionCheckDays',
-    'lastVersionCheckTime',
     'alertDaysBack',
     'alertMaxItems',
 
@@ -128,8 +130,9 @@ class Base extends Component {
   }
 
   componentDidMount() {
-    this.getCookie();
 
+    this.getRemoteSettings();
+    //this.getCookie();
     
     setTimeout(() => {
       this.fetchServiceData();
@@ -174,8 +177,63 @@ class Base extends Component {
     }, 2000);
   }
 
+  /* ************************************************************************************ */
+  /* settings related functions such as fetching settings from server, and loading cookie */
+  /* the approach I'm going to take with settings is to first load the settings from the server.
+  either the settings load, or they fail. in either case I then check for cookie and apply 
+  those over top. so cookie settings will override server settings. There will be a delete
+  cookie button to help clear any local settings once server side settings become established. */
+  /* ************************************************************************************ */
+
+  getRemoteSettings() {
+    const url = 'client-settings.json';
+
+    //console.log('Requesting Service Data: ' + url);
+
+    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+      // console.log('getRemoteSettings() ajax success');
+      // console.log(myJson);
+      // console.log(textStatus);
+      // console.log(jqXHR);
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
+        // this.setState({
+        //   servicelistError: true,
+        //   servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        // });
+        this.getCookie();
+        return;
+      }
+
+      // Got good server settings
+      console.log('Found server default settings client-settings.json - Loading default settings:', myJson);
+      // load them
+      this.settingsFields.forEach(setting => this.updateIfExist(myJson, setting));
+      this.setState({ isRemoteSettingsLoaded: true });
+
+      this.getCookie();
+
+    }).catch((err) => {
+      console.log('getRemoteSettings() ajax ERROR:', err);
+      console.log('Skipping server settings.');
+      this.getCookie();
+    });
+  }
+
+  updateIfExist(cookieObject, prop) {
+    if (cookieObject.hasOwnProperty(prop)) {
+      //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+      this.setState({ [prop]: cookieObject[prop] });
+    }
+  }
+
   getCookie() {
     const cookie = Cookie.get('settings');
+    //console.log('settings Cookie is', cookie);
+    if (!cookie) { return; }
+
     let cookieObject = {};
     try {
       cookieObject = JSON.parse(cookie);
@@ -183,14 +241,15 @@ class Base extends Component {
     } catch (e) {
       //console.log('No cookie');
     }
-    const updateIfExist = (prop) => {
-      if (cookieObject.hasOwnProperty(prop)) {
-        //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
-        this.setState({ [prop]: cookieObject[prop] });
-      }
-    };
+    // const updateIfExist = (prop) => {
+    //   if (cookieObject.hasOwnProperty(prop)) {
+    //     //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+    //     this.setState({ [prop]: cookieObject[prop] });
+    //   }
+    // };
     if (cookieObject) {
-      this.settingsFields.forEach(setting => updateIfExist(setting));
+      console.log('Found cookie. Loading settings:', cookieObject);
+      this.settingsFields.forEach(setting => this.updateIfExist(cookieObject, setting));
       this.setState({ isCookieLoaded: true });
     }
   }
@@ -463,14 +522,15 @@ class Base extends Component {
   }
 
   versionCheck() {
-
     // if the last version check was recent then do not check again
     // this prevents version checks if you refresh the UI over and over
     // as is common on TV rotation
+    const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
+    //console.log('lastVersionCheckTime is', lastVersionCheckTime);
+
     const oneDayInSeconds = (86400 - 3600) * 1000;
-    if (this.state.lastVersionCheckTime !== 0) {
-      const diff = new Date().getTime() - this.state.lastVersionCheckTime;
-      //console.log('version check diff', diff);
+    if (lastVersionCheckTime !== 0) {
+      const diff = new Date().getTime() - lastVersionCheckTime;
       if (diff < oneDayInSeconds) {
         console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
         return;
@@ -480,23 +540,20 @@ class Base extends Component {
     const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
     fetch(url)
       .then((response) => {
-        //console.log(response);
         if (response.status === 200) {
-          //this.setState({alertlistError: false, alertlistErrorMessage: ''});
           return response.json();
         }
       })
       .then((myJson) => {
-
         console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
-        //console.log(myJson);
 
         this.setState({
           latestVersion: myJson.version,
           latestVersionString: myJson.version_string,
           lastVersionCheckTime: new Date().getTime()
         }, () => {
-          this.saveCookie();
+          
+          Cookie.set('lastVersionCheckTime', new Date().getTime());
         });
       })
   }
@@ -626,6 +683,8 @@ class Base extends Component {
       });
     }
 
+    const settingsLoaded = this.state.isRemoteSettingsLoaded || this.state.isCookieLoaded;
+
     return (
       <div className="Base">
 
@@ -696,7 +755,7 @@ class Base extends Component {
 
         {/* hosts */}
 
-        {this.state.isCookieLoaded && <div className="service-summary color-orange">
+        {settingsLoaded && <div className="service-summary color-orange">
           
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
@@ -781,7 +840,7 @@ class Base extends Component {
 
         {/* services */}
 
-        {this.state.isCookieLoaded && <div className="service-summary color-orange">
+        {settingsLoaded && <div className="service-summary color-orange">
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
@@ -865,7 +924,7 @@ class Base extends Component {
         
         {/* history (alertlist) */}
 
-        <div className="history-spacer"></div>
+        {/* <div className="history-spacer"></div> */}
 
         <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">
@@ -883,6 +942,8 @@ class Base extends Component {
 
         <br />
         <br />
+        <br />
+        
       </div>
     );
   }

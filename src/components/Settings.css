@@ -49,8 +49,14 @@
 .SettingsBox.open > .SettingsBig {
     display: block;
 }
-.SettingsBox > .SettingsBig > h2 {
+.SettingsBox > .SettingsBig h2 {
     font-size: 1.2em;
+    color: yellow;
+}
+.SettingsBox > .SettingsBig h5 {
+    font-size: 1.1em;
+    margin: 10px 0px;
+    color: yellow;
 }
 
 .SettingsBox select {
@@ -62,14 +68,8 @@
     height: calc(100vh - 100px);
     margin-top: 10px;
 }
-.SettingSave {
-    /*text-align: right;
-    position: absolute;
-    right: 15px;
-    bottom: 10px;*/
-    margin-top: 10px;
-}
-.SettingSave > button {
+
+.SettingsCloseButton {
     background-color: #333;
     color: red;
     font-size: 1.1em;
@@ -77,7 +77,7 @@
     border: 2px solid red;
     padding: 5px 10px;
     cursor: pointer;
-
+    margin-left: 10px;
 }
 .SettingSaveMessage {
     margin-left: 20px;
@@ -92,6 +92,17 @@
     padding: 5px 10px;
     cursor: pointer;
 }
+.SettingsDeleteCookieButton {
+    background-color: #333;
+    color: orange;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: 2px solid orange;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
 .SettingsSection {
     border: 1px solid #eee;
     border-radius: 5px;
@@ -101,4 +112,17 @@
 }
 .SettingsSection button {
     
+}
+
+.raw-json-settings {
+    border: 2px solid orange;
+    margin-top: 10px;
+    margin-right: 20px;
+    width: calc(100% - 5px);
+    min-height: 100px;
+    word-wrap: break-word;
+}
+
+.SaveToServerText {
+    margin-top: 10px;
 }

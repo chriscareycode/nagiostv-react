@@ -4,7 +4,7 @@ import './ServiceItems.css';
 import './AlertItems.css';
 import { prettyDateTime } from '../helpers/moment.js';
 import { alertTextClass, alertBorderClass } from '../helpers/colors.js';
-import { nagiosAlertState, nagiosAlertStateType, nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
+import { nagiosAlertState, nagiosAlertStateType } from '../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
 
 const defaultStyles = {
