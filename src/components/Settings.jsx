@@ -88,6 +88,10 @@ class Settings extends Component {
   }
 
   render() {
+
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
       	<div className="SettingsSmall" onClick={this.toggle}>
@@ -181,7 +185,7 @@ class Settings extends Component {
                 NagiosTV does not have rights to create a config file on the server. To save these settings on the server, and share this configuration
                 with all users, create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
               </div>
-              <div className="raw-json-settings">{JSON.stringify(this.props.settings)}</div>
+              <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
 
             </div>
 
