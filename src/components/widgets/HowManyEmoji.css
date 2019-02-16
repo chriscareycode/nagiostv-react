@@ -1,0 +1,29 @@
+.HowManyEmoji {
+	display: inline-block;
+}
+.HowManyEmojiItem:first-of-type {
+	margin-left: 0px;
+}
+.HowManyEmojiItem {
+	display: inline-block;
+	margin-left: 1px;
+}
+.HowManyEmojiItemProblem {
+	
+}
+
+@media only screen and (max-device-width: 880px) {
+  .HowManyEmojiItem {
+    font-size: 0.5em;
+  }
+}
+
+@media only screen 
+    and (device-width : 375px) 
+    and (device-height : 812px) 
+    and (-webkit-device-pixel-ratio : 3) {
+
+  .HowManyEmojiItem {
+    font-size: 0.5em;
+  }
+}

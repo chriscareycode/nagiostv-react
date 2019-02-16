@@ -24,3 +24,23 @@
       0% { background-color: orange; }
      100% { background-color: yellow; }
 }
+
+@media only screen and (max-device-width: 880px) {
+  .HowManyItem {
+    height: 4px;
+	width: 4px;
+	border-radius: 2px;
+  }
+}
+
+@media only screen 
+    and (device-width : 375px) 
+    and (device-height : 812px) 
+    and (-webkit-device-pixel-ratio : 3) {
+
+  .HowManyItem {
+    height: 4px;
+	width: 4px;
+	border-radius: 2px;
+  }
+}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import './Checkbox.css';
+import './HistoryChart.css';
 import ReactHighcharts from 'react-highcharts';
 import _ from 'lodash';
 import moment from 'moment';
@@ -14,13 +14,21 @@ class HistoryChart extends Component {
     //   return false;
     // }
     if (nextProps.alertlistLastUpdate !== 0 || (nextProps.alertlistLastUpdate !== this.props.alertlistLastUpdate)) {
-      console.log('something changed');
-      this.updateSeriesFromProps();
+      //console.log('HistoryChart shouldComponentUpdate() alertlistLastUpdate changed');
+      //this.updateSeriesFromProps();
+      this.updateSeriesFromPropsDelay();
       //return true;
     }
     return false;
   }
 
+  updateSeriesFromPropsDelay() {
+    setTimeout(() => {
+      this.updateSeriesFromProps();
+    }, 1000);
+  }
+
+  //TODO: get multiple stacked charts for WARNING and CRITICAL
   updateSeriesFromProps() {
     // chart stuff
     let chart = this.refs.chart.getChart();
@@ -28,23 +36,27 @@ class HistoryChart extends Component {
     //const groupBy = 'hour';
     const groupBy = 'day';
     let groupedResults = _.groupBy(results, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
-    console.log('groupedResults', groupedResults);
+    //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
     let chartData = []
     Object.keys(groupedResults).forEach(group => {
       chartData.push({ x: parseInt(group), y: groupedResults[group].length });
     });
     console.log({chartData});
-    chart.series[0].setData(chartData);
+    chart.series[0].setData(chartData.reverse());
 
+    //TODO: update pointWidth based on howManyItems
+    const howManyItems = this.props.alertDaysBack;
+    const screenWidth = window.innerWidth;
+    const barWidth = (screenWidth / howManyItems).toFixed(0) - 10; // this line probably needs work, I just made up the -10
+    chart.update({
+      plotOptions: {
+        series: {
+          pointWidth: barWidth
+        }
+      }
+    });
     //chart.reflow();
-
-    // let alerts = []
-    // this.props.alertlist.forEach(alert => {
-    //  console.log('alert', alert);
-    //  alerts.push({x: alert.timestamp, y: 1});
-    // });
-    // chart.series[0].setData(alerts);
 
     // console.log('updateSeriesFromProps() alertlist', this.props.alertlist);
     // this.props.alertlist.forEach(alert => {
@@ -72,20 +84,24 @@ class HistoryChart extends Component {
 
   chartConfig = {
     title: '',
+    credits: false,
     chart: {
       backgroundColor:'transparent',
-      height: '200px',
+      height: '170px',
       //spacingTop: 0
     },
 
     legend:{ enabled:false },
 
     xAxis: {
-      type: 'datetime'
+      type: 'datetime',
+      lineColor: '#222'
     },
     yAxis: {
       title: { text: '' },
-      gridLineColor: '#222222'
+      gridLineColor: '#222222',
+      endOnTick: false,
+      maxPadding: 0.1
     },
     // xAxis: [{
     //   type: 'datetime',
@@ -131,14 +147,15 @@ class HistoryChart extends Component {
 
     series: [{
       type: 'column',
-      name: 'seriestitle'
+      name: 'alerts',
+      //color: 'lightblue'
     }]
   };
 
   render() {
     
     return (
-      <div style={{ paddingRight: '10px' }}>
+      <div className="HistoryChart" style={{ paddingRight: '10px' }}>
         <ReactHighcharts config={this.chartConfig} ref="chart"></ReactHighcharts>
       </div>
     );

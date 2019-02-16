@@ -69,6 +69,7 @@ input[type=text] {
   background-color: rgba(20,20,20,0.8);
   border-top: 1px solid #333;
   text-align: center;
+  font-size: 1.0em;
 }
 .FooterArea > div {
   margin: 10px;
@@ -82,6 +83,23 @@ input[type=text] {
   position: absolute;
   right: 50px;
   bottom: 0px;
+}
+
+/* not sure why body doesnt influence this FooterArea font size, maybe because its float? */
+@media only screen and (max-device-width: 480px) {
+  .FooterArea {
+    font-size: 0.9em;
+  }
+}
+
+@media only screen 
+    and (device-width : 375px) 
+    and (device-height : 812px) 
+    and (-webkit-device-pixel-ratio : 3) {
+
+  .FooterArea {
+    font-size: 0.9em;
+  }
 }
 
 

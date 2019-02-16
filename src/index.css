@@ -7,10 +7,9 @@ body {
   font-size: 1.0em;
 }
 
-@media only screen and (max-device-width: 880px) {
+@media only screen and (max-device-width: 480px) {
   body {
-    font-size: 2.5em !important;
-    background-color:yellow;
+    font-size: 0.7em !important;
   }
 }
 
@@ -20,7 +19,6 @@ body {
     and (-webkit-device-pixel-ratio : 3) {
 
   body {
-    font-size: 1.5em !important;
-    background-color: orange;
+    font-size: 0.7em !important;
   }
 }

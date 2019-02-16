@@ -12,7 +12,8 @@ import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
-import HowMany from './HowMany.jsx';
+import HowMany from './widgets/HowMany.jsx';
+import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import HistoryChart from './widgets/HistoryChart.jsx';
 
 class Base extends Component {
@@ -740,7 +741,7 @@ class Base extends Component {
           <div className="FooterAreaRight">Settings</div>
           <div>
             <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
-            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span> - </span>
+            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span><br />
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available">NagiosTV v{this.state.latestVersionString} available</span></span>}
           </div>
@@ -850,7 +851,7 @@ class Base extends Component {
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
             <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
-            <HowMany howMany={howManyServices} howManyDown={this.state.serviceProblemsArray.length} />
+            <HowManyEmoji howMany={howManyServices} howManyDown={this.state.serviceProblemsArray.length} />
           </span>
 
 
@@ -941,6 +942,7 @@ class Base extends Component {
 
         <HistoryChart
           alertlist={this.state.alertlist}
+          alertDaysBack={this.state.alertDaysBack} 
           alertlistLastUpdate={this.state.alertlistLastUpdate}
         />
 
