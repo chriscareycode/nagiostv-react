@@ -1,0 +1,26 @@
+.HowMany {
+	display: inline-block;
+}
+.HowManyItem:first-of-type {
+	margin-left: 0px;
+
+}
+.HowManyItem {
+	/*border: 1px solid green;*/
+	background-color: lime;
+	height: 8px;
+	width: 8px;
+	border-radius: 4px;
+	display: inline-block;
+	margin-left: 5px;
+}
+.HowManyItemProblem {
+	/*border: 1px solid orange;*/
+	background-color: yellow;
+	-webkit-animation: colorPulse 2s infinite alternate;
+}
+
+@-webkit-keyframes colorPulse {
+      0% { background-color: orange; }
+     100% { background-color: yellow; }
+}

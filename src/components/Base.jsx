@@ -12,6 +12,7 @@ import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
+import HowMany from './HowMany.jsx';
 
 class Base extends Component {
 
@@ -759,8 +760,11 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
-            <span style={{ fontSize: '0.8em' }}>(<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})</span>
+            <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})</span>
+            <HowMany howMany={howManyHosts} howManyDown={this.state.hostProblemsArray.length} />
           </span>
+
+          
 
           {!this.state.hideFilters && <div className="service-hide-problems">
 
@@ -844,8 +848,10 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
-            <span style={{ fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
+            <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
+            <HowMany howMany={howManyServices} howManyDown={this.state.serviceProblemsArray.length} />
           </span>
+
 
           {!this.state.hideFilters && <div className="service-hide-problems">
 
