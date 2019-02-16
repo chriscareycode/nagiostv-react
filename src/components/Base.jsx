@@ -13,6 +13,7 @@ import Settings from './Settings.jsx';
 import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
 import HowMany from './HowMany.jsx';
+import HistoryChart from './widgets/HistoryChart.jsx';
 
 class Base extends Component {
 
@@ -937,6 +938,11 @@ class Base extends Component {
             <strong>History: {this.state.alertlist.length}</strong> alerts in the past <strong>{this.state.alertDaysBack}</strong> days
           </span>
         </div>
+
+        <HistoryChart
+          alertlist={this.state.alertlist}
+          alertlistLastUpdate={this.state.alertlistLastUpdate}
+        />
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
 

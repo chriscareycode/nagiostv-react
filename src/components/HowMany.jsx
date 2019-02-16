@@ -19,16 +19,16 @@ class HowMany extends Component {
 
     const res = [...Array(howMany)].map((_, i) => {
       if (i < howManyDown) {
-        return <span className="HowManyItem HowManyItemProblem"></span>;
+        return <span key={i} className="HowManyItem HowManyItemProblem"></span>;
       } else {
-        return <span className="HowManyItem"></span>;
+        return <span key={i} className="HowManyItem"></span>;
       }
     });
 
     return (
-      <div className="HowMany">
+      <React.Fragment>
         {res}
-      </div>
+      </React.Fragment>
     );
   }
 }
