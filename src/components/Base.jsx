@@ -12,7 +12,7 @@ import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
-import HowMany from './widgets/HowMany.jsx';
+//import HowMany from './widgets/HowMany.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import HistoryChart from './widgets/HistoryChart.jsx';
 
@@ -763,7 +763,7 @@ class Base extends Component {
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
             <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})</span>
-            <HowMany howMany={howManyHosts} howManyDown={this.state.hostProblemsArray.length} />
+            {this.state.showEmoji && <HowManyEmoji howMany={howManyHosts} howManyDown={this.state.hostProblemsArray.length} />}
           </span>
 
           
@@ -851,7 +851,7 @@ class Base extends Component {
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
             <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
-            <HowManyEmoji howMany={howManyServices} howManyDown={this.state.serviceProblemsArray.length} />
+            {this.state.showEmoji && <HowManyEmoji howMany={howManyServices} howManyDown={this.state.serviceProblemsArray.length} />}
           </span>
 
 
