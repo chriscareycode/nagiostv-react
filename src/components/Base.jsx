@@ -62,7 +62,7 @@ class Base extends Component {
     titleString: 'NagiosTV',
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
-    alertDaysBack: 7,
+    alertDaysBack: 30,
     alertMaxItems: 1000,
 
     hideServiceWarning: false,
