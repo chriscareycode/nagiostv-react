@@ -147,7 +147,7 @@ class HistoryChart extends Component {
     series: [{
       type: 'column',
       name: 'UP/OK',
-      color: 'green'
+      color: 'lime'
     },{
       type: 'column',
       name: 'WARNING',
@@ -155,7 +155,7 @@ class HistoryChart extends Component {
     },{
       type: 'column',
       name: 'CRITICAL',
-      color: 'red'
+      color: '#FD7272'
     }]
   };
 
