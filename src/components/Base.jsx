@@ -762,7 +762,7 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
-            <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.hostProblemsArray.length}</strong> problem{this.state.hostProblemsArray.length === 1 ? '' : 's'})</span>
+            {howManyHostDown > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'red' }}>(<strong>{howManyHostDown}</strong> DOWN)</span>}
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}
               howManyWarning={0}
@@ -855,7 +855,8 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
-            <span style={{ marginRight: '10px', fontSize: '0.8em' }}>(<strong>{this.state.serviceProblemsArray.length}</strong> problem{this.state.serviceProblemsArray.length === 1 ? '' : 's'})</span>
+            {howManyServiceCritical > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'red' }}>(<strong>{howManyServiceCritical}</strong> CRITICAL)</span>}
+            {howManyServiceWarning > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'yellow' }}>(<strong>{howManyServiceWarning}</strong> WARNING)</span>}
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
               howManyWarning={howManyServiceWarning}
