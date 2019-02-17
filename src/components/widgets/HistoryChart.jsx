@@ -4,21 +4,30 @@ import ReactHighcharts from 'react-highcharts';
 import _ from 'lodash';
 import moment from 'moment';
 
+
+ReactHighcharts.Highcharts.setOptions({
+  time: {
+    timezoneOffset: new Date().getTimezoneOffset()
+  },
+});
+
 class HistoryChart extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
-    // if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
-    if (nextProps.alertlistLastUpdate !== 0 || (nextProps.alertlistLastUpdate !== this.props.alertlistLastUpdate)) {
-      //console.log('HistoryChart shouldComponentUpdate() alertlistLastUpdate changed');
-      //this.updateSeriesFromProps();
-      this.updateSeriesFromPropsDelay();
-      //return true;
+
+    // check for updates each time the alert list data refreshes
+    if (nextProps.alertlistLastUpdate !== this.props.alertlistLastUpdate) {
+
+      // check if we have anything new in the alert data, otherwise skip the whole process
+      // right now were checking for length, but it might make more sense to look at the timestamp of the first alert
+      if (nextProps.alertlist.length !== this.props.alertlist.length) {
+
+        // ok we passed those conditions, fire off a update to the chart
+        this.updateSeriesFromPropsDelay();
+      }
     }
+    // we never re-render this component since once highcharts is mounted, we don't want to re-render it over and over
+    // we just want to use the update functions to update the existing chart
     return false;
   }
 
@@ -33,8 +42,10 @@ class HistoryChart extends Component {
     // chart stuff
     let chart = this.refs.chart.getChart();
     let results = this.props.alertlist;
-    //const groupBy = 'hour';
     const groupBy = 'day';
+
+    // group the alerts into an object with keys that are for each day
+    // this is a super awesome one liner for grouping
     let groupedResults = _.groupBy(results, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
     //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
@@ -42,13 +53,13 @@ class HistoryChart extends Component {
     Object.keys(groupedResults).forEach(group => {
       chartData.push({ x: parseInt(group), y: groupedResults[group].length });
     });
-    console.log({chartData});
+    //console.log({chartData});
     chart.series[0].setData(chartData.reverse());
 
-    //TODO: update pointWidth based on howManyItems
+    // update pointWidth based on howManyItems
     const howManyItems = this.props.alertDaysBack;
     const screenWidth = window.innerWidth;
-    const barWidth = (screenWidth / howManyItems).toFixed(0) - 10; // this line probably needs work, I just made up the -10
+    const barWidth = (screenWidth / howManyItems).toFixed(0) - 18; // this line probably needs work, I just made up the number
     chart.update({
       plotOptions: {
         series: {
@@ -56,27 +67,14 @@ class HistoryChart extends Component {
         }
       }
     });
-    //chart.reflow();
-
-    // console.log('updateSeriesFromProps() alertlist', this.props.alertlist);
-    // this.props.alertlist.forEach(alert => {
-    //  console.log('alert', alert);
-    //  chart.series[0].addPoint({x: alert.timestamp, y: alert.host_name + alert.description});
-    // });
-  }
-
-  componentDidMount() {
-
-    
-
-    // chart.series[0].addPoint({x: 10, y: 12});
-    // chart.series[0].addPoint({x: 11, y: 14});
-    // chart.series[0].addPoint({x: 12, y: 16});
-  }
-
-  componentWillUnmount() {
 
   }
+
+  // componentDidMount() {
+  // }
+
+  // componentWillUnmount() {
+  // }
 
   // UNSAFE_componentWillReceiveProps() {
   //  console.log('componentWillReceiveProps');
@@ -87,7 +85,7 @@ class HistoryChart extends Component {
     credits: false,
     chart: {
       backgroundColor:'transparent',
-      height: '170px',
+      height: '170px'
       //spacingTop: 0
     },
 
@@ -103,39 +101,11 @@ class HistoryChart extends Component {
       endOnTick: false,
       maxPadding: 0.1
     },
-    // xAxis: [{
-    //   type: 'datetime',
-    //   tickInterval: 1000 * 3600,
-    //   labels: {
-        
-    //     enabled: false
-    //   },
-    //   tickPositioner: function () {
-    //     const previousAxisTicks = this.chart.xAxis[0].tickPositions
-    //     const ticks = previousAxisTicks.map(tick => tick + 36e5 / 2)
-        
-    //     ticks.push(ticks[ticks.length - 1] + 36e5)
-    //     ticks.info = previousAxisTicks.info
-        
-    //     return ticks
-    //   },
-    //   offset: 0,
-    // }, {
-    //   linkedTo: 0,
-    //   type: 'datetime',
-    //   tickLength: 0,
-    //   lineWidth: 0,
-    //   labels: {
-    //     // formatter: function() {
-    //    //     return ReactHighcharts.dateFormat('%H:%M', this.value)
-    //    //  }
-    //   }
-    // }],
 
     plotOptions: {
       series: {
         pointWidth: 21,
-        pointPlacement: 'on'
+        //pointPlacement: 'on'
       },
       // column: {
       //   pointRange: 1,
@@ -153,7 +123,6 @@ class HistoryChart extends Component {
   };
 
   render() {
-    
     return (
       <div className="HistoryChart" style={{ paddingRight: '10px' }}>
         <ReactHighcharts config={this.chartConfig} ref="chart"></ReactHighcharts>
