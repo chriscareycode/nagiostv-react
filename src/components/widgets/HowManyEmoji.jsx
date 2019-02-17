@@ -16,12 +16,15 @@ class HowMany extends Component {
     
     const howMany = this.props.howMany;
     const howManyDown = this.props.howManyDown;
+    const sadEmoji = '😡';
+    const happyEmoji = '🍀';
+    //const otherEmoji = '🐟';
 
     const res = [...Array(howMany)].map((_, i) => {
       if (i < howManyDown) {
-        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">😡</span>;
+        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{sadEmoji}</span>;
       } else {
-        return <span key={i} role="img" aria-label="item up" className="HowManyEmojiItem">🐟</span>;
+        return <span key={i} role="img" aria-label="item up" className="HowManyEmojiItem">{happyEmoji}</span>;
       }
     });
 
