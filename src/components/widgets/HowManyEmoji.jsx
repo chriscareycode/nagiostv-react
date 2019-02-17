@@ -13,13 +13,14 @@ class HowMany extends Component {
   }
 
   redEmojis = ['😡', '🌺', '💋', '🐙', '🌹', '🍉', '🍓', '🍟', '🎟', '🚒', '🥵', '🤬', '👹'];
-  yellowEmojis = [''];
-  greenEmojis = ['🍀', '💚', '🥦', '🍏', '🥑', '♻️', '🧤', '🐸', '🐬', '🐠', '🌲', '🌴', '🥒', '🏄‍♂️'];
+  yellowEmojis = ['📒', '😳', '😲', '🤯'];
+  greenEmojis = ['🍀', '💚', '🥦', '🍏', '🥑', '♻️', '🐢', '🐸', '🔋', '📗', '🌲', '🌴', '🥒', '🏄‍♂️'];
   intervalHandle = null;
 
   state = {
-    sadEmoji: '',
-    happyEmoji: ''
+    redEmoji: '',
+    yellowEmoji: '',
+    redEmoji: ''
   };
 
   componentDidMount() {
@@ -41,35 +42,36 @@ class HowMany extends Component {
   }
 
   selectEmojis() {
-    const sadEmoji = this.redEmojis[Math.floor(Math.random() * this.redEmojis.length)];
-    const happyEmoji = this.greenEmojis[Math.floor(Math.random() * this.greenEmojis.length)];
+    const redEmoji = this.redEmojis[Math.floor(Math.random() * this.redEmojis.length)];
+    const yellowEmoji = this.yellowEmojis[Math.floor(Math.random() * this.yellowEmojis.length)];
+    const greenEmoji = this.greenEmojis[Math.floor(Math.random() * this.greenEmojis.length)];
 
     this.setState({
-      sadEmoji,
-      happyEmoji
+      redEmoji,
+      yellowEmoji,
+      greenEmoji
     })
   }
 
   render() {
     
-    const howMany = this.props.howMany;
-    const howManyDown = this.props.howManyDown;
-    //const sadEmoji = '😡';
-    //const happyEmoji = '🍀';
-    //const otherEmoji = '🐟';
+    //const howMany = this.props.howMany;
+    //const howManyDown = this.props.howManyDown;
 
-    const res = [...Array(howMany)].map((_, i) => {
-      if (i < howManyDown) {
-        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.sadEmoji}</span>;
+    const res = [...Array(this.props.howMany)].map((_, i) => {
+      if (i < this.props.howManyCritical) {
+        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.redEmoji}</span>;
+      } else if (i < this.props.howManyWarning) {
+        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.yellowEmoji}</span>;
       } else {
-        return <span key={i} role="img" aria-label="item up" className="HowManyEmojiItem">{this.state.happyEmoji}</span>;
+        return <span key={i} role="img" aria-label="item up" className="HowManyEmojiItem">{this.state.greenEmoji}</span>;
       }
     });
 
     return (
-      <React.Fragment>
+      <span className="HowManyEmojiWrap">
         {res}
-      </React.Fragment>
+      </span>
     );
   }
 }

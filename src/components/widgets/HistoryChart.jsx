@@ -41,20 +41,38 @@ class HistoryChart extends Component {
   updateSeriesFromProps() {
     // chart stuff
     let chart = this.refs.chart.getChart();
-    let results = this.props.alertlist;
+    //let results = this.props.alertlist;
     const groupBy = 'day';
 
+    const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
+    const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+
+    const alertWarnings = this.props.alertlist.filter(alert => alert.state === 16);
+    const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+    
     // group the alerts into an object with keys that are for each day
     // this is a super awesome one liner for grouping
-    let groupedResults = _.groupBy(results, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+    const alertCriticals = this.props.alertlist.filter(alert => alert.state === 2 || alert.state === 32);
+    const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
     //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
-    let chartData = []
-    Object.keys(groupedResults).forEach(group => {
-      chartData.push({ x: parseInt(group), y: groupedResults[group].length });
+    let okData = []
+    Object.keys(groupedOks).forEach(group => {
+      okData.push({ x: parseInt(group), y: groupedOks[group].length });
     });
-    //console.log({chartData});
-    chart.series[0].setData(chartData.reverse());
+    chart.series[0].setData(okData.reverse());
+
+    let warningData = []
+    Object.keys(groupedWarnings).forEach(group => {
+      warningData.push({ x: parseInt(group), y: groupedWarnings[group].length });
+    });
+    chart.series[1].setData(warningData.reverse());
+
+    let criticalData = []
+    Object.keys(groupedCriticals).forEach(group => {
+      criticalData.push({ x: parseInt(group), y: groupedCriticals[group].length });
+    });
+    chart.series[2].setData(criticalData.reverse());
 
     // update pointWidth based on howManyItems
     const howManyItems = this.props.alertDaysBack;
@@ -99,7 +117,10 @@ class HistoryChart extends Component {
       title: { text: '' },
       gridLineColor: '#222222',
       endOnTick: false,
-      maxPadding: 0.1
+      maxPadding: 0.1,
+      stackLabels: {
+        enabled: false
+      }
     },
 
     plotOptions: {
@@ -107,6 +128,14 @@ class HistoryChart extends Component {
         pointWidth: 21,
         //pointPlacement: 'on'
       },
+      column: {
+        borderWidth: 0,
+        stacking: 'normal',
+        dataLabels: {
+          enabled: false,
+          //color: (ReactHighcharts.Highcharts.theme && ReactHighcharts.Highcharts.theme.dataLabelsColor) || 'white'
+        }
+      }
       // column: {
       //   pointRange: 1,
       //   pointPadding: 0.2,
@@ -117,8 +146,16 @@ class HistoryChart extends Component {
 
     series: [{
       type: 'column',
-      name: 'alerts',
-      //color: 'lightblue'
+      name: 'UP/OK',
+      color: 'green'
+    },{
+      type: 'column',
+      name: 'WARNING',
+      color: 'yellow'
+    },{
+      type: 'column',
+      name: 'CRITICAL',
+      color: 'red'
     }]
   };
 

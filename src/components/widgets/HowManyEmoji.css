@@ -11,6 +11,12 @@
 .HowManyEmojiItemProblem {
 	
 }
+.HowManyEmojiWrap {
+  border: 0px solid yellow;
+  position: relative;
+  top: 4px;
+  font-size: 0.9em;
+}
 
 @media only screen and (max-device-width: 880px) {
   .HowManyEmojiItem {
