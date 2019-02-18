@@ -20,10 +20,10 @@ The frontend is using the React JavaScript framework.
 Screenshot of NagiosTV on desktop
 ------------
 Default Mode
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-noemoji-0.3.0.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-simple-0.3.0.png)
 
 Emoji and Flynn Enabled
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-0.3.0.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-options-0.3.0.png)
 
 NagiosTV on mobile
 
