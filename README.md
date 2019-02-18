@@ -22,7 +22,7 @@ Screenshot of NagiosTV on desktop
 Default Mode
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-simple-0.3.0.png)
 
-Emoji and Flynn Enabled
+Emoji and Flynn Enabled (and "show filters" enabled)
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-options-0.3.0.png)
 
 NagiosTV on mobile
