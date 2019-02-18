@@ -25,7 +25,7 @@ Screenshot of NagiosTV on desktop
 Screenshot of NagiosTV on mobile
 ------------
 
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-mobile-0.3.0.png)
+<img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-mobile-0.3.0.png" alt="mobile" width="400"/>
 
 Installing NagiosTV
 -------------
