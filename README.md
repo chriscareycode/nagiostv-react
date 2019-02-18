@@ -22,19 +22,17 @@ Screenshot of NagiosTV on desktop
 Default Mode
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-noemoji-0.3.0.png)
 
-Emoji Enabled
+Emoji and Flynn Enabled
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-0.3.0.png)
 
-Screenshot of NagiosTV on mobile
-------------
-
+NagiosTV on mobile
 <img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-mobile-0.3.0.png" alt="mobile" width="400"/>
 
 Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
-  - Example: $ tar xvfz nagiostv-0.2.4.tar.gz
+  - Example: $ tar xvfz nagiostv-0.3.0.tar.gz
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
   - Example: $ mv nagiostv /usr/local/nagios/share/
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
@@ -43,6 +41,8 @@ Installing NagiosTV
 Upgrading
 ------------
 Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
+- Example: $ tar xvfz nagiostv-0.3.0.tar.gz
+- Example: $ cp nagiostv/* /usr/local/nagios/share/nagiostv/
 
 Development Requirements
 ------------
@@ -57,6 +57,12 @@ Development Instructions
 - $ npm start
 - access your web server on the hostname and port shown, and you can start editing files
 
+One thing to note for local development. Since Nagios is running on a different server than your local development, you will need to point
+to the remote server in the "Nagios cgi-bin path" setting. It will not easily
+be able to access the Nagios CGIs since, by default, Nagios does not enable CORS headers on those scripts. You will need to either modify
+your Apache install to add CORS headers there, or to run a simple Node.js server that will proxy the request and add the CORS headers. 
+Reach out to me if you want help here, I will add instructions and sample code for this at some point.
+
 Development - Committing your changes to this project
 ------------
 - Fork the project
@@ -66,9 +72,8 @@ Development - Committing your changes to this project
 
 TODO
 ------------
-Mobile support. It looks a little wonky.
-Save settings on the server so all clients don't have to configure.
-Show longest quiet period
+- Clean up the "save settings to server" feature, and settings screen
+- Show longest quiet period
 
 History
 ------------
