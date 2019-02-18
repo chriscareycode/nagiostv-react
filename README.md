@@ -39,6 +39,14 @@ Installing NagiosTV
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
   - Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
+Preparing the client settings file (optional)
+------------
+By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file and set 
+permissions on that file so NagiosTV (Apache) can edit it. In the example below, I set the file permission to 777, but you could optionally just give access to the apache user.
+
+- Example: sudo touch client-settings.json
+- Example: sudo chmod 777 client-settings.json 
+
 Upgrading
 ------------
 Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
