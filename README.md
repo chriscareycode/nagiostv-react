@@ -10,7 +10,7 @@ NagiosTV also has some goofy addons:
 
 Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
 
-Emoticons to show happiness the longer you have quiet time between issues
+Emoticons to show how many items up vs down, and happiness the longer you have quiet time between issues.
 
 Technology
 ------------
