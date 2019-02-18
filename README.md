@@ -17,7 +17,7 @@ Technology
 NagiosTV is a JavaScript single page application.
 The frontend is using the React JavaScript framework.
 
-Screenshot of NagiosTV on desktop
+Screenshots
 ------------
 Default Mode
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-simple-0.3.0.png)
@@ -68,8 +68,9 @@ Development Instructions
 
 One thing to note for local development. Since Nagios is running on a different server than your local development, you will need to point
 to the remote server in the "Nagios cgi-bin path" setting. It will not easily
-be able to access the Nagios CGIs since, by default, Nagios does not enable CORS headers on those scripts. You will need to either modify
-your Apache install to add CORS headers there, or to run a simple Node.js server that will proxy the request and add the CORS headers. 
+be able to access the Nagios CGIs since, by default, Nagios does not enable CORS headers on those scripts, and the Nagios cgi-bin path may also
+have authentication enabled. You will need to either modify
+your Apache install to add CORS headers there, or to run a simple Node.js server that will proxy the request and add the CORS headers and auth. 
 Reach out to me if you want help here, I will add instructions and sample code for this at some point.
 
 Development - Committing your changes to this project
