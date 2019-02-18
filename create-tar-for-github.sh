@@ -1,5 +1,7 @@
 #!/bin/bash
 npm run build
+rm build/client-settings.json
+
 mkdir -p releases/nagiostv
 rm releases/nagiostv-0.0.0.tar.gz
 rm -rf releases/nagiostv/*
