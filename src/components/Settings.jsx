@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import './Settings.css';
 import Cookie from 'js-cookie';
 import SettingsIcon from './Settings.png';
+import axios from 'axios';
 
 class Settings extends Component {
 
@@ -19,6 +20,7 @@ class Settings extends Component {
     this.toggle = this.toggle.bind(this);
     this.saveCookie = this.saveCookie.bind(this);
     this.deleteCookie = this.deleteCookie.bind(this);
+    this.saveSettingsToServer = this.saveSettingsToServer.bind(this);
 
     // load the settingsFields into state
     this.props.settingsFields.forEach(field => this.state[field] = this.props.settings[field]);
@@ -60,7 +62,7 @@ class Settings extends Component {
     Cookie.remove('settings');
 
     // show a message then clear the message
-    this.setState({ saveMessage: 'Cookie deleted' });
+    this.setState({ saveMessage: 'Cookie deleted. Refresh your browser.' });
     setTimeout(() => {
         this.setState({ saveMessage: '' });
     }, 3000);
@@ -87,6 +89,30 @@ class Settings extends Component {
     });
   }
 
+  saveSettingsToServer() {
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+
+    axios.post('server.php', settingsObject).then(response => {
+      //console.log('saved to server', response);
+      
+      if (typeof response.data === 'object') {
+        this.setState({ saveMessage: 'Saved to Server' });
+      } else {
+        this.setState({ saveMessage: response.data });
+      }
+      
+    }).catch(error => {
+      //console.log('error saving to server', error);
+      // show a message then clear the message
+      this.setState({ saveMessage: 'Error saving to server' });
+    });
+    
+    setTimeout(() => {
+        this.setState({ saveMessage: '' });
+    }, 3000);
+  }
+
   render() {
 
     const settingsObject = {};
@@ -101,10 +127,6 @@ class Settings extends Component {
             <h2>Settings</h2>
             <div className="SettingsScroll">
 
-              <div style={{ marginBottom: '10px' }}>
-                Settings are saved into a cookie in your browser and are not saved on the server.
-              </div>
-
               <div className="SettingsSection">
                 <span>Title: </span>
                 <input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} />
@@ -115,7 +137,7 @@ class Settings extends Component {
                 <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
                 <div className="Note" style={{ marginTop: '10px' }}>
                   This path needs to point to where the cgi files are being served by the Nagios web user interface.
-                  If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path /nagios/cgi-bin/ should work without additional authentication.<br />
+                  If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path <span style={{ color: 'yellow' }}>/nagios/cgi-bin/</span> should work without additional authentication.<br />
                   <br />
                   <div>More advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</div>
                 </div>
@@ -169,11 +191,13 @@ class Settings extends Component {
               <h5>Save and Close</h5>
 
               <div style={{marginTop: '20px'}}>
-                <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
+                <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Cookie</button>
  
                 <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
 
                 <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>
+
+                <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button>
 
                 {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}
               </div>
@@ -182,8 +206,19 @@ class Settings extends Component {
 
               <div className="SaveToServerText">
                 <h5>Saving these settings on the server</h5>
-                NagiosTV does not have rights to create a config file on the server. To save these settings on the server, and share this configuration
-                with all users, create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
+                By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
+                so they can be shared with all users of NagiosTV. Hopefully I'll get this process streamlined better in the future,
+                but for now, to support this feature you will need to create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in
+                the nagiostv folder and chown 777 client-settings.json so the Apache process has rights to write to it.
+
+                <pre>
+                sudo touch client-settings.json<br />
+                sudo chmod 777 client-settings.json
+                </pre>
+
+                After those steps, you can try the "Save to Server" button.<br />
+                <br />
+                Or you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
               </div>
               <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
 
