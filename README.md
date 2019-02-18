@@ -26,6 +26,7 @@ Emoji and Flynn Enabled
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-0.3.0.png)
 
 NagiosTV on mobile
+
 <img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-mobile-0.3.0.png" alt="mobile" width="400"/>
 
 Installing NagiosTV
