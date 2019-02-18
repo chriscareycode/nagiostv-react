@@ -84,12 +84,23 @@ TODO
 ------------
 - Clean up the "save settings to server" feature, and settings screen
 - Show longest quiet period
+- Add a Node.js proxy server for local development, and instructions how to use it
 
 History
 ------------
-Nagios Core 4.0.7 and newer comes with new JSON CGI's
+NagiosTV has been around for over 7 years now. It was created to have a nice way to display Nagios status on a TV at work.
+Over the years I have continued to run it at home to monitor my own network.
+
+Originally it was written for Nagios 3 and used the ndoutils package to get status.
+This ended up being a very painful install for many, and the database size continuously grew and needed maintenance.
+
+Later I released another version which used MK livestatus. This seemed better since it got rid of the database requirement, but 
+still required setup and changes that many users were not willing to jump through.
+
+Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of the box which is a game changer for tapping into the Nagios data from a web application.
+
 https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
-out of the box which is a game changer for tapping into the Nagios data from a web application.
+
 No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
 
 Help
