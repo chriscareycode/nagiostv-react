@@ -33,9 +33,13 @@ Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
-  - Example: $ tar xvfz nagiostv-0.3.0.tar.gz
+```console
+$ tar xvfz nagiostv-0.3.0.tar.gz
+```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
-  - Example: $ sudo mv nagiostv /usr/local/nagios/share/
+```console
+$ sudo mv nagiostv /usr/local/nagios/share/
+```
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
   - Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
@@ -52,8 +56,10 @@ $ sudo chmod 777 client-settings.json
 Upgrading
 ------------
 Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
-- $ tar xvfz nagiostv-0.3.0.tar.gz
-- $ sudo cp nagiostv/* /usr/local/nagios/share/nagiostv/
+```console
+$ tar xvfz nagiostv-0.3.0.tar.gz
+$ sudo cp nagiostv/* /usr/local/nagios/share/nagiostv/
+```
 
 Development Requirements
 ------------
@@ -62,10 +68,12 @@ Development Requirements
 
 Development Instructions
 ------------
-- $ git clone https://github.com/chriscareycode/nagiostv-react.git
-- $ cd nagiostv-react
-- $ npm install
-- $ npm start
+```console
+$ git clone https://github.com/chriscareycode/nagiostv-react.git
+$ cd nagiostv-react
+$ npm install
+$ npm start
+```
 - access your web server on the hostname and port shown, and you can start editing files
 
 One thing to note for local development. Since Nagios is running on a different server than your local development, you will need to point
