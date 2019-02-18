@@ -35,7 +35,7 @@ Installing NagiosTV
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
   - Example: $ tar xvfz nagiostv-0.3.0.tar.gz
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
-  - Example: $ mv nagiostv /usr/local/nagios/share/
+  - Example: $ sudo mv nagiostv /usr/local/nagios/share/
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
   - Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
@@ -44,14 +44,14 @@ Preparing the client settings file (optional)
 By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file and set 
 permissions on that file so NagiosTV (Apache) can edit it. In the example below, I set the file permission to 777, but you could optionally just give access to the apache user.
 
-- Example: sudo touch client-settings.json
-- Example: sudo chmod 777 client-settings.json 
+- $ sudo touch client-settings.json
+- $ sudo chmod 777 client-settings.json 
 
 Upgrading
 ------------
 Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
-- Example: $ tar xvfz nagiostv-0.3.0.tar.gz
-- Example: $ cp nagiostv/* /usr/local/nagios/share/nagiostv/
+- $ tar xvfz nagiostv-0.3.0.tar.gz
+- $ sudo cp nagiostv/* /usr/local/nagios/share/nagiostv/
 
 Development Requirements
 ------------
@@ -94,8 +94,7 @@ Over the years I have continued to run it at home to monitor my own network.
 Originally it was written for Nagios 3 and used the ndoutils package to get status.
 This ended up being a very painful install for many, and the database size continuously grew and needed maintenance.
 
-Later I released another version which used MK livestatus. This seemed better since it got rid of the database requirement, but 
-still required setup and changes that many users were not willing to jump through.
+Later I released a version which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
 
 Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of the box which is a game changer for tapping into the Nagios data from a web application.
 
