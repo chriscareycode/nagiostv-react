@@ -761,8 +761,8 @@ class Base extends Component {
         {settingsLoaded && <div className="service-summary color-orange">
           
           <span className="service-summary-title">
-            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
-            {howManyHostDown > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'red' }}>(<strong>{howManyHostDown}</strong> DOWN)</span>}
+            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}   
+            {howManyHostDown > 0 && <span className="service-summary-label service-summary-critical">{howManyHostDown} DOWN</span>}
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}
               howManyWarning={0}
@@ -851,12 +851,12 @@ class Base extends Component {
 
         {/* services */}
 
-        {settingsLoaded && <div className="service-summary color-orange">
+        {settingsLoaded && <div className="service-summary color-orange" style={{ marginTop: '12px'}}>
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
-            {howManyServiceCritical > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'red' }}>(<strong>{howManyServiceCritical}</strong> CRITICAL)</span>}
-            {howManyServiceWarning > 0 && <span style={{ marginRight: '10px', fontSize: '0.6em', color: 'yellow' }}>(<strong>{howManyServiceWarning}</strong> WARNING)</span>}
+            {howManyServiceCritical > 0 && <span className="service-summary-label service-summary-critical">{howManyServiceCritical} CRITICAL</span>}
+            {howManyServiceWarning > 0 && <span className="service-summary-label service-summary-warning">{howManyServiceWarning} WARNING</span>}
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
               howManyWarning={howManyServiceWarning}

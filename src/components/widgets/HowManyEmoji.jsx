@@ -54,19 +54,17 @@ class HowMany extends Component {
   }
 
   render() {
-    
-    //const howMany = this.props.howMany;
-    //const howManyDown = this.props.howManyDown;
-
-    const res = [...Array(this.props.howMany)].map((_, i) => {
-      if (i < this.props.howManyCritical) {
-        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.redEmoji}</span>;
-      } else if (i < this.props.howManyWarning) {
-        return <span key={i} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.yellowEmoji}</span>;
-      } else {
-        return <span key={i} role="img" aria-label="item up" className="HowManyEmojiItem">{this.state.greenEmoji}</span>;
-      }
+        
+    // add criticals
+    const criticals = [...Array(this.props.howManyCritical)].map((item, i) => {
+      return <span key={`crit_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.redEmoji}</span>;
     });
+    // add warnings
+    const warnings = [...Array(this.props.howManyWarning)].map((item, i) => {
+      return <span key={`warn_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.yellowEmoji}</span>;
+    });
+    // merge two arrays
+    const res = [...criticals, ...warnings];
 
     return (
       <span className="HowManyEmojiWrap">
