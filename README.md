@@ -31,7 +31,7 @@ Emoji and Flynn Enabled
 
 NagiosTV on mobile
 
-<img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1-iphone.jpg" alt="mobile" width="300"/>
+<img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1-iphone.jpg" alt="mobile" width="400"/>
 
 Installing NagiosTV
 -------------

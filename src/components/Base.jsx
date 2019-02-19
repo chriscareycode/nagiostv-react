@@ -688,6 +688,9 @@ class Base extends Component {
 
     const settingsLoaded = this.state.isRemoteSettingsLoaded || this.state.isCookieLoaded;
 
+    // don't show the history chart on small screens like iphone
+    const showHistoryChart = window.innerWidth > 500;
+
     return (
       <div className="Base">
 
@@ -951,11 +954,11 @@ class Base extends Component {
           </span>
         </div>
 
-        <HistoryChart
+        {showHistoryChart && <HistoryChart
           alertlist={this.state.alertlist}
           alertDaysBack={this.state.alertDaysBack} 
           alertlistLastUpdate={this.state.alertlistLastUpdate}
-        />
+        />}
 
         {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
 
