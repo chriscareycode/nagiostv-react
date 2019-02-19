@@ -7,7 +7,7 @@ This user interface is designed to be viewed on a TV or on your desktop to quick
 Some of the features:
 
 - New items slide in and out of place with smooth animations which looks really cool when things are happening.
-- Ability to order items newest or oldest first
+- Sorting - Ability to order items newest or oldest first
 - Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
 - Last OK value goes from green, to yellow, to red - based on how long the item has been down
 
@@ -24,10 +24,10 @@ The frontend is using the React JavaScript framework.
 Screenshots
 ------------
 Default Mode
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-simple-0.3.0.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1.png)
 
-Emoji and Flynn Enabled (and "show filters" enabled)
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-react-options-0.3.0.png)
+Emoji and Flynn Enabled
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1-emoji.png)
 
 NagiosTV on mobile
 
