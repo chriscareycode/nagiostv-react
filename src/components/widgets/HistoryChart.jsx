@@ -56,23 +56,24 @@ class HistoryChart extends Component {
     const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
     //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
-    let okData = []
-    Object.keys(groupedOks).forEach(group => {
-      okData.push({ x: parseInt(group), y: groupedOks[group].length });
-    });
-    chart.series[0].setData(okData.reverse());
+    // disabling green on the chart for now
+    // let okData = []
+    // Object.keys(groupedOks).forEach(group => {
+    //   okData.push({ x: parseInt(group), y: groupedOks[group].length });
+    // });
+    // chart.series[0].setData(okData.reverse());
 
     let warningData = []
     Object.keys(groupedWarnings).forEach(group => {
       warningData.push({ x: parseInt(group), y: groupedWarnings[group].length });
     });
-    chart.series[1].setData(warningData.reverse());
+    chart.series[0].setData(warningData.reverse());
 
     let criticalData = []
     Object.keys(groupedCriticals).forEach(group => {
       criticalData.push({ x: parseInt(group), y: groupedCriticals[group].length });
     });
-    chart.series[2].setData(criticalData.reverse());
+    chart.series[1].setData(criticalData.reverse());
 
     // update pointWidth based on howManyItems
     const howManyItems = this.props.alertDaysBack;
@@ -144,15 +145,18 @@ class HistoryChart extends Component {
       // }
     },
 
-    series: [{
-      type: 'column',
-      name: 'UP/OK',
-      color: 'lime'
-    },{
+    series: [
+    // {
+    //   type: 'column',
+    //   name: 'UP/OK',
+    //   color: 'lime'
+    // },
+    {
       type: 'column',
       name: 'WARNING',
       color: 'yellow'
-    },{
+    },
+    {
       type: 'column',
       name: 'CRITICAL',
       color: '#FD7272'
