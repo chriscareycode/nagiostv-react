@@ -4,7 +4,12 @@ NagiosTV is an alternate user interface (UI) for the Nagios open source monitori
 
 This user interface is designed to be viewed on a TV or on your desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but an alternate way to look at the “what’s down?” part.
 
-New items slide in and out of place with smooth animations.
+Some of the features:
+
+- New items slide in and out of place with smooth animations which looks really cool when things are happening.
+- Ability to order items newest or oldest first
+- Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
+- Last OK value goes from green, to yellow, to red - based on how long the item has been down
 
 NagiosTV also has some goofy addons:
 
@@ -41,7 +46,7 @@ $ tar xvfz nagiostv-0.3.0.tar.gz
 $ sudo mv nagiostv /usr/local/nagios/share/
 ```
 - Load the app in your web browser! If your built-in Nagios web ui is at http://my-server/nagios/ then NagiosTV should be available at http://my-server/nagios/nagiostv/
-  - Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
+- Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
 
 Preparing the client settings file (optional)
 ------------
