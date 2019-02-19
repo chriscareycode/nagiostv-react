@@ -23,11 +23,8 @@ The frontend is using the React JavaScript framework.
 
 Screenshots
 ------------
-Default Mode
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1.png)
 
-Emoji and Flynn Enabled
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1-emoji.png)
+![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1.png)
 
 NagiosTV on mobile
 
