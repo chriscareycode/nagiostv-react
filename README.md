@@ -35,7 +35,7 @@ Installing NagiosTV
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
 ```console
-$ tar xvfz nagiostv-0.3.0.tar.gz
+$ tar xvfz nagiostv-0.3.1.tar.gz
 ```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
 ```console
@@ -58,7 +58,7 @@ Upgrading
 ------------
 Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
 ```console
-$ tar xvfz nagiostv-0.3.0.tar.gz
+$ tar xvfz nagiostv-0.3.1.tar.gz
 $ sudo cp nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
