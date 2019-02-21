@@ -5,7 +5,11 @@ class HowMany extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('HowManyEmoji shouldComponentUpdate', nextProps, nextState);
-    if (nextProps.howMany !== this.props.howMany || nextProps.howManyDown !== this.props.howManyDown || nextState.sadEmoji !== this.state.sadEmoji || nextState.happyEmoji !== this.state.happyEmoji) {
+    if (nextProps.howMany !== this.props.howMany ||
+      nextProps.howManyWarning !== this.props.howManyWarning ||
+      nextProps.howManyCritical !== this.props.howManyCritical ||
+      nextState.sadEmoji !== this.state.sadEmoji ||
+      nextState.happyEmoji !== this.state.happyEmoji) {
       return true;
     } else {
       return false;
