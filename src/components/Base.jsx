@@ -74,6 +74,7 @@ class Base extends Component {
 
     serviceSortOrder: 'newest',
 
+    hideHost: false,
     hideHostDown: false,
     hideHostUnreachable: false,
     hideHostDownPending: false,
@@ -108,6 +109,7 @@ class Base extends Component {
 
     'serviceSortOrder',
 
+    'hideHost',
     'hideHostDown',
     'hideHostUnreachable',
     'hideHostDownPending',
@@ -782,6 +784,14 @@ class Base extends Component {
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </select>
+
+            <Checkbox className="Checkbox all"
+              handleChange={this.handleChange}
+              stateName={'hideHost'}
+              defaultChecked={!this.state.hideHost}
+              howMany={howManyHosts}
+              howManyText={'ALL'}
+            />
 
             <Checkbox className="Checkbox down"
               handleChange={this.handleChange}

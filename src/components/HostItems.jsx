@@ -20,6 +20,9 @@ class HostItems extends Component {
     //console.log(Object.keys(this.props.hostProblemsArray));
 
     const filteredHostProblemsArray = this.props.hostProblemsArray.filter(item => {
+      if (this.props.settings.hideHost) {
+        return false;
+      }
       if (this.props.settings.hideHostDown) {
         if (item.status === 4) { return false; }
       }
