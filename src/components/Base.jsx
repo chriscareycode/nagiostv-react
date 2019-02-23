@@ -95,7 +95,6 @@ class Base extends Component {
   settingsFields = [
     'titleString',
     'baseUrl',
-    'versionCheckDays',
     'alertDaysBack',
     'alertMaxItems',
 
@@ -116,6 +115,8 @@ class Base extends Component {
     'hideHostFlapping',
 
     'hostSortOrder',
+    
+    'versionCheckDays',
   
     // fun stuff
     'flynnEnabled',
@@ -169,7 +170,7 @@ class Base extends Component {
       if (this.state.versionCheckDays > 0) {
         const intervalTime = this.state.versionCheckDays * 24 * 60 * 60 * 1000;
         // safety check that interval > 1hr
-        if (intervalTime > (60 * 60 * 1000)) {
+        if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
           setInterval(() => {
             this.versionCheck();
           }, intervalTime);
