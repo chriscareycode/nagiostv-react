@@ -18,6 +18,8 @@ import HistoryChart from './widgets/HistoryChart.jsx';
 
 class Base extends Component {
 
+  useFakeSampleData = true;
+
   state = {
     showSettings: false,
 
@@ -266,8 +268,12 @@ class Base extends Component {
   }
 
   fetchServiceData() {
-    const url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
-
+    let url;
+    if (this.useFakeSampleData) {
+      url = '/sample-data/servicelist.json';
+    } else {
+      url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
+    }
     //console.log('Requesting Service Data: ' + url);
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
@@ -338,7 +344,6 @@ class Base extends Component {
           serviceProblemsArray: serviceProblemsArray
         });
       }
-        
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       console.log('fetchServiceData() ajax fail');
@@ -351,7 +356,12 @@ class Base extends Component {
   }
 
   fetchHostData() {
-    const url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
+    let url;
+    if (this.useFakeSampleData) {
+      url = '/sample-data/hostlist.json';
+    } else {
+      url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
+    }
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
       //console.log('ajax success');
