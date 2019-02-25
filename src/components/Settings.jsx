@@ -195,9 +195,9 @@ class Settings extends Component {
  
                 <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
 
-                <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>
+                
 
-                <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button>
+                
 
                 {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}
               </div>
@@ -216,9 +216,13 @@ class Settings extends Component {
                 sudo chmod 777 client-settings.json
                 </pre>
 
-                After those steps, you can try the "Save to Server" button.<br />
+                After those steps, you can try the "Save to Server" button.
+                <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button><br />
                 <br />
-                Or you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
+                Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
+                for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again. <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button><br />
+                <br />
+                One other option is you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
               </div>
               <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
 
