@@ -37,15 +37,15 @@ class HistoryChart extends Component {
     }, 1000);
   }
 
-  //TODO: get multiple stacked charts for WARNING and CRITICAL
+  // multiple stacked charts for WARNING and CRITICAL
   updateSeriesFromProps() {
     // chart stuff
     let chart = this.refs.chart.getChart();
     //let results = this.props.alertlist;
     const groupBy = 'day';
 
-    const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
-    const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+    //const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
+    //const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
     const alertWarnings = this.props.alertlist.filter(alert => alert.state === 16);
     const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
