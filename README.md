@@ -93,13 +93,16 @@ Development - Committing your changes to this project
 
 TODO
 ------------
+- Make it look better when hiding issues. consolidate the labels.
+- Show some animation for SOFT status
+- Show when history table is being truncated at max items setting
 - Clean up the "save settings to server" feature, and settings screen
 - Show longest quiet period
 - Add a Node.js proxy server for local development, and instructions how to use it
 
 History
 ------------
-NagiosTV has been around for over 7 years now. It was created to have a nice way to display Nagios status on a TV at work.
+NagiosTV was started around 2009. It was created to have a nice way to display Nagios status on a TV at work.
 Over the years I have continued to run it at home to monitor my own network.
 
 Originally it was written for Nagios 3 and used the ndoutils package to get status.
