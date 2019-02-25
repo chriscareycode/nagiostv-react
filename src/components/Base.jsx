@@ -12,13 +12,13 @@ import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
-//import HowMany from './widgets/HowMany.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import HistoryChart from './widgets/HistoryChart.jsx';
 
 class Base extends Component {
 
-  useFakeSampleData = true;
+  // use fake sample data if we are doing local development
+  useFakeSampleData = window.location.hostname === 'localhost';
 
   state = {
     showSettings: false,
@@ -94,6 +94,8 @@ class Base extends Component {
     showEmoji: false
   };
 
+  // The settings which we persist are a subset of the state that we have above.
+  // Here we list all the settings we want to persist to cookie / client-settings
   settingsFields = [
     'titleString',
     'baseUrl',
@@ -132,13 +134,14 @@ class Base extends Component {
   constructor(props) {
     super(props);
 
+    // Bind functions
     this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   componentDidMount() {
 
     this.getRemoteSettings();
-    //this.getCookie();
+    //this.getCookie(); // Now we get cookie after getting remote settings
     
     setTimeout(() => {
       this.fetchServiceData();
@@ -159,18 +162,17 @@ class Base extends Component {
       this.fetchAlertData();
     }, this.state.fetchAlertFrequency * 1000);
 
-    // this is not super clean but I'm going to delay this by 2s to give the setState() in the getCookie()
+    // this is not super clean but I'm going to delay this by 3s to give the setState() in the getCookie()
     // time to complete. It's async so we could have a race condition getting the version check setting
     // to arrive in this.state.versionCheckDays
     // if someone turns off the version check, it should never check
     setTimeout(() => {
-      // version check - run once on app boot
-      if (this.state.versionCheckDays > 0) {
+      const versionCheckDays = this.state.versionCheckDays;
+      if (versionCheckDays && versionCheckDays > 0) {
+        // version check - run once on app boot
         this.versionCheck();
-      }
-      // version check - run every n days
-      if (this.state.versionCheckDays > 0) {
-        const intervalTime = this.state.versionCheckDays * 24 * 60 * 60 * 1000;
+        // version check - run every n days
+        const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
         // safety check that interval > 1hr
         if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
           setInterval(() => {
@@ -180,12 +182,12 @@ class Base extends Component {
           console.log('Invalid versionCheckDays. Not starting check interval.');
         }
       }
-    }, 2000);
+    }, 3000);
   }
 
   /* ************************************************************************************ */
-  /* settings related functions such as fetching settings from server, and loading cookie */
-  /* the approach I'm going to take with settings is to first load the settings from the server.
+  /* settings related functions such as fetching settings from server, and loading cookie
+  the approach I'm going to take with settings is to first load the settings from the server.
   either the settings load, or they fail. in either case I then check for cookie and apply 
   those over top. so cookie settings will override server settings. There will be a delete
   cookie button to help clear any local settings once server side settings become established. */
@@ -194,21 +196,12 @@ class Base extends Component {
   getRemoteSettings() {
     const url = 'client-settings.json';
 
-    //console.log('Requesting Service Data: ' + url);
-
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      // console.log('getRemoteSettings() ajax success');
-      // console.log(myJson);
-      // console.log(textStatus);
-      // console.log(jqXHR);
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
         console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
-        // this.setState({
-        //   servicelistError: true,
-        //   servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        // });
+        
         this.getCookie();
         return;
       }
@@ -247,12 +240,6 @@ class Base extends Component {
     } catch (e) {
       //console.log('No cookie');
     }
-    // const updateIfExist = (prop) => {
-    //   if (cookieObject.hasOwnProperty(prop)) {
-    //     //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
-    //     this.setState({ [prop]: cookieObject[prop] });
-    //   }
-    // };
     if (cookieObject) {
       console.log('Found cookie. Loading settings:', cookieObject);
       this.settingsFields.forEach(setting => this.updateIfExist(cookieObject, setting));
@@ -268,6 +255,7 @@ class Base extends Component {
   }
 
   fetchServiceData() {
+
     let url;
     if (this.useFakeSampleData) {
       url = '/sample-data/servicelist.json';
@@ -277,10 +265,6 @@ class Base extends Component {
     //console.log('Requesting Service Data: ' + url);
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      // console.log('fetchServiceData() ajax success');
-      // console.log(myJson);
-      // console.log(textStatus);
-      // console.log(jqXHR);
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -323,7 +307,7 @@ class Base extends Component {
         return 0;
       });
 
-      // check for old data (nagios down?)
+      // check for old stale data (detect if nagios is down)
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
@@ -364,8 +348,6 @@ class Base extends Component {
     }
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('ajax success');
-      //console.log(data);
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -430,8 +412,6 @@ class Base extends Component {
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      //console.log('ajax fail');
-      //console.log(textStatus, errorThrown);
       this.setState({
         hostlistError: true,
         hostlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
@@ -442,13 +422,8 @@ class Base extends Component {
   fetchAlertData() {
     const starttime = this.state.alertDaysBack * 60 * 60 * 24;
     const url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
-    //console.log('url', url);
+
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('fetchAlertData() ajax success');
-      //console.log(myJson);
-      //console.log(textStatus);
-      //console.log(jqXHR);
-      //console.log(jqXHR.getResponseHeader('content-type'));
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -476,8 +451,6 @@ class Base extends Component {
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      //console.log('ajax fail');
-      //console.log(textStatus, errorThrown);
       this.setState({
         alertlistError: true,
         alertlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
@@ -489,8 +462,6 @@ class Base extends Component {
     const url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
-      //console.log('ajax success');
-      //console.log(data);
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -502,7 +473,6 @@ class Base extends Component {
         return;
       }
 
-
       // Make an array from the object
       const commentlist = myJson.data.commentlist;
       this.setState({
@@ -513,8 +483,6 @@ class Base extends Component {
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      //console.log('ajax fail');
-      //console.log(textStatus, errorThrown);
       this.setState({
         commentlistError: true,
         commentlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
@@ -540,7 +508,6 @@ class Base extends Component {
     // this prevents version checks if you refresh the UI over and over
     // as is common on TV rotation
     const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
-    //console.log('lastVersionCheckTime is', lastVersionCheckTime);
 
     const oneDayInSeconds = (86400 - 3600) * 1000;
     if (lastVersionCheckTime !== 0) {
@@ -619,7 +586,7 @@ class Base extends Component {
     const cookieObject = {};
     this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
     Cookie.set('settings', cookieObject);
-    //console.log('saved cookie', cookieObject);
+    console.log('Saved cookie', cookieObject);
   }
 
   render() {
@@ -731,14 +698,6 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div className="ApplicationName">{this.state.titleString}</div>
-          
-          {/*<div className="color-gray">
-            <strong>{howManyHosts}</strong> hosts{' '}
-            (<strong>{this.state.hostProblemsArray.length}</strong> problems)
-            {', '}
-            <strong>{howManyServices}</strong> services{' '}
-            (<strong>{this.state.serviceProblemsArray.length}</strong> problems)
-          </div>*/}
         </div>
 
         {/* footer */}
@@ -766,10 +725,6 @@ class Base extends Component {
         <div style={{ marginTop: '60px' }}>
         </div>
 
-        {/*<div style={{ marginTop: '15px' }}>
-        Summary Area
-        </div>*/}
-
         {/* hosts */}
 
         {settingsLoaded && <div className="service-summary color-orange">
@@ -784,8 +739,6 @@ class Base extends Component {
               howManyDown={this.state.hostProblemsArray.length}
             />}
           </span>
-
-          
 
           {!this.state.hideFilters && <div className="service-hide-problems">
 
@@ -846,7 +799,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.hostlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.hostlistErrorMessage}</div>}
+        {this.state.hostlistError && <div className="margin-top-10 border-red ServiceItemError">⚠️ {this.state.hostlistErrorMessage}</div>}
 
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
@@ -869,8 +822,14 @@ class Base extends Component {
           
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
-            {howManyServiceCritical > 0 && <span className="service-summary-label service-summary-critical">{howManyServiceCritical} CRITICAL</span>}
+
             {howManyServiceWarning > 0 && <span className="service-summary-label service-summary-warning">{howManyServiceWarning} WARNING</span>}
+            {howManyServiceUnknown > 0 && <span className="service-summary-label service-summary-unknown">{howManyServiceUnknown} UNKNOWN</span>}
+            {howManyServiceCritical > 0 && <span className="service-summary-label service-summary-critical">{howManyServiceCritical} CRITICAL</span>}
+            {howManyServiceAcked > 0 && <span className="service-summary-label service-summary-acked">{howManyServiceAcked} ACKED</span>}
+            {howManyServiceScheduled > 0 && <span className="service-summary-label service-summary-scheduled">{howManyServiceScheduled} SCHEDULED</span>}
+            {howManyServiceFlapping > 0 && <span className="service-summary-label service-summary-flapping">{howManyServiceFlapping} FLAPPING</span>}
+
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
               howManyWarning={howManyServiceWarning}
@@ -878,7 +837,6 @@ class Base extends Component {
               howManyDown={this.state.serviceProblemsArray.length}
             />}
           </span>
-
 
           {!this.state.hideFilters && <div className="service-hide-problems">
 
@@ -939,7 +897,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.servicelistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.servicelistErrorMessage}</div>}
+        {this.state.servicelistError && <div className="margin-top-10 border-red ServiceItemError">⚠️ {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}
@@ -956,8 +914,6 @@ class Base extends Component {
         />
         
         {/* history (alertlist) */}
-
-        {/* <div className="history-spacer"></div> */}
 
         <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">

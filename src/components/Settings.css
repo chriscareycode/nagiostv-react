@@ -71,10 +71,10 @@
 
 .SettingsCloseButton {
     background-color: #333;
-    color: red;
+    color: violet;
     font-size: 1.1em;
     font-weight: bold;
-    border: 2px solid red;
+    border: 2px solid #ddd;
     padding: 5px 10px;
     cursor: pointer;
     margin-left: 10px;

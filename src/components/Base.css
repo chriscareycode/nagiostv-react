@@ -103,10 +103,6 @@ input[type=text] {
   }
 }
 
-
-
-
-
 .SettingsButtonDiv {
   position: absolute;
   bottom: 3px;
@@ -120,10 +116,6 @@ input[type=text] {
   border-radius: 5px;
   margin-bottom: 7px;
 }
-
-
-
-
 
 /* service summary (17 hosts (0 problems)) */
 
@@ -178,18 +170,35 @@ input[type=text] {
   opacity: 1;
 }
 
+/* these some-down-items live inside HostItems and ServiceItems */
+/* probably should move to its own component */
+.some-down-items {
+  border: 1px solid #004c00;
+  background-color: #111;
+  font-size: 1.5em;
+  border-radius: 5px;
+  overflow: hidden;
+  max-height: 0px;
+  opacity: 0;
+  transition: all 500ms ease-in;
+}
+.some-down-items > div {
+  margin: 8px;
+}
+.some-down-items.hidden {
+
+}
+.some-down-items.visible {
+  max-height: 40px;
+  opacity: 1;
+}
+.some-down-hidden-text {
+  font-size: 0.8em;
+  color: #aaa;
+}
+
 /* history */
 
-/*
-.history-spacer {
-  margin-top: 20px;
-  margin-left: 0px;
-  margin-right: 0px;
-  border-radius: 4px;
-  background-color: #222;
-  height: 10px;
-}
-*/
 .history-summary {
   margin-top: 20px;
 }
@@ -197,11 +206,12 @@ input[type=text] {
 /**/
 
 .service-hide-problems {
-  margin-top: 5px;
+  margin-top: 8px;
   line-height: 30px;
 }
 .service-hide-problems select {
-  background-color: orange;
+  background-color: #ddd;
+
   font-size: 0.9em;
   white-space: nowrap;
   opacity: 0.7;
@@ -264,71 +274,6 @@ input[type=text] {
   border: 0px solid gray;
   background-color: rgba(250, 250, 250, 0.3);
 }
-
-/* these some-down-items live inside HostItems and ServiceItems */
-/* probably should move to its own component */
-.some-down-items {
-  border: 1px solid orange;
-  background-color: #222;
-  font-size: 1.4em;
-  border-radius: 5px;
-  overflow: hidden;
-  max-height: 0px;
-  opacity: 0;
-  transition: all 500ms ease-in;
-}
-.some-down-items.hidden {
-
-}
-.some-down-items.visible {
-  max-height: 36px;
-  opacity: 1;
-}
-.some-down-items .hidden-label {
-  border-radius: 8px;
-  margin-left: 8px;
-  padding: 1px 8px;
-  font-size: 0.7em;
-  color: orange;
-  position: relative;
-  top: -2px;
-}
-.some-down-items .warning {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
-}
-.some-down-items .unknown {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
-}
-.some-down-items .critical {
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.some-down-items .acked {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.some-down-items .scheduled {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.some-down-items .flapping {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
-}
-
-.some-down-items .down {
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.some-down-items .unreachable {
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.some-down-items .pending {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
-}
-
 
 /* fun stuff */
 

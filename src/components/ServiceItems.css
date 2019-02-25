@@ -18,8 +18,21 @@
   border-radius: 5px;
 }
 
+.ServiceItemError {
+  border-radius: 5px;
+  padding: 5px;
+  color: yellow;
+  margin-bottom: 10px;
+  padding-left: 8px;
+}
+
 .lastOk {
-  font-size: 0.8em;
+  font-size: 0.7em;
+}
+.lastCheck {
+  text-align: left;
+  font-size: 0.7em;
+  margin-bottom: 2px
 }
 
 /* border */

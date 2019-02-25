@@ -52,15 +52,9 @@ class ServiceItems extends Component {
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-          <div style={{ padding: '5px' }}>
-            {howManyHidden} hidden service problem{howManyHidden === 1 ? '' : 's'}{' '}
-            {this.props.howManyServiceWarning > 0 && <span className="hidden-label warning">{this.props.howManyServiceWarning} WARNING</span>}
-            {this.props.howManyServiceUnknown > 0 && <span className="hidden-label unknown">{this.props.howManyServiceUnknown} UNKNOWN</span>}
-            {this.props.howManyServiceCritical > 0 && <span className="hidden-label critical">{this.props.howManyServiceCritical} CRITICAL</span>}
-            {this.props.howManyServiceAcked > 0 && <span className="hidden-label acked">{this.props.howManyServiceAcked} ACKED</span>}
-            {this.props.howManyServiceScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyServiceScheduled} SCHEDULED</span>}
-            {this.props.howManyServiceFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyServiceFlapping} FLAPPING</span>}
-            <span className="margin-left-10 display-inline-block color-green">{this.props.howManyServices - this.props.serviceProblemsArray.length} services OK</span>{' '}
+          <div>
+            <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyServices - this.props.serviceProblemsArray.length} services are OK</span>{' '}
+            <span className="some-down-hidden-text">({howManyHidden} hidden service problem{howManyHidden === 1 ? '' : 's'})</span>
           </div>
         </div>
 
@@ -97,7 +91,7 @@ class ServiceItems extends Component {
                     {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
                     {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
                     {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                    <div><span className="lastOk">Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
+                    <div className="lastOk"><span>Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
                   </div>
 
                   <div style={{ textAlign: 'left' }}>
@@ -108,8 +102,8 @@ class ServiceItems extends Component {
                     </span>
                   </div>
 
-                  <div style={{ textAlign: 'left', fontSize: '0.9em', marginBottom: '2px' }}>
-                    Last check was <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+                  <div className="lastCheck">
+                    Last check was: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
                     Next check in: <span className="color-peach">{formatDateTime(e.next_check)}</span>
                   </div>
 

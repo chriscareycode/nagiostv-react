@@ -95,7 +95,7 @@ class HostItems extends Component {
                     {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
                     {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
                     {e.is_flapping && <span className="color-orange"> FLAPPING</span>}
-                    <div><span className="lastOk">Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
+                    <div className="lastOk"><span>Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
                   </div>
                   <div style={{ textAlign: 'left' }}>
                     <strong>{e.name}</strong>{' '}
@@ -104,7 +104,7 @@ class HostItems extends Component {
                       {e.plugin_output}
                     </span>
                   </div>
-                  <div style={{ textAlign: 'left', fontSize: '0.9em' }}>
+                  <div className="lastCheck">
                     Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
                     Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
                   </div>

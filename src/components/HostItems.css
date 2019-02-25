@@ -14,7 +14,7 @@
 .HostItemBorder {
   /*border: 1px solid gray;*/
   font-size: 1.0em;
-  padding: 4px;
+  padding: 5px;
   border-radius: 5px;
 }
 .HostItemBorder:last-of-type {
