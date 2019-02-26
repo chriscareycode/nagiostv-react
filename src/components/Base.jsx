@@ -730,8 +730,15 @@ class Base extends Component {
         {settingsLoaded && <div className="service-summary color-orange">
           
           <span className="service-summary-title">
-            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}   
-            {howManyHostDown > 0 && <span className="service-summary-label service-summary-critical">{howManyHostDown} DOWN</span>}
+            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
+               
+            {howManyHostDown > 0 && <span className="summary-label summary-label-red">{howManyHostDown} DOWN</span>}
+            {howManyHostUnreachable > 0 && <span className="summary-label summary-label-orange">{howManyHostUnreachable} UNREACHABLE</span>}
+            {howManyHostPending > 0 && <span className="summary-label summary-label-gray">{howManyHostPending} PENDING</span>}
+            {howManyHostAcked > 0 && <span className="summary-label summary-label-green">{howManyHostAcked} ACKED</span>}
+            {howManyHostScheduled > 0 && <span className="summary-label summary-label-green">{howManyHostScheduled} SCHEDULED</span>}
+            {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange">{howManyHostFlapping} FLAPPING</span>}
+            
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}
               howManyWarning={0}
@@ -823,12 +830,12 @@ class Base extends Component {
           <span className="service-summary-title">
             <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
 
-            {howManyServiceWarning > 0 && <span className="service-summary-label service-summary-warning">{howManyServiceWarning} WARNING</span>}
-            {howManyServiceUnknown > 0 && <span className="service-summary-label service-summary-unknown">{howManyServiceUnknown} UNKNOWN</span>}
-            {howManyServiceCritical > 0 && <span className="service-summary-label service-summary-critical">{howManyServiceCritical} CRITICAL</span>}
-            {howManyServiceAcked > 0 && <span className="service-summary-label service-summary-acked">{howManyServiceAcked} ACKED</span>}
-            {howManyServiceScheduled > 0 && <span className="service-summary-label service-summary-scheduled">{howManyServiceScheduled} SCHEDULED</span>}
-            {howManyServiceFlapping > 0 && <span className="service-summary-label service-summary-flapping">{howManyServiceFlapping} FLAPPING</span>}
+            {howManyServiceCritical > 0 && <span className="summary-label summary-label-red">{howManyServiceCritical} CRITICAL</span>}
+            {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow">{howManyServiceWarning} WARNING</span>}
+            {howManyServiceUnknown > 0 && <span className="summary-label summary-label-gray">{howManyServiceUnknown} UNKNOWN</span>}
+            {howManyServiceAcked > 0 && <span className="summary-label summary-label-green">{howManyServiceAcked} ACKED</span>}
+            {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green">{howManyServiceScheduled} SCHEDULED</span>}
+            {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange">{howManyServiceFlapping} FLAPPING</span>}
 
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
@@ -845,6 +852,14 @@ class Base extends Component {
               <option value="oldest">Oldest First</option>
             </select>
 
+            <Checkbox className="Checkbox critical"
+              handleChange={this.handleChange}
+              stateName={'hideServiceCritical'}
+              defaultChecked={!this.state.hideServiceCritical}
+              howMany={howManyServiceCritical}
+              howManyText={'CRITICAL'}
+            />
+
             <Checkbox className="Checkbox warning"
               handleChange={this.handleChange}
               stateName={'hideServiceWarning'}
@@ -859,14 +874,6 @@ class Base extends Component {
               defaultChecked={!this.state.hideServiceUnknown}
               howMany={howManyServiceUnknown}
               howManyText={'UNKNOWN'}
-            />
-
-            <Checkbox className="Checkbox critical"
-              handleChange={this.handleChange}
-              stateName={'hideServiceCritical'}
-              defaultChecked={!this.state.hideServiceCritical}
-              howMany={howManyServiceCritical}
-              howManyText={'CRITICAL'}
             />
 
             <Checkbox className="Checkbox acked"
