@@ -64,7 +64,7 @@ input[type=text] {
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 60px;
+  min-height: 35px;
   z-index: 10;
   background-color: rgba(20,20,20,0.8);
   border-top: 1px solid #333;

@@ -713,8 +713,8 @@ class Base extends Component {
           </div>
           <div className="FooterAreaRight">Settings</div>
           <div>
-            <span>Update every <span className="color-orange">{this.state.fetchFrequency}s</span> - </span>
-            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span><br />
+            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
+            &nbsp;&nbsp;
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available">NagiosTV v{this.state.latestVersionString} available</span></span>}
           </div>
