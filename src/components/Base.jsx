@@ -18,7 +18,7 @@ import HistoryChart from './widgets/HistoryChart.jsx';
 class Base extends Component {
 
   // use fake sample data if we are doing local development
-  useFakeSampleData = window.location.hostname === 'localhost';
+  useFakeSampleData = false;
 
   state = {
     showSettings: false,
