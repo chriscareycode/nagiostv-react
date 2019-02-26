@@ -109,9 +109,6 @@ class HostItems extends Component {
                     Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
                   </div>
 
-                  {e.problem_has_been_acknowledged && <span className="color-green" style={{ marginRight: '5px' }}>ACKED</span>}
-                  {e.scheduled_downtime_depth > 0 && <span className="color-green" style={{ marginRight: '5px' }}>SCHEDULED</span>}
-
                   {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
                     Comment: <span className="color-comment">({comment_author}): {comment}</span>
                   </span>}
