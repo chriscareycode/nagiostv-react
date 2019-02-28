@@ -810,7 +810,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.hostlistError && <div className="margin-top-10 border-red ServiceItemError">⚠️ {this.state.hostlistErrorMessage}</div>}
+        {this.state.hostlistError && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
@@ -908,7 +908,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.servicelistError && <div className="margin-top-10 border-red ServiceItemError">⚠️ {this.state.servicelistErrorMessage}</div>}
+        {this.state.servicelistError && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}
