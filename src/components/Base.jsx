@@ -508,11 +508,12 @@ class Base extends Component {
     // this prevents version checks if you refresh the UI over and over
     // as is common on TV rotation
     const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
+    const nowTime = new Date().getTime();
 
-    const oneDayInSeconds = (86400 - 3600) * 1000;
+    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
     if (lastVersionCheckTime !== 0) {
-      const diff = new Date().getTime() - lastVersionCheckTime;
-      if (diff < oneDayInSeconds) {
+      const diff = nowTime - lastVersionCheckTime;
+      if (diff < twentyThreeHoursInSeconds) {
         console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
         return;
       }
@@ -531,12 +532,15 @@ class Base extends Component {
         this.setState({
           latestVersion: myJson.version,
           latestVersionString: myJson.version_string,
-          lastVersionCheckTime: new Date().getTime()
+          lastVersionCheckTime: nowTime
         }, () => {
-          
-          Cookie.set('lastVersionCheckTime', new Date().getTime());
+          // after state is set, set the cookie
+          Cookie.set('lastVersionCheckTime', nowTime);
         });
       })
+      .catch(err => {
+        console.log('There was some error with the version check', err);
+      });
   }
 
   handleChange = (propName, dataType) => (event) => {
