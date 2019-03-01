@@ -51,7 +51,7 @@ class HostItems extends Component {
       <div className="ServiceItems">
 
         <div className={`all-ok-item ${this.props.hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">All {this.props.howManyHosts} hosts are OK</span>{' '}
+          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">All {this.props.howManyHosts} hosts are UP</span>{' '}
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
