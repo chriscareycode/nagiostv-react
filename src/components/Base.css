@@ -11,6 +11,13 @@ input[type=text] {
 .margin-left-10 {
   margin-left: 10px;
 }
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+.softIcon {
+  margin-right: 5px;
+}
 
 .settings {
 

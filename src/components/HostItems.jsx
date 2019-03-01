@@ -4,6 +4,8 @@ import './HostItems.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../helpers/nagios.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
@@ -84,10 +86,13 @@ class HostItems extends Component {
               }
             });
 
+            const isSoft = e.state_type === 0;
+
             return (
               <div key={i} style={{ ...defaultStyles }} className={`HostItem`}>
                 <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
                   <div style={{ float: 'right', textAlign: 'right' }}>
+                    {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faYinYang} spin /></span>}
                     {1 === 2 && <span>({e.state_type})</span>}
                     {nagiosStateType(e.state_type)}{' '}
                     {1 === 2 && <span>({e.status})</span>}
