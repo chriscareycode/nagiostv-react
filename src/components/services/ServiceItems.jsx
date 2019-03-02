@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './ServiceItems.css';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import ServiceItem from './services/ServiceItem';
+import ServiceItem from './ServiceItem';
+// css
+import './ServiceItems.css';
 
 class ServiceItems extends Component {
 

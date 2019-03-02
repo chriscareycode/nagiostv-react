@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './HostItems.css';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import HostItem from './hosts/HostItem';
+import HostItem from './HostItem';
+// css
+import './HostItems.css';
 
 class HostItems extends Component {
 

@@ -1,20 +1,21 @@
 /*eslint array-callback-return: "off"*/
-
 import React, { Component } from 'react';
-import './Base.css';
-import './animation.css';
-import ServiceItems from './ServiceItems.jsx';
-import AlertItems from './AlertItems.jsx';
-import HostItems from './HostItems.jsx';
+import HostItems from './hosts/HostItems.jsx';
+import ServiceItems from './services/ServiceItems.jsx';
+import AlertItems from './alerts/AlertItems.jsx';
 import { prettyDateTime } from '../helpers/moment.js';
-import Cookie from 'js-cookie';
-import $ from 'jquery';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
-import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import HistoryChart from './widgets/HistoryChart.jsx';
+// css
+import './Base.css';
+import './animation.css';
+// 3rd party addons
+import moment from 'moment';
+import Cookie from 'js-cookie';
+import $ from 'jquery';
 
 class Base extends Component {
 
