@@ -6,8 +6,8 @@ import { hostBorderClass, hostTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../helpers/nagios.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
-
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { playAudio, speakAudio } from '../helpers/audio';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -15,6 +15,18 @@ const defaultStyles = {
 }
 
 class HostItems extends Component {
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.howManyHostDown > this.props.howManyHostDown) {
+      playAudio('host', 'down');
+      speakAudio('host', 'down');
+    }
+    if (nextProps.howManyHostDown < this.props.howManyHostDown) {
+      playAudio('host', 'up');
+      speakAudio('host', 'up');
+    }
+    return true;
+  }
 
   render() {
 

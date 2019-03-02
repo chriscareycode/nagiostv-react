@@ -6,8 +6,8 @@ import { serviceBorderClass, serviceTextClass } from '../helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
-
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { playAudio, speakAudio } from '../helpers/audio';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -15,6 +15,26 @@ const defaultStyles = {
 }
 
 class ServiceItems extends Component {
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.howManyServiceCritical > this.props.howManyServiceCritical) {
+      playAudio('service', 'critical');
+      speakAudio('service', 'critical');
+    }
+    if (nextProps.howManyServiceWarning < this.props.howManyServiceWarning) {
+      playAudio('service', 'ok');
+      speakAudio('service', 'ok');
+    }
+    if (nextProps.howManyServiceWarning > this.props.howManyServiceWarning) {
+      playAudio('service', 'warning');
+      speakAudio('service', 'warning');
+    }
+    if (nextProps.howManyServiceWarning < this.props.howManyServiceWarning) {
+      playAudio('service', 'ok');
+      speakAudio('service', 'ok');
+    }
+    return true;
+  }
 
   render() {
 
