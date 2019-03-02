@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import './Base.css';
+import './animation.css';
 import ServiceItems from './ServiceItems.jsx';
 import AlertItems from './AlertItems.jsx';
 import HostItems from './HostItems.jsx';

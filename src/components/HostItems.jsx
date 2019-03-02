@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './animation.css';
+//import './animation.css';
 import './HostItems.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../helpers/colors.js';

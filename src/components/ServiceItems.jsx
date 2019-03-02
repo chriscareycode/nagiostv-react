@@ -1,40 +1,9 @@
 import React, { Component } from 'react';
-import './animation.css';
 import './ServiceItems.css';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../helpers/moment.js';
-import { serviceBorderClass, serviceTextClass } from '../helpers/colors.js';
-import { nagiosStateType, nagiosServiceStatus } from '../helpers/nagios.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { playAudio, speakAudio } from '../helpers/audio';
-
-const defaultStyles = {
-  overflow: 'hidden',
-  color: 'white'
-}
+import ServiceItem from './services/ServiceItem';
 
 class ServiceItems extends Component {
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.howManyServiceCritical > this.props.howManyServiceCritical) {
-      playAudio('service', 'critical');
-      speakAudio('service', 'critical');
-    }
-    if (nextProps.howManyServiceWarning < this.props.howManyServiceWarning) {
-      playAudio('service', 'ok');
-      speakAudio('service', 'ok');
-    }
-    if (nextProps.howManyServiceWarning > this.props.howManyServiceWarning) {
-      playAudio('service', 'warning');
-      speakAudio('service', 'warning');
-    }
-    if (nextProps.howManyServiceWarning < this.props.howManyServiceWarning) {
-      playAudio('service', 'ok');
-      speakAudio('service', 'ok');
-    }
-    return true;
-  }
 
   render() {
 
@@ -63,7 +32,6 @@ class ServiceItems extends Component {
     });
 
     const howManyHidden = this.props.serviceProblemsArray.length - filteredServiceProblemsArray.length;
-
     const showSomeDownItems = this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
 
     return (
@@ -102,42 +70,14 @@ class ServiceItems extends Component {
               }
             });
 
-            const isSoft = e.state_type === 0;
-
             return (
-              <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem`}>
-                <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
-                  <div style={{ float: 'right', textAlign: 'right' }}>
-                    {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faYinYang} spin /></span>}
-                    {1 === 2 && <span>({e.state_type})</span>}
-                    {nagiosStateType(e.state_type)}{' '}
-                    {1 === 2 && <span>({e.status})</span>}
-                    <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
-                    {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
-                    {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
-                    {e.is_flapping && <span className="color-orange">FLAPPING</span>}
-                    <div className="lastOk"><span>Last OK</span> {formatDateTimeAgoColor(e.last_time_ok)} ago</div>
-                  </div>
-
-                  <div style={{ textAlign: 'left' }}>
-                    <strong>{e.host_name}</strong>{' - '}
-                    <span className={serviceTextClass(e.status)}>
-                      <span className="color-orange">{e.description}</span>{' - '}
-                      {e.plugin_output}
-                    </span>
-                  </div>
-
-                  <div className="lastCheck">
-                    Last check was: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
-                    Next check in: <span className="color-peach">{formatDateTime(e.next_check)}</span>
-                  </div>
-
-                  {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
-                    Comment: <span className="color-comment">({comment_author}): {formatDateTimeAgo(comment_entry_time)} ago - {comment}</span>
-                  </span>}
-
-                </div>
-              </div>
+              <ServiceItem
+                key={e.host_name + '-' + e.description}
+                serviceItem={e}
+                comment={comment}
+                comment_author={comment_author}
+                comment_entry_time={comment_entry_time}
+              />
             );
             
           })}

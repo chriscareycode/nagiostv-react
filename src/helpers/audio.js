@@ -1,8 +1,10 @@
+// so this new Audio() function dumps a stacktrace when it cant find the audio file to play
+// we should add some extra test that the file exists, if possible
 export function playAudio(type, state) {
 	
-	const audioCritical = '/audio/service-bell_daniel_simion.mp3';
-	const audioWarning = '/audio/sms-alert-4-daniel_simon.mp3';
-	const audioOk = '/audio/sms-alert-5-daniel_simon.mp3';
+	const audioCritical = '/sample-audio/service-bell_daniel_simion.mp3';
+	const audioWarning = '/sample-audio/sms-alert-4-daniel_simon.mp3';
+	const audioOk = '/sample-audio/sms-alert-5-daniel_simon.mp3';
 
 	console.log('playAudio', type, state);
 
@@ -28,15 +30,11 @@ export function playAudio(type, state) {
 	//new Audio();
 }
 
-export function speakAudio(type, state) {
+export function speakAudio(words) {
 	
-	const audioCritical = '/audio/service-bell_daniel_simion.mp3';
-	const audioWarning = '/audio/sms-alert-4-daniel_simon.mp3';
-	const audioOk = '/audio/sms-alert-5-daniel_simon.mp3';
+	console.log('speakAudio', words);
 
-	console.log('speakAudio', type, state);
-
-	var msg = new SpeechSynthesisUtterance(type + ' ' + state);
+	const msg = new SpeechSynthesisUtterance(words);
 	window.speechSynthesis.speak(msg);
 	
 }
