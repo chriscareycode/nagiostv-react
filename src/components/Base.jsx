@@ -92,7 +92,9 @@ class Base extends Component {
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
     flynnCssScale: '1',
-    showEmoji: false
+    showEmoji: false,
+    speakItems: false,
+    playSoundEffects: false
   };
 
   // The settings which we persist are a subset of the state that we have above.
@@ -129,7 +131,9 @@ class Base extends Component {
     'flynnAngryAt',
     'flynnBloodyAt',
     'flynnCssScale',
-    'showEmoji'
+    'showEmoji',
+    'speakItems',
+    'playSoundEffects'
   ];
 
   constructor(props) {
@@ -492,7 +496,6 @@ class Base extends Component {
   }
 
   baseUrlChanged(event) {
-    //console.log('baseUrlChanged ' + event.target.value);
     this.setState({ baseUrl: event.target.value });
   }
 

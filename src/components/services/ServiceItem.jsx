@@ -3,7 +3,7 @@ import './ServiceItem.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { serviceBorderClass, serviceTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios.js';
-import { playAudio, speakAudio } from '../../helpers/audio';
+import { playSoundEffect, speakAudio } from '../../helpers/audio';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 
@@ -15,46 +15,49 @@ const defaultStyles = {
 class ServiceItem extends Component {
 
   componentDidMount() {
-    this.doAudio();
-    this.doSpeakIntro();
+    if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
+    if (this.props.settings.speakItems) { this.doSpeakIntro(); }
   }
 
   componentWillUnmount() {
-    
+    if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
+    if (this.props.settings.speakItems) { this.doSpeakOutro(); }
   }
 
-  doSpeakIntro() {
-    speakAudio(
-      nagiosServiceStatus(this.props.serviceItem.status) + ' '
-      + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' '
-      //+ nagiosStateType(this.props.serviceItem.state_type) + ' '
-      //+ nagiosServiceStatus(this.props.serviceItem.status) + ' '
-      //+ this.props.serviceItem.plugin_output
-    );
-  }
-
-  doSpeakOutro() {
-    speakAudio(this.props.serviceItem.host_name + ' ' + ' ' + this.props.serviceItem.description + ' service ok');
-  }
-
-  doAudio() {
+  doSoundEffect() {
     const status = nagiosServiceStatus(this.props.serviceItem.status);
     console.log('status is', status);
     switch(status) {
       case 'CRITICAL':
-        playAudio('service', 'critical');
+        playSoundEffect('service', 'critical');
         break;
       case 'WARNING':
-        playAudio('service', 'warning');
+        playSoundEffect('service', 'warning');
         break;
       case 'OK':
-        playAudio('service', 'ok');
+        playSoundEffect('service', 'ok');
         break;
       default:
         break;
     }
   }
-  
+
+  doSpeakIntro() {
+    let words = 'service ' + this.props.serviceItem.description +
+      'on ' + this.props.serviceItem.host_name + ' is '
+      + nagiosServiceStatus(this.props.serviceItem.status) + ' ';
+
+    if (this.props.serviceItem.is_flapping) { words += ' and flapping'; }
+    if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' and acked'; }
+    if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' and scheduled'; }
+
+    speakAudio(words);
+  }
+
+  doSpeakOutro() {
+    speakAudio('service ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ok');
+  }
+
   render() {
 
     const e = this.props.serviceItem; // clean this up
@@ -62,13 +65,13 @@ class ServiceItem extends Component {
 
     return (
       
-    <div key={e.host_name + '-' + e.description} style={{ ...defaultStyles }} className={`ServiceItem`}>
+    <div style={{ ...defaultStyles }} className={`ServiceItem`}>
       <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
         <div style={{ float: 'right', textAlign: 'right' }}>
         {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faYinYang} spin /></span>}
-        {1 === 1 && <span>({e.state_type})</span>}
+        {1 === 2 && <span>({e.state_type})</span>}
         {nagiosStateType(e.state_type)}{' '}
-        {1 === 1 && <span>({e.status})</span>}
+        {1 === 2 && <span>({e.status})</span>}
         <span className={serviceTextClass(e.status)}>{nagiosServiceStatus(e.status)}</span>{' '}
         {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
         {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}

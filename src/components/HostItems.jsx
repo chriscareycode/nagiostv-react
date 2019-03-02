@@ -1,32 +1,9 @@
 import React, { Component } from 'react';
-//import './animation.css';
 import './HostItems.css';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../helpers/moment.js';
-import { hostBorderClass, hostTextClass } from '../helpers/colors.js';
-import { nagiosStateType, nagiosHostStatus } from '../helpers/nagios.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { playAudio, speakAudio } from '../helpers/audio';
-
-const defaultStyles = {
-  overflow: 'hidden',
-  color: 'white'
-}
+import HostItem from './hosts/HostItem';
 
 class HostItems extends Component {
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.howManyHostDown > this.props.howManyHostDown) {
-      playAudio('host', 'down');
-      speakAudio('host', 'down');
-    }
-    if (nextProps.howManyHostDown < this.props.howManyHostDown) {
-      playAudio('host', 'up');
-      speakAudio('host', 'up');
-    }
-    return true;
-  }
 
   render() {
 
@@ -56,7 +33,6 @@ class HostItems extends Component {
     });
 
     const howManyHidden = this.props.hostProblemsArray.length - filteredHostProblemsArray.length;
-
     const showSomeDownItems = this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
 
     return (
@@ -90,47 +66,25 @@ class HostItems extends Component {
             // find comment for this hostitem
             let comment = '';
             let comment_author = '';
+            let comment_entry_time = '';
             const commentlist = this.props.commentlist;
             Object.keys(commentlist).forEach((id) => {
               if (commentlist[id].comment_type === 1 && e.name === commentlist[id].host_name) {
                 comment = commentlist[id].comment_data;
                 comment_author = commentlist[id].author;
+                comment_entry_time = commentlist[id].entry_time;
               }
             });
 
-            const isSoft = e.state_type === 0;
-
             return (
-              <div key={i} style={{ ...defaultStyles }} className={`HostItem`}>
-                <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
-                  <div style={{ float: 'right', textAlign: 'right' }}>
-                    {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faYinYang} spin /></span>}
-                    {1 === 2 && <span>({e.state_type})</span>}
-                    {nagiosStateType(e.state_type)}{' '}
-                    {1 === 2 && <span>({e.status})</span>}
-                    <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
-                    {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
-                    {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
-                    {e.is_flapping && <span className="color-orange"> FLAPPING</span>}
-                    <div className="lastOk"><span>Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
-                  </div>
-                  <div style={{ textAlign: 'left' }}>
-                    <strong>{e.name}</strong>{' '}
-                    <span className={hostTextClass(e.status)}>
-                      <span className="color-orange">{e.description}</span>{' - '}
-                      {e.plugin_output}
-                    </span>
-                  </div>
-                  <div className="lastCheck">
-                    Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
-                    Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
-                  </div>
-
-                  {comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
-                    Comment: <span className="color-comment">({comment_author}): {comment}</span>
-                  </span>}
-                </div>
-              </div>
+              <HostItem
+                key={i}
+                settings={this.props.settings}
+                hostItem={e}
+                comment={comment}
+                comment_author={comment_author}
+                comment_entry_time={comment_entry_time}
+              />
             );
             
           })}

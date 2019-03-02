@@ -9,6 +9,7 @@ class ServiceItems extends Component {
 
     //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
     //console.log(Object.keys(this.props.serviceProblemsArray));
+    
     const filteredServiceProblemsArray = this.props.serviceProblemsArray.filter(item => {
       if (this.props.settings.hideServiceWarning) {
         if (item.status === 4) { return false; }
@@ -73,6 +74,7 @@ class ServiceItems extends Component {
             return (
               <ServiceItem
                 key={e.host_name + '-' + e.description}
+                settings={this.props.settings}
                 serviceItem={e}
                 comment={comment}
                 comment_author={comment_author}

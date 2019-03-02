@@ -1,12 +1,12 @@
 // so this new Audio() function dumps a stacktrace when it cant find the audio file to play
 // we should add some extra test that the file exists, if possible
-export function playAudio(type, state) {
+export function playSoundEffect(type, state) {
 	
-	const audioCritical = '/sample-audio/service-bell_daniel_simion.mp3';
-	const audioWarning = '/sample-audio/sms-alert-4-daniel_simon.mp3';
-	const audioOk = '/sample-audio/sms-alert-5-daniel_simon.mp3';
+	const audioCritical = '/sample-audio/Computer Error Alert-SoundBible.com-783113881.mp3';
+	const audioWarning = '/sample-audio/Computer Error-SoundBible.com-399240903.mp3';
+	const audioOk = '/sample-audio/Tiny Button Push-SoundBible.com-513260752.mp3';
 
-	console.log('playAudio', type, state);
+	//console.log('playSoundEffect', type, state);
 
 	switch(type+state) {
 		case 'hostdown':
@@ -32,7 +32,7 @@ export function playAudio(type, state) {
 
 export function speakAudio(words) {
 	
-	console.log('speakAudio', words);
+	//console.log('speakAudio', words);
 
 	const msg = new SpeechSynthesisUtterance(words);
 	window.speechSynthesis.speak(msg);
