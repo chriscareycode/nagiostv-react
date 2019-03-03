@@ -1,19 +1,21 @@
 /*eslint array-callback-return: "off"*/
-
 import React, { Component } from 'react';
-import './Base.css';
-import ServiceItems from './ServiceItems.jsx';
-import AlertItems from './AlertItems.jsx';
-import HostItems from './HostItems.jsx';
+import HostItems from './hosts/HostItems.jsx';
+import ServiceItems from './services/ServiceItems.jsx';
+import AlertItems from './alerts/AlertItems.jsx';
 import { prettyDateTime } from '../helpers/moment.js';
-import Cookie from 'js-cookie';
-import $ from 'jquery';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
-import moment from 'moment';
 import Checkbox from './widgets/Checkbox.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import HistoryChart from './widgets/HistoryChart.jsx';
+// css
+import './Base.css';
+import './animation.css';
+// 3rd party addons
+import moment from 'moment';
+import Cookie from 'js-cookie';
+import $ from 'jquery';
 
 class Base extends Component {
 
@@ -91,7 +93,12 @@ class Base extends Component {
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
     flynnCssScale: '1',
-    showEmoji: false
+    showEmoji: false,
+    speakItems: false,
+    playSoundEffects: false,
+    soundEffectCritical: './sample-audio/critical.mp3',
+    soundEffectWarning: './sample-audio/warning.mp3',
+    soundEffectOk: './sample-audio/ok.mp3'
   };
 
   // The settings which we persist are a subset of the state that we have above.
@@ -128,7 +135,12 @@ class Base extends Component {
     'flynnAngryAt',
     'flynnBloodyAt',
     'flynnCssScale',
-    'showEmoji'
+    'showEmoji',
+    'speakItems',
+    'playSoundEffects',
+    'soundEffectCritical',
+    'soundEffectWarning',
+    'soundEffectOk'
   ];
 
   constructor(props) {
@@ -491,7 +503,6 @@ class Base extends Component {
   }
 
   baseUrlChanged(event) {
-    //console.log('baseUrlChanged ' + event.target.value);
     this.setState({ baseUrl: event.target.value });
   }
 

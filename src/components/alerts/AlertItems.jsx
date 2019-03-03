@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import './animation.css';
-import './ServiceItems.css';
-import './AlertItems.css';
-import { prettyDateTime } from '../helpers/moment.js';
-import { alertTextClass, alertBorderClass } from '../helpers/colors.js';
-import { nagiosAlertState, nagiosAlertStateType } from '../helpers/nagios.js';
+import { prettyDateTime } from '../../helpers/moment.js';
+import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
+import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
+// css
+import '../animation.css';
+import '../services/ServiceItems.css';
+import './AlertItems.css';
 
 const defaultStyles = {
   overflow: 'hidden',

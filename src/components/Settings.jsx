@@ -188,6 +188,27 @@ class Settings extends Component {
                 </select>
               </div>
 
+              <div className="SettingsSection">
+                Sound Effects:{' '}
+                <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                </select>
+                {this.state.playSoundEffects && <div>
+                  <div>DOWN/CRITICAL sound file: <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} /></div>
+                  <div>WARNING sound file: <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} /></div>
+                  <div>UP/OK sound file: <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} /></div>
+                </div>}
+              </div>
+
+              <div className="SettingsSection">
+                Speak Items:{' '}
+                <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                </select>
+              </div>
+
               <h5>Save and Close</h5>
 
               <div style={{marginTop: '20px'}}>
