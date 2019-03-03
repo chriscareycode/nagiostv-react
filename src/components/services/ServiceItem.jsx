@@ -20,22 +20,20 @@ class ServiceItem extends Component {
   }
 
   componentWillUnmount() {
-    if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
+    if (this.props.settings.playSoundEffects) { 
+      playSoundEffect('service', 'ok', this.props.settings);
+    }
     if (this.props.settings.speakItems) { this.doSpeakOutro(); }
   }
 
   doSoundEffect() {
     const status = nagiosServiceStatus(this.props.serviceItem.status);
-    console.log('status is', status);
     switch(status) {
       case 'CRITICAL':
-        playSoundEffect('service', 'critical');
+        playSoundEffect('service', 'critical', this.props.settings);
         break;
       case 'WARNING':
-        playSoundEffect('service', 'warning');
-        break;
-      case 'OK':
-        playSoundEffect('service', 'ok');
+        playSoundEffect('service', 'warning', this.props.settings);
         break;
       default:
         break;

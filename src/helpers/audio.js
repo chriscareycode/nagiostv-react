@@ -1,33 +1,49 @@
 // so this new Audio() function dumps a stacktrace when it cant find the audio file to play
 // we should add some extra test that the file exists, if possible
-export function playSoundEffect(type, state) {
+/*
+ * Chrome autoplay policy
+ * https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+ */
+export function playSoundEffect(type, state, settings) {
 	
-	const audioCritical = '/sample-audio/Computer Error Alert-SoundBible.com-783113881.mp3';
-	const audioWarning = '/sample-audio/Computer Error-SoundBible.com-399240903.mp3';
-	const audioOk = '/sample-audio/Tiny Button Push-SoundBible.com-513260752.mp3';
+	const audioCritical = settings.soundEffectCritical;
+	const audioWarning = settings.soundEffectWarning;
+	const audioOk = settings.soundEffectOk;
 
-	//console.log('playSoundEffect', type, state);
+	//console.log('playSoundEffect', type, state, audioCritical, audioWarning, audioOk);
+
+	let audio;
 
 	switch(type+state) {
 		case 'hostdown':
-			new Audio(audioCritical).play();
+			audio = new Audio(audioCritical);
 			break;
 		case 'hostup':
-			new Audio(audioOk).play();
+			audio = new Audio(audioOk);
 			break;
 		case 'servicecritical':
-			new Audio(audioCritical).play();
+			audio = new Audio(audioCritical);
 			break;
 		case 'servicewarning':
-			new Audio(audioWarning).play();
+			audio = new Audio(audioWarning);
 			break;
 		case 'serviceok':
-			new Audio(audioOk).play();
+			audio = new Audio(audioOk);
 			break;
 		default:
 			break;
 	}
-	//new Audio();
+
+	if (audio) {
+		
+		const promise = audio.play();
+		promise.catch((err) => {
+			console.log('error', err);
+			if (err === 'DomException') {
+				console.log('Blocked by Chrome autoplay prevention. Touch the UI to enable sound');
+			}
+		});
+	}
 }
 
 export function speakAudio(words) {

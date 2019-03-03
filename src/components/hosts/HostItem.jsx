@@ -20,7 +20,9 @@ class HostItem extends Component {
   }
 
   componentWillUnmount() {
-    if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
+    if (this.props.settings.playSoundEffects) {
+      playSoundEffect('host', 'up', this.props.settings);
+    }
     if (this.props.settings.speakItems) { this.doSpeakOutro(); }
   }
 
@@ -29,10 +31,7 @@ class HostItem extends Component {
     console.log('host status is', status);
     switch(status) {
       case 'DOWN':
-        playSoundEffect('host', 'down');
-        break;
-      case 'UP':
-        playSoundEffect('host', 'up');
+        playSoundEffect('host', 'down', this.props.settings);
         break;
       default:
         break;

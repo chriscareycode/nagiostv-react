@@ -95,7 +95,10 @@ class Base extends Component {
     flynnCssScale: '1',
     showEmoji: false,
     speakItems: false,
-    playSoundEffects: false
+    playSoundEffects: false,
+    soundEffectCritical: './sample-audio/critical.mp3',
+    soundEffectWarning: './sample-audio/warning.mp3',
+    soundEffectOk: './sample-audio/ok.mp3'
   };
 
   // The settings which we persist are a subset of the state that we have above.
@@ -134,7 +137,10 @@ class Base extends Component {
     'flynnCssScale',
     'showEmoji',
     'speakItems',
-    'playSoundEffects'
+    'playSoundEffects',
+    'soundEffectCritical',
+    'soundEffectWarning',
+    'soundEffectOk'
   ];
 
   constructor(props) {

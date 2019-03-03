@@ -194,6 +194,11 @@ class Settings extends Component {
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                 </select>
+                {this.state.playSoundEffects && <div>
+                  <div>DOWN/CRITICAL sound file: <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} /></div>
+                  <div>WARNING sound file: <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} /></div>
+                  <div>UP/OK sound file: <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} /></div>
+                </div>}
               </div>
 
               <div className="SettingsSection">

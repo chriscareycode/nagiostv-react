@@ -8,7 +8,6 @@ import '../animation.css';
 import '../services/ServiceItems.css';
 import './AlertItems.css';
 
-
 const defaultStyles = {
   overflow: 'hidden',
   backgroundColor: '#111',
