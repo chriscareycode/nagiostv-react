@@ -56,7 +56,9 @@ $ sudo chmod 777 client-settings.json
 
 Upgrading
 ------------
-Pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
+Grab the latest release from here: https://github.com/chriscareycode/nagiostv-react/releases
+
+Then pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
 ```console
 $ tar xvfz nagiostv-0.3.2.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
