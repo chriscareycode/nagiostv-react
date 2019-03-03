@@ -319,3 +319,11 @@ input[type=text] {
   border-radius: 5px;
   margin-left: 5px;
 }
+.update-available a {
+  color: black;
+  text-decoration: none;
+}
+.update-available a:hover {
+  color: black;
+  text-decoration: underline;
+}

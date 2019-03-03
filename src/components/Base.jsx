@@ -731,7 +731,7 @@ class Base extends Component {
             <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
             &nbsp;&nbsp;
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
-            {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available">NagiosTV v{this.state.latestVersionString} available</span></span>}
+            {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
           </div>
         </div>
 
