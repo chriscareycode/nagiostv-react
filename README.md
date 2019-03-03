@@ -87,7 +87,7 @@ your Apache install to add CORS headers there, or to run a simple Node.js server
 Reach out to me if you want help here, I will add instructions and sample code for this at some point.
 
 ### Mock data now included for local development
-Update: As of version 0.3.2, *I have now included mock data for doing local development*. So without connecting to a real Nagios server, the UI will simulate one of each type of outage. This eliminates the need for the proxy if you just want to make some quick changes. To turn this on, set *useFakeSampleData = true* in Base.jsx
+Update: As of version 0.3.2, **I have now included mock data for doing local development**. So without connecting to a real Nagios server, the UI will simulate one of each type of outage. This eliminates the need for the proxy if you just want to make some quick changes. To turn this on, set **useFakeSampleData = true** in Base.jsx
 
 Development - Committing your changes to this project
 ------------
