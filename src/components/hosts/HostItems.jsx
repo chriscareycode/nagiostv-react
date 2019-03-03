@@ -79,7 +79,7 @@ class HostItems extends Component {
 
             return (
               <HostItem
-                key={i}
+                key={e.name}
                 settings={this.props.settings}
                 hostItem={e}
                 comment={comment}
