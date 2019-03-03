@@ -105,19 +105,21 @@ TODO
 
 History
 ------------
-NagiosTV was started around 2009. It was created to have a nice way to display Nagios status on a TV at work.
+The idea for NagiosTV was started around 2009. It was created to have a nice way to display Nagios status on a TV at work.
 Over the years I have continued to run it at home to monitor my own network.
 
-Originally it was written for Nagios 3 and used the ndoutils package to get status.
+Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status.
 This ended up being a very painful install for many, and the database size continuously grew and needed maintenance.
 
-Later I released a version which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
+Later I released JavaScript versions which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
 
 Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of the box which is a game changer for tapping into the Nagios data from a web application.
 
 https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
 
 No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
+
+Also this is the first version that (aside from the client-settings save feature) has no server-side component. It's all JavaScript in the browser.
 
 Help
 ------------
