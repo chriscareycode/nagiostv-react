@@ -33,6 +33,9 @@ class HostItem extends Component {
       case 'DOWN':
         playSoundEffect('host', 'down', this.props.settings);
         break;
+      case 'UNREACHABLE':
+        playSoundEffect('host', 'unreachable', this.props.settings);
+        break;
       default:
         break;
     }

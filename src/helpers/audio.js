@@ -16,6 +16,7 @@ export function playSoundEffect(type, state, settings) {
 
   switch(type+state) {
     case 'hostdown':
+    case 'hostunreachable':
       audio = new Audio(audioCritical);
       break;
     case 'hostup':
