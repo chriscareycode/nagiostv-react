@@ -144,7 +144,7 @@
         "plugin_output": "PING OK - Packet loss = 0%, RTA = 0.63 ms",
         "long_plugin_output": "",
         "perf_data": "rta=0.631000ms;3000.000000;5000.000000;0.000000 pl=0%;80;100;0",
-        "status": 16,
+        "status": 1,
         "last_update": 1550994521000,
         "has_been_checked": true,
         "should_be_scheduled": true,

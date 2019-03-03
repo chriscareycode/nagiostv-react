@@ -3,7 +3,7 @@
 export function nagiosHostStatus(status) {
   switch(status) {
     case 1:
-      return 'NOT CHECKED';
+      return 'PENDING';
     case 2:
       return 'UP';
     case 4:
@@ -31,7 +31,7 @@ export function nagiosStateType(state_type) {
 export function nagiosServiceStatus(status) {
   switch(status) {
     case 1:
-      return 'NOT CHECKED';
+      return 'PENDING';
     case 2:
       return 'OK';
     case 4:

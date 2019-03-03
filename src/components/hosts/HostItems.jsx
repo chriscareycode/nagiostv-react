@@ -12,14 +12,14 @@ class HostItems extends Component {
     //console.log(Object.keys(this.props.hostProblemsArray));
 
     const filteredHostProblemsArray = this.props.hostProblemsArray.filter(item => {
+      if (this.props.settings.hideHostPending) {
+        if (item.status === 1) { return false; }
+      }
       if (this.props.settings.hideHostDown) {
         if (item.status === 4) { return false; }
       }
       if (this.props.settings.hideHostUnreachable) {
         if (item.status === 8) { return false; }
-      }
-      if (this.props.settings.hideHostPending) {
-        if (item.status === 16) { return false; }
       }
       if (this.props.settings.hideHostAcked) {
         if (item.problem_has_been_acknowledged) { return false; }

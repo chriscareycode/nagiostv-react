@@ -3,6 +3,9 @@ export function hostBorderClass(status) {
   let classString = '';
 
   switch(status) {
+    case 1:
+      classString = 'border-gray'; // PENDING
+      break;
     case 2:
       classString = 'border-green'; // UP
       break;
@@ -11,9 +14,6 @@ export function hostBorderClass(status) {
       break;
     case 8:
       classString = 'border-orange'; // UNREACHABLE
-      break;
-    case 16:
-      classString = 'border-gray'; // PENDING
       break;
     default:
       classString = '';
@@ -26,6 +26,9 @@ export function hostTextClass(status) {
   let classString = '';
 
   switch(status) {
+    case 1:
+      classString = 'color-gray'; // PENDING
+      break;
     case 2:
       classString = 'color-green'; // UP
       break;
@@ -34,9 +37,6 @@ export function hostTextClass(status) {
       break;
     case 8:
       classString = 'color-orange'; // UNREACHABLE
-      break;
-    case 16:
-      classString = 'color-gray'; // PENDING
       break;
     default:
       classString = '';
