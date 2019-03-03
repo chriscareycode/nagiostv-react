@@ -4,6 +4,12 @@
  * Chrome autoplay policy
  * https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
  */
+import _ from 'lodash';
+
+export const playSoundEffectDebounced = _.debounce(function(type, state, settings) {
+  playSoundEffect(type, state, settings);
+}, 200);
+
 export function playSoundEffect(type, state, settings) {
   
   const audioCritical = settings.soundEffectCritical;

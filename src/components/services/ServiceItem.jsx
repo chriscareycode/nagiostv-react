@@ -3,7 +3,7 @@ import './ServiceItem.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { serviceBorderClass, serviceTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios.js';
-import { playSoundEffect, speakAudio } from '../../helpers/audio';
+import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 
@@ -20,8 +20,8 @@ class ServiceItem extends Component {
   }
 
   componentWillUnmount() {
-    if (this.props.settings.playSoundEffects) { 
-      playSoundEffect('service', 'ok', this.props.settings);
+    if (this.props.settings.playSoundEffects) {
+      playSoundEffectDebounced('service', 'ok', this.props.settings);
     }
     if (this.props.settings.speakItems) { this.doSpeakOutro(); }
   }
@@ -30,10 +30,10 @@ class ServiceItem extends Component {
     const status = nagiosServiceStatus(this.props.serviceItem.status);
     switch(status) {
       case 'CRITICAL':
-        playSoundEffect('service', 'critical', this.props.settings);
+        playSoundEffectDebounced('service', 'critical', this.props.settings);
         break;
       case 'WARNING':
-        playSoundEffect('service', 'warning', this.props.settings);
+        playSoundEffectDebounced('service', 'warning', this.props.settings);
         break;
       default:
         break;

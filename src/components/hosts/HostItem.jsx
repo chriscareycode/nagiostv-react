@@ -5,7 +5,7 @@ import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
-import { playSoundEffect, speakAudio } from '../../helpers/audio';
+import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -21,7 +21,7 @@ class HostItem extends Component {
 
   componentWillUnmount() {
     if (this.props.settings.playSoundEffects) {
-      playSoundEffect('host', 'up', this.props.settings);
+      playSoundEffectDebounced('host', 'up', this.props.settings);
     }
     if (this.props.settings.speakItems) { this.doSpeakOutro(); }
   }
@@ -31,10 +31,10 @@ class HostItem extends Component {
     console.log('host status is', status);
     switch(status) {
       case 'DOWN':
-        playSoundEffect('host', 'down', this.props.settings);
+        playSoundEffectDebounced('host', 'down', this.props.settings);
         break;
       case 'UNREACHABLE':
-        playSoundEffect('host', 'unreachable', this.props.settings);
+        playSoundEffectDebounced('host', 'unreachable', this.props.settings);
         break;
       default:
         break;
