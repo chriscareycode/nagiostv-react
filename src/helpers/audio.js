@@ -10,11 +10,20 @@ export const playSoundEffectDebounced = _.debounce(function(type, state, setting
   playSoundEffect(type, state, settings);
 }, 200);
 
+function pickSound(soundConfig) {
+  // if sound is delimited by a semicolon; then choose one at random
+  if (soundConfig.indexOf(';') !== -1) {
+    const soundArray = soundConfig.split(';');
+    return soundArray[Math.floor(Math.random() * soundArray.length)];
+  }
+  return soundConfig;
+}
+
 export function playSoundEffect(type, state, settings) {
   
-  const audioCritical = settings.soundEffectCritical;
-  const audioWarning = settings.soundEffectWarning;
-  const audioOk = settings.soundEffectOk;
+  const audioCritical = pickSound(settings.soundEffectCritical);
+  const audioWarning = pickSound(settings.soundEffectWarning);
+  const audioOk = pickSound(settings.soundEffectOk);
 
   //console.log('playSoundEffect', type, state, audioCritical, audioWarning, audioOk);
 
