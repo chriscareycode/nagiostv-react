@@ -13,6 +13,8 @@ Some of the features:
 
 NagiosTV also has some goofy addons:
 
+- Sound effects for state changes
+- Speak the state changes
 - Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
 - Emoticons to show how many items up vs down, and happiness the longer you have quiet time between issues.
 
@@ -128,8 +130,4 @@ Feel free to reach out to me for help! I'm happy to help you get this project in
 Credits
 ------------
 NagiosTV by Chris Carey http://chriscarey.com
-
-Your name here if you want to contribute
-
-
 
