@@ -5,6 +5,7 @@ import './Settings.css';
 import Cookie from 'js-cookie';
 import SettingsIcon from './Settings.png';
 import axios from 'axios';
+import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 
 class Settings extends Component {
 
@@ -21,6 +22,11 @@ class Settings extends Component {
     this.saveCookie = this.saveCookie.bind(this);
     this.deleteCookie = this.deleteCookie.bind(this);
     this.saveSettingsToServer = this.saveSettingsToServer.bind(this);
+
+    this.playCritical = this.playCritical.bind(this);
+    this.playWarning = this.playWarning.bind(this);
+    this.playOk = this.playOk.bind(this);
+    this.playVoice = this.playVoice.bind(this);
 
     // load the settingsFields into state
     this.props.settingsFields.forEach(field => this.state[field] = this.props.settings[field]);
@@ -73,9 +79,9 @@ class Settings extends Component {
   // we write this as an anonymous function so we wont have to bind in render
 
   handleChange = (propName, dataType) => (event) => {
-    //console.log('handleChange new');
-    //console.log(propName, dataType);
-    //console.log(event.target.value);
+    // console.log('handleChange new');
+    // console.log(propName, dataType);
+    // console.log(event.target.value);
 
     let val = '';
     if (dataType === 'boolean') { val = (event.target.value === 'true'); }
@@ -113,11 +119,39 @@ class Settings extends Component {
     }, 3000);
   }
 
+  playCritical() {
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+    playSoundEffectDebounced('service', 'critical', settingsObject);
+  }
+  playWarning() {
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+    playSoundEffectDebounced('service', 'warning', settingsObject);
+  }
+  playOk() {
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+    playSoundEffectDebounced('service', 'ok', settingsObject);
+  }
+  playVoice() {
+    const voice = this.state.speakItemsVoice;
+    speakAudio('Naagios TV is cool', voice);
+  }
+
   render() {
 
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
+    const voices = window.speechSynthesis.getVoices();
+    const voiceOptions = voices.map((voice, i) => {
+      return (
+        <option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
+      );
+    });
+    voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
+    
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
       	<div className="SettingsSmall" onClick={this.toggle}>
@@ -195,9 +229,10 @@ class Settings extends Component {
                     <option value={false}>Off</option>
                 </select>
                 {this.state.playSoundEffects && <div>
-                  <div>DOWN/CRITICAL sound file: <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} /></div>
-                  <div>WARNING sound file: <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} /></div>
-                  <div>UP/OK sound file: <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} /></div>
+                  <div>DOWN/CRITICAL sound file: <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} /><button onClick={this.playCritical}>Test</button></div>
+                  <div>WARNING sound file: <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} /><button onClick={this.playWarning}>Test</button></div>
+                  <div>UP/OK sound file: <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} /><button onClick={this.playOk}>Test</button></div>
+                  <div style={{ margin: '5px 0' }}>* You can have multiple sound files for each state, if you want. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
                 </div>}
               </div>
 
@@ -207,6 +242,15 @@ class Settings extends Component {
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                 </select>
+                {this.state.speakItems && <div>
+                  <div>Choose Voice:
+                    <select value={this.state.speakItemsVoice} onChange={this.handleChange('speakItemsVoice', 'string')}>
+                      {voiceOptions}
+                  </select>
+                  <button onClick={this.playVoice}>Test</button>
+                  </div>
+                  
+                </div>}
               </div>
 
               <h5>Save and Close</h5>

@@ -6,19 +6,21 @@
  */
 import _ from 'lodash';
 
+// debounce the playSoundEffect function so multiple sounds at the same time wont freak out the audio engine
 export const playSoundEffectDebounced = _.debounce(function(type, state, settings) {
   playSoundEffect(type, state, settings);
 }, 200);
 
+// if sound is delimited by a semicolon; then choose one at random
 function pickSound(soundConfig) {
-  // if sound is delimited by a semicolon; then choose one at random
   if (soundConfig.indexOf(';') !== -1) {
-    const soundArray = soundConfig.split(';');
+    const soundArray = soundConfig.split(';').filter(sound => sound.length > 0);
     return soundArray[Math.floor(Math.random() * soundArray.length)];
   }
   return soundConfig;
 }
 
+// playSoundEffect
 export function playSoundEffect(type, state, settings) {
   
   const audioCritical = pickSound(settings.soundEffectCritical);
@@ -67,11 +69,17 @@ export function playSoundEffect(type, state, settings) {
   }
 }
 
-export function speakAudio(words) {
+export function speakAudio(words, voice) {
   
-  //console.log('speakAudio', words);
+  //console.log('speakAudio', words, voice);
 
-  const msg = new SpeechSynthesisUtterance(words);
-  window.speechSynthesis.speak(msg);
+  const sayWhat = new SpeechSynthesisUtterance(words);
+  if (voice) {
+    let mySpeechSynthesisVoice = window.speechSynthesis.getVoices().filter(v => v.name === voice);
+    if (mySpeechSynthesisVoice.length > 0) {
+      sayWhat.voice = mySpeechSynthesisVoice[0];
+    }
+  }
+  window.speechSynthesis.speak(sayWhat);
   
 }

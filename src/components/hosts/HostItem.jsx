@@ -49,11 +49,13 @@ class HostItem extends Component {
     if (this.props.hostItem.problem_has_been_acknowledged) { words += ' and acked'; }
     if (this.props.hostItem.scheduled_downtime_depth > 0) { words += ' and scheduled'; }
 
-    speakAudio(words);
+    const voice = this.props.settings.speakItemsVoice;
+    speakAudio(words, voice);
   }
 
   doSpeakOutro() {
-    speakAudio('host ' + this.props.hostItem.name + ' ok');
+    const voice = this.props.settings.speakItemsVoice;
+    speakAudio('host ' + this.props.hostItem.name + ' ok', voice);
   }
 
   render() {

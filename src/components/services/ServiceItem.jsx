@@ -49,11 +49,13 @@ class ServiceItem extends Component {
     if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' and acked'; }
     if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' and scheduled'; }
 
-    speakAudio(words);
+    const voice = this.props.settings.speakItemsVoice;
+    speakAudio(words, voice);
   }
 
   doSpeakOutro() {
-    speakAudio('service ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ok');
+    const voice = this.props.settings.speakItemsVoice;
+    speakAudio('service ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ok', voice);
   }
 
   render() {
