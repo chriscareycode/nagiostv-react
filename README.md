@@ -61,16 +61,19 @@ Upgrading
 Grab the latest release from here: https://github.com/chriscareycode/nagiostv-react/releases
 
 Then pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
+You can do it on the box with:
 ```console
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
 $ tar xvfz nagiostv-0.3.4.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
 In my case, I make a quick update script on my workstation where I copy the update to the server with rsync to save time:
 ```console
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
+$ tar xvfz nagiostv-0.3.4.tar.gz
 $ rsync -av nagiostv/* root@my-server:/usr/local/nagios/share/nagiostv/
 ```
-
 
 Development Requirements
 ------------
