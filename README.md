@@ -66,6 +66,12 @@ $ tar xvfz nagiostv-0.3.4.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
+In my case, I make a quick update script on my workstation where I copy the update to the server with rsync to save time:
+```console
+$ rsync -av nagiostv/* root@my-server:/usr/local/nagios/share/nagiostv/
+```
+
+
 Development Requirements
 ------------
 - Git
