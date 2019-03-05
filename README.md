@@ -35,6 +35,9 @@ NagiosTV on mobile
 Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
+```console
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
+```
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
 ```console
 $ tar xvfz nagiostv-0.3.4.tar.gz
