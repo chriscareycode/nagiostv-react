@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './HowManyEmoji.css';
 
-class HowMany extends Component {
+class HowManyEmoji extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('HowManyEmoji shouldComponentUpdate', nextProps, nextState);
@@ -78,4 +78,4 @@ class HowMany extends Component {
   }
 }
 
-export default HowMany;
+export default HowManyEmoji;
