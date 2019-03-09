@@ -763,12 +763,12 @@ class Base extends Component {
           <span className="service-summary-title">
             <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
                
-            {howManyHostDown > 0 && <span className="summary-label summary-label-red">{howManyHostDown} DOWN</span>}
-            {howManyHostUnreachable > 0 && <span className="summary-label summary-label-orange">{howManyHostUnreachable} UNREACHABLE</span>}
-            {howManyHostPending > 0 && <span className="summary-label summary-label-gray">{howManyHostPending} PENDING</span>}
-            {howManyHostAcked > 0 && <span className="summary-label summary-label-green">{howManyHostAcked} ACKED</span>}
-            {howManyHostScheduled > 0 && <span className="summary-label summary-label-green">{howManyHostScheduled} SCHEDULED</span>}
-            {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange">{howManyHostFlapping} FLAPPING</span>}
+            {howManyHostDown > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostDown} {translate('down', language)}</span>}
+            {howManyHostUnreachable > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostUnreachable} {translate('unreachable', language)}</span>}
+            {howManyHostPending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyHostPending} {translate('pending', language)}</span>}
+            {howManyHostAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostAcked} {translate('acked', language)}</span>}
+            {howManyHostScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostScheduled} {translate('scheduled', language)}</span>}
+            {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyHostFlapping} {translate('flapping', language)}</span>}
             
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}

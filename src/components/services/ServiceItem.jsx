@@ -75,9 +75,9 @@ class ServiceItem extends Component {
         <span className="uppercase">{translate(nagiosStateType(e.state_type), language)}</span>{' '}
         {1 === 2 && <span>({e.status})</span>}
         <span className={`uppercase ${serviceTextClass(e.status)}`}>{translate(nagiosServiceStatus(e.status), language)}</span>{' '}
-        {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
-        {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
-        {e.is_flapping && <span className="color-orange">FLAPPING</span>}
+        {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
+        {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
+        {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
         <div className="lastOk"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
       </div>
 

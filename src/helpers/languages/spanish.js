@@ -21,6 +21,7 @@ export const phrases = {
 	'hard': 'fuerte',
 
 	'Last OK': 'El último tiempo bueno hace',
+	'Last UP': 'El último tiempo bueno hace',
 	'Last check was': 'La última comprobé fue',
 	'Next check in': 'Siguiente comprobé en',
 	'ago': '',

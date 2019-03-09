@@ -3,6 +3,7 @@ import './HostItem.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
+import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
@@ -28,7 +29,6 @@ class HostItem extends Component {
 
   doSoundEffect() {
     const status = nagiosHostStatus(this.props.hostItem.status);
-    console.log('host status is', status);
     switch(status) {
       case 'DOWN':
         playSoundEffectDebounced('host', 'down', this.props.settings);
@@ -62,6 +62,7 @@ class HostItem extends Component {
 
     const e = this.props.hostItem; // clean this up
     const isSoft = e.state_type === 0;
+    const { language } = this.props.settings;
 
     return (
       <div style={{ ...defaultStyles }} className={`HostItem`}>
@@ -69,13 +70,13 @@ class HostItem extends Component {
           <div style={{ float: 'right', textAlign: 'right' }}>
             {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faYinYang} spin /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
-            {nagiosStateType(e.state_type)}{' '}
+            <span className="uppercase">{translate(nagiosStateType(e.state_type), language)}</span>{' '}
             {1 === 2 && <span>({e.status})</span>}
-            <span className={hostTextClass(e.status)}>{nagiosHostStatus(e.status)}</span>{' '}
-            {e.problem_has_been_acknowledged && <span className="color-green"> ACKED</span>}
-            {e.scheduled_downtime_depth > 0 && <span className="color-green"> SCHEDULED</span>}
-            {e.is_flapping && <span className="color-orange"> FLAPPING</span>}
-            <div className="lastOk"><span>Last UP</span> {formatDateTimeAgoColor(e.last_time_up)} ago</div>
+            <span className={`uppercase ${hostTextClass(e.status)}`}>{translate(nagiosHostStatus(e.status), language)}</span>{' '}
+            {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
+            {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
+            {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
+            <div className="lastOk"><span>{translate('Last UP', language)}</span> {formatDateTimeAgoColor(e.last_time_up)} {translate('ago', language)}</div>
           </div>
           <div style={{ textAlign: 'left' }}>
             <strong>{e.name}</strong>{' '}
@@ -85,7 +86,7 @@ class HostItem extends Component {
             </span>
           </div>
           <div className="lastCheck">
-            Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago{' - '}
+            Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}
             Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
           </div>
 
