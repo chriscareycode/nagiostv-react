@@ -72,13 +72,6 @@ $ tar xvfz nagiostv-0.3.5.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
-In my case, I make a quick update script on my workstation where I copy the update to the server with rsync to save time:
-```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.5/nagiostv-0.3.5.tar.gz
-$ tar xvfz nagiostv-0.3.5.tar.gz
-$ rsync -av nagiostv/* root@my-server:/usr/local/nagios/share/nagiostv/
-```
-
 Development Requirements
 ------------
 - Git
@@ -113,9 +106,7 @@ Development - Committing your changes to this project
 
 TODO
 ------------
-- Show when history table is being truncated at max items setting
 - Clean up the "save settings to server" feature, and settings screen
-- Show longest quiet period
 - Add a Node.js proxy server for local development, and instructions how to use it
 
 History
@@ -124,7 +115,7 @@ The idea for NagiosTV was started around 2009. It was created to have a nice way
 Over the years I have continued to run it at home to monitor my own network.
 
 Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status.
-This ended up being a very painful install for many, and the database size continuously grew and needed maintenance.
+This ended up being a very painful install for many, requires a database, and the database size continuously grew and needed maintenance.
 
 Later I released JavaScript versions which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
 
@@ -132,7 +123,7 @@ Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of 
 
 https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
 
-No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API.
+No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API. This makes the install take just a couple minutes with no dependencies!
 
 Also this is the first version that (aside from the client-settings save feature) has no server-side component. It's all JavaScript in the browser.
 
