@@ -690,7 +690,7 @@ class Base extends Component {
       });
     }
 
-    const settingsLoaded = this.state.isRemoteSettingsLoaded || this.state.isCookieLoaded;
+    const settingsLoaded = this.state.isCookieLoaded;
 
     // don't show the history chart on small screens like iphone
     //const showHistoryChart = window.innerWidth > 500;
