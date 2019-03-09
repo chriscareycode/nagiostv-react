@@ -76,16 +76,20 @@ class HistoryChart extends Component {
     chart.series[1].setData(criticalData.reverse());
 
     // update pointWidth based on howManyItems
-    const howManyItems = this.props.alertDaysBack;
-    const screenWidth = window.innerWidth;
-    const barWidth = (screenWidth / howManyItems).toFixed(0) - 18; // this line probably needs work, I just made up the number
-    chart.update({
-      plotOptions: {
-        series: {
-          pointWidth: barWidth
-        }
-      }
-    });
+    //const howManyItems = this.props.alertDaysBack;
+    //const screenWidth = window.innerWidth;
+    //const barWidth = (screenWidth / howManyItems).toFixed(0); // this line probably needs work, I just made up the number
+    //const barWidth = chart.series[0].barW / 1;
+
+    // chart.update({
+    //   plotOptions: {
+    //     series: {
+    //       pointWidth: barWidth
+    //     }
+    //   }
+    // });
+
+    // chart.series[0].redraw()
 
   }
 
@@ -126,7 +130,8 @@ class HistoryChart extends Component {
 
     plotOptions: {
       series: {
-        pointWidth: 21,
+        pointPadding: 0.00
+        //pointWidth: 21, // this is changed dynamically with a function above
         //pointPlacement: 'on'
       },
       column: {
