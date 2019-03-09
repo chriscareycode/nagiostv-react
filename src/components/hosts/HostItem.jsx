@@ -86,8 +86,8 @@ class HostItem extends Component {
             </span>
           </div>
           <div className="lastCheck">
-            Last Check: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}
-            Next Check in <span className="color-peach">{formatDateTime(e.next_check)}</span>
+            {translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}
+            {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
           </div>
 
           {this.props.comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
