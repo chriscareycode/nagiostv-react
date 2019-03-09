@@ -781,8 +781,8 @@ class Base extends Component {
           {!this.state.hideFilters && <div className="service-hide-problems">
 
             <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
+              <option value="newest">{translate('newest first', language)}</option>
+              <option value="oldest">{translate('oldest first', language)}</option>
             </select>
 
             <Checkbox className="Checkbox down uppercase"
@@ -879,8 +879,8 @@ class Base extends Component {
           {!this.state.hideFilters && <div className="service-hide-problems">
 
             <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
+              <option value="newest">{translate('newest first', language)}</option>
+              <option value="oldest">{translate('oldest first', language)}</option>
             </select>
 
             <Checkbox className="Checkbox critical uppercase"
@@ -955,7 +955,7 @@ class Base extends Component {
 
         <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">
-          <span className="uppercase-first">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
+          <span className="uppercase-first display-inline-block">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
             {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
           </span>
         </div>

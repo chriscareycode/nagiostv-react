@@ -46,6 +46,9 @@ export const phrases = {
 
 	'show filters': 'mostrar filtros',
 	'last update': 'última actualización',
-	'settings': 'ajustes'
+	'settings': 'ajustes',
+
+	'newest first': 'los más reciente primero',
+	'oldest first': 'los más viejos primero'
 
 };
