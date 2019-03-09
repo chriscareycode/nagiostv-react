@@ -29,7 +29,7 @@ class AlertItems extends Component {
 
   render() {
     
-    const { language } = this.props;
+    const { language } = this.props.settings;
 
     return (
       <div className="AlertItems">
@@ -64,7 +64,7 @@ class AlertItems extends Component {
                   <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
                   {1 === 2 && <span>({e.state})</span>}
                   {1 === 2 && <span>({e.object_type})</span>}
-                  <span className={alertTextClass(e.object_type, e.state)}>{nagiosAlertState(e.state)}{' '}</span>
+                  <span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
                   {' - '}{prettyDateTime(e.timestamp)}
                 </div>
                 <span style={{ textAlign: 'left' }}>

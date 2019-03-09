@@ -733,16 +733,18 @@ class Base extends Component {
 
         <div className="FooterArea">
           <div className="FooterAreaLeft">
-            <Checkbox className="Checkbox warning"
+            <Checkbox
+              className="Checkbox warning"
+              textClassName="uppercase-first display-inline-block"
               handleChange={this.handleChange}
               stateName={'hideFilters'}
               defaultChecked={!this.state.hideFilters}
-              howManyText={'Show Filters'}
+              howManyText={translate('show filters', language)}
             />
           </div>
-          <div className="FooterAreaRight">Settings</div>
+          <div className="FooterAreaRight uppercase-first">{translate('settings', language)}</div>
           <div>
-            <span>Last Update: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
+            <span className="uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
             &nbsp;&nbsp;
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
@@ -783,52 +785,52 @@ class Base extends Component {
               <option value="oldest">Oldest First</option>
             </select>
 
-            <Checkbox className="Checkbox down"
+            <Checkbox className="Checkbox down uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostDown'}
               defaultChecked={!this.state.hideHostDown}
               howMany={howManyHostDown}
-              howManyText={'DOWN'}
+              howManyText={translate('down', language)}
             />
 
-            <Checkbox className="Checkbox unreachable"
+            <Checkbox className="Checkbox unreachable uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostUnreachable'}
               defaultChecked={!this.state.hideHostUnreachable}
               howMany={howManyHostUnreachable}
-              howManyText={'UNREACHABLE'}
+              howManyText={translate('unreachable', language)}
             />
 
-            <Checkbox className="Checkbox pending"
+            <Checkbox className="Checkbox pending uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostPending'}
               defaultChecked={!this.state.hideHostPending}
               howMany={howManyHostPending}
-              howManyText={'PENDING'}
+              howManyText={translate('pending', language)}
             />
 
-            <Checkbox className="Checkbox acked"
+            <Checkbox className="Checkbox acked uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostAcked'}
               defaultChecked={!this.state.hideHostAcked}
               howMany={howManyHostAcked}
-              howManyText={'ACKED'}
+              howManyText={translate('acked', language)}
             />
 
-            <Checkbox className="Checkbox scheduled"
+            <Checkbox className="Checkbox scheduled uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostScheduled'}
               defaultChecked={!this.state.hideHostScheduled}
               howMany={howManyHostScheduled}
-              howManyText={'SCHEDULED'}
+              howManyText={translate('scheduled', language)}
             />
 
-            <Checkbox className="Checkbox flapping"
+            <Checkbox className="Checkbox flapping uppercase"
               handleChange={this.handleChange}
               stateName={'hideHostFlapping'}
               defaultChecked={!this.state.hideHostFlapping}
               howMany={howManyHostFlapping}
-              howManyText={'FLAPPING'}
+              howManyText={translate('flapping', language)}
             />
 
           </div>}
@@ -881,52 +883,52 @@ class Base extends Component {
               <option value="oldest">Oldest First</option>
             </select>
 
-            <Checkbox className="Checkbox critical"
+            <Checkbox className="Checkbox critical uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceCritical'}
               defaultChecked={!this.state.hideServiceCritical}
               howMany={howManyServiceCritical}
-              howManyText={'CRITICAL'}
+              howManyText={translate('critical', language)}
             />
 
-            <Checkbox className="Checkbox warning"
+            <Checkbox className="Checkbox warning uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceWarning'}
               defaultChecked={!this.state.hideServiceWarning}
               howMany={howManyServiceWarning}
-              howManyText={'WARNING'}
+              howManyText={translate('warning', language)}
             />
 
-            <Checkbox className="Checkbox unknown"
+            <Checkbox className="Checkbox unknown uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceUnknown'}
               defaultChecked={!this.state.hideServiceUnknown}
               howMany={howManyServiceUnknown}
-              howManyText={'UNKNOWN'}
+              howManyText={translate('unknown', language)}
             />
 
-            <Checkbox className="Checkbox acked"
+            <Checkbox className="Checkbox acked uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceAcked'}
               defaultChecked={!this.state.hideServiceAcked}
               howMany={howManyServiceAcked}
-              howManyText={'ACKED'}
+              howManyText={translate('acked', language)}
             />
 
-            <Checkbox className="Checkbox scheduled"
+            <Checkbox className="Checkbox scheduled uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceScheduled'}
               defaultChecked={!this.state.hideServiceScheduled}
               howMany={howManyServiceScheduled}
-              howManyText={'SCHEDULED'}
+              howManyText={translate('scheduled', language)}
             />
 
-            <Checkbox className="Checkbox flapping"
+            <Checkbox className="Checkbox flapping uppercase"
               handleChange={this.handleChange}
               stateName={'hideServiceFlapping'}
               defaultChecked={!this.state.hideServiceFlapping}
               howMany={howManyServiceFlapping}
-              howManyText={'FLAPPING'}
+              howManyText={translate('flapping', language)}
             />
 
           </div>}
@@ -953,7 +955,7 @@ class Base extends Component {
 
         <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">
-          <strong>{translate('History', language)}: {this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
+          <span className="uppercase-first">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
             {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
           </span>
         </div>

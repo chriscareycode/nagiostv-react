@@ -332,6 +332,12 @@ input[type=text] {
 .uppercase {
   text-transform: uppercase;
 }
+.uppercase-first:first-letter {
+  text-transform: uppercase;
+}
+.display-inline-block {
+  display: inline-block;
+}
 .font-size-0-6 {
   font-size: 0.6em;
 }

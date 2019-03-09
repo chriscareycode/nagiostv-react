@@ -79,7 +79,7 @@ class QuietFor extends Component {
       <div className="QuietFor">
         {this.props.showEmoji && <div className="QuietForStars">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>}
         <span className="QuietForClock">⏱</span>
-        {translate('Quiet for', language)} {quietForText(this.props.nowtime, this.props.prevtime)}
+        <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
         {/* - {' '}
          - {prettyDateTime(this.props.nowtime)} {prettyDateTime(this.props.prevtime)}
          - Diff {this.props.nowtime - this.props.prevtime}
