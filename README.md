@@ -36,11 +36,11 @@ Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.5/nagiostv-0.3.5.tar.gz
 ```
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
 ```console
-$ tar xvfz nagiostv-0.3.4.tar.gz
+$ tar xvfz nagiostv-0.3.5.tar.gz
 ```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
 ```console
@@ -66,15 +66,15 @@ Grab the latest release from here: https://github.com/chriscareycode/nagiostv-re
 Then pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
 You can do it on the box with:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
-$ tar xvfz nagiostv-0.3.4.tar.gz
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.5/nagiostv-0.3.5.tar.gz
+$ tar xvfz nagiostv-0.3.5.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
 In my case, I make a quick update script on my workstation where I copy the update to the server with rsync to save time:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.4/nagiostv-0.3.4.tar.gz
-$ tar xvfz nagiostv-0.3.4.tar.gz
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.5/nagiostv-0.3.5.tar.gz
+$ tar xvfz nagiostv-0.3.5.tar.gz
 $ rsync -av nagiostv/* root@my-server:/usr/local/nagios/share/nagiostv/
 ```
 
