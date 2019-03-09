@@ -6,6 +6,7 @@ This user interface is designed to be viewed on a TV or on your desktop to quick
 
 Some of the features:
 
+- Native language support - English and Spanish so far (easy to add new languages)
 - New items slide in and out of place with smooth animations which looks really cool when things are happening.
 - Sorting - Ability to order items newest or oldest first
 - Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
