@@ -34,6 +34,7 @@ class Base extends Component {
 
     isRemoteSettingsLoaded: false,
     isCookieLoaded: false, // I have this to render things only after cookie is loaded
+    isDoneLoading: false,
 
     servicelistError: false,
     servicelistErrorMessage: '',
@@ -250,7 +251,10 @@ class Base extends Component {
   getCookie() {
     const cookie = Cookie.get('settings');
     //console.log('settings Cookie is', cookie);
-    if (!cookie) { return; }
+    if (!cookie) {
+      this.setState({ isDoneLoading: true });
+      return;
+    }
 
     let cookieObject = {};
     try {
@@ -264,6 +268,8 @@ class Base extends Component {
       this.settingsFields.forEach(setting => this.updateIfExist(cookieObject, setting));
       this.setState({ isCookieLoaded: true });
     }
+
+    this.setState({ isDoneLoading: true });
   }
 
   // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
@@ -690,7 +696,7 @@ class Base extends Component {
       });
     }
 
-    const settingsLoaded = this.state.isCookieLoaded;
+    const settingsLoaded = this.state.isDoneLoading;
 
     // don't show the history chart on small screens like iphone
     //const showHistoryChart = window.innerWidth > 500;
@@ -755,6 +761,8 @@ class Base extends Component {
 
         <div style={{ marginTop: '60px' }}>
         </div>
+
+        {!settingsLoaded && <div>Settings are not loaded yet</div>}
 
         {/* hosts */}
 
