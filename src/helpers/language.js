@@ -1,3 +1,11 @@
+/*
+ * Languages!
+ * To add a new language, add a new file in the languages folder
+ * following the same pattern of an existing file there.
+ * Then add the language to import and languages array and translate
+ * function in this file. That's it!
+ */
+
 import { phrases as spanish } from './languages/spanish';
 
 export const languages = [

@@ -6,6 +6,7 @@ import Cookie from 'js-cookie';
 import SettingsIcon from './Settings.png';
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
+import { languages } from '../helpers/language';
 
 class Settings extends Component {
 
@@ -144,6 +145,7 @@ class Settings extends Component {
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
+    // voices
     const voices = window.speechSynthesis.getVoices();
     const voiceOptions = voices.map((voice, i) => {
       return (
@@ -152,6 +154,13 @@ class Settings extends Component {
     });
     voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
     
+    // languages
+    const languageOptions = languages.map((language, i) => {
+      return (
+        <option key={'language-' + i} value={language.name}>{language.name} ({language.code})</option>
+      );
+    });
+
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
       	<div className="SettingsSmall" onClick={this.toggle}>
@@ -185,8 +194,7 @@ class Settings extends Component {
               <div className="SettingsSection">
                 Language:{' '}
                 <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
-                    <option value={'English'}>English</option>
-                    <option value={'Spanish'}>Spanish</option>
+                    {languageOptions}
                 </select>
               </div>
               
