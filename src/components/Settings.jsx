@@ -182,7 +182,13 @@ class Settings extends Component {
                 <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
               </div>
 
-              
+              <div className="SettingsSection">
+                Language:{' '}
+                <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
+                    <option value={'English'}>English</option>
+                    <option value={'Spanish'}>Spanish</option>
+                </select>
+              </div>
               
               <div className="SettingsSection">
                 New Version Check:{' '}

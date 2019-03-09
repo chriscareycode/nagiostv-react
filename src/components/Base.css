@@ -327,3 +327,14 @@ input[type=text] {
   color: black;
   text-decoration: underline;
 }
+
+/* general purpose font related */
+.uppercase {
+  text-transform: uppercase;
+}
+.font-size-0-6 {
+  font-size: 0.6em;
+}
+.font-size-0-8 {
+  font-size: 0.8em;
+}

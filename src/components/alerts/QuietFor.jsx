@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { translate } from '../../helpers/language';
 import moment from 'moment';
 
 import './QuietFor.css';
@@ -68,6 +69,8 @@ class QuietFor extends Component {
         }
         return ret;
     };
+
+    const { language } = this.props;
     
     // TODO: it would be nice to only render this component when the props change. no need
     // to recalculate every one since they do not change (except the first)
@@ -76,7 +79,7 @@ class QuietFor extends Component {
       <div className="QuietFor">
         {this.props.showEmoji && <div className="QuietForStars">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>}
         <span className="QuietForClock">⏱</span>
-        Quiet for {quietForText(this.props.nowtime, this.props.prevtime)}
+        {translate('Quiet for', language)} {quietForText(this.props.nowtime, this.props.prevtime)}
         {/* - {' '}
          - {prettyDateTime(this.props.nowtime)} {prettyDateTime(this.props.prevtime)}
          - Diff {this.props.nowtime - this.props.prevtime}

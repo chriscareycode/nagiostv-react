@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { translate } from '../../helpers/language';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import HostItem from './HostItem';
+
 // css
 import './HostItems.css';
 
@@ -35,12 +37,13 @@ class HostItems extends Component {
 
     const howManyHidden = this.props.hostProblemsArray.length - filteredHostProblemsArray.length;
     const showSomeDownItems = this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
+    const { language } = this.props.settings;
 
     return (
       <div className="ServiceItems">
 
         <div className={`all-ok-item ${this.props.hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">All {this.props.howManyHosts} hosts are UP</span>{' '}
+          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {this.props.howManyHosts} {translate('hosts are UP', language)}</span>{' '}
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>

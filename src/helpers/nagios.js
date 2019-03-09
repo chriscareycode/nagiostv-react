@@ -3,13 +3,13 @@
 export function nagiosHostStatus(status) {
   switch(status) {
     case 1:
-      return 'PENDING';
+      return 'pending';
     case 2:
-      return 'UP';
+      return 'up';
     case 4:
-      return 'DOWN';
+      return 'down';
     case 8:
-      return 'UNREACHABLE';
+      return 'unreachable';
     default:
       return 'Unknown host status ' + status;
   }
@@ -19,9 +19,9 @@ export function nagiosHostStatus(status) {
 export function nagiosStateType(state_type) {
   switch(state_type) {
     case 0:
-      return 'SOFT';
+      return 'soft';
     case 1:
-      return 'HARD';
+      return 'hard';
     default:
      	return 'Unknown state_type ' + state_type;
   }
@@ -31,15 +31,15 @@ export function nagiosStateType(state_type) {
 export function nagiosServiceStatus(status) {
   switch(status) {
     case 1:
-      return 'PENDING';
+      return 'pending';
     case 2:
-      return 'OK';
+      return 'ok';
     case 4:
-      return 'WARNING';
+      return 'warning';
     case 8:
-      return 'UNKNOWN';
+      return 'unknown';
     case 16:
-      return 'CRITICAL';
+      return 'critical';
     default:
      	return 'Unknown service status ' + status;
   }
@@ -71,9 +71,9 @@ export function nagiosAlertState(state) {
 export function nagiosAlertStateType(state_type) {
   switch(state_type) {
     case 1:
-      return 'HARD';
+      return 'hard';
     case 2:
-      return 'SOFT';
+      return 'soft';
     default:
       return 'Unknown state_type ' + state_type;
   }

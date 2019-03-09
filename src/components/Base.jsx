@@ -4,6 +4,7 @@ import HostItems from './hosts/HostItems.jsx';
 import ServiceItems from './services/ServiceItems.jsx';
 import AlertItems from './alerts/AlertItems.jsx';
 import { prettyDateTime } from '../helpers/moment.js';
+import { translate } from '../helpers/language';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
 import Checkbox from './widgets/Checkbox.jsx';
@@ -50,6 +51,7 @@ class Base extends Component {
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
     alertlist: [],
+    alertlistCount: 0,
 
     commentlistError: false,
     commentlistErrorMessage: '',
@@ -67,7 +69,7 @@ class Base extends Component {
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
     alertDaysBack: 30,
-    alertMaxItems: 1000,
+    alertMaxItems: 500,
 
     hideServiceWarning: false,
     hideServiceUnknown: false,
@@ -86,6 +88,8 @@ class Base extends Component {
     hideHostFlapping: false,
 
     hostSortOrder: 'newest',
+
+    language: 'English',
 
     // fun stuff
     flynnEnabled: false,
@@ -129,7 +133,8 @@ class Base extends Component {
     'hostSortOrder',
     
     'versionCheckDays',
-  
+    'language',
+
     // fun stuff
     'flynnEnabled',
     'flynnConcernedAt',
@@ -452,6 +457,9 @@ class Base extends Component {
       // Make an array from the object
       const alertlist = myJson.data.alertlist.reverse();
 
+      // store the actual count of alert list items before we trim
+      const alertlistCount = myJson.data.alertlist.length;
+
       // trim
       if (alertlist.length > this.state.alertMaxItems) {
         alertlist.length = this.state.alertMaxItems;
@@ -461,7 +469,8 @@ class Base extends Component {
         alertlistError: false,
         alertlistErrorMessage: '',
         alertlistLastUpdate: new Date().getTime(),
-        alertlist // it's already an array
+        alertlist, // it's already an array
+        alertlistCount
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
@@ -684,7 +693,10 @@ class Base extends Component {
     const settingsLoaded = this.state.isRemoteSettingsLoaded || this.state.isCookieLoaded;
 
     // don't show the history chart on small screens like iphone
-    const showHistoryChart = window.innerWidth > 500;
+    //const showHistoryChart = window.innerWidth > 500;
+    const showHistoryChart = true;
+
+    const { language } = this.state;
 
     return (
       <div className="Base">
@@ -747,7 +759,7 @@ class Base extends Component {
         {settingsLoaded && <div className="service-summary color-orange">
           
           <span className="service-summary-title">
-            <strong>{howManyHosts}</strong> host{howManyHosts.length === 1 ? '' : 's'}{' '}
+            <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
                
             {howManyHostDown > 0 && <span className="summary-label summary-label-red">{howManyHostDown} DOWN</span>}
             {howManyHostUnreachable > 0 && <span className="summary-label summary-label-orange">{howManyHostUnreachable} UNREACHABLE</span>}
@@ -845,14 +857,14 @@ class Base extends Component {
         {settingsLoaded && <div className="service-summary color-orange" style={{ marginTop: '12px'}}>
           
           <span className="service-summary-title">
-            <strong>{howManyServices}</strong> service{howManyServices === 1 ? '' : 's'}{' '}
+            <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
 
-            {howManyServiceCritical > 0 && <span className="summary-label summary-label-red">{howManyServiceCritical} CRITICAL</span>}
-            {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow">{howManyServiceWarning} WARNING</span>}
-            {howManyServiceUnknown > 0 && <span className="summary-label summary-label-gray">{howManyServiceUnknown} UNKNOWN</span>}
-            {howManyServiceAcked > 0 && <span className="summary-label summary-label-green">{howManyServiceAcked} ACKED</span>}
-            {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green">{howManyServiceScheduled} SCHEDULED</span>}
-            {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange">{howManyServiceFlapping} FLAPPING</span>}
+            {howManyServiceCritical > 0 && <span className="summary-label summary-label-red uppercase">{howManyServiceCritical} {translate('critical', language)}</span>}
+            {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceWarning} {translate('warning', language)}</span>}
+            {howManyServiceUnknown > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServiceUnknown} {translate('unknown', language)}</span>}
+            {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
+            {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
+            {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceFlapping} {translate('flapping', language)}</span>}
 
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
@@ -941,7 +953,8 @@ class Base extends Component {
 
         <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">
-            <strong>History: {this.state.alertlist.length}</strong> alerts in the past <strong>{this.state.alertDaysBack}</strong> days
+          <strong>{translate('History', language)}: {this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
+            {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
           </span>
         </div>
 
@@ -957,7 +970,11 @@ class Base extends Component {
           No alerts
         </div>}
 
-        <AlertItems items={this.state.alertlist} showEmoji={this.state.showEmoji} />
+        <AlertItems
+          items={this.state.alertlist}
+          showEmoji={this.state.showEmoji}
+          settings={settingsObject}
+        />
 
         <br />
         <br />
