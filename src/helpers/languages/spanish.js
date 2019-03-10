@@ -54,6 +54,9 @@ export const phrases = {
 	'settings': 'ajustes',
 
 	'newest first': 'los más reciente primero',
-	'oldest first': 'los más viejos primero'
+	'oldest first': 'los más viejos primero',
+
+	"show more": "mostrar más",
+	"show less": "mostrar menos"
 
 };

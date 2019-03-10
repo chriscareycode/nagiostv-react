@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { translate } from '../../helpers/language';
 
 import AlertItem from './AlertItem.jsx';
 import QuietFor from './QuietFor.jsx';
@@ -37,6 +38,7 @@ class AlertItems extends Component {
 
     let trimmedItems = [...this.props.items];
     trimmedItems.length = this.state.howManyToRender;
+    const { language } = this.props.settings;
 
     return (
       <div className="AlertItems">
@@ -47,7 +49,7 @@ class AlertItems extends Component {
             nowtime={new Date().getTime()}
             prevtime={this.props.items[0].timestamp}
             showEmoji={this.props.settings.showEmoji}
-            language={this.props.settings.language}
+            language={language}
           />
         }
         
@@ -62,7 +64,7 @@ class AlertItems extends Component {
               i={i}
               prevtime={prevtime}
               showEmoji={this.props.showEmoji}
-              language={this.props.settings.language}
+              language={language}
             />
           );
         })}
@@ -70,12 +72,12 @@ class AlertItems extends Component {
         <div className="ShowMoreArea">
           {this.state.howManyToRender > this.state.pageSize &&
             <span>
-              <button onClick={this.showLess}>Show Less</button>
+              <button className="uppercase-first" onClick={this.showLess}>{translate('show less', language)}</button>
             </span>
           }
           {this.props.items.length > this.state.howManyToRender &&
             <span>
-              <button onClick={this.showMore}>Show More</button>
+              <button className="uppercase-first" onClick={this.showMore}>{translate('show more', language)}</button>
             </span>
           }
         </div>

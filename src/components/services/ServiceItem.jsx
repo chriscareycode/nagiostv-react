@@ -47,7 +47,7 @@ class ServiceItem extends Component {
 
     let words = translate('service', language) + ' ' + this.props.serviceItem.description +
       ' ' + translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('is', language) + ' '
-      + translate(nagiosServiceStatus(this.props.serviceItem.status), language) + ' ';
+      + translate(nagiosServiceStatus(this.props.serviceItem.status), language);
 
     if (this.props.serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
     if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
