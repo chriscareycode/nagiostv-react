@@ -53,7 +53,7 @@ class ServiceItem extends Component {
     if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
     if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
 
-    //console.log({speakWords});
+    //console.log({words});
     speakAudio(words, voice);
   }
 
