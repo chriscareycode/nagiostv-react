@@ -23,5 +23,8 @@ export function translate(phrase, language) {
 			word = phrase;
 			break;
 	}
+	if (typeof word === 'undefined') {
+		console.log(`Word [${phrase}] not found in [${language}] language pack.`);
+	}
 	return word;
 }

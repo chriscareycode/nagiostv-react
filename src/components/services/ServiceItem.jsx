@@ -42,21 +42,28 @@ class ServiceItem extends Component {
   }
 
   doSpeakIntro() {
-    let words = 'service ' + this.props.serviceItem.description +
-      'on ' + this.props.serviceItem.host_name + ' is '
-      + nagiosServiceStatus(this.props.serviceItem.status) + ' ';
-
-    if (this.props.serviceItem.is_flapping) { words += ' and flapping'; }
-    if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' and acked'; }
-    if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' and scheduled'; }
-
+    const { language } = this.props.settings;
     const voice = this.props.settings.speakItemsVoice;
+
+    let words = translate('service', language) + ' ' + this.props.serviceItem.description +
+      translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('is', language) + ' '
+      + translate(nagiosServiceStatus(this.props.serviceItem.status), language) + ' ';
+
+    if (this.props.serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
+    if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
+    if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
+
+    //console.log({speakWords});
     speakAudio(words, voice);
   }
 
   doSpeakOutro() {
+    const { language } = this.props.settings;
     const voice = this.props.settings.speakItemsVoice;
-    speakAudio('service ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ok', voice);
+    const speakWords = translate('service', language) + ' ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ' + translate('ok', language);
+    
+    //console.log({speakWords});
+    speakAudio(speakWords, voice);
   }
 
   render() {

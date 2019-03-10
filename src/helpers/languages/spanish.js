@@ -45,6 +45,9 @@ export const phrases = {
 
 	'quiet for': 'tranquilo por',
 
+	'on': 'en',
+	'is': 'es',
+
 	'show filters': 'mostrar filtros',
 	'last update': 'última actualización',
 	'settings': 'ajustes',
