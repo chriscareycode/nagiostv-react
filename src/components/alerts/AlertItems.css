@@ -17,11 +17,15 @@
   justify-content: center;
 }
 .ShowMoreArea {
-  margin-top: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   text-align: center;
 }
 .ShowMoreArea button {
   font-size: 1.1em;
   border-radius: 5px;
   margin: 0 4px;
+  color: white;
+  background-color: #333;
+  border: 0px solid lime;
 }

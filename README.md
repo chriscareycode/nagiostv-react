@@ -106,6 +106,7 @@ Development - Committing your changes to this project
 
 TODO
 ------------
+- Autoupdate script
 - Clean up the "save settings to server" feature, and settings screen
 - Add a Node.js proxy server for local development, and instructions how to use it
 

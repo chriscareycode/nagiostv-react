@@ -244,13 +244,6 @@ class Base extends Component {
     });
   }
 
-  updateIfExist(cookieObject, prop) {
-    if (cookieObject.hasOwnProperty(prop)) {
-      //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
-      this.setState({ [prop]: cookieObject[prop] });
-    }
-  }
-
   getCookie() {
     const cookie = Cookie.get('settings');
     //console.log('settings Cookie is', cookie);
@@ -275,12 +268,51 @@ class Base extends Component {
     this.setState({ isDoneLoading: true });
   }
 
-  // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
-  updateStateFromSettings(settingsObject) {
-    this.setState({
-      ...settingsObject
-    });
+  versionCheck() {
+    // if the last version check was recent then do not check again
+    // this prevents version checks if you refresh the UI over and over
+    // as is common on TV rotation
+    const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
+    const nowTime = new Date().getTime();
+
+    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
+    if (lastVersionCheckTime !== 0) {
+      const diff = nowTime - lastVersionCheckTime;
+      if (diff < twentyThreeHoursInSeconds) {
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
+        return;
+      }
+    }
+
+    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
+    fetch(url)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json();
+        }
+      })
+      .then((myJson) => {
+        console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
+
+        this.setState({
+          latestVersion: myJson.version,
+          latestVersionString: myJson.version_string,
+          lastVersionCheckTime: nowTime
+        }, () => {
+          // after state is set, set the cookie
+          Cookie.set('lastVersionCheckTime', nowTime);
+        });
+      })
+      .catch(err => {
+        console.log('There was some error with the version check', err);
+      });
   }
+
+  /****************************************************************************
+   *
+   * Functions to Fetch Data
+   *
+   ***************************************************************************/
 
   fetchServiceData() {
 
@@ -522,6 +554,12 @@ class Base extends Component {
     });
   }
 
+  /****************************************************************************
+   *
+   * Functions to various things?
+   *
+   ***************************************************************************/
+
   baseUrlChanged(event) {
     this.setState({ baseUrl: event.target.value });
   }
@@ -534,45 +572,13 @@ class Base extends Component {
     this.setState({ showSettings: false });
   }
 
-  versionCheck() {
-    // if the last version check was recent then do not check again
-    // this prevents version checks if you refresh the UI over and over
-    // as is common on TV rotation
-    const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
-    const nowTime = new Date().getTime();
+  
 
-    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
-    if (lastVersionCheckTime !== 0) {
-      const diff = nowTime - lastVersionCheckTime;
-      if (diff < twentyThreeHoursInSeconds) {
-        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
-        return;
-      }
-    }
-
-    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
-    fetch(url)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((myJson) => {
-        console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
-
-        this.setState({
-          latestVersion: myJson.version,
-          latestVersionString: myJson.version_string,
-          lastVersionCheckTime: nowTime
-        }, () => {
-          // after state is set, set the cookie
-          Cookie.set('lastVersionCheckTime', nowTime);
-        });
-      })
-      .catch(err => {
-        console.log('There was some error with the version check', err);
-      });
-  }
+  /****************************************************************************
+   *
+   * Functions to Update State
+   *
+   ***************************************************************************/
 
   handleChange = (propName, dataType) => (event) => {
     // console.log('handleChange Base.jsx');
@@ -617,6 +623,21 @@ class Base extends Component {
     });
   }
 
+  // this is used by the cookie function to update state just for items we find
+  updateIfExist(cookieObject, prop) {
+    if (cookieObject.hasOwnProperty(prop)) {
+      //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
+      this.setState({ [prop]: cookieObject[prop] });
+    }
+  }
+
+  // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
+  updateStateFromSettings(settingsObject) {
+    this.setState({
+      ...settingsObject
+    });
+  }
+
   toggleSettings() {
     this.refs.settings.toggle();
   }
@@ -627,6 +648,12 @@ class Base extends Component {
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
   }
+
+  /****************************************************************************
+   *
+   * OK we finally made it to the render() function
+   *
+   ***************************************************************************/
 
   render() {
 
@@ -704,12 +731,13 @@ class Base extends Component {
     }
 
     const settingsLoaded = this.state.isDoneLoading;
-
-    // don't show the history chart on small screens like iphone
-    //const showHistoryChart = window.innerWidth > 500;
+    //const showHistoryChart = window.innerWidth > 500; // don't show the history chart on small screens like iphone
     const showHistoryChart = true;
-
     const { language } = this.state;
+
+    /**************************************************************************
+    * Template Starts Here
+    **************************************************************************/
 
     return (
       <div className="Base">
@@ -723,6 +751,7 @@ class Base extends Component {
           settings={settingsObject}
           settingsFields={this.settingsFields}
           updateStateFromSettings={this.updateStateFromSettings.bind(this)}
+          isCookieLoaded={this.state.isCookieLoaded}
         />
 
         {/* flynn */}

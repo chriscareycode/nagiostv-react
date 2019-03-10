@@ -62,7 +62,7 @@ class Settings extends Component {
     this.setState({ saveMessage: 'Settings saved' });
     setTimeout(() => {
         this.setState({ saveMessage: '' });
-    }, 3000);
+    }, 5000);
   }
 
   deleteCookie() {
@@ -70,9 +70,15 @@ class Settings extends Component {
 
     // show a message then clear the message
     this.setState({ saveMessage: 'Cookie deleted. Refresh your browser.' });
-    setTimeout(() => {
-        this.setState({ saveMessage: '' });
-    }, 3000);
+    //setTimeout(() => {
+      //this.setState({ saveMessage: '' });
+    //}, 5000);
+
+    // flip the isCookieDetected boolean
+    // TODO: this doesn't work for some reason
+    this.props.updateStateFromSettings({
+      isCookieDetected: false
+    });
 
     console.log('Cookie deleted.');
   }
@@ -182,6 +188,7 @@ class Settings extends Component {
 
             <div style={{ position: 'absolute', top: '10px', right: '0px' }}>
               <div style={{ }}>
+                {this.props.isCookieLoaded && <span role="img" aria-label="cookie"> 🍪 </span>}
                 <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Cookie</button>
                 <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
               </div>
@@ -221,11 +228,11 @@ class Settings extends Component {
                   </td>
                 </tr>
                 <tr>
-                  <th>Alert History Days Back:</th>
+                  <th>History Days Back:</th>
                   <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
                 </tr>
                 <tr>
-                  <th>Alert History max # of items:</th>
+                  <th>History max # items:</th>
                   <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
                 </tr>
                 <tr>
@@ -304,21 +311,21 @@ class Settings extends Component {
                   </td>
                 </tr>
                 {this.state.playSoundEffects && <tr>
-                  <th>DOWN/CRITICAL sound file:</th>
+                  <th>CRITICAL sound:</th>
                   <td>
                     <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} />
                     <button className="SettingsTestButton" onClick={this.playCritical}>Test</button>
                   </td>
                 </tr>}
                 {this.state.playSoundEffects && <tr>
-                  <th>WARNING sound file:</th>
+                  <th>WARNING sound:</th>
                   <td>
                     <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} />
                     <button className="SettingsTestButton" onClick={this.playWarning}>Test</button>
                   </td>
                 </tr>}
                 {this.state.playSoundEffects && <tr>
-                  <th>UP/OK sound file:</th>
+                  <th>OK sound:</th>
                   <td>
                     <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} />
                     <button className="SettingsTestButton" onClick={this.playOk}>Test</button>
@@ -368,7 +375,11 @@ class Settings extends Component {
               <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button><br />
               <br />
               Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-              for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again. <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button><br />
+              for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again.
+
+              {this.props.isCookieLoaded && <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>}
+              {this.props.isCookieLoaded && <span> <span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span></span>}
+              <br />
               <br />
               One other option is you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
             </div>
