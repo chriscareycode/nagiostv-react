@@ -70,7 +70,7 @@ class Base extends Component {
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
     alertDaysBack: 30,
-    alertMaxItems: 500,
+    alertMaxItems: 1000,
 
     hideServiceWarning: false,
     hideServiceUnknown: false,
@@ -97,7 +97,7 @@ class Base extends Component {
     flynnConcernedAt: 1,
     flynnAngryAt: 4,
     flynnBloodyAt: 8,
-    flynnCssScale: '1',
+    flynnCssScale: '0.8',
     showEmoji: false,
     speakItems: false,
     speakItemsVoice: '',
