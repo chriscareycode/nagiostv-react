@@ -93,10 +93,14 @@ input[type=text] {
   bottom: 0px;
 }
 
+
 /* not sure why body doesnt influence this FooterArea font size, maybe because its float? */
 @media only screen and (max-device-width: 480px) {
   .FooterArea {
     font-size: 0.9em;
+  }
+  .FooterAreaMiddleUpdate {
+    display: none !important;
   }
 }
 
@@ -107,6 +111,9 @@ input[type=text] {
 
   .FooterArea {
     font-size: 0.9em;
+  }
+  .FooterAreaMiddleUpdate {
+    display: none !important;
   }
 }
 

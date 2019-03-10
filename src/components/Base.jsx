@@ -765,8 +765,8 @@ class Base extends Component {
           </div>
 
           {/* middle */}
-          <div>
-            <span className="uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
+          <div className="FooterAreaMiddle">
+            <span className="FooterAreaMiddleUpdate uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
             &nbsp;&nbsp;
             <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
             {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
