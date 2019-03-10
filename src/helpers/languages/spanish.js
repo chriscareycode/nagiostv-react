@@ -47,6 +47,7 @@ export const phrases = {
 
 	'on': 'en',
 	'is': 'es',
+	'and': 'y',
 
 	'show filters': 'mostrar filtros',
 	'last update': 'última actualización',

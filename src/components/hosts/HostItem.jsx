@@ -46,19 +46,23 @@ class HostItem extends Component {
     const voice = this.props.settings.speakItemsVoice;
 
     let words = translate('host', language) + ' ' + this.props.hostItem.name + ' '
-      + ' ' + translate('is', language) + ' ' + translate(nagiosHostStatus(this.props.hostItem.status), language) + ' ';
+      + translate('is', language) + ' ' + translate(nagiosHostStatus(this.props.hostItem.status), language);
 
     if (this.props.hostItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
     if (this.props.hostItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
     if (this.props.hostItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
 
+    //console.log({words});
     speakAudio(words, voice);
   }
 
   doSpeakOutro() {
     const { language } = this.props.settings;
     const voice = this.props.settings.speakItemsVoice;
-    speakAudio(translate('host', language) + ' ' + this.props.hostItem.name + ' ' + translate('ok', language), voice);
+    const speakWords = translate('host', language) + ' ' + this.props.hostItem.name + ' ' + translate('ok', language);
+    
+    //console.log({speakWords});
+    speakAudio(speakWords, voice);
   }
 
   render() {

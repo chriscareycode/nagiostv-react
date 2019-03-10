@@ -46,7 +46,7 @@ class ServiceItem extends Component {
     const voice = this.props.settings.speakItemsVoice;
 
     let words = translate('service', language) + ' ' + this.props.serviceItem.description +
-      translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('is', language) + ' '
+      ' ' + translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('is', language) + ' '
       + translate(nagiosServiceStatus(this.props.serviceItem.status), language) + ' ';
 
     if (this.props.serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
