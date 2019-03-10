@@ -156,13 +156,16 @@ class Base extends Component {
 
     // Bind functions
     this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.toggleSettings = this.toggleSettings.bind(this);
   }
 
   componentDidMount() {
 
+    // Load Remote Settings - then it calls the loadCookie routine
     this.getRemoteSettings();
-    //this.getCookie(); // Now we get cookie after getting remote settings
     
+    //this.toggleSettings(); //open settings box by default (for local development)
+
     setTimeout(() => {
       this.fetchServiceData();
       this.fetchHostData();
@@ -614,6 +617,10 @@ class Base extends Component {
     });
   }
 
+  toggleSettings() {
+    this.refs.settings.toggle();
+  }
+
   saveCookie() {
     const cookieObject = {};
     this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
@@ -710,6 +717,7 @@ class Base extends Component {
         {/* settings */}
 
         <Settings
+          ref="settings"
           baseUrl={this.state.baseUrl}
           baseUrlChanged={this.baseUrlChanged.bind(this)}
           settings={settingsObject}
@@ -738,6 +746,8 @@ class Base extends Component {
         {/* footer */}
 
         <div className="FooterArea">
+
+          {/* left */}
           <div className="FooterAreaLeft">
             <Checkbox
               className="Checkbox warning"
@@ -748,7 +758,13 @@ class Base extends Component {
               howManyText={translate('show filters', language)}
             />
           </div>
-          <div className="FooterAreaRight uppercase-first">{translate('settings', language)}</div>
+
+          {/* right */}
+          <div className="FooterAreaRight uppercase-first">
+            <span style={{ cursor: 'pointer' }} onClick={this.toggleSettings}>{translate('settings', language)}</span>
+          </div>
+
+          {/* middle */}
           <div>
             <span className="uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
             &nbsp;&nbsp;

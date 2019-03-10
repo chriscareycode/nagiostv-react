@@ -67,7 +67,7 @@ class AlertItems extends Component {
           );
         })}
         
-        <div style={{ textAlign: 'center' }}>
+        <div className="ShowMoreArea">
           {this.state.howManyToRender > this.state.pageSize &&
             <span>
               <button onClick={this.showLess}>Show Less</button>

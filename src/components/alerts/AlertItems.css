@@ -16,3 +16,12 @@
   color: white;
   justify-content: center;
 }
+.ShowMoreArea {
+  margin-top: 15px;
+  text-align: center;
+}
+.ShowMoreArea button {
+  font-size: 1.1em;
+  border-radius: 5px;
+  margin: 0 4px;
+}

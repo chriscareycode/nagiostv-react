@@ -1,30 +1,32 @@
 .SettingsBox {
     border: 2px solid #3c3c3c;
     position: fixed;
-    height: 40px;
-    width: 40px;
+    height: 30px;
+    width: 30px;
     bottom: 10px;
     right: 10px;
-    z-index: 11;
+    z-index: 13;
     transition: all 200ms ease-in;
     background-color: rgba(0,0,0,0.85);
     border-radius: 16px;
     background-color: #222;
 }
 .SettingsBox.open {
-    /*border: 2px solid #222;*/
+    border: 2px solid #888;
     position: fixed;
-    height: calc(100vh - 50px);
-    width: calc(100vw - 100px);
+    height: calc(100vh - 25px);
+    width: calc(100vw - 25px);
+    /*height: 100vh;
+    width: 100vw;*/
     bottom: 10px;
-    right: 50px;
-    z-index: 11;
+    right: 10px;
+
     border-radius: 10px;
 }
 .SettingsBox > .SettingsSmall {
     opacity: 1;
-    height: 40px;
-    width: 40px;
+    height: 30px;
+    width: 30px;
     position: absolute;
     top: 0;
     left: 0;
@@ -32,8 +34,8 @@
     cursor: pointer;
 }
 .SettingsBox > .SettingsSmall > img {
-    height: 40px;
-    width: 40px;  
+    height: 30px;
+    width: 30px;  
 }
 .SettingsBox.open > .SettingsSmall {
     opacity: 0;
@@ -41,10 +43,15 @@
 
 .SettingsBox > .SettingsBig {
     display: none;
-    margin-top: 10px;
+
     margin-left: 10px;
     margin-right: 10px;
     /*border: 1px solid orange;*/
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
 .SettingsBox.open > .SettingsBig {
     display: block;
@@ -67,6 +74,9 @@
     /*border: 1px solid green;*/
     height: calc(100vh - 100px);
     margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .SettingsCloseButton {
@@ -75,12 +85,12 @@
     font-size: 1.1em;
     font-weight: bold;
     border: 2px solid orange;
+    border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
     margin-left: 10px;
 }
 .SettingSaveMessage {
-    margin-left: 20px;
     display: inline-block;
 }
 .SettingsSaveButton {
@@ -89,6 +99,7 @@
     font-size: 1.1em;
     font-weight: bold;
     border: 2px solid green;
+    border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
 }
@@ -135,4 +146,65 @@
 
 .SaveToServerText {
     margin-top: 10px;
+}
+
+.SettingsCenterDiv {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.SettingsTestButton {
+    margin-left: 10px;
+}
+
+.SettingsHeading {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 1.2em;
+}
+
+table.SettingsTable {
+    border: 2px solid #888;
+    background-color: #444;
+    width: 100%;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+table.SettingsTable td.SettingsTableHeader {
+    background-color: #333;
+    border-bottom: 2px solid #777;
+    padding: 9px;
+    margin-bottom: 5px;
+}
+table.SettingsTable th {
+    text-align: right;
+    padding: 8px;
+    
+    white-space: nowrap;
+    vertical-align: top;
+}
+table.SettingsTable td {
+    padding: 4px;
+    width: 70%;
+}
+
+table.SettingsTable input[type=text] {
+    font-size: 1.1em;
+    width: 80%;
+}
+table.SettingsTable input[type=number] {
+    font-size: 1.1em;
+    width: 100px;
+}
+
+table.SettingsTable button {
+    font-size: 1.1em;
+    border-radius: 4px;
+}
+table.SettingsTable select {
+    font-size: 1.1em;
 }

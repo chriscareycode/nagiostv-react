@@ -163,150 +163,217 @@ class Settings extends Component {
 
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
+
       	<div className="SettingsSmall" onClick={this.toggle}>
-            <img src={SettingsIcon} alt="settings icon" />  
+          <img src={SettingsIcon} alt="settings icon" />  
         </div>
+
         <div className="SettingsBig">
-            <h2>Settings</h2>
-            <div className="SettingsScroll">
 
-              <div className="SettingsSection">
-                <span>Title: </span>
-                <input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} />
+          <div style={{ minHeight: '44px', position: 'relative' }}>
+
+            <div className="SettingsHeading">
+              NagiosTV Settings
+            </div>
+
+            <div className="SettingsCenterDiv">
+              {this.state.saveMessage && <span className="SettingSaveMessage color-green">{this.state.saveMessage}</span>}
+            </div>
+
+            <div style={{ position: 'absolute', top: '10px', right: '0px' }}>
+              <div style={{ }}>
+                <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Cookie</button>
+                <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
               </div>
+            </div>
 
-              <div className="SettingsSection">
-                <span>Nagios cgi-bin path: </span>
-                <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
-                <div className="Note" style={{ marginTop: '10px' }}>
-                  This path needs to point to where the cgi files are being served by the Nagios web user interface.
-                  If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path <span style={{ color: 'yellow' }}>/nagios/cgi-bin/</span> should work without additional authentication.<br />
-                  <br />
-                  <div>More advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</div>
-                </div>
-              </div>
+          </div>
 
-              <div className="SettingsSection">
-                <div>Alert History Days Back <input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></div>
-                <div>Alert History max # of items <input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></div>
-              </div>
+          <div className="SettingsScroll">
 
-              <div className="SettingsSection">
-                Language:{' '}
-                <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
-                    {languageOptions}
-                </select>
-              </div>
-              
-              <div className="SettingsSection">
-                New Version Check:{' '}
-                <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
-                    <option value={0}>Off</option>
-                    <option value={1}>1 day</option>
-                    <option value={7}>1 week</option>
-                    <option value={30}>1 month</option>
-                </select>
-              </div>
+            {/* new table */}
+            <table className="SettingsTable">
+              <thead>
+                <tr>
+                  <td colSpan="2" className="SettingsTableHeader">Main Settings</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th style={{ padding: '0px', height: '3px' }}></th>
+                  <td style={{ padding: '0px', height: '3px' }}></td>
+                </tr>
+                <tr>
+                  <th>Title:</th>
+                  <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
+                </tr>
+                <tr>
+                  <th>Nagios cgi-bin path:</th>
+                  <td>
+                    <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
+                    <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
+                      This path needs to point to where the cgi files are being served by the Nagios web user interface.
+                      If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path
+                      <span style={{ color: 'yellow' }}> /nagios/cgi-bin/</span> should work without additional authentication.
+                      
+                      <span style={{ fontSize: '0.8em' }}> Advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</span>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Alert History Days Back:</th>
+                  <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
+                </tr>
+                <tr>
+                  <th>Alert History max # of items:</th>
+                  <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
+                </tr>
+                <tr>
+                  <th>New Version Check:</th>
+                  <td>
+                    <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
+                        <option value={0}>Off</option>
+                        <option value={1}>1 day</option>
+                        <option value={7}>1 week</option>
+                        <option value={30}>1 month</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Language:</th>
+                  <td>
+                    <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
+                        {languageOptions}
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-              <h5>Fun Stuff</h5>
-
-              <div className="SettingsSection">
-                <div>
-                    Flynn:{' '}
+            <table className="SettingsTable">
+              <thead>
+                <tr>
+                  <td colSpan="2" className="SettingsTableHeader">Fun Stuff</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th style={{ padding: '0px', height: '3px' }}></th>
+                  <td style={{ padding: '0px', height: '3px' }}></td>
+                </tr>
+                <tr>
+                  <th>Flynn:</th>
+                  <td>
                     <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
                         <option value={true}>On</option>
                         <option value={false}>Off</option>
                     </select>
-                </div>
-                {this.state.flynnEnabled && <div>
-                  <div>Flynn angry at <input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</div>
-                  <div>Flynn bloody at <input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</div>
-                  <div>
-                    Flynn CSS scale <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                  </td>
+                </tr>
+                {this.state.flynnEnabled && <tr>
+                  <th>Flynn angry at</th>
+                  <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
+                </tr>}
+                {this.state.flynnEnabled && <tr>
+                  <th>Flynn bloody at</th>
+                  <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
+                </tr>}
+                {this.state.flynnEnabled && <tr>
+                  <th>Flynn CSS scale</th>
+                  <td>
+                    <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
                     <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
-                  </div>
-                </div>}
-              </div>
-
-              <div className="SettingsSection">
-                Emojis:{' '}
-                <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                </select>
-              </div>
-
-              <div className="SettingsSection">
-                Sound Effects:{' '}
-                <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                </select>
-                {this.state.playSoundEffects && <div>
-                  <div>DOWN/CRITICAL sound file: <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} /><button onClick={this.playCritical}>Test</button></div>
-                  <div>WARNING sound file: <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} /><button onClick={this.playWarning}>Test</button></div>
-                  <div>UP/OK sound file: <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} /><button onClick={this.playOk}>Test</button></div>
-                  <div style={{ margin: '5px 0' }}>* You can have multiple sound files for each state, if you want. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
-                </div>}
-              </div>
-
-              <div className="SettingsSection">
-                Speak Items:{' '}
-                <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                </select>
-                {this.state.speakItems && <div>
-                  <div>Choose Voice:
+                  </td>
+                </tr>}
+                <tr>
+                  <th>Emojis:</th>
+                  <td>
+                    <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
+                      <option value={true}>On</option>
+                      <option value={false}>Off</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Sound Effects:</th>
+                  <td>
+                    <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
+                      <option value={true}>On</option>
+                      <option value={false}>Off</option>
+                    </select>
+                  </td>
+                </tr>
+                {this.state.playSoundEffects && <tr>
+                  <th>DOWN/CRITICAL sound file:</th>
+                  <td>
+                    <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} />
+                    <button className="SettingsTestButton" onClick={this.playCritical}>Test</button>
+                  </td>
+                </tr>}
+                {this.state.playSoundEffects && <tr>
+                  <th>WARNING sound file:</th>
+                  <td>
+                    <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} />
+                    <button className="SettingsTestButton" onClick={this.playWarning}>Test</button>
+                  </td>
+                </tr>}
+                {this.state.playSoundEffects && <tr>
+                  <th>UP/OK sound file:</th>
+                  <td>
+                    <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} />
+                    <button className="SettingsTestButton" onClick={this.playOk}>Test</button>
+                  </td>
+                </tr>}
+                {this.state.playSoundEffects && <tr>
+                  <th></th>
+                  <td>
+                    <div style={{ margin: '5px 0' }}>* You can have multiple sound files for each state, if you want. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
+                  </td>
+                </tr>}
+                <tr>
+                  <th>Speak Items:</th>
+                  <td>
+                    <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
+                      <option value={true}>On</option>
+                      <option value={false}>Off</option>
+                    </select>
+                  </td>
+                </tr>
+                {this.state.speakItems && <tr>
+                  <th>Choose Voice:</th>
+                  <td>
                     <select value={this.state.speakItemsVoice} onChange={this.handleChange('speakItemsVoice', 'string')}>
                       {voiceOptions}
-                  </select>
-                  <button onClick={this.playVoice}>Test</button>
-                  </div>
-                  
-                </div>}
-              </div>
+                    </select>
+                    <button className="SettingsTestButton" onClick={this.playVoice}>Test</button>
+                  </td>
+                </tr>}
+              </tbody>
+            </table>
 
-              <h5>Save and Close</h5>
+            
+            <div className="SaveToServerText">
+              <h5>Saving these settings on the server</h5>
+              By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
+              so they can be shared with all users of NagiosTV. Hopefully I'll get this process streamlined better in the future,
+              but for now, to support this feature you will need to create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in
+              the nagiostv folder and chown 777 client-settings.json so the Apache process has rights to write to it.
 
-              <div style={{marginTop: '20px'}}>
-                <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Cookie</button>
- 
-                <button className="SettingsCloseButton" onClick={this.toggle}>Close Settings</button>
+              <pre>
+              sudo touch client-settings.json<br />
+              sudo chmod 777 client-settings.json
+              </pre>
 
-                
-
-                
-
-                {this.state.saveMessage && <div className="SettingSaveMessage color-green">{this.state.saveMessage}</div>}
-              </div>
-              
-
-
-              <div className="SaveToServerText">
-                <h5>Saving these settings on the server</h5>
-                By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
-                so they can be shared with all users of NagiosTV. Hopefully I'll get this process streamlined better in the future,
-                but for now, to support this feature you will need to create a file <span style={{ color: 'yellow' }}>client-settings.json</span> in
-                the nagiostv folder and chown 777 client-settings.json so the Apache process has rights to write to it.
-
-                <pre>
-                sudo touch client-settings.json<br />
-                sudo chmod 777 client-settings.json
-                </pre>
-
-                After those steps, you can try the "Save to Server" button.
-                <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button><br />
-                <br />
-                Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-                for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again. <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button><br />
-                <br />
-                One other option is you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
-              </div>
-              <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
-
+              After those steps, you can try the "Save to Server" button.
+              <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button><br />
+              <br />
+              Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
+              for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again. <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button><br />
+              <br />
+              One other option is you can manually create the file <span style={{ color: 'yellow' }}>client-settings.json</span> in the nagiostv folder with this data:
             </div>
-
+            <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+          </div>
             
         </div>
       </div>
