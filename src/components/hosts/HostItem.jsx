@@ -30,10 +30,10 @@ class HostItem extends Component {
   doSoundEffect() {
     const status = nagiosHostStatus(this.props.hostItem.status);
     switch(status) {
-      case 'DOWN':
+      case 'down':
         playSoundEffectDebounced('host', 'down', this.props.settings);
         break;
-      case 'UNREACHABLE':
+      case 'unreachable':
         playSoundEffectDebounced('host', 'unreachable', this.props.settings);
         break;
       default:

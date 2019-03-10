@@ -30,10 +30,10 @@ class ServiceItem extends Component {
   doSoundEffect() {
     const status = nagiosServiceStatus(this.props.serviceItem.status);
     switch(status) {
-      case 'CRITICAL':
+      case 'critical':
         playSoundEffectDebounced('service', 'critical', this.props.settings);
         break;
-      case 'WARNING':
+      case 'warning':
         playSoundEffectDebounced('service', 'warning', this.props.settings);
         break;
       default:
