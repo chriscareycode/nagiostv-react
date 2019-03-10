@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './HostItem.css';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
+import { formatDateTime, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { translate } from '../../helpers/language';
@@ -94,7 +94,7 @@ class HostItem extends Component {
           </div>
 
           <div className="lastCheck">
-            {translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}
+            {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
             {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
           </div>
 

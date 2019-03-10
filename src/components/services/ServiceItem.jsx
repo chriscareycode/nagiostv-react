@@ -97,7 +97,7 @@ class ServiceItem extends Component {
       </div>
 
       <div className="lastCheck">
-        {translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}
+        {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
         {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
       </div>
 
