@@ -4,6 +4,15 @@
 # sh autoupdate.sh 0.3.5
 # sudo chown -R nagios .
 
+show_permission_error () {
+  # permission error we will share
+  echo "It is possible you have a permissions issue."
+  echo "Did you first change ownership of the folder to the logged in user?"
+  echo ""
+  echo "$ sudo chown -R $USER ."
+  echo ""
+}
+
 # try to detect /usr/local/nagios/ owner, fall back to "nagios"
 NAGIOSUSER=$(stat -c '%U' ..)
 if [ ! $? -eq 0 ]; then
@@ -62,6 +71,7 @@ curl -O -L --silent $GITHUBPATH > $FILENAME
 # check the return code from curl
 if [ ! $? -eq 0 ]; then
 	echo "ERROR: Problem downloading file with curl. Aborting."
+  show_permission_error
 	cd ..
 	exit 1
 fi
@@ -72,6 +82,7 @@ fi
 if [ ! -f $FILENAME ]; then
 	echo ""
     echo "ERROR: Downloaded file not found! Aborting."
+    show_permission_error
     cd ..
     exit 1
 fi
@@ -83,6 +94,7 @@ tar xfz $FILENAME
 if [ ! $? -eq 0 ]; then
 	echo ""
 	echo "ERROR: Problem extracting file. Aborting."
+  echo "It is possible that you specified a version that does not exist."
 	cd ..
 	exit 1
 fi
@@ -94,11 +106,7 @@ cp -r nagiostv/* ../
 if [ ! $? -eq 0 ]; then
 	echo ""
 	echo "ERROR: Problem copying files. Aborting."
-	echo "Probably a permissions issue."
-	echo "Did you first change ownership of the folder to the logged in user?"
-	echo ""
-	echo "$ sudo chown -R $USER ."
-	echo ""
+	show_permission_error
 	cd ..
 	exit 1
 fi
