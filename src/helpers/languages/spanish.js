@@ -28,7 +28,7 @@ export const phrases = {
 
 	'All': 'Todas las',
 	'hosts are UP': 'computadoras son buenas',
-	'services are OK': '',
+	'services are OK': 'servicios son buenas',
 
 	'history': 'historia',
 	'alerts in the past': 'alarmas en el anterior',

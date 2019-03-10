@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { translate } from '../../helpers/language';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ServiceItem from './ServiceItem';
 // css
@@ -12,6 +13,9 @@ class ServiceItems extends Component {
     //console.log(Object.keys(this.props.serviceProblemsArray));
     
     const filteredServiceProblemsArray = this.props.serviceProblemsArray.filter(item => {
+      if (this.props.settings.hideServicePending) {
+        if (item.status === 1) { return false; }
+      }
       if (this.props.settings.hideServiceWarning) {
         if (item.status === 4) { return false; }
       }
@@ -35,18 +39,19 @@ class ServiceItems extends Component {
 
     const howManyHidden = this.props.serviceProblemsArray.length - filteredServiceProblemsArray.length;
     const showSomeDownItems = this.props.serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
+    const { language } = this.props.settings;
 
     return (
       <div className="ServiceItems">
 
         <div className={`all-ok-item ${this.props.serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">All {this.props.howManyServices} services are OK</span>{' '}
+          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {this.props.howManyServices} {translate('services are OK', language)}</span>{' '}
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
           <div>
-            <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyServices - this.props.serviceProblemsArray.length} services are OK</span>{' '}
-            <span className="some-down-hidden-text">({howManyHidden} hidden service problem{howManyHidden === 1 ? '' : 's'})</span>
+            <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyServices - this.props.serviceProblemsArray.length} {translate('services are OK', language)}</span>{' '}
+            <span className="some-down-hidden-text">({howManyHidden} hidden)</span>
           </div>
         </div>
 

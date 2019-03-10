@@ -47,15 +47,9 @@ class HostItems extends Component {
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-          <div style={{ padding: '5px' }}>
-            {howManyHidden} hidden host problem{howManyHidden === 1 ? '' : 's'}{' '}
-            {this.props.howManyHostDown > 0 && <span className="hidden-label down">{this.props.howManyHostDown} DOWN</span>}
-            {this.props.howManyHostUnreachable > 0 && <span className="hidden-label unreachable">{this.props.howManyHostUnreachable} UNREACHABLE</span>}
-            {this.props.howManyHostPending > 0 && <span className="hidden-label pending">{this.props.howManyHostPending} PENDING</span>}
-            {this.props.howManyHostAcked > 0 && <span className="hidden-label acked">{this.props.howManyHostAcked} ACKED</span>}
-            {this.props.howManyHostScheduled > 0 && <span className="hidden-label scheduled">{this.props.howManyHostScheduled} SCHEDULED</span>}
-            {this.props.howManyHostFlapping > 0 && <span className="hidden-label flapping">{this.props.howManyHostFlapping} FLAPPING</span>}
-            <span className="margin-left-10 display-inline-block color-green">{this.props.howManyHosts - this.props.hostProblemsArray.length} hosts OK</span>{' '}
+          <div>
+            <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyHosts - this.props.hostProblemsArray.length} {translate('hosts are UP', language)}</span>{' '}
+            <span className="some-down-hidden-text">({howManyHidden} hidden)</span>
           </div>
         </div>
 

@@ -72,6 +72,7 @@ class Base extends Component {
     alertDaysBack: 30,
     alertMaxItems: 1000,
 
+    hideServicePending: false,
     hideServiceWarning: false,
     hideServiceUnknown: false,
     hideServiceCritical: false,
@@ -81,9 +82,9 @@ class Base extends Component {
 
     serviceSortOrder: 'newest',
 
+    hideHostPending: false,
     hideHostDown: false,
     hideHostUnreachable: false,
-    hideHostDownPending: false,
     hideHostAcked: false,
     hideHostScheduled: false,
     hideHostFlapping: false,
@@ -115,6 +116,7 @@ class Base extends Component {
     'alertDaysBack',
     'alertMaxItems',
 
+    'hideServicePending',
     'hideServiceWarning',
     'hideServiceUnknown',
     'hideServiceCritical',
@@ -124,9 +126,9 @@ class Base extends Component {
 
     'serviceSortOrder',
 
+    'hideHostPending',
     'hideHostDown',
     'hideHostUnreachable',
-    'hideHostDownPending',
     'hideHostAcked',
     'hideHostScheduled',
     'hideHostFlapping',
@@ -663,6 +665,7 @@ class Base extends Component {
 
     // count how many items in each of the service states
     let howManyServices = 0;
+    let howManyServicePending = 0;
     let howManyServiceWarning = 0;
     let howManyServiceUnknown = 0;
     let howManyServiceCritical = 0;
@@ -674,6 +677,9 @@ class Base extends Component {
       Object.keys(this.state.servicelist).forEach((host) => {
         howManyServices += Object.keys(this.state.servicelist[host]).length;
         Object.keys(this.state.servicelist[host]).forEach((service) => {
+          if (this.state.servicelist[host][service].status === 1) {
+            howManyServicePending++;
+          }
           if (this.state.servicelist[host][service].status === 4) {
             howManyServiceWarning++;
           }
@@ -698,10 +704,10 @@ class Base extends Component {
 
     // count how many items in each of the host states
     const howManyHosts = Object.keys(this.state.hostlist).length;
+    let howManyHostPending = 0;
     let howManyHostUp = 0;
     let howManyHostDown = 0;
     let howManyHostUnreachable = 0;
-    let howManyHostPending = 0;
     let howManyHostAcked = 0;
     let howManyHostScheduled = 0;
     let howManyHostFlapping = 0;
@@ -709,14 +715,14 @@ class Base extends Component {
     if (this.state.hostlist) {
       Object.keys(this.state.hostlist).forEach((host) => {
 
+        if (this.state.hostlist[host].status === 1) {
+          howManyHostPending++;
+        }
         if (this.state.hostlist[host].status === 4) {
           howManyHostDown++;
         }
         if (this.state.hostlist[host].status === 8) {
           howManyHostUnreachable++;
-        }
-        if (this.state.hostlist[host].status === 16) {
-          howManyHostPending++;
         }
         if (this.state.hostlist[host].problem_has_been_acknowledged) {
           howManyHostAcked++;
@@ -916,6 +922,7 @@ class Base extends Component {
 
             {howManyServiceCritical > 0 && <span className="summary-label summary-label-red uppercase">{howManyServiceCritical} {translate('critical', language)}</span>}
             {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceWarning} {translate('warning', language)}</span>}
+            {howManyServicePending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServicePending} {translate('pending', language)}</span>}
             {howManyServiceUnknown > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServiceUnknown} {translate('unknown', language)}</span>}
             {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
             {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
@@ -950,6 +957,14 @@ class Base extends Component {
               defaultChecked={!this.state.hideServiceWarning}
               howMany={howManyServiceWarning}
               howManyText={translate('warning', language)}
+            />
+
+            <Checkbox className="Checkbox pending uppercase"
+              handleChange={this.handleChange}
+              stateName={'hideServicePending'}
+              defaultChecked={!this.state.hideServicePending}
+              howMany={howManyServicePending}
+              howManyText={translate('pending', language)}
             />
 
             <Checkbox className="Checkbox unknown uppercase"
@@ -997,6 +1012,7 @@ class Base extends Component {
 
           howManyServices={howManyServices}
           howManyServiceWarning={howManyServiceWarning}
+          howManyServicePending={howManyServicePending}
           howManyServiceUnknown={howManyServiceUnknown}
           howManyServiceCritical={howManyServiceCritical}
           howManyServiceAcked={howManyServiceAcked}
