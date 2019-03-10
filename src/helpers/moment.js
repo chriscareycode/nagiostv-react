@@ -2,6 +2,7 @@ import moment from 'moment';
 import React from 'react';
 
 export function prettyDateTime(date) {
+  if (date === 0) { return 'Never'; }
 	var m = moment(date).format('MMM Do YYYY, h:mm:ss a');
   return m;
 }
