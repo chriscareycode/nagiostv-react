@@ -1035,7 +1035,7 @@ class Base extends Component {
           alertlistLastUpdate={this.state.alertlistLastUpdate}
         />}
 
-        {this.state.alertlistError && <div className="margin-top-10 border-red color-red ServiceItem">{this.state.alertlistErrorMessage}</div>}
+        {this.state.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
 
         {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           No alerts
