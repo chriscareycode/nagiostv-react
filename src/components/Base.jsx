@@ -94,6 +94,8 @@ class Base extends Component {
     hostSortOrder: 'newest',
 
     language: 'English',
+    
+    isDemoMode: false,
 
     // fun stuff
     flynnEnabled: false,
@@ -162,6 +164,14 @@ class Base extends Component {
     this.updateStateFromSettings = this.updateStateFromSettings.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.toggleSettings = this.toggleSettings.bind(this);
+
+    // turn on demo mode if ?demo=true
+    const urlParams = new URLSearchParams(window.location.search);
+    const isDemoMode = urlParams.get('demo') === 'true';
+    this.state.isDemoMode = isDemoMode;
+    if (isDemoMode) {
+      this.useFakeSampleData = true;
+    }
   }
 
   componentDidMount() {
@@ -696,8 +706,7 @@ class Base extends Component {
     const showHistoryChart = true;
     const { language } = this.state;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const isDemoMode = urlParams.get('demo') === 'true';
+    
 
     /**************************************************************************
     * Template Starts Here
@@ -775,7 +784,7 @@ class Base extends Component {
 
         {/* Demo */}
 
-        {isDemoMode && <Demo
+        {this.state.isDemoMode && <Demo
           hostlist={this.state.hostlist}
           hostSortOrder={this.state.hostSortOrder}
           servicelist={this.state.servicelist}
@@ -864,7 +873,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.hostlistError && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
+        {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
@@ -971,7 +980,7 @@ class Base extends Component {
 
         </div>}
         
-        {this.state.servicelistError && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
+        {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}
