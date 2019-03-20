@@ -152,7 +152,8 @@ class Settings extends Component {
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
     // voices
-    const voices = window.speechSynthesis.getVoices();
+    const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+
     const voiceOptions = voices.map((voice, i) => {
       return (
         <option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>

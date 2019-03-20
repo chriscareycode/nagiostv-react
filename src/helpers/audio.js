@@ -73,7 +73,20 @@ export function speakAudio(words, voice) {
   
   //console.log('speakAudio', words, voice);
 
-  const sayWhat = new SpeechSynthesisUtterance(words);
+  let sayWhat;
+  try {
+    sayWhat = new SpeechSynthesisUtterance(words);
+  } catch(e) {
+    console.log('SpeechSynthesisUtterance not supported on this browser');
+    return;
+  }
+
+  // test for window.speechSynthesis
+  if (!window.speechSynthesis) {
+    console.log('speechSynthesis not supported on this browser');
+    return;
+  }
+
   if (voice) {
     let mySpeechSynthesisVoice = window.speechSynthesis.getVoices().filter(v => v.name === voice);
     if (mySpeechSynthesisVoice.length > 0) {
