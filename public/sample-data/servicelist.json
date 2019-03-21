@@ -40,7 +40,7 @@
           "last_time_warning": 1545944162000,
           "last_time_unknown": 0,
           "last_time_critical": 1546581402000,
-          "state_type": 2,
+          "state_type": 0,
           "last_notification": 0,
           "next_notification": 0,
           "next_check": 1550995015000,

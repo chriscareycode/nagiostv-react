@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import HostItems from './hosts/HostItems.jsx';
 import ServiceItems from './services/ServiceItems.jsx';
 import AlertItems from './alerts/AlertItems.jsx';
-import { prettyDateTime } from '../helpers/moment.js';
+import { prettyDateTime } from '../helpers/moment';
 import { translate } from '../helpers/language';
+import { cleanDemoDataHostlist, cleanDemoDataServicelist } from '../helpers/nagiostv';
 import { convertHostObjectToArray, convertServiceObjectToArray } from '../helpers/nagiostv';
 import Flynn from './Flynn/Flynn.jsx';
 import Settings from './Settings.jsx';
@@ -19,6 +20,7 @@ import './animation.css';
 import moment from 'moment';
 import Cookie from 'js-cookie';
 import $ from 'jquery';
+import _ from 'lodash';
 
 class Base extends Component {
 
@@ -188,39 +190,42 @@ class Base extends Component {
       this.fetchCommentData();
     }, 1000);
 
-    // fetch host problems and service problems on an interval
-    setInterval(() => {
-      this.fetchServiceData();
-      this.fetchHostData();
-      this.fetchCommentData();
-    }, this.state.fetchFrequency * 1000);
+    if (this.state.isDemoMode === false) {
+      // fetch host problems and service problems on an interval
+      setInterval(() => {
+        this.fetchServiceData();
+        this.fetchHostData();
+        this.fetchCommentData();
+      }, this.state.fetchFrequency * 1000);
 
-    // we fetch alerts on a slower frequency interval
-    setInterval(() => {
-      this.fetchAlertData();
-    }, this.state.fetchAlertFrequency * 1000);
+      // we fetch alerts on a slower frequency interval
+      setInterval(() => {
+        this.fetchAlertData();
+      }, this.state.fetchAlertFrequency * 1000);
 
-    // this is not super clean but I'm going to delay this by 3s to give the setState() in the getCookie()
-    // time to complete. It's async so we could have a race condition getting the version check setting
-    // to arrive in this.state.versionCheckDays
-    // if someone turns off the version check, it should never check
-    setTimeout(() => {
-      const versionCheckDays = this.state.versionCheckDays;
-      if (versionCheckDays && versionCheckDays > 0) {
-        // version check - run once on app boot
-        this.versionCheck();
-        // version check - run every n days
-        const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
-        // safety check that interval > 1hr
-        if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
-          setInterval(() => {
-            this.versionCheck();
-          }, intervalTime);
-        } else {
-          console.log('Invalid versionCheckDays. Not starting check interval.');
+      // this is not super clean but I'm going to delay this by 3s to give the setState() in the getCookie()
+      // time to complete. It's async so we could have a race condition getting the version check setting
+      // to arrive in this.state.versionCheckDays
+      // if someone turns off the version check, it should never check
+      setTimeout(() => {
+        const versionCheckDays = this.state.versionCheckDays;
+        if (versionCheckDays && versionCheckDays > 0) {
+          // version check - run once on app boot
+          this.versionCheck();
+          // version check - run every n days
+          const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
+          // safety check that interval > 1hr
+          if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
+            setInterval(() => {
+              this.versionCheck();
+            }, intervalTime);
+          } else {
+            console.log('Invalid versionCheckDays. Not starting check interval.');
+          }
         }
-      }
-    }, 3000);
+      }, 3000);
+    } // if isDemoMode === false
+
   }
 
   /* ************************************************************************************ */
@@ -333,7 +338,7 @@ class Base extends Component {
 
     let url;
     if (this.useFakeSampleData) {
-      url = '/sample-data/servicelist.json';
+      url = './sample-data/servicelist.json';
     } else {
       url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
     }
@@ -352,8 +357,14 @@ class Base extends Component {
       }
 
       // Make an array from the object
-      const servicelist = myJson && myJson.data && myJson.data.servicelist;
-      
+      let servicelist = _.get(myJson.data, 'servicelist', {});
+
+      // If we are in demo mode then clean the fake data
+      if (this.state.isDemoMode) {
+        servicelist = cleanDemoDataServicelist(servicelist);
+      }
+
+      // convert the service object into an array (and sort it)
       const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.state.serviceSortOrder);
 
       // check for old stale data (detect if nagios is down)
@@ -391,7 +402,7 @@ class Base extends Component {
   fetchHostData() {
     let url;
     if (this.useFakeSampleData) {
-      url = '/sample-data/hostlist.json';
+      url = './sample-data/hostlist.json';
     } else {
       url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
     }
@@ -409,11 +420,14 @@ class Base extends Component {
       }
 
       // Make an array from the object
-      let hostlist = {};
-      if (myJson && myJson.data && myJson.data.hostlist) {
-        hostlist = myJson.data.hostlist;
+      let hostlist = _.get(myJson.data, 'hostlist', {});
+
+      // If we are in demo mode then clean the fake data
+      if (this.state.isDemoMode) {
+        hostlist = cleanDemoDataHostlist(hostlist);
       }
 
+      // convert the host object into an array (and sort it)
       const hostProblemsArray = convertHostObjectToArray(hostlist, this.state.hostSortOrder);
 
       // check for old data (nagios down?)
@@ -448,7 +462,13 @@ class Base extends Component {
 
   fetchAlertData() {
     const starttime = this.state.alertDaysBack * 60 * 60 * 24;
-    const url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+    
+    let url;
+    if (this.useFakeSampleData) {
+      url = './sample-data/hostlist.json';
+    } else {
+      url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+    }
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
 
@@ -463,10 +483,10 @@ class Base extends Component {
       }
 
       // Make an array from the object
-      const alertlist = myJson.data.alertlist.reverse();
+      const alertlist = _.get(myJson.data, 'alertlist', []).reverse();
 
       // store the actual count of alert list items before we trim
-      const alertlistCount = myJson.data.alertlist.length;
+      const alertlistCount = alertlist.length;
 
       // trim
       if (alertlist.length > this.state.alertMaxItems) {
@@ -777,7 +797,7 @@ class Base extends Component {
 
         {/* spacer to counteract the floating header */}
 
-        <div style={{ marginTop: '60px' }}>
+        <div style={{ height: '60px' }}>
         </div>
 
         {!settingsLoaded && <div>Settings are not loaded yet</div>}

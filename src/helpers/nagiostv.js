@@ -1,3 +1,34 @@
+export function cleanDemoDataHostlist(hostlist) {
+  console.log(hostlist);
+  Object.keys(hostlist).forEach(key => {
+    //if (hostlist[key].status === 2) {
+    hostlist[key].status = 2;
+    hostlist[key].last_time_up = new Date().getTime();
+    hostlist[key].is_flapping = false;
+    hostlist[key].problem_has_been_acknowledged = false;
+    hostlist[key].scheduled_downtime_depth = 0;
+    return false;
+    //}
+  });
+  return hostlist;
+}
+export function cleanDemoDataServicelist(servicelist) {
+  Object.keys(servicelist).forEach(hostkey => {
+    Object.keys(servicelist[hostkey]).forEach(key => {
+      //if (servicelist[hostkey][key].status === 2) {
+        servicelist[hostkey][key].status = 2;
+        servicelist[hostkey][key].last_time_up = new Date().getTime();
+        servicelist[hostkey][key].is_flapping = false;
+        servicelist[hostkey][key].problem_has_been_acknowledged = false;
+        servicelist[hostkey][key].scheduled_downtime_depth = 0;
+        return false;
+      //}
+    });
+    return false;
+  });
+  return servicelist;
+}
+
 export function convertHostObjectToArray(hostlist, hostSortOrder) {
   let hostProblemsArray = [];
 

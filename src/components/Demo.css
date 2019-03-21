@@ -1,5 +1,8 @@
 .Demo {
-	border: 2px solid yellow;
+	border: 2px solid #949494;
+    background-color: #353535;
 	border-radius: 5px;
 	padding: 5px;
+	margin-top: 5px;
+	margin-bottom: 15px;
 }
