@@ -184,8 +184,8 @@ class Base extends Component {
     //this.toggleSettings(); //open settings box by default (for local development)
 
     setTimeout(() => {
-      this.fetchServiceData();
       this.fetchHostData();
+      this.fetchServiceData();
       this.fetchAlertData();
       this.fetchCommentData();
     }, 1000);
@@ -465,7 +465,7 @@ class Base extends Component {
     
     let url;
     if (this.useFakeSampleData) {
-      url = './sample-data/hostlist.json';
+      url = './sample-data/alertlist.json';
     } else {
       url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
     }
