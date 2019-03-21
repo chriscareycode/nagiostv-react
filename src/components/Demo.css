@@ -3,6 +3,37 @@
     background-color: #353535;
 	border-radius: 5px;
 	padding: 5px;
-	margin-top: 5px;
-	margin-bottom: 15px;
+	position: fixed;
+	width: 500px;
+	right: 20px;
+	bottom: 60px;
+	z-index: 10;
+}
+
+.Demo .demo-header {
+	background-color: #222;
+	border-radius: 4px;
+	padding: 1px 3px;
+	text-align: center;
+}
+
+.Demo table {
+	width: 100%;
+}
+
+.Demo table td {
+	text-align: center;
+}
+
+.Demo .summary-label {
+	font-size: 0.8em;
+	width: calc(100% - 15px);
+	margin: 4px 0;
+
+}
+
+.Demo button {
+	width: 45%;
+	font-size: 0.7em;
+	margin: 0 2px;
 }

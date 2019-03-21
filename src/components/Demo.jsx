@@ -149,19 +149,28 @@ class Demo extends Component {
     return (
       
       <div className={`Demo`}>
-        NagiosTV demo mode - Try it out!
-        <div>
-          Add a fake:{' '}
-          <button onClick={this.addHostDown}>Host DOWN</button>
-          <button onClick={this.addServiceWarning}>Service WARNING</button>
-          <button onClick={this.addServiceCritical}>Service CRITICAL</button>
-        </div>
-        <div>
-          Remove a fake:{' '}
-          <button onClick={this.removeHostDown}>Host DOWN</button>
-          <button onClick={this.removeServiceWarning}>Service WARNING</button>
-          <button onClick={this.removeServiceCritical}>Service CRITICAL</button>
-        </div>
+        <div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <div className="summary-label summary-label-red">Host DOWN</div>
+                <button onClick={this.addHostDown}>Add</button>
+                <button onClick={this.removeHostDown}>Remove</button>
+              </td>
+              <td>
+                <div className="summary-label summary-label-yellow">Service WARNING</div>
+                <button onClick={this.addServiceWarning}>Add</button>
+                <button onClick={this.removeServiceWarning}>Remove</button>
+              </td>
+              <td>
+                <div className="summary-label summary-label-red">Service CRITICAL</div>
+                <button onClick={this.addServiceCritical}>Add</button>
+                <button onClick={this.removeServiceCritical}>Remove</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }

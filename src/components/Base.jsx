@@ -797,7 +797,7 @@ class Base extends Component {
 
         {/* spacer to counteract the floating header */}
 
-        <div style={{ height: '60px' }}>
+        <div style={{ height: '50px' }}>
         </div>
 
         {!settingsLoaded && <div>Settings are not loaded yet</div>}
