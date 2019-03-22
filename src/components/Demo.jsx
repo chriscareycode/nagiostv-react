@@ -14,19 +14,28 @@ class Demo extends Component {
   automate() {
     
     this.addHostDown();
-    setTimeout(() => {
-      this.removeHostDown();
-    }, 5000);
-
     this.addServiceWarning();
+    this.addServiceCritical();
+
     setTimeout(() => {
       this.removeServiceWarning();
     }, 6000);
 
-    this.addServiceCritical();
+    setTimeout(() => {
+      this.removeHostDown();
+    }, 10000);
+
+    setTimeout(() => {
+      this.addServiceWarning();
+    }, 12000);
+
     setTimeout(() => {
       this.removeServiceCritical();
-    }, 7000);
+    }, 15000);
+
+    setTimeout(() => {
+      this.removeServiceWarning();
+    }, 20000);
 
   }
 

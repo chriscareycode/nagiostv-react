@@ -167,9 +167,9 @@ class Base extends Component {
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.toggleSettings = this.toggleSettings.bind(this);
 
-    // turn on demo mode if ?demo=true
+    // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
     const urlParams = new URLSearchParams(window.location.search);
-    const isDemoMode = urlParams.get('demo') === 'true';
+    const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
     this.state.isDemoMode = isDemoMode;
     if (isDemoMode) {
       this.useFakeSampleData = true;
@@ -265,6 +265,12 @@ class Base extends Component {
   }
 
   getCookie() {
+    // do not load the cookie in demo mode
+    if (this.state.isDemoMode) {
+      this.setState({ isDoneLoading: true });
+      return;
+    }
+
     const cookie = Cookie.get('settings');
     //console.log('settings Cookie is', cookie);
     if (!cookie) {
