@@ -187,7 +187,10 @@ class Base extends Component {
       this.fetchHostData();
       this.fetchServiceData();
       this.fetchAlertData();
-      this.fetchCommentData();
+      // TODO: turn on comments for demo mode at some point
+      if (this.state.isDemoMode === false) {
+        this.fetchCommentData();
+      }
     }, 1000);
 
     if (this.state.isDemoMode === false) {
