@@ -5,6 +5,8 @@ import { ifQuietFor } from '../../helpers/date-math.js';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 // css
 //import './AlertItem.css';
 
@@ -25,6 +27,7 @@ class AlertItem extends Component {
     const { language } = this.props;
     const howMuchTimeIsQuietTime = 60;
     const { e, i } = this.props;
+    const isSoft = e.state_type === 2;
 
     return (
       <div>
@@ -40,6 +43,7 @@ class AlertItem extends Component {
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
           <div style={{ float: 'right' }}>
+            {isSoft && <span className="softIcon color-green"><FontAwesomeIcon icon={faYinYang} /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
             {1 === 2 && <span>({e.state})</span>}
