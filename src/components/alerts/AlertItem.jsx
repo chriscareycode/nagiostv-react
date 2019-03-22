@@ -43,7 +43,7 @@ class AlertItem extends Component {
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
           <div style={{ float: 'right' }}>
-            {isSoft && <span className="softIcon color-green"><FontAwesomeIcon icon={faYinYang} /></span>}
+            {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faYinYang} /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
             {1 === 2 && <span>({e.state})</span>}
