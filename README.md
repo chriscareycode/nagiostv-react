@@ -1,6 +1,8 @@
-# NagiosTV for Nagios 4
+# NagiosTV
 
-NagiosTV is an alternate user interface (UI) for the Nagios open source monitoring system. This is a version of NagiosTV for Nagios 4.x.
+Compatible with Nagios 4
+
+NagiosTV is a user interface (UI) for the Nagios open source monitoring system. This is a version of NagiosTV for Nagios 4.x.
 
 This user interface is designed to be viewed on a TV or on your desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but an alternate way to look at the “what’s down?” part.
 
