@@ -237,7 +237,7 @@ class Base extends Component {
   /* ************************************************************************************ */
 
   getRemoteSettings() {
-    const url = 'client-settings.json';
+    const url = 'client-settings.json?v=' + new Date().getTime();
 
     $.ajax({url}).done((myJson, textStatus, jqXHR) => {
 
