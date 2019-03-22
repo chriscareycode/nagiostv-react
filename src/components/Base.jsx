@@ -726,7 +726,7 @@ class Base extends Component {
     const showHistoryChart = true;
     const { language } = this.state;
 
-    
+    const howManyHostAndServicesDown = this.state.serviceProblemsArray.length + this.state.hostProblemsArray.length;
 
     /**************************************************************************
     * Template Starts Here
@@ -751,7 +751,7 @@ class Base extends Component {
 
         {this.state.flynnEnabled && <div className="FlynnWrapper">
           <Flynn
-            howManyDown={this.state.serviceProblemsArray.length}
+            howManyDown={howManyHostAndServicesDown}
             flynnConcernedAt={this.state.flynnConcernedAt}
             flynnAngryAt={this.state.flynnAngryAt}
             flynnBloodyAt={this.state.flynnBloodyAt}
