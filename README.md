@@ -110,6 +110,8 @@ have authentication enabled. You will need to either modify
 your Apache install to add CORS headers there, or to run a simple Node.js server or Apache config that will proxy the request and add the CORS headers and auth. 
 Reach out to me if you want help here, I will add instructions and sample code for this at some point.
 
+You can also enable "Demo Mode" by changing the URL to `http://localhost:3000/?demo=true`
+
 Development - Committing your changes to this project
 ------------
 - Fork the project
