@@ -1,6 +1,6 @@
 # NagiosTV
 
-Compatible with Nagios Core 4
+Compatible with Nagios Core 4 and Nagios XI
 
 NagiosTV is a user interface (UI) for the Nagios monitoring system https://www.nagios.org
 
@@ -45,7 +45,7 @@ $ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.7
 ```console
 $ tar xvfz nagiostv-0.3.7.tar.gz
 ```
-- We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. In my case the Nagios web ui folder is at /usr/local/nagios/share/ but your Nagios install may have this at a different location such as /usr/nagios/share/
+- We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html`.
 ```console
 $ sudo mv nagiostv /usr/local/nagios/share/
 ```
