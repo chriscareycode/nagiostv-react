@@ -62,16 +62,27 @@ $ sudo touch client-settings.json
 $ sudo chmod 777 client-settings.json 
 ```
 
+Then inside the application, open Settings, and read more instructions there.
+
 Upgrading
 ------------
 Grab the latest release from here: https://github.com/chriscareycode/nagiostv-react/releases
 
 Then pretty much the same process as above. Download and overwrite the nagiostv folder with the new version.
+Remember your web ui destination folder `/usr/local/nagios/share/nagiostv/` may vary depending on your Nagios install.
 You can do it on the box with:
 ```console
 $ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.3.7/nagiostv-0.3.7.tar.gz
 $ tar xvfz nagiostv-0.3.7.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
+```
+
+AutoUpdate script
+-------------
+I'm now including a autoupdate script which can be used to upgrade or downgrade to any version easily. 
+To update this way, go into your nagiostv/ folder and run this command for more instructions:
+```
+$ sh autoupdate.sh
 ```
 
 Development Requirements
