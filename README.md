@@ -4,17 +4,17 @@ Compatible with Nagios Core 4 and Nagios XI
 
 NagiosTV is a user interface (UI) for the Nagios monitoring system https://www.nagios.org
 
-This user interface is designed to be viewed on a TV, phone, or desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but a way to just look at the “what’s down?” part.
+This user interface is designed to be viewed on a TV, phone, or desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but a way to just look at the “what's down?” part.
 
 Some of the features:
 
-- Native language support - English and Spanish so far (easy to add new languages)
+- Multi language support - English and Spanish so far
 - New items slide in and out of place with smooth animations which looks really cool when things are happening.
 - Sorting - Ability to order items newest or oldest first
 - Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
 - Last OK value goes from green, to yellow, to red - based on how long the item has been down
 
-NagiosTV also has some goofy addons:
+NagiosTV also has some fun addons:
 
 - Sound effects for state changes
 - Speak the state changes
