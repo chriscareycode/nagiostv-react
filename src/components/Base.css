@@ -235,7 +235,7 @@ input[type=text] {
   color: yellow;
 }
 .service-hide-problems label.unknown {
-  border: 0px solid gray;
+  border: 0px solid orange;
   background-color: rgba(250, 250, 250, 0.3);
 }
 .service-hide-problems label.critical {

@@ -57,7 +57,7 @@ export function serviceBorderClass(status) {
       classString = 'border-yellow'; // warning
       break;
     case 8:
-      classString = 'border-gray'; // unknown
+      classString = 'border-orange'; // unknown
       break;
     case 16:
       classString = 'border-red'; // critical
