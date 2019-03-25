@@ -21,6 +21,9 @@ import moment from 'moment';
 import Cookie from 'js-cookie';
 import $ from 'jquery';
 import _ from 'lodash';
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVolumeUp, faYinYang } from '@fortawesome/free-solid-svg-icons';
 
 class Base extends Component {
 
@@ -314,6 +317,8 @@ class Base extends Component {
     }
 
     const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
+    //const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
+
     fetch(url)
       .then((response) => {
         if (response.status === 200) {
@@ -772,6 +777,9 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div className="ApplicationName">{this.state.titleString}</div>
+          <span style={{ marginLeft: '10px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>
+          {this.state.playSoundEffects && <span style={{ marginLeft: '10px' }} className=""><FontAwesomeIcon icon={faVolumeUp} /></span>}
+          {this.state.speakItems && <span className=""><FontAwesomeIcon icon={faYinYang} spin /></span>}
         </div>
 
         {/* footer */}
