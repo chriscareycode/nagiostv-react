@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
 import moment from 'moment';
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
 
 import './QuietFor.css';
 //import { prettyDateTime } from '../helpers/moment.js';
@@ -59,15 +62,13 @@ class QuietFor extends Component {
     const stars = (date_now, date_future, first) => {
         const duration = moment.duration(date_future - date_now );
         const hours = Math.abs(Math.floor(duration.asHours()));
-        let ret = '';
-        if (hours > 24) { // max out at 24
-            ret += '❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️';
-        } else {
-            for(let i=0;i<hours;i++) {
-                ret += '❤️';
-            };
-        }
-        return ret;
+        
+        let icon = 'faCloud';
+        if (hours > 12) { icon = <FontAwesomeIcon className="color-green" icon={faSun} />; }
+        else if (hours > 6 && hours <= 12) { icon = <FontAwesomeIcon className="color-yellow" icon={faCloudSun} />; }
+        else if (hours > 1 && hours <= 6) { icon = <FontAwesomeIcon className="color-orange" icon={faCloudSunRain} />; }
+        else { icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />; }
+        return icon;
     };
 
     const { language } = this.props;
@@ -77,7 +78,7 @@ class QuietFor extends Component {
     //console.log('quietFor render');
     return (
       <div className="QuietFor">
-        {this.props.showEmoji && <div className="QuietForStars">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>}
+        <div className="QuietForIcon">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>
         <span className="QuietForClock">⏱</span>
         <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
         {/* - {' '}

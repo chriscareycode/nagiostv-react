@@ -25,7 +25,7 @@ class AlertItem extends Component {
   render() {
     
     const { language } = this.props;
-    const howMuchTimeIsQuietTime = 60;
+    const howMuchTimeIsQuietTime = 10;
     const { e, i } = this.props;
     const isSoft = e.state_type === 2;
 

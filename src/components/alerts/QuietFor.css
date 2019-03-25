@@ -8,12 +8,13 @@
 	font-size: 1.1em;
 	border: 1px solid #004c00;
 }
-.QuietForStars {
+.QuietForIcon {
 	float: right;
 	position: relative;
 	top: 2px;
-	opacity: 0.4;
-	font-size: 0.9em;
+	opacity: 1;
+	font-size: 1em;
+	margin-right: 5px;
 }
 .QuietForClock {
 	margin-right: 5px;
