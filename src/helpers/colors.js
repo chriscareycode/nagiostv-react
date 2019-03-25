@@ -116,7 +116,7 @@ export function alertBorderClass(object_type, state) {
       classString = 'border-red'; // SERVICE CRITICAL
       break;
     case 64:
-      classString = 'border-gray'; // SERVICE UNKNOWN
+      classString = 'border-orange'; // SERVICE UNKNOWN
       break;
     default:
       classString = '';
@@ -148,7 +148,7 @@ export function alertTextClass(object_type, state) {
       classString = 'color-red'; // SERVICE CRITICAL
       break;
     case 64:
-      classString = 'color-gray'; // SERVICE UNKNOWN
+      classString = 'color-orange'; // SERVICE UNKNOWN
       break;
     default:
       classString = '';
