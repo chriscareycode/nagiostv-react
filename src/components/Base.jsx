@@ -929,7 +929,7 @@ class Base extends Component {
             {howManyServiceCritical > 0 && <span className="summary-label summary-label-red uppercase">{howManyServiceCritical} {translate('critical', language)}</span>}
             {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceWarning} {translate('warning', language)}</span>}
             {howManyServicePending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServicePending} {translate('pending', language)}</span>}
-            {howManyServiceUnknown > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServiceUnknown} {translate('unknown', language)}</span>}
+            {howManyServiceUnknown > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceUnknown} {translate('unknown', language)}</span>}
             {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
             {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
             {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceFlapping} {translate('flapping', language)}</span>}
