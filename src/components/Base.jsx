@@ -777,9 +777,8 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div className="ApplicationName">{this.state.titleString}</div>
-          <span style={{ marginLeft: '10px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>
-          {this.state.playSoundEffects && <span style={{ marginLeft: '10px' }} className=""><FontAwesomeIcon icon={faVolumeUp} /></span>}
-          {this.state.speakItems && <span className=""><FontAwesomeIcon icon={faYinYang} spin /></span>}
+          {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+          {(this.state.playSoundEffects || this.state.speakItems) && <span style={{ position: 'relative', top: '-1px', marginLeft: '10px', color: '#aaa' }} className=""><FontAwesomeIcon icon={faVolumeUp} /></span>}
         </div>
 
         {/* footer */}
