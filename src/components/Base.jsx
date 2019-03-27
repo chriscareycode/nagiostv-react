@@ -23,7 +23,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 class Base extends Component {
 
@@ -96,6 +96,9 @@ class Base extends Component {
     hideHostScheduled: false,
     hideHostFlapping: false,
 
+    hideHistory: false,
+    hideHistoryChart: false,
+
     hostSortOrder: 'newest',
 
     language: 'English',
@@ -141,6 +144,9 @@ class Base extends Component {
     'hideHostAcked',
     'hideHostScheduled',
     'hideHostFlapping',
+
+    'hideHistory',
+    'hideHistoryChart',
 
     'hostSortOrder',
     
@@ -189,11 +195,9 @@ class Base extends Component {
     setTimeout(() => {
       this.fetchHostData();
       this.fetchServiceData();
-      this.fetchAlertData();
+      if (!this.state.hideHistory) { this.fetchAlertData(); }
       // TODO: turn on comments for demo mode at some point
-      if (this.state.isDemoMode === false) {
-        this.fetchCommentData();
-      }
+      if (!this.state.isDemoMode) { this.fetchCommentData(); }
     }, 1000);
 
     if (this.state.isDemoMode === false) {
@@ -205,9 +209,11 @@ class Base extends Component {
       }, this.state.fetchFrequency * 1000);
 
       // we fetch alerts on a slower frequency interval
-      setInterval(() => {
-        this.fetchAlertData();
-      }, this.state.fetchAlertFrequency * 1000);
+      if (!this.state.hideHistory) { 
+        setInterval(() => {
+          this.fetchAlertData();
+        }, this.state.fetchAlertFrequency * 1000);
+      }
 
       // this is not super clean but I'm going to delay this by 3s to give the setState() in the getCookie()
       // time to complete. It's async so we could have a race condition getting the version check setting
@@ -736,8 +742,7 @@ class Base extends Component {
     }
 
     const settingsLoaded = this.state.isDoneLoading;
-    //const showHistoryChart = window.innerWidth > 500; // don't show the history chart on small screens like iphone
-    const showHistoryChart = true;
+    
     const { language } = this.state;
 
     const howManyHostAndServicesDown = this.state.serviceProblemsArray.length + this.state.hostProblemsArray.length;
@@ -1035,30 +1040,43 @@ class Base extends Component {
         
         {/* history (alertlist) */}
 
-        <div className="history-summary color-orange margin-top-10">
-          <span className="service-summary-title">
-          <span className="uppercase-first display-inline-block">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
-            {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
-          </span>
-        </div>
-
-        {showHistoryChart && <HistoryChart
-          alertlist={this.state.alertlist}
-          alertDaysBack={this.state.alertDaysBack} 
-          alertlistLastUpdate={this.state.alertlistLastUpdate}
-        />}
-
-        {this.state.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
-
-        {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
-          No alerts
+        {this.state.hideHistory && <div>
+          <div className="history-summary color-orange margin-top-10">
+            <span className="service-summary-title">
+            <span className="uppercase-first display-inline-block">
+              {translate('history', language)}</span>: <strong>Off</strong>
+            </span>
+          </div>
         </div>}
 
-        <AlertItems
-          items={this.state.alertlist}
-          showEmoji={this.state.showEmoji}
-          settings={settingsObject}
-        />
+        {!this.state.hideHistory && <div>
+
+          <div className="history-summary color-orange margin-top-10">
+            <span className="service-summary-title">
+            <span className="uppercase-first display-inline-block">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
+              {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
+            </span>
+          </div>
+
+          {!this.state.hideHistoryChart && <HistoryChart
+            alertlist={this.state.alertlist}
+            alertDaysBack={this.state.alertDaysBack} 
+            alertlistLastUpdate={this.state.alertlistLastUpdate}
+          />}
+
+          {this.state.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
+
+          {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
+            No alerts
+          </div>}
+
+          <AlertItems
+            items={this.state.alertlist}
+            showEmoji={this.state.showEmoji}
+            settings={settingsObject}
+          />
+
+        </div>}
 
         <br />
         <br />
