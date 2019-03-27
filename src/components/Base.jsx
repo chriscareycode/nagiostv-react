@@ -1040,15 +1040,6 @@ class Base extends Component {
         
         {/* history (alertlist) */}
 
-        {this.state.hideHistory && <div>
-          <div className="history-summary color-orange margin-top-10">
-            <span className="service-summary-title">
-            <span className="uppercase-first display-inline-block">
-              {translate('history', language)}</span>: <strong>Off</strong>
-            </span>
-          </div>
-        </div>}
-
         {!this.state.hideHistory && <div>
 
           <div className="history-summary color-orange margin-top-10">
