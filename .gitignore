@@ -2,8 +2,7 @@
 
 /releases
 /public/autoupdate
-
-deploy-to-bigwood.sh
+/public/client-settings.json
 
 # dependencies
 /node_modules
@@ -24,3 +23,12 @@ deploy-to-bigwood.sh
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Node.js server
+/node/node_modules
+/node/settings.js
+/node/settings-nagios.js
+
+# some of my scripts
+deploy-to-bigwood.sh
+deploy-to-nagiostv-demo.sh
