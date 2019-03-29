@@ -190,8 +190,7 @@ class Base extends Component {
     // Load Remote Settings - then it calls the loadCookie routine
     this.getRemoteSettings();
     
-    //this.toggleSettings(); //open settings box by default (for local development)
-
+    // fetch the initial data immediately
     setTimeout(() => {
       this.fetchHostData();
       this.fetchServiceData();
@@ -237,6 +236,8 @@ class Base extends Component {
         }
       }, 3000);
     } // if isDemoMode === false
+
+    //this.toggleSettings(); //open settings box by default (for local development)
 
   }
 
@@ -587,8 +588,8 @@ class Base extends Component {
    *
    ***************************************************************************/
 
-  handleChange = (propName, dataType) => (event) => {
-    // console.log('handleChange Base.jsx');
+  handleCheckboxChange = (propName, dataType) => (event) => {
+    // console.log('handleCheckboxChange Base.jsx');
     // console.log(propName, dataType);
     // console.log('event.target', event.target);
     // console.log('event.target.checked', event.target.checked);
@@ -795,7 +796,7 @@ class Base extends Component {
             <Checkbox
               className="Checkbox warning"
               textClassName="uppercase-first display-inline-block"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideFilters'}
               defaultChecked={!this.state.hideFilters}
               howManyText={translate('show filters', language)}
@@ -863,7 +864,7 @@ class Base extends Component {
             </select>
 
             <Checkbox className="Checkbox down uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostDown'}
               defaultChecked={!this.state.hideHostDown}
               howMany={howManyHostDown}
@@ -871,7 +872,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox unreachable uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostUnreachable'}
               defaultChecked={!this.state.hideHostUnreachable}
               howMany={howManyHostUnreachable}
@@ -879,7 +880,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox pending uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostPending'}
               defaultChecked={!this.state.hideHostPending}
               howMany={howManyHostPending}
@@ -887,7 +888,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox acked uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostAcked'}
               defaultChecked={!this.state.hideHostAcked}
               howMany={howManyHostAcked}
@@ -895,7 +896,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox scheduled uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostScheduled'}
               defaultChecked={!this.state.hideHostScheduled}
               howMany={howManyHostScheduled}
@@ -903,7 +904,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox flapping uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideHostFlapping'}
               defaultChecked={!this.state.hideHostFlapping}
               howMany={howManyHostFlapping}
@@ -962,7 +963,7 @@ class Base extends Component {
             </select>
 
             <Checkbox className="Checkbox critical uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceCritical'}
               defaultChecked={!this.state.hideServiceCritical}
               howMany={howManyServiceCritical}
@@ -970,31 +971,31 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox warning uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceWarning'}
               defaultChecked={!this.state.hideServiceWarning}
               howMany={howManyServiceWarning}
               howManyText={translate('warning', language)}
             />
 
-            <Checkbox className="Checkbox pending uppercase"
-              handleChange={this.handleChange}
-              stateName={'hideServicePending'}
-              defaultChecked={!this.state.hideServicePending}
-              howMany={howManyServicePending}
-              howManyText={translate('pending', language)}
-            />
-
             <Checkbox className="Checkbox unknown uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceUnknown'}
               defaultChecked={!this.state.hideServiceUnknown}
               howMany={howManyServiceUnknown}
               howManyText={translate('unknown', language)}
             />
 
+            <Checkbox className="Checkbox pending uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServicePending'}
+              defaultChecked={!this.state.hideServicePending}
+              howMany={howManyServicePending}
+              howManyText={translate('pending', language)}
+            />
+
             <Checkbox className="Checkbox acked uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceAcked'}
               defaultChecked={!this.state.hideServiceAcked}
               howMany={howManyServiceAcked}
@@ -1002,7 +1003,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox scheduled uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceScheduled'}
               defaultChecked={!this.state.hideServiceScheduled}
               howMany={howManyServiceScheduled}
@@ -1010,7 +1011,7 @@ class Base extends Component {
             />
 
             <Checkbox className="Checkbox flapping uppercase"
-              handleChange={this.handleChange}
+              handleCheckboxChange={this.handleCheckboxChange}
               stateName={'hideServiceFlapping'}
               defaultChecked={!this.state.hideServiceFlapping}
               howMany={howManyServiceFlapping}

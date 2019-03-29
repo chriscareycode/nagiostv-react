@@ -15,7 +15,7 @@ class Checkbox extends Component {
   render() {
     
     return (
-      <label className={this.props.className} onClick={this.props.handleChange(this.props.stateName, 'checkbox')}>
+      <label className={this.props.className} onClick={this.props.handleCheckboxChange(this.props.stateName, 'checkbox')}>
         <span>
           <input type="checkbox" defaultChecked={this.props.defaultChecked}  />
           <strong>{this.props.howMany}</strong> <span className={this.props.textClassName}>{this.props.howManyText}</span>
