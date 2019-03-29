@@ -51,10 +51,12 @@ class QuietFor extends Component {
         if (hours > 1) { foo += hours + ' hours '; }
         if (minutes === 1) { foo += minutes + ' minute '; }
         if (minutes > 1) { foo += minutes + ' minutes '; }
-        if (seconds === 1) {
-            foo += seconds + ' second';
-        } else {
-            foo += seconds + ' seconds';
+        if (days === 0 && hours === 0 && minutes === 0) {
+            if (seconds === 1) {
+                foo += seconds + ' second';
+            } else {
+                foo += seconds + ' seconds';
+            }
         }
         return foo;
     };
