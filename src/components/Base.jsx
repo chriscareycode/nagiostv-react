@@ -331,8 +331,7 @@ class Base extends Component {
       }
     }
 
-    const url = 'https://chriscarey.com/software/nagiostv-react/version/json/?version=' + this.state.currentVersionString;
-    //const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
+    const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
 
     fetch(url)
       .then((response) => {
