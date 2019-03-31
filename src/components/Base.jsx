@@ -214,12 +214,12 @@ class Base extends Component {
         }, this.state.fetchAlertFrequency * 1000);
       }
 
-      // this is not super clean but I'm going to delay this by 3s to give the setState() in the getCookie()
+      // this is not super clean but I'm going to delay this by 30s to give the setState() in the getCookie()
       // time to complete. It's async so we could have a race condition getting the version check setting
       // to arrive in this.state.versionCheckDays
-      // if someone turns off the version check, it should never check
       setTimeout(() => {
         const versionCheckDays = this.state.versionCheckDays;
+        // if someone turns off the version check, it should never check
         if (versionCheckDays && versionCheckDays > 0) {
           // version check - run once on app boot
           this.versionCheck();
@@ -228,13 +228,16 @@ class Base extends Component {
           // safety check that interval > 1hr
           if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
             setInterval(() => {
-              this.versionCheck();
+              // inside the interval we check again if the user disabled the check
+              if (this.state.versionCheckDays > 0) {
+                this.versionCheck();
+              }
             }, intervalTime);
           } else {
             console.log('Invalid versionCheckDays. Not starting check interval.');
           }
         }
-      }, 3000);
+      }, 30000);
     } // if isDemoMode === false
 
     //this.toggleSettings(); //open settings box by default (for local development)
