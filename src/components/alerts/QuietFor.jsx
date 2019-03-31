@@ -3,7 +3,7 @@ import { translate } from '../../helpers/language';
 import moment from 'moment';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
 
 import './QuietFor.css';
 //import { prettyDateTime } from '../helpers/moment.js';
@@ -81,7 +81,7 @@ class QuietFor extends Component {
     return (
       <div className="QuietFor">
         <div className="QuietForIcon">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>
-        <span className="QuietForClock">⏱</span>
+        <span className="QuietForClock"><FontAwesomeIcon className="color-white" icon={faClock} /></span>
         <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
         {/* - {' '}
          - {prettyDateTime(this.props.nowtime)} {prettyDateTime(this.props.prevtime)}

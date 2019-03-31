@@ -71,6 +71,10 @@
 
 /* color */
 
+.color-white {
+  color: white;
+}
+
 .color-green {
   color: lime;
 }
