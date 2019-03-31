@@ -97,6 +97,7 @@ class Base extends Component {
     hideHostFlapping: false,
 
     hideHistory: false,
+    hideHistoryTitle: false,
     hideHistoryChart: false,
 
     hostSortOrder: 'newest',
@@ -146,6 +147,7 @@ class Base extends Component {
     'hideHostFlapping',
 
     'hideHistory',
+    'hideHistoryTitle',
     'hideHistoryChart',
 
     'hostSortOrder',
@@ -246,6 +248,9 @@ class Base extends Component {
 
   /* ************************************************************************************ */
   /* settings related functions such as fetching settings from server, and loading cookie
+  /* ************************************************************************************ */
+
+  /* ************************************************************************************
   the approach I'm going to take with settings is to first load the settings from the server.
   either the settings load, or they fail. in either case I then check for cookie and apply 
   those over top. so cookie settings will override server settings. There will be a delete
@@ -1046,12 +1051,12 @@ class Base extends Component {
 
         {!this.state.hideHistory && <div>
 
-          <div className="history-summary color-orange margin-top-10">
+          {!this.state.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
             <span className="service-summary-title">
             <span className="uppercase-first display-inline-block">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
               {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
             </span>
-          </div>
+          </div>}
 
           {!this.state.hideHistoryChart && <HistoryChart
             alertlist={this.state.alertlist}

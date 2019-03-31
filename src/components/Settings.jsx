@@ -265,6 +265,15 @@ class Settings extends Component {
                   </td>
                 </tr>
                 <tr>
+                  <th>History Title:</th>
+                  <td>
+                    <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
+                        <option value={true}>Hide</option>
+                        <option value={false}>Show</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <th>History Chart:</th>
                   <td>
                     <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
