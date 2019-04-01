@@ -40,7 +40,6 @@ export const phrases = {
 
 	'history': 'l\'histoire',
 	'alerts in the past': 'alertes dans le passé',
-	'days': 'journées',
 	'trimming at': 'couper à',
 
 	'quiet for': 'calme pendant',
@@ -57,6 +56,15 @@ export const phrases = {
 	'oldest first': 'le plus ancien en premier',
 
 	"show more": "montre plus",
-	"show less": "montre moins"
+	"show less": "montre moins",
+
+	"day": "journée",
+	"days": "journées",
+	"hour": "heure",
+	"hours": "heures",
+	"minute": "minute",
+	"minutes": "minutes",
+	"second": "second",
+	"seconds": "seconds"
 
 };

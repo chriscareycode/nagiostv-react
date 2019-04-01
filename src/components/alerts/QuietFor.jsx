@@ -20,6 +20,9 @@ class QuietFor extends Component {
   }
 
   render() {
+
+    const { language } = this.props;
+
     const quietForText = (date_now, date_future) => {
         //var diff = date_now - date_future;
         //var total_minutes = (diff/(60*1000)).toFixed(0);
@@ -45,17 +48,17 @@ class QuietFor extends Component {
         const seconds = parseInt((delta % 60).toFixed(0), 10);  // in theory the modulus is not required
         
         let foo = '';
-        if (days === 1) { foo += days + ' day '; }
-        if (days > 1) { foo += days + ' days '; }
-        if (hours === 1) { foo += hours + ' hour '; }
-        if (hours > 1) { foo += hours + ' hours '; }
-        if (minutes === 1) { foo += minutes + ' minute '; }
-        if (minutes > 1) { foo += minutes + ' minutes '; }
+        if (days === 1) { foo += days + ' ' + translate('day', language) + ' '; }
+        if (days > 1) { foo += days + ' ' + translate('days', language) + ' '; }
+        if (hours === 1) { foo += hours + ' ' + translate('hour', language) + ' '; }
+        if (hours > 1) { foo += hours + ' ' + translate('hours', language) + ' '; }
+        if (minutes === 1) { foo += minutes + ' ' + translate('minute', language) + ' '; }
+        if (minutes > 1) { foo += minutes + ' ' + translate('minutes', language) + ' '; }
         if (days === 0 && hours === 0 && minutes === 0) {
             if (seconds === 1) {
-                foo += seconds + ' second';
+                foo += seconds + ' ' + translate('second', language) + '';
             } else {
-                foo += seconds + ' seconds';
+                foo += seconds + ' ' + translate('seconds', language) + '';
             }
         }
         return foo;
@@ -72,8 +75,6 @@ class QuietFor extends Component {
         else { icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />; }
         return icon;
     };
-
-    const { language } = this.props;
     
     // TODO: it would be nice to only render this component when the props change. no need
     // to recalculate every one since they do not change (except the first)
