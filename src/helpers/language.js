@@ -7,10 +7,12 @@
  */
 
 import { phrases as spanish } from './languages/spanish';
+import { phrases as french } from './languages/french';
 
 export const languages = [
 	{ name: "English", code: "en" },
-	{ name: "Spanish", code: "es" }
+	{ name: "Spanish", code: "es" },
+	{ name: "French", code: "fr" }
 ];
 
 export function translate(phrase, language) {
@@ -18,6 +20,9 @@ export function translate(phrase, language) {
 	switch(language) {
 		case 'Spanish':
 			word = spanish[phrase];
+			break;
+		case 'French':
+			word = french[phrase];
 			break;
 		default:
 			word = phrase;
