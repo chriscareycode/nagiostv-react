@@ -8,7 +8,7 @@ This user interface is designed to be viewed on a TV, phone, or desktop to quick
 
 Some of the features:
 
-- Multi language support - English and Spanish so far
+- Multi language support - English, Spanish and French so far
 - New items slide in and out of place with smooth animations which looks really cool when things are happening.
 - Sorting - Ability to order items newest or oldest first
 - Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
