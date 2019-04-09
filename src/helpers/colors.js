@@ -80,7 +80,7 @@ export function serviceTextClass(status) {
       classString = 'color-yellow'; // warning
       break;
     case 8:
-      classString = 'color-gray'; // unknown
+      classString = 'color-orange'; // unknown
       break;
     case 16:
       classString = 'color-red'; // critical
