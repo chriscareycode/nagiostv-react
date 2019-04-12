@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './HostItem.css';
-import { formatDateTime, formatDateTimeAgoColor } from '../../helpers/moment.js';
+import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { translate } from '../../helpers/language';
@@ -99,7 +99,7 @@ class HostItem extends Component {
           </div>
 
           {this.props.comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
-            Comment: <span className="color-comment">({this.props.comment_author}): {this.props.comment}</span>
+            Comment: <span className="color-comment">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
           </span>}
         </div>
       </div>
