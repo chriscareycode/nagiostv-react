@@ -101,9 +101,9 @@ class ServiceItem extends Component {
         {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
       </div>
 
-      {this.props.comment && <span style={{ textAlign: 'left', fontSize: '1em' }}>
-        Comment: <span className="color-comment">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
-      </span>}
+      {this.props.comment && <div className="comment">
+        Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
+      </div>}
 
       </div>
     </div>
