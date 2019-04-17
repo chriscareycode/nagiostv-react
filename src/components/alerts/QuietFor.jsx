@@ -64,26 +64,36 @@ class QuietFor extends Component {
         return foo;
     };
 
-    const stars = (date_now, date_future, first) => {
-        const duration = moment.duration(date_future - date_now );
-        const hours = Math.abs(Math.floor(duration.asHours()));
-        
-        let icon = 'faCloud';
-        if (hours > 12) { icon = <FontAwesomeIcon className="color-green" icon={faSun} />; }
-        else if (hours > 6 && hours <= 12) { icon = <FontAwesomeIcon className="color-yellow" icon={faCloudSun} />; }
-        else if (hours > 1 && hours <= 6) { icon = <FontAwesomeIcon className="color-orange" icon={faCloudSunRain} />; }
-        else { icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />; }
-        return icon;
-    };
+    const date_future = this.props.prevtime;
+    const date_now = this.props.nowtime;
+    const duration = moment.duration(date_future - date_now );
+    const hours = Math.abs(Math.floor(duration.asHours()));
     
-    // TODO: it would be nice to only render this component when the props change. no need
-    // to recalculate every one since they do not change (except the first)
+    let icon = 'faCloud';
+    let color = 'color-white';
+    if (hours > 12) {
+        icon = <FontAwesomeIcon className="color-green" icon={faSun} />;
+        color = 'color-green';
+    } else if (hours > 6 && hours <= 12) {
+        icon = <FontAwesomeIcon className="color-yellow" icon={faCloudSun} />;
+        color = 'color-yellow';
+    } else if (hours > 1 && hours <= 6) {
+        icon = <FontAwesomeIcon className="color-orange" icon={faCloudSunRain} />;
+        color = 'color-orange';
+    }
+    else {
+        icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />;
+        color = 'color-red';
+    }
+    
     //console.log('quietFor render');
     return (
       <div className="QuietFor">
-        <div className="QuietForIcon">{stars(this.props.prevtime, this.props.nowtime, this.props.first)}</div>
+        <div className="QuietForIcon">{icon}</div>
         <span className="QuietForClock"><FontAwesomeIcon className="color-white" icon={faClock} /></span>
-        <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
+        <span className={`${color}`}>
+            <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
+        </span>
         {/* - {' '}
          - {prettyDateTime(this.props.nowtime)} {prettyDateTime(this.props.prevtime)}
          - Diff {this.props.nowtime - this.props.prevtime}
