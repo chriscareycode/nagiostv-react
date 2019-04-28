@@ -33,8 +33,8 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 30,
-    currentVersionString: '0.3.9',
+    currentVersion: 31,
+    currentVersionString: '0.4.0',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
