@@ -316,21 +316,38 @@ class Base extends Component {
     this.setState({ isDoneLoading: true });
   }
 
+  lastVersionCheckTime = 0;
+
   versionCheck() {
+    
+    const nowTime = new Date().getTime();
+    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
+    
+    // Last version check time with cookie
     // if the last version check was recent then do not check again
     // this prevents version checks if you refresh the UI over and over
     // as is common on TV rotation
-    const lastVersionCheckTime = Cookie.get('lastVersionCheckTime');
-    const nowTime = new Date().getTime();
+    const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
 
-    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
-    if (lastVersionCheckTime !== 0) {
-      const diff = nowTime - lastVersionCheckTime;
+    if (lastVersionCheckTimeCookie !== 0) {
+      const diff = nowTime - lastVersionCheckTimeCookie;
       if (diff < twentyThreeHoursInSeconds) {
-        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago');
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago (Cookie check)');
         return;
       }
     }
+
+    // last version check time with local variable
+    // If for some reason the cookie check doesn't work
+    // This is attempting to fix a rapid fire version check that a small number of clients experience
+    if (this.lastVersionCheckTime !== 0) {
+      const diff = nowTime - this.lastVersionCheckTime;
+      if (diff < twentyThreeHoursInSeconds) {
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago (local var check)');
+        return;
+      }
+    }
+    this.lastVersionCheckTime = nowTime;
 
     const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
 
