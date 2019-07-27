@@ -347,7 +347,14 @@ class Base extends Component {
         return;
       }
     }
+
+    console.log('Running version check...');
+
+    // Set the last version check time in local variable
+    // I'm setting this one here not in the callback to prevent the rapid fire
     this.lastVersionCheckTime = nowTime;
+    // Set the last version check in the cookie (for page refresh)
+    Cookie.set('lastVersionCheckTime', nowTime);
 
     const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
 
@@ -364,9 +371,6 @@ class Base extends Component {
           latestVersion: myJson.version,
           latestVersionString: myJson.version_string,
           lastVersionCheckTime: nowTime
-        }, () => {
-          // after state is set, set the cookie
-          Cookie.set('lastVersionCheckTime', nowTime);
         });
       })
       .catch(err => {
