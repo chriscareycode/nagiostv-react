@@ -323,7 +323,7 @@ class Base extends Component {
     const nowTime = new Date().getTime();
     const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
     
-    // Last version check time with cookie
+    // PREVENT extra last version check time with cookie
     // if the last version check was recent then do not check again
     // this prevents version checks if you refresh the UI over and over
     // as is common on TV rotation
@@ -337,9 +337,8 @@ class Base extends Component {
       }
     }
 
-    // last version check time with local variable
+    // PREVENT extra last version check time with local variable
     // If for some reason the cookie check doesn't work
-    // This is attempting to fix a rapid fire version check that a small number of clients experience
     if (this.lastVersionCheckTime !== 0) {
       const diff = nowTime - this.lastVersionCheckTime;
       if (diff < twentyThreeHoursInSeconds) {
@@ -358,24 +357,23 @@ class Base extends Component {
 
     const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.state.currentVersionString;
 
-    fetch(url)
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        }
-      })
-      .then((myJson) => {
-        console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json"
+    })
+    .done(myJson => {
+      console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
 
-        this.setState({
-          latestVersion: myJson.version,
-          latestVersionString: myJson.version_string,
-          lastVersionCheckTime: nowTime
-        });
-      })
-      .catch(err => {
-        console.log('There was some error with the version check', err);
+      this.setState({
+        latestVersion: myJson.version,
+        latestVersionString: myJson.version_string,
+        lastVersionCheckTime: nowTime
       });
+    })
+    .fail(err => {
+      console.log('There was some error with the version check', err);
+    });
   }
 
   /****************************************************************************
