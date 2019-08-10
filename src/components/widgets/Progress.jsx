@@ -10,10 +10,14 @@ class Progress extends Component {
       this.setState({ started: false });
       //return true;
     }
-    if (nextProps.seconds > this.props.seconds) {
+
+    // If there is an increase in the seconds set the started flag to true
+    if (nextProps.seconds > this.props.seconds && this.state.started === false) {
       this.setState({ started: true });
     }
-    // we re render when the seconds value jumps up, never when it goes down
+
+    // we re-render when the seconds value jumps up, never when it goes down
+    // the check for nextState.started !== this.state.started is for first run
     if (nextProps.seconds > this.props.seconds || nextState.started !== this.state.started) {
       return true;
     } else {
@@ -57,7 +61,7 @@ class Progress extends Component {
 
     //const progressStyle = { width: Math.floor(this.state.progressValue / this.state.progressMax * 100) + '%' };
     const progressStyle = {
-      width: this.state.started ? '0%' : '100%',
+      width: this.state.started ? '100%' : '0%',
       transition: this.state.started ? `width ${this.props.seconds}s linear` : 'width 0s linear'
     };
 

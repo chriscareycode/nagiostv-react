@@ -73,6 +73,8 @@ class ServiceItem extends Component {
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
     const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
+    const nowTime = new Date().getTime();
+
     return (
       
     <div style={{ ...defaultStyles }} className={`ServiceItem`}>
@@ -100,7 +102,9 @@ class ServiceItem extends Component {
 
       <div className="lastCheck">
         {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
-        {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
+        {translate('Next check in', language)}:
+        {(e.next_check > nowTime) && <span className="color-peach"> {formatDateTime(e.next_check)}</span>}
+        {(e.next_check <= nowTime) && <span className="checking-now"> Checking now...</span>}
       </div>
 
       {this.props.comment && <div className="comment">
