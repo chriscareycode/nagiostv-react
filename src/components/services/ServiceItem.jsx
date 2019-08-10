@@ -7,6 +7,7 @@ import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
+import Progress from '../widgets/Progress';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -71,7 +72,7 @@ class ServiceItem extends Component {
     const e = this.props.serviceItem; // clean this up
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
-
+    const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     return (
       
     <div style={{ ...defaultStyles }} className={`ServiceItem`}>
@@ -86,6 +87,7 @@ class ServiceItem extends Component {
         {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
         {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
         <div className="lastOk"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
+      
       </div>
 
       <div style={{ textAlign: 'left' }}>
@@ -105,7 +107,10 @@ class ServiceItem extends Component {
         Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
       </div>}
 
+        <Progress seconds={secondsToNextCheck}></Progress>
+      
       </div>
+
     </div>
     );
   }
