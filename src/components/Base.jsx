@@ -360,7 +360,8 @@ class Base extends Component {
     $.ajax({
       method: "GET",
       url,
-      dataType: "json"
+      dataType: "json",
+      timeout: 5 * 1000
     })
     .done(myJson => {
       console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${this.state.currentVersionString} (r${this.state.currentVersion})`);
