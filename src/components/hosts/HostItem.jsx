@@ -7,6 +7,7 @@ import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
+import Progress from '../widgets/Progress';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -70,6 +71,8 @@ class HostItem extends Component {
     const e = this.props.hostItem; // clean this up
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
+    const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
+    const nowTime = new Date().getTime();
 
     return (
       <div style={{ ...defaultStyles }} className={`HostItem`}>
@@ -95,12 +98,16 @@ class HostItem extends Component {
 
           <div className="lastCheck">
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
-            {translate('Next check in', language)}: <span className="color-peach">{formatDateTime(e.next_check)}</span>
+            {translate('Next check in', language)}:
+            {(e.next_check > nowTime) && <span className="color-peach"> {formatDateTime(e.next_check)}</span>}
+            {(e.next_check <= nowTime) && <span className="checking-now"> Checking now...</span>}
           </div>
 
           {this.props.comment && <div className="comment">
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} {translate('ago', language)} - {this.props.comment}</span>
           </div>}
+
+          <Progress seconds={secondsToNextCheck}></Progress>
         </div>
       </div>
     );
