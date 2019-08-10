@@ -111,7 +111,7 @@ class ServiceItem extends Component {
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
           </div>}
 
-          <Progress seconds={secondsToNextCheck}></Progress>
+          <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>
         
         </div>
 

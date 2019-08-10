@@ -107,7 +107,7 @@ class HostItem extends Component {
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} {translate('ago', language)} - {this.props.comment}</span>
           </div>}
 
-          <Progress seconds={secondsToNextCheck}></Progress>
+          <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>
         </div>
       </div>
     );

@@ -6,7 +6,7 @@ class Progress extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);
 
-    if (nextProps.seconds <= 0 && this.state.started === true) {
+    if (nextProps.seconds < 0 && this.state.started === true) {
       this.setState({ started: false });
       //return true;
     }
@@ -67,7 +67,7 @@ class Progress extends Component {
 
     return (
       <div className="Progress progress">
-        <div className="progress-bar" style={progressStyle}></div>
+        <div className={`progress-bar ${this.props.color}`} style={progressStyle}></div>
       </div>
     );
   }

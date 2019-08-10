@@ -20,8 +20,18 @@
 	position: absolute;
 	bottom: 0px;
 	left: 0;
-	background-color: lime;
+	background-color: gray;
 	width: 100%;
 	/*transition: width 15s linear;*/
 	opacity: 0.5;
+}
+
+.Progress .progress-bar.color-yellow {
+	background-color: yellow;
+}
+.Progress .progress-bar.color-red {
+	background-color: pink;
+}
+.Progress .progress-bar.color-green {
+	background-color: lime;
 }
