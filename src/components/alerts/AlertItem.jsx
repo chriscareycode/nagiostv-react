@@ -42,16 +42,17 @@ class AlertItem extends Component {
         }
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
-          <div style={{ float: 'right' }}>
+          <div className={'AlertItemRight'} style={{ float: 'right' }}>
             {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faYinYang} /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
             {1 === 2 && <span>({e.state})</span>}
             {1 === 2 && <span>({e.object_type})</span>}
             <span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
-            {' - '}{prettyDateTime(e.timestamp)}
+            
           </div>
           <span style={{ textAlign: 'left' }}>
+            {prettyDateTime(e.timestamp)}<br />
             {e.object_type === 1 && <span>{e.name}</span>}
             {e.object_type === 2 && <span>{e.host_name}</span>}
             {' - '}

@@ -16,6 +16,17 @@
   color: white;
   justify-content: center;
 }
+
+.AlertItemRight {
+  border: 0px solid #ccc;
+  background-color: #444;
+  border-bottom-left-radius: 4px;
+  padding-right: 5px;
+  padding-left: 5px;
+  position: relative;
+  top: -3px;
+  left: 4px;
+}
 .ShowMoreArea {
   margin-top: 20px;
   margin-bottom: 20px;
