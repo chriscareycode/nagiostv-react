@@ -233,7 +233,7 @@ class Base extends Component {
               // inside the interval we check again if the user disabled the check
               if (this.state.versionCheckDays > 0) {
                 // add a 10s debounce on the version check to try and prevent the runaway
-                _.debounce(this.versionCheck(), 10000);
+                _.debounce(this.versionCheck, 10000);
               }
             }, intervalTime);
           } else {
