@@ -18,11 +18,11 @@ class HistoryChart extends Component {
     // check for updates each time the alert list data refreshes
     if (nextProps.alertlistLastUpdate !== this.props.alertlistLastUpdate) {
 
-      // check if we have anything new in the alert data, otherwise skip the whole process
-      // right now were checking for length, but it might make more sense to look at the timestamp of the first alert
-      if (nextProps.alertlist.length !== this.props.alertlist.length) {
-
-        // ok we passed those conditions, fire off a update to the chart
+      // update the first time alerts are loaded we will see them in the new props when old props have none
+      if (nextProps.alertlist.length > this.props.alertlist.length) {
+        this.updateSeriesFromPropsDelay();
+      // else if the timestamp of the newest alert is greater than the existing one then update
+      } else if (nextProps.alertlist[0].timestamp > this.props.alertlist[0].timestamp) {
         this.updateSeriesFromPropsDelay();
       }
     }
