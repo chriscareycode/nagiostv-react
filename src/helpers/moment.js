@@ -13,9 +13,9 @@ export function formatDateTime(date) {
   const tempTime = moment.duration(diff);
 
   let ret = '';
-  if (tempTime.days()) { ret += tempTime.days() + 'd '}
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '}
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '}
+  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
 
   return ret + tempTime.seconds() + 's';
 }
@@ -26,9 +26,28 @@ export function formatDateTimeAgo(date) {
   const tempTime = moment.duration(diff);
 
   let ret = '';
-  if (tempTime.days()) { ret += tempTime.days() + 'd '}
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '}
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '}
+  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+
+  return ret + tempTime.seconds() + 's';
+}
+
+export function formatDateTimeAgoShort(date) {
+	var m = moment(date);
+  const diff = m.diff(moment()) * -1;
+  const tempTime = moment.duration(diff);
+
+  let ret = '';
+  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+  if (tempTime.hours()) {
+    ret += tempTime.hours() + 'h ';
+    return ret;
+  }
+  if (tempTime.minutes()) {
+    ret += tempTime.minutes() + 'm ';
+    return ret;
+  }
 
   return ret + tempTime.seconds() + 's';
 }

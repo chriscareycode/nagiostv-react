@@ -6,7 +6,7 @@
 .AlertItem {
   background-color: #222;
   border: 0px solid #9c9c9c;
-  font-size: 0.9em;
+  font-size: 1em;
   padding: 4px;
   border-radius: 5px;
   margin-bottom: 5px;
@@ -18,11 +18,11 @@
 }
 
 .AlertItemRight {
+  float: right;
   border: 0px solid #ccc;
   background-color: #444;
-  border-bottom-left-radius: 4px;
-  padding-right: 5px;
-  padding-left: 5px;
+  border-radius: 5px;
+  padding: 0px 5px;
   position: relative;
   top: -3px;
   left: 4px;

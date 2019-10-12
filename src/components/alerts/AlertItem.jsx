@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-import { prettyDateTime } from '../../helpers/moment.js';
+import { prettyDateTime, formatDateTimeAgoShort } from '../../helpers/moment.js';
 import { ifQuietFor } from '../../helpers/date-math.js';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
@@ -42,7 +42,7 @@ class AlertItem extends Component {
         }
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
-          <div className={'AlertItemRight'} style={{ float: 'right' }}>
+          <div className={'AlertItemRight'}>
             {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faYinYang} /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
@@ -52,14 +52,16 @@ class AlertItem extends Component {
             
           </div>
           <span style={{ textAlign: 'left' }}>
-            {prettyDateTime(e.timestamp)}<br />
-            {e.object_type === 1 && <span>{e.name}</span>}
-            {e.object_type === 2 && <span>{e.host_name}</span>}
-            {' - '}
-            <span className={alertTextClass(e.object_type, e.state)}>
-              {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}
-              {e.plugin_output}
-            </span>
+            {prettyDateTime(e.timestamp)} ({formatDateTimeAgoShort(e.timestamp)} ago)<br />
+            <div style={{ marginTop: '2px' }}>
+              {e.object_type === 1 && <span>{e.name}</span>}
+              {e.object_type === 2 && <span>{e.host_name}</span>}
+              {' - '}
+              <span className={alertTextClass(e.object_type, e.state)}>
+                {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}
+                {e.plugin_output}
+              </span>
+            </div>
           </span>
           
         </div>
