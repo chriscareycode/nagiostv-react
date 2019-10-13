@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-import { prettyDateTime, formatDateTimeAgoShort } from '../../helpers/moment.js';
+import { prettyDateTime } from '../../helpers/moment.js';
 import { ifQuietFor } from '../../helpers/date-math.js';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
@@ -52,7 +52,7 @@ class AlertItem extends Component {
             
           </div>
           <span style={{ textAlign: 'left' }}>
-            {prettyDateTime(e.timestamp)} ({formatDateTimeAgoShort(e.timestamp)} ago)<br />
+            {prettyDateTime(e.timestamp)}<br />
             <div style={{ marginTop: '2px' }}>
               {e.object_type === 1 && <span>{e.name}</span>}
               {e.object_type === 2 && <span>{e.host_name}</span>}
