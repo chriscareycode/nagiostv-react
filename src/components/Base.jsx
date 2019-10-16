@@ -33,8 +33,8 @@ class Base extends Component {
   state = {
     showSettings: false,
 
-    currentVersion: 35,
-    currentVersionString: '0.4.4',
+    currentVersion: 36,
+    currentVersionString: '0.4.5',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
@@ -226,19 +226,21 @@ class Base extends Component {
           // version check - run once on app boot
           this.versionCheck();
           // version check - run every n days
-          const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
+          const intervalTime = versionCheckDays * 24 * 60 * 60;
           // safety check that interval > 1hr
-          if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
+          if (intervalTime !== 0 && intervalTime > (60 * 60)) {
             setInterval(() => {
               // inside the interval we check again if the user disabled the check
               if (this.state.versionCheckDays > 0) {
                 // add a 10s debounce on the version check to try and prevent the runaway
-                _.debounce(this.versionCheck, 10000);
+                this.versionCheck();
               }
             }, intervalTime);
           } else {
-            console.log('Invalid versionCheckDays. Not starting check interval.');
+            console.log('intervalTime not yet an hour, not re-running check.', intervalTime);
           }
+        } else {
+          console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
         }
       }, 30000);
     } // if isDemoMode === false
