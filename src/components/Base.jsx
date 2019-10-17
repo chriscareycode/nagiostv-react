@@ -226,9 +226,10 @@ class Base extends Component {
           // version check - run once on app boot
           this.versionCheck();
           // version check - run every n days
-          const intervalTime = versionCheckDays * 24 * 60 * 60;
+          const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
+          console.log('Checking on intervalTime', intervalTime);
           // safety check that interval > 1hr
-          if (intervalTime !== 0 && intervalTime > (60 * 60)) {
+          if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
             setInterval(() => {
               // inside the interval we check again if the user disabled the check
               if (this.state.versionCheckDays > 0) {
