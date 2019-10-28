@@ -59,7 +59,9 @@ class Base extends Component {
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
     alertlist: [],
+    alertlistHours: [],
     alertlistCount: 0,
+    alertlistHoursCount: 0,
 
     commentlistError: false,
     commentlistErrorMessage: '',
@@ -77,6 +79,7 @@ class Base extends Component {
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
     alertDaysBack: 30,
+    alertHoursBack: 24,
     alertMaxItems: 1000,
 
     hideServicePending: false,
@@ -179,6 +182,7 @@ class Base extends Component {
     this.toggleSettings = this.toggleSettings.bind(this);
 
     // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
+    // demo mode uses fake data and rotates through a couple of alerts as an example
     const urlParams = new URLSearchParams(window.location.search);
     const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
     this.state.isDemoMode = isDemoMode;
@@ -227,13 +231,12 @@ class Base extends Component {
           this.versionCheck();
           // version check - run every n days
           const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
-          console.log('Checking on intervalTime', intervalTime);
+          // console.log('Checking on intervalTime', intervalTime);
           // safety check that interval > 1hr
           if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
             setInterval(() => {
               // inside the interval we check again if the user disabled the check
               if (this.state.versionCheckDays > 0) {
-                // add a 10s debounce on the version check to try and prevent the runaway
                 this.versionCheck();
               }
             }, intervalTime);
@@ -545,12 +548,18 @@ class Base extends Component {
         alertlist.length = this.state.alertMaxItems;
       }
 
+      // get the alertlist for the past n hours
+      const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < this.state.alertHoursBack * 3600 * 1000);
+      const alertlistHoursCount = alertlistHours.length;
+
       this.setState({
         alertlistError: false,
         alertlistErrorMessage: '',
         alertlistLastUpdate: new Date().getTime(),
         alertlist, // it's already an array
-        alertlistCount
+        alertlistHours,
+        alertlistCount,
+        alertlistHoursCount
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
@@ -855,7 +864,7 @@ class Base extends Component {
 
         {!settingsLoaded && <div>Settings are not loaded yet</div>}
 
-        {/* Demo */}
+        {/* Demo mode logic is inside this component */}
 
         {this.state.isDemoMode && <Demo
           hostlist={this.state.hostlist}
@@ -945,7 +954,8 @@ class Base extends Component {
           </div>}
 
         </div>}
-        
+
+        {/** If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
         {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
         <HostItems
@@ -1053,6 +1063,7 @@ class Base extends Component {
 
         </div>}
         
+        {/** If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
         {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
@@ -1076,15 +1087,31 @@ class Base extends Component {
 
           {!this.state.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
             <span className="service-summary-title">
-            <span className="uppercase-first display-inline-block">{translate('history', language)}</span>: <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
+            <strong>{this.state.alertlistHoursCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertHoursBack}</strong> {translate('hours', language)}
+              {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
+            </span>
+          </div>}
+
+          {!this.state.hideHistoryChart && <HistoryChart
+            alertlist={this.state.alertlistHours}
+            alertlistLastUpdate={this.state.alertlistLastUpdate}
+            groupBy="hour"
+            alertHoursBack={24} 
+            alertDaysBack={1}
+          />}
+
+          {!this.state.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
+            <span className="service-summary-title">
+            <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
               {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
             </span>
           </div>}
 
           {!this.state.hideHistoryChart && <HistoryChart
             alertlist={this.state.alertlist}
-            alertDaysBack={this.state.alertDaysBack} 
             alertlistLastUpdate={this.state.alertlistLastUpdate}
+            groupBy="day"
+            alertDaysBack={this.state.alertDaysBack} 
           />}
 
           {this.state.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}

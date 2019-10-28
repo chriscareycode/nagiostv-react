@@ -4,7 +4,6 @@ import ReactHighcharts from 'react-highcharts';
 import _ from 'lodash';
 import moment from 'moment';
 
-
 ReactHighcharts.Highcharts.setOptions({
   time: {
     timezoneOffset: new Date().getTimezoneOffset()
@@ -12,6 +11,30 @@ ReactHighcharts.Highcharts.setOptions({
 });
 
 class HistoryChart extends Component {
+
+  state = {
+    intervalHandle: null
+  };
+
+  componentDidMount() {
+    this.updateSeriesFromPropsDelay();
+
+    const intervalHandle = setInterval(() => {
+      this.updateSeriesFromPropsDelay();
+    }, 3600 * 1000);
+
+    this.setState({
+      intervalHandle
+    });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalHandle);
+  }
+
+  // UNSAFE_componentWillReceiveProps() {
+  //  console.log('componentWillReceiveProps');
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
 
@@ -37,15 +60,16 @@ class HistoryChart extends Component {
     }, 1000);
   }
 
-  // multiple stacked charts for WARNING and CRITICAL
+  // multiple stacked charts for OK, WARNING and CRITICAL
   updateSeriesFromProps() {
+    
     // chart stuff
-    let chart = this.refs.chart.getChart();
-    //let results = this.props.alertlist;
-    const groupBy = 'day';
+    let chart = this.refs[`chart${this.props.groupBy}`].getChart();
 
-    //const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
-    //const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+    const groupBy = this.props.groupBy;
+    
+    const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
+    const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
     const alertWarnings = this.props.alertlist.filter(alert => alert.state === 16);
     const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
@@ -56,52 +80,85 @@ class HistoryChart extends Component {
     const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
     //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
-    // disabling green on the chart for now
-    // let okData = []
-    // Object.keys(groupedOks).forEach(group => {
-    //   okData.push({ x: parseInt(group), y: groupedOks[group].length });
-    // });
-    // chart.series[0].setData(okData.reverse());
+    var d = new Date();
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
 
-    let warningData = []
+    const min = d.getTime() - (86400 * 1000);
+    const max = d.getTime();
+
+    // OK
+    let okData = [];
+    //okData.push({ x: max, y: 0});
+    Object.keys(groupedOks).forEach(group => {
+      okData.push({ x: parseInt(group), y: groupedOks[group].length });
+    });
+    okData.push({ x: min, y: 0});
+    //console.log('Setting 0', okData);
+    chart.series[0].setData(okData.reverse(), true);
+
+    // WARNING
+    let warningData = [];
+    //warningData.push({ x: max, y: 0});
     Object.keys(groupedWarnings).forEach(group => {
       warningData.push({ x: parseInt(group), y: groupedWarnings[group].length });
     });
-    chart.series[0].setData(warningData.reverse());
+    warningData.push({ x: min, y: 0});
+    //console.log('Setting 1', warningData);
+    chart.series[1].setData(warningData.reverse(), true);
 
-    let criticalData = []
+    // CRITICAL
+    let criticalData = [];
+    //criticalData.push({ x: max, y: 0});
     Object.keys(groupedCriticals).forEach(group => {
       criticalData.push({ x: parseInt(group), y: groupedCriticals[group].length });
     });
-    chart.series[1].setData(criticalData.reverse());
+    criticalData.push({ x: min, y: 0});
+    //console.log('Setting 2', criticalData);
+    chart.series[2].setData(criticalData.reverse(), true);
 
-    // update pointWidth based on howManyItems
-    //const howManyItems = this.props.alertDaysBack;
-    //const screenWidth = window.innerWidth;
-    //const barWidth = (screenWidth / howManyItems).toFixed(0); // this line probably needs work, I just made up the number
-    //const barWidth = chart.series[0].barW / 1;
+    
+    if (this.props.groupBy === 'hour') {
 
-    // chart.update({
-    //   plotOptions: {
-    //     series: {
-    //       pointWidth: barWidth
-    //     }
-    //   }
-    // });
+      chart.update({
+        xAxis: {
+          tickInterval: 3600 * 1000,
+          min: min,
+          max: max
+        }
+      });
 
-    // chart.series[0].redraw()
+      // update pointWidth based on howManyItems
+      const barWidth = (((window.innerWidth + 100) / 2) / this.props.alertHoursBack).toFixed(0);
 
+      chart.update({
+        plotOptions: {
+          series: {
+            pointWidth: barWidth
+          }
+        }
+      });
+    }
+
+    if (this.props.groupBy === 'day') {
+
+      // update pointWidth based on howManyItems
+      const barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack).toFixed(0);
+
+      chart.update({
+        plotOptions: {
+          series: {
+            pointWidth: barWidth
+          }
+        }
+      });
+    }
+
+    //chart.series[0].redraw();
+    //chart.series[1].redraw();
+    //chart.series[2].redraw();
   }
-
-  // componentDidMount() {
-  // }
-
-  // componentWillUnmount() {
-  // }
-
-  // UNSAFE_componentWillReceiveProps() {
-  //  console.log('componentWillReceiveProps');
-  // }
 
   chartConfig = {
     title: '',
@@ -112,16 +169,20 @@ class HistoryChart extends Component {
       //spacingTop: 0
     },
 
-    legend:{ enabled:false },
+    legend:{
+      enabled: true
+    },
 
     xAxis: {
       type: 'datetime',
-      lineColor: '#222'
+      lineColor: '#222',
+      startOnTick: false,
+      endOnTick: false
     },
     yAxis: {
       title: { text: '' },
       gridLineColor: '#222222',
-      endOnTick: false,
+      //endOnTick: false,
       maxPadding: 0.1,
       stackLabels: {
         enabled: false
@@ -151,11 +212,11 @@ class HistoryChart extends Component {
     },
 
     series: [
-    // {
-    //   type: 'column',
-    //   name: 'UP/OK',
-    //   color: 'lime'
-    // },
+    {
+      type: 'column',
+      name: 'UP/OK',
+      color: 'lime'
+    },
     {
       type: 'column',
       name: 'WARNING',
@@ -171,7 +232,7 @@ class HistoryChart extends Component {
   render() {
     return (
       <div className="HistoryChart" style={{ paddingRight: '10px' }}>
-        <ReactHighcharts config={this.chartConfig} ref="chart"></ReactHighcharts>
+        <ReactHighcharts config={this.chartConfig} ref={`chart${this.props.groupBy}`}></ReactHighcharts>
       </div>
     );
   }
