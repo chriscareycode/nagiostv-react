@@ -8,6 +8,24 @@
 	font-size: 1.1em;
 	border: 1px solid #004c00;
 }
+
+.QuietFor.color-green {
+	border: 1px solid #004c00;
+	background-color: #001d00;
+}
+.QuietFor.color-yellow {
+	border: 1px solid #8e8e00;
+	background-color: #333300;
+}
+.QuietFor.color-orange {
+	border: 1px solid #805300;
+	background-color: #2f1f00;
+}
+.QuietFor.color-red {
+	border: 1px solid #900000;
+	background-color: #2b0000;
+}
+
 .QuietForIcon {
 	float: right;
 	position: relative;

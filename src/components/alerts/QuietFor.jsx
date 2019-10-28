@@ -88,7 +88,7 @@ class QuietFor extends Component {
     
     //console.log('quietFor render');
     return (
-      <div className="QuietFor">
+      <div className={`QuietFor ${color}`}>
         <div className="QuietForIcon">{icon}</div>
         <span className="QuietForClock"><FontAwesomeIcon className="color-white" icon={faClock} /></span>
         <span className={`${color}`}>
