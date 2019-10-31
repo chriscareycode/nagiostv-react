@@ -45,7 +45,8 @@ class HistoryChart extends Component {
       if (nextProps.alertlist.length > this.props.alertlist.length) {
         this.updateSeriesFromPropsDelay();
       // else if the timestamp of the newest alert is greater than the existing one then update
-      } else if (nextProps.alertlist[0].timestamp > this.props.alertlist[0].timestamp) {
+      // TODO: use _.get for this just in case there are other issues with fetching the value
+      } else if (nextProps.alertlist.length > 0 && nextProps.alertlist[0].timestamp > this.props.alertlist[0].timestamp) {
         this.updateSeriesFromPropsDelay();
       }
     }
