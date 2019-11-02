@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import './HistoryChart.css';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts'
+import HighchartsReact from 'highcharts-react-official'
 import _ from 'lodash';
 import moment from 'moment';
-
-ReactHighcharts.Highcharts.setOptions({
-  time: {
-    timezoneOffset: new Date().getTimezoneOffset()
-  },
-});
 
 class HistoryChart extends Component {
 
   state = {
     intervalHandle: null
   };
+
+  constructor(props) {
+    super(props);
+    this.afterChartCreated = this.afterChartCreated.bind(this);
+  }
 
   componentDidMount() {
     this.updateSeriesFromPropsDelay();
@@ -31,10 +31,6 @@ class HistoryChart extends Component {
   componentWillUnmount() {
     clearInterval(this.state.intervalHandle);
   }
-
-  // UNSAFE_componentWillReceiveProps() {
-  //  console.log('componentWillReceiveProps');
-  // }
 
   shouldComponentUpdate(nextProps, nextState) {
 
@@ -55,6 +51,10 @@ class HistoryChart extends Component {
     return false;
   }
 
+  afterChartCreated(chart) {
+    this.internalChart = chart;
+  }
+
   updateSeriesFromPropsDelay() {
     setTimeout(() => {
       this.updateSeriesFromProps();
@@ -65,7 +65,7 @@ class HistoryChart extends Component {
   updateSeriesFromProps() {
     
     // chart stuff
-    let chart = this.refs[`chart${this.props.groupBy}`].getChart();
+    const chart = this.internalChart;
 
     const groupBy = this.props.groupBy;
     
@@ -88,6 +88,7 @@ class HistoryChart extends Component {
 
     const min = d.getTime() - (86400 * 1000);
     const max = d.getTime();
+    //console.log('min max', min, max);
 
     // OK
     let okData = [];
@@ -95,7 +96,7 @@ class HistoryChart extends Component {
     Object.keys(groupedOks).forEach(group => {
       okData.push({ x: parseInt(group), y: groupedOks[group].length });
     });
-    okData.push({ x: min, y: 0});
+    //okData.push({ x: min, y: 0});
     //console.log('Setting 0', okData);
     chart.series[0].setData(okData.reverse(), true);
 
@@ -105,7 +106,7 @@ class HistoryChart extends Component {
     Object.keys(groupedWarnings).forEach(group => {
       warningData.push({ x: parseInt(group), y: groupedWarnings[group].length });
     });
-    warningData.push({ x: min, y: 0});
+    //warningData.push({ x: min, y: 0});
     //console.log('Setting 1', warningData);
     chart.series[1].setData(warningData.reverse(), true);
 
@@ -115,7 +116,7 @@ class HistoryChart extends Component {
     Object.keys(groupedCriticals).forEach(group => {
       criticalData.push({ x: parseInt(group), y: groupedCriticals[group].length });
     });
-    criticalData.push({ x: min, y: 0});
+    //criticalData.push({ x: min, y: 0});
     //console.log('Setting 2', criticalData);
     chart.series[2].setData(criticalData.reverse(), true);
 
@@ -167,7 +168,10 @@ class HistoryChart extends Component {
     chart: {
       backgroundColor:'transparent',
       height: '170px'
-      //spacingTop: 0
+    },
+
+    time: {
+      timezoneOffset: new Date().getTimezoneOffset()
     },
 
     legend:{
@@ -183,7 +187,6 @@ class HistoryChart extends Component {
     yAxis: {
       title: { text: '' },
       gridLineColor: '#222222',
-      //endOnTick: false,
       maxPadding: 0.1,
       stackLabels: {
         enabled: false
@@ -200,16 +203,9 @@ class HistoryChart extends Component {
         borderWidth: 0,
         stacking: 'normal',
         dataLabels: {
-          enabled: false,
-          //color: (ReactHighcharts.Highcharts.theme && ReactHighcharts.Highcharts.theme.dataLabelsColor) || 'white'
+          enabled: false
         }
       }
-      // column: {
-      //   pointRange: 1,
-      //   pointPadding: 0.2,
-      //   borderWidth: 0,
-      //   stacking: "normal"
-      // }
     },
 
     series: [
@@ -233,7 +229,11 @@ class HistoryChart extends Component {
   render() {
     return (
       <div className="HistoryChart" style={{ paddingRight: '10px' }}>
-        <ReactHighcharts config={this.chartConfig} ref={`chart${this.props.groupBy}`}></ReactHighcharts>
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={this.chartConfig}
+          callback={ this.afterChartCreated }
+        />
       </div>
     );
   }
