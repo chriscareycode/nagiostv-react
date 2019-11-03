@@ -69,17 +69,24 @@ class HistoryChart extends Component {
 
     const groupBy = this.props.groupBy;
     
+    // group the alerts into an object with keys that are for each day
+    // this is a super awesome one liner for grouping
+
+    // OK
     const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
     const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
+    // WARNING
     const alertWarnings = this.props.alertlist.filter(alert => alert.state === 16);
     const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
-    
-    // group the alerts into an object with keys that are for each day
-    // this is a super awesome one liner for grouping
+
+    // UNKNOWN
+    const alertUnknowns = this.props.alertlist.filter(alert => alert.state === 64);
+    const groupedUnknowns = _.groupBy(alertUnknowns, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+  
+    // CRITICAL
     const alertCriticals = this.props.alertlist.filter(alert => alert.state === 2 || alert.state === 32);
     const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
-    //console.log('HistoryChart updateSeriesFromProps() groupedResults', groupedResults);
 
     var d = new Date();
     d.setMinutes(0);
@@ -110,6 +117,16 @@ class HistoryChart extends Component {
     //console.log('Setting 1', warningData);
     chart.series[1].setData(warningData.reverse(), true);
 
+    // UNKNOWN
+    let unknownData = [];
+    //warningData.push({ x: max, y: 0});
+    Object.keys(groupedUnknowns).forEach(group => {
+      unknownData.push({ x: parseInt(group), y: groupedUnknowns[group].length });
+    });
+    //warningData.push({ x: min, y: 0});
+    //console.log('Setting 1', warningData);
+    chart.series[2].setData(unknownData.reverse(), true);
+
     // CRITICAL
     let criticalData = [];
     //criticalData.push({ x: max, y: 0});
@@ -118,7 +135,7 @@ class HistoryChart extends Component {
     });
     //criticalData.push({ x: min, y: 0});
     //console.log('Setting 2', criticalData);
-    chart.series[2].setData(criticalData.reverse(), true);
+    chart.series[3].setData(criticalData.reverse(), true);
 
     
     if (this.props.groupBy === 'hour') {
@@ -164,6 +181,7 @@ class HistoryChart extends Component {
     //chart.series[0].redraw();
     //chart.series[1].redraw();
     //chart.series[2].redraw();
+    //chart.series[3].redraw();
   }
 
   chartConfig = {
@@ -222,6 +240,11 @@ class HistoryChart extends Component {
       type: 'column',
       name: 'WARNING',
       color: 'yellow'
+    },
+    {
+      type: 'column',
+      name: 'UNKNOWN',
+      color: 'orange'
     },
     {
       type: 'column',
