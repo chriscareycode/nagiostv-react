@@ -29,6 +29,9 @@
 .Progress .progress-bar.color-yellow {
 	background-color: yellow;
 }
+.Progress .progress-bar.color-orange {
+	background-color: orange;
+}
 .Progress .progress-bar.color-red {
 	background-color: pink;
 }
