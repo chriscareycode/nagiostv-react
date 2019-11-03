@@ -155,6 +155,10 @@ class HistoryChart extends Component {
           }
         }
       });
+      chart.series[0].update({
+        visible: false
+      });
+
     }
 
     //chart.series[0].redraw();
