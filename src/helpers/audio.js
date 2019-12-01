@@ -59,7 +59,9 @@ export function playSoundEffect(type, state, settings) {
         console.log(err.message);
         //console.log(err.code);
         //console.log(err.name);
-        console.log('Blocked by Chrome autoplay prevention. Touch the UI to enable sound');
+        
+        // TODO: pop up a message to the UI. Not just console.log here
+        console.log('Blocked by autoplay prevention. Touch the UI to enable sound');
       } else {
         console.log('error');
         console.log(err);
