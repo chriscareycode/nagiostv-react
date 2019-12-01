@@ -86,6 +86,7 @@ class Base extends Component {
     hideServiceAcked: false,
     hideServiceScheduled: false,
     hideServiceFlapping: false,
+    hideServiceSoft: false,
 
     serviceSortOrder: 'newest',
 
@@ -95,6 +96,7 @@ class Base extends Component {
     hideHostAcked: false,
     hideHostScheduled: false,
     hideHostFlapping: false,
+    hideHostSoft: false,
 
     hideHistory: false,
     hideHistoryTitle: false,
@@ -136,6 +138,7 @@ class Base extends Component {
     'hideServiceAcked',
     'hideServiceScheduled',
     'hideServiceFlapping',
+    'hideServiceSoft',
 
     'serviceSortOrder',
 
@@ -145,6 +148,7 @@ class Base extends Component {
     'hideHostAcked',
     'hideHostScheduled',
     'hideHostFlapping',
+    'hideHostSoft',
 
     'hideHistory',
     'hideHistoryTitle',
@@ -708,6 +712,7 @@ class Base extends Component {
     let howManyServiceAcked = 0;
     let howManyServiceScheduled = 0;
     let howManyServiceFlapping = 0;
+    let howManyServiceSoft = 0;
 
     if (this.state.servicelist) {
       Object.keys(this.state.servicelist).forEach((host) => {
@@ -734,6 +739,9 @@ class Base extends Component {
           if (this.state.servicelist[host][service].is_flapping) {
             howManyServiceFlapping++;
           }
+          if (this.state.servicelist[host][service].state_type === 0) {
+            howManyServiceSoft++;
+          }
         });
       });
     }
@@ -747,6 +755,7 @@ class Base extends Component {
     let howManyHostAcked = 0;
     let howManyHostScheduled = 0;
     let howManyHostFlapping = 0;
+    let howManyHostSoft = 0;
 
     if (this.state.hostlist) {
       Object.keys(this.state.hostlist).forEach((host) => {
@@ -768,6 +777,9 @@ class Base extends Component {
         }
         if (this.state.hostlist[host].is_flapping) {
           howManyHostFlapping++;
+        }
+        if (this.state.hostlist[host].state_type === 0) {
+          howManyHostSoft++;
         }
       });
     }
@@ -877,6 +889,7 @@ class Base extends Component {
             {howManyHostAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostAcked} {translate('acked', language)}</span>}
             {howManyHostScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostScheduled} {translate('scheduled', language)}</span>}
             {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyHostFlapping} {translate('flapping', language)}</span>}
+            {howManyHostSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyHostSoft} {translate('soft', language)}</span>}
             
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}
@@ -941,6 +954,14 @@ class Base extends Component {
               howManyText={translate('flapping', language)}
             />
 
+            <Checkbox className="Checkbox soft uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostSoft'}
+              defaultChecked={!this.state.hideHostSoft}
+              howMany={howManyHostSoft}
+              howManyText={translate('soft', language)}
+            />
+
           </div>}
 
         </div>}
@@ -976,6 +997,7 @@ class Base extends Component {
             {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
             {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
             {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceFlapping} {translate('flapping', language)}</span>}
+            {howManyServiceSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceSoft} {translate('flapping', language)}</span>}
 
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}
@@ -1046,6 +1068,14 @@ class Base extends Component {
               defaultChecked={!this.state.hideServiceFlapping}
               howMany={howManyServiceFlapping}
               howManyText={translate('flapping', language)}
+            />
+
+            <Checkbox className="Checkbox soft uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceSoft'}
+              defaultChecked={!this.state.hideServiceSoft}
+              howMany={howManyServiceSoft}
+              howManyText={translate('soft', language)}
             />
 
           </div>}
