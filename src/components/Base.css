@@ -255,6 +255,11 @@ input[type=text] {
   border: 0px solid gray;
   background-color: rgba(255, 177, 2, 0.3);
 }
+.service-hide-problems label.soft {
+  border: 0px solid yellow;
+  background-color: #585804;
+  color: yellow;
+}
 
 /* host */
 
