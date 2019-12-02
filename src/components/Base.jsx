@@ -1008,7 +1008,7 @@ class Base extends Component {
             {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
             {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
             {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceFlapping} {translate('flapping', language)}</span>}
-            {howManyServiceSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceSoft} {translate('flapping', language)}</span>}
+            {howManyServiceSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceSoft} {translate('soft', language)}</span>}
 
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyServices}

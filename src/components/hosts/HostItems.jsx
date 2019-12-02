@@ -32,6 +32,9 @@ class HostItems extends Component {
       if (this.props.settings.hideHostFlapping) {
         if (item.is_flapping) { return false; }
       }
+      if (this.props.settings.hideHostSoft) {
+        if (item.state_type === 0) { return false; }
+      }
       return true;
     });
 

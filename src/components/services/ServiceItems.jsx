@@ -34,6 +34,9 @@ class ServiceItems extends Component {
       if (this.props.settings.hideServiceFlapping) {
         if (item.is_flapping) { return false; }
       }
+      if (this.props.settings.hideServiceSoft) {
+        if (item.state_type === 0) { return false; }
+      }
       return true;
     });
 
