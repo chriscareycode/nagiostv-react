@@ -114,8 +114,8 @@ class Base extends Component {
     // fun stuff
     flynnEnabled: false,
     flynnConcernedAt: 1,
-    flynnAngryAt: 4,
-    flynnBloodyAt: 8,
+    flynnAngryAt: 2,
+    flynnBloodyAt: 4,
     flynnCssScale: '0.8',
     showEmoji: false,
     speakItems: false,
@@ -901,6 +901,7 @@ class Base extends Component {
             {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyHostFlapping} {translate('flapping', language)}</span>}
             {howManyHostSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyHostSoft} {translate('soft', language)}</span>}
             
+            {/* how many down emoji */}
             {this.state.showEmoji && <HowManyEmoji
               howMany={howManyHosts}
               howManyWarning={0}
@@ -909,6 +910,7 @@ class Base extends Component {
             />}
           </span>
 
+          {/* sorting and filters */}
           {!this.state.hideFilters && <div className="service-hide-problems">
 
             <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
@@ -979,6 +981,7 @@ class Base extends Component {
         {/** If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
         {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
+        {/* hostitems list */}
         <HostItems
           hostProblemsArray={this.state.hostProblemsArray}
           commentlist={this.state.commentlist}

@@ -149,6 +149,7 @@ input[type=text] {
 /* all ok */
 
 .all-ok-item {
+  position: relative;
   border: 1px solid #004c00;
   background-color: #001d00;
   font-size: 1.5em;
@@ -169,6 +170,7 @@ input[type=text] {
 /* these some-down-items live inside HostItems and ServiceItems */
 /* probably should move to its own component */
 .some-down-items {
+  position: relative;
   border: 1px solid #004c00;
   background-color: #111;
   font-size: 1.5em;
@@ -204,7 +206,14 @@ input[type=text] {
 .service-hide-problems {
   margin-top: 8px;
   line-height: 30px;
+  opacity: 0.5;
+  transition: opacity 100ms ease-in;
 }
+
+.service-hide-problems:hover {
+  opacity: 1;
+}
+
 .service-hide-problems select {
   background-color: #353535;
   color: white;
