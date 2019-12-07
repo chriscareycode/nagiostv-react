@@ -1,5 +1,6 @@
 .ServiceItem {
 	position: relative;
+	cursor: pointer;
 }
 .comment {
 	text-align: left;

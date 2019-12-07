@@ -67,6 +67,14 @@ class ServiceItem extends Component {
     speakAudio(speakWords, voice);
   }
 
+  mouseClick = () => {
+    const e = this.props.serviceItem
+    const baseUrl = this.props.settings.baseUrl;
+    const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
+
   render() {
 
     const e = this.props.serviceItem; // clean this up
@@ -77,7 +85,7 @@ class ServiceItem extends Component {
 
     return (
       
-      <div style={{ ...defaultStyles }} className={`ServiceItem`}>
+      <div style={{ ...defaultStyles }} className={`ServiceItem`} onClick={this.mouseClick}>
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faYinYang} spin /></span>}

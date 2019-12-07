@@ -66,6 +66,14 @@ class HostItem extends Component {
     speakAudio(speakWords, voice);
   }
 
+  mouseClick = () => {
+    const e = this.props.serviceItem
+    const baseUrl = this.props.settings.baseUrl;
+    const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${e.name}`);
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
+
   render() {
 
     const e = this.props.hostItem; // clean this up
@@ -75,7 +83,7 @@ class HostItem extends Component {
     const nowTime = new Date().getTime();
 
     return (
-      <div style={{ ...defaultStyles }} className={`HostItem`}>
+      <div style={{ ...defaultStyles }} className={`HostItem`} onClick={this.mouseClick}>
         <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faYinYang} spin /></span>}
