@@ -14,7 +14,11 @@ class Demo extends Component {
   automate() {
     
     this.addHostDown();
+    this.addHostDown();
+    this.addHostDown();
     this.addServiceWarning();
+    this.addServiceWarning();
+    this.addServiceCritical();
     this.addServiceCritical();
 
     setTimeout(() => {
@@ -36,6 +40,22 @@ class Demo extends Component {
     setTimeout(() => {
       this.removeServiceWarning();
     }, 20000);
+
+    setTimeout(() => {
+      this.removeHostDown();
+    }, 25000);
+
+    setTimeout(() => {
+      this.removeServiceCritical();
+    }, 30000);
+
+    setTimeout(() => {
+      this.removeServiceWarning();
+    }, 35000);
+
+    setTimeout(() => {
+      this.removeHostDown();
+    }, 40000);
 
   }
 
