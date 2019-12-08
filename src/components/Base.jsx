@@ -283,9 +283,12 @@ class Base extends Component {
 
       // Got good server settings
       console.log('Found server default settings client-settings.json - Loading default settings:', myJson);
-      // load them
-      this.settingsFields.forEach(setting => this.updateIfExist(myJson, setting));
-      this.setState({ isRemoteSettingsLoaded: true });
+
+      // save settings to state
+      this.updateStateFromSettings({
+        ...myJson,
+        isRemoteSettingsLoaded: true
+      });
 
       this.getCookie();
 
@@ -319,8 +322,12 @@ class Base extends Component {
     }
     if (cookieObject) {
       console.log('Found cookie. Loading settings:', cookieObject);
-      this.settingsFields.forEach(setting => this.updateIfExist(cookieObject, setting));
-      this.setState({ isCookieLoaded: true });
+      
+      // save settings to state
+      this.updateStateFromSettings({
+        ...cookieObject,
+        isCookieLoaded: true
+      });
     }
 
     this.setState({ isDoneLoading: true });
@@ -673,14 +680,6 @@ class Base extends Component {
       // Save to cookie AFTER state is set
       this.saveCookie();
     });
-  }
-
-  // this is used by the cookie function to update state just for items we find
-  updateIfExist(cookieObject, prop) {
-    if (cookieObject.hasOwnProperty(prop)) {
-      //console.log('setting state on ' + prop +' to ', cookieObject[prop]);
-      this.setState({ [prop]: cookieObject[prop] });
-    }
   }
 
   // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
