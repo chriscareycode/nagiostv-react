@@ -67,7 +67,7 @@ class HostItem extends Component {
   }
 
   mouseClick = () => {
-    const e = this.props.serviceItem
+    const e = this.props.hostItem
     const baseUrl = this.props.settings.baseUrl;
     const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${e.name}`);
     const win = window.open(url, '_blank');
