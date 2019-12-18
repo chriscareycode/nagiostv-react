@@ -146,14 +146,6 @@ input[type=text] {
   margin-bottom: 5px;
 }
 
-.service-summary .service-hide-problems {
-  max-height: 0px;
-  
-}
-.service-summary:hover .service-hide-problems {
-  max-height: 60px;
-}
-
 /* all ok */
 
 .all-ok-item {
@@ -212,14 +204,10 @@ input[type=text] {
 /**/
 
 .service-hide-problems {
+  margin-top: 8px;
   line-height: 30px;
-  opacity: 0.75;
-  overflow: hidden;
-  transition: all 100ms ease-in;
-}
-.service-hide-problems-inner {
-  padding-top: 8px;
-  
+  opacity: 0.5;
+  transition: opacity 100ms ease-in;
 }
 
 .service-hide-problems:hover {

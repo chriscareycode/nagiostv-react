@@ -844,6 +844,14 @@ class Base extends Component {
 
           {/* left */}
           <div className="FooterAreaLeft">
+            <Checkbox
+              className="Checkbox warning"
+              textClassName="uppercase-first display-inline-block"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideFilters'}
+              defaultChecked={!this.state.hideFilters}
+              howManyText={translate('show filters', language)}
+            />
           </div>
 
           {/* right */}
@@ -902,72 +910,70 @@ class Base extends Component {
           </span>
 
           {/* sorting and filters */}
-          <div className="service-hide-problems">
-            <div className="service-hide-problems-inner">
+          {!this.state.hideFilters && <div className="service-hide-problems">
 
-              <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
-                <option value="newest">{translate('newest first', language)}</option>
-                <option value="oldest">{translate('oldest first', language)}</option>
-              </select>
+            <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
+              <option value="newest">{translate('newest first', language)}</option>
+              <option value="oldest">{translate('oldest first', language)}</option>
+            </select>
 
-              <Checkbox className="Checkbox down uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostDown'}
-                defaultChecked={!this.state.hideHostDown}
-                howMany={howManyHostDown}
-                howManyText={translate('down', language)}
-              />
+            <Checkbox className="Checkbox down uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostDown'}
+              defaultChecked={!this.state.hideHostDown}
+              howMany={howManyHostDown}
+              howManyText={translate('down', language)}
+            />
 
-              <Checkbox className="Checkbox unreachable uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostUnreachable'}
-                defaultChecked={!this.state.hideHostUnreachable}
-                howMany={howManyHostUnreachable}
-                howManyText={translate('unreachable', language)}
-              />
+            <Checkbox className="Checkbox unreachable uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostUnreachable'}
+              defaultChecked={!this.state.hideHostUnreachable}
+              howMany={howManyHostUnreachable}
+              howManyText={translate('unreachable', language)}
+            />
 
-              <Checkbox className="Checkbox pending uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostPending'}
-                defaultChecked={!this.state.hideHostPending}
-                howMany={howManyHostPending}
-                howManyText={translate('pending', language)}
-              />
+            <Checkbox className="Checkbox pending uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostPending'}
+              defaultChecked={!this.state.hideHostPending}
+              howMany={howManyHostPending}
+              howManyText={translate('pending', language)}
+            />
 
-              <Checkbox className="Checkbox acked uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostAcked'}
-                defaultChecked={!this.state.hideHostAcked}
-                howMany={howManyHostAcked}
-                howManyText={translate('acked', language)}
-              />
+            <Checkbox className="Checkbox acked uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostAcked'}
+              defaultChecked={!this.state.hideHostAcked}
+              howMany={howManyHostAcked}
+              howManyText={translate('acked', language)}
+            />
 
-              <Checkbox className="Checkbox scheduled uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostScheduled'}
-                defaultChecked={!this.state.hideHostScheduled}
-                howMany={howManyHostScheduled}
-                howManyText={translate('scheduled', language)}
-              />
+            <Checkbox className="Checkbox scheduled uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostScheduled'}
+              defaultChecked={!this.state.hideHostScheduled}
+              howMany={howManyHostScheduled}
+              howManyText={translate('scheduled', language)}
+            />
 
-              <Checkbox className="Checkbox flapping uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostFlapping'}
-                defaultChecked={!this.state.hideHostFlapping}
-                howMany={howManyHostFlapping}
-                howManyText={translate('flapping', language)}
-              />
+            <Checkbox className="Checkbox flapping uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostFlapping'}
+              defaultChecked={!this.state.hideHostFlapping}
+              howMany={howManyHostFlapping}
+              howManyText={translate('flapping', language)}
+            />
 
-              <Checkbox className="Checkbox soft uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostSoft'}
-                defaultChecked={!this.state.hideHostSoft}
-                howMany={howManyHostSoft}
-                howManyText={translate('soft', language)}
-              />
+            <Checkbox className="Checkbox soft uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHostSoft'}
+              defaultChecked={!this.state.hideHostSoft}
+              howMany={howManyHostSoft}
+              howManyText={translate('soft', language)}
+            />
 
-            </div>
-          </div>
+          </div>}
 
         </div>}
 
@@ -1014,80 +1020,78 @@ class Base extends Component {
             />}
           </span>
 
-          <div className="service-hide-problems">
-            <div className="service-hide-problems-inner">
+          {!this.state.hideFilters && <div className="service-hide-problems">
 
-              <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
-                <option value="newest">{translate('newest first', language)}</option>
-                <option value="oldest">{translate('oldest first', language)}</option>
-              </select>
+            <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
+              <option value="newest">{translate('newest first', language)}</option>
+              <option value="oldest">{translate('oldest first', language)}</option>
+            </select>
 
-              <Checkbox className="Checkbox critical uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceCritical'}
-                defaultChecked={!this.state.hideServiceCritical}
-                howMany={howManyServiceCritical}
-                howManyText={translate('critical', language)}
-              />
+            <Checkbox className="Checkbox critical uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceCritical'}
+              defaultChecked={!this.state.hideServiceCritical}
+              howMany={howManyServiceCritical}
+              howManyText={translate('critical', language)}
+            />
 
-              <Checkbox className="Checkbox warning uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceWarning'}
-                defaultChecked={!this.state.hideServiceWarning}
-                howMany={howManyServiceWarning}
-                howManyText={translate('warning', language)}
-              />
+            <Checkbox className="Checkbox warning uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceWarning'}
+              defaultChecked={!this.state.hideServiceWarning}
+              howMany={howManyServiceWarning}
+              howManyText={translate('warning', language)}
+            />
 
-              <Checkbox className="Checkbox unknown uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceUnknown'}
-                defaultChecked={!this.state.hideServiceUnknown}
-                howMany={howManyServiceUnknown}
-                howManyText={translate('unknown', language)}
-              />
+            <Checkbox className="Checkbox unknown uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceUnknown'}
+              defaultChecked={!this.state.hideServiceUnknown}
+              howMany={howManyServiceUnknown}
+              howManyText={translate('unknown', language)}
+            />
 
-              <Checkbox className="Checkbox pending uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServicePending'}
-                defaultChecked={!this.state.hideServicePending}
-                howMany={howManyServicePending}
-                howManyText={translate('pending', language)}
-              />
+            <Checkbox className="Checkbox pending uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServicePending'}
+              defaultChecked={!this.state.hideServicePending}
+              howMany={howManyServicePending}
+              howManyText={translate('pending', language)}
+            />
 
-              <Checkbox className="Checkbox acked uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceAcked'}
-                defaultChecked={!this.state.hideServiceAcked}
-                howMany={howManyServiceAcked}
-                howManyText={translate('acked', language)}
-              />
+            <Checkbox className="Checkbox acked uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceAcked'}
+              defaultChecked={!this.state.hideServiceAcked}
+              howMany={howManyServiceAcked}
+              howManyText={translate('acked', language)}
+            />
 
-              <Checkbox className="Checkbox scheduled uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceScheduled'}
-                defaultChecked={!this.state.hideServiceScheduled}
-                howMany={howManyServiceScheduled}
-                howManyText={translate('scheduled', language)}
-              />
+            <Checkbox className="Checkbox scheduled uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceScheduled'}
+              defaultChecked={!this.state.hideServiceScheduled}
+              howMany={howManyServiceScheduled}
+              howManyText={translate('scheduled', language)}
+            />
 
-              <Checkbox className="Checkbox flapping uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceFlapping'}
-                defaultChecked={!this.state.hideServiceFlapping}
-                howMany={howManyServiceFlapping}
-                howManyText={translate('flapping', language)}
-              />
+            <Checkbox className="Checkbox flapping uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceFlapping'}
+              defaultChecked={!this.state.hideServiceFlapping}
+              howMany={howManyServiceFlapping}
+              howManyText={translate('flapping', language)}
+            />
 
-              <Checkbox className="Checkbox soft uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceSoft'}
-                defaultChecked={!this.state.hideServiceSoft}
-                howMany={howManyServiceSoft}
-                howManyText={translate('soft', language)}
-              />
+            <Checkbox className="Checkbox soft uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideServiceSoft'}
+              defaultChecked={!this.state.hideServiceSoft}
+              howMany={howManyServiceSoft}
+              howManyText={translate('soft', language)}
+            />
 
-            </div>
-          </div>
+          </div>}
 
         </div>}
         
