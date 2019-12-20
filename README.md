@@ -31,10 +31,6 @@ Screenshots
 
 ![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1.png)
 
-NagiosTV on mobile
-
-<img src="https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1-iphone.jpg" alt="mobile" width="400"/>
-
 Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases
