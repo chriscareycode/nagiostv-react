@@ -3,6 +3,10 @@ import { translate } from '../../helpers/language';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import HostItem from './HostItem';
 
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun } from '@fortawesome/free-solid-svg-icons';
+
 // css
 import './HostItems.css';
 
@@ -47,14 +51,14 @@ class HostItems extends Component {
 
         <div className={`all-ok-item ${this.props.hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
           <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {this.props.howManyHosts} {translate('hosts are UP', language)}</span>{' '}
-          {this.props.settings.showEmoji && <div style={{ position: 'absolute', top: '5px', right: '5px' }}><span role="img" aria-label="thumbs up">👍</span></div>}
+          {this.props.settings.showEmoji && <div style={{ position: 'absolute', top: '6px', right: '6px' }}><FontAwesomeIcon className="color-green" icon={faSun} /></div>}
         </div>
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
           <div>
             <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyHosts - this.props.hostProblemsArray.length} of {this.props.howManyHosts} {translate('hosts are UP', language)}</span>{' '}
             <span className="some-down-hidden-text">({howManyHidden} hidden)</span>
-            {this.props.settings.showEmoji && <div style={{ position: 'absolute', top: '5px', right: '5px' }}><span role="img" aria-label="thumbs up">👍</span></div>}
+            {this.props.settings.showEmoji && <div style={{ position: 'absolute', top: '6px', right: '6px' }}><FontAwesomeIcon className="color-green" icon={faSun} /></div>}
           </div>
         </div>
 
