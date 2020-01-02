@@ -560,9 +560,7 @@ class Base extends Component {
       }
 
       // get the alertlist for the past n hours
-      // subtract 1 hour to make it 23 (to fix bug with HighChart display)
-      // otherwise HighChart was displaying same hour twice and causing layout issues
-      const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < (this.state.alertHoursBack - 1) * 3600 * 1000);
+      const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < this.state.alertHoursBack * 3600 * 1000);
       const alertlistHoursCount = alertlistHours.length;
 
       this.setState({

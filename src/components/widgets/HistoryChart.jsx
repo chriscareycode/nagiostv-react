@@ -93,10 +93,7 @@ class HistoryChart extends Component {
     d.setSeconds(0);
     d.setMilliseconds(0);
 
-    // min and max here is only used for the 24 hour chart
-    // from the min I'm subtracting 1 hour to make it 23 to fix a layout bug in HighCharts where
-    // the same hour was being displayed twice - once at the beginning and once at the end
-    const min = d.getTime() - ((86400 - 3600) * 1000); // subtract 1 hour from 1 day to make it 23
+    const min = d.getTime() - (86400 * 1000);
     const max = d.getTime();
     //console.log('min max', min, max);
 
