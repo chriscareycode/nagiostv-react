@@ -61,6 +61,33 @@ class HistoryChart extends Component {
     }, 1000);
   }
 
+  massageGroupByDataIntoHighchartsData(groupByData, min, max) {
+
+    let returnArray = [];
+
+    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    if (this.props.groupBy === 'hour') {
+      // only if there is not already an entry for the last hour group
+      if (!groupByData.hasOwnProperty(max)) {
+        returnArray.push({ x: max, y: 0, xNice: new Date(max) });
+      }
+    }
+
+    Object.keys(groupByData).forEach(group => {
+      returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
+    });
+
+    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    if (this.props.groupBy === 'hour') {
+      // only if there is not already an entry for the last hour group
+      if (!groupByData.hasOwnProperty(min)) {
+        returnArray.push({ x: min, y: 0, xNice: new Date(min) });
+      }
+    }
+
+    return returnArray;
+  }
+
   // multiple stacked charts for OK, WARNING and CRITICAL
   updateSeriesFromProps() {
     
@@ -93,50 +120,38 @@ class HistoryChart extends Component {
     d.setSeconds(0);
     d.setMilliseconds(0);
 
+    // calculate min and max for hourly chart
     const min = d.getTime() - (86400 * 1000);
     const max = d.getTime();
     //console.log('min max', min, max);
 
     // OK
-    let okData = [];
-    //okData.push({ x: max, y: 0});
-    Object.keys(groupedOks).forEach(group => {
-      okData.push({ x: parseInt(group), y: groupedOks[group].length });
-    });
-    //okData.push({ x: min, y: 0});
-    //console.log('Setting 0', okData);
-    chart.series[0].setData(okData.reverse(), true);
+    if (Object.keys(groupedOks).length > 0) {
+      let okData = this.massageGroupByDataIntoHighchartsData(groupedOks, min, max);
+      //console.log('Setting 0', okData);
+      chart.series[0].setData(okData.reverse(), true);
+    }
 
     // WARNING
-    let warningData = [];
-    //warningData.push({ x: max, y: 0});
-    Object.keys(groupedWarnings).forEach(group => {
-      warningData.push({ x: parseInt(group), y: groupedWarnings[group].length });
-    });
-    //warningData.push({ x: min, y: 0});
-    //console.log('Setting 1', warningData);
-    chart.series[1].setData(warningData.reverse(), true);
+    if (Object.keys(groupedWarnings).length > 0) {
+      let warningData = this.massageGroupByDataIntoHighchartsData(groupedWarnings, min, max);
+      //console.log('Setting 1', warningData);
+      chart.series[1].setData(warningData.reverse(), true);
+    }
 
     // UNKNOWN
-    let unknownData = [];
-    //warningData.push({ x: max, y: 0});
-    Object.keys(groupedUnknowns).forEach(group => {
-      unknownData.push({ x: parseInt(group), y: groupedUnknowns[group].length });
-    });
-    //warningData.push({ x: min, y: 0});
-    //console.log('Setting 1', warningData);
-    chart.series[2].setData(unknownData.reverse(), true);
+    if (Object.keys(groupedUnknowns).length > 0) {
+      let unknownData = this.massageGroupByDataIntoHighchartsData(groupedUnknowns, min, max);
+      //console.log('Setting 1', warningData);
+      chart.series[2].setData(unknownData.reverse(), true);
+    }
 
     // CRITICAL
-    let criticalData = [];
-    //criticalData.push({ x: max, y: 0});
-    Object.keys(groupedCriticals).forEach(group => {
-      criticalData.push({ x: parseInt(group), y: groupedCriticals[group].length });
-    });
-    //criticalData.push({ x: min, y: 0});
-    //console.log('Setting 2', criticalData);
-    chart.series[3].setData(criticalData.reverse(), true);
-
+    if (Object.keys(groupedCriticals).length > 0) {
+      let criticalData = this.massageGroupByDataIntoHighchartsData(groupedCriticals, min, max);
+      //console.log('Setting 2', criticalData);
+      chart.series[3].setData(criticalData.reverse(), true);
+    }
     
     if (this.props.groupBy === 'hour') {
 
