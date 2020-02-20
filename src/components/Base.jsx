@@ -271,7 +271,12 @@ class Base extends Component {
   getRemoteSettings() {
     const url = 'client-settings.json?v=' + new Date().getTime();
 
-    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -410,7 +415,12 @@ class Base extends Component {
     }
     //console.log('Requesting Service Data: ' + url);
 
-    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (this.state.fetchFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -473,7 +483,12 @@ class Base extends Component {
       url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
     }
 
-    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (this.state.fetchFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -536,7 +551,12 @@ class Base extends Component {
       url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
     }
 
-    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (this.state.fetchAlertFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
@@ -584,7 +604,12 @@ class Base extends Component {
   fetchCommentData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 
-    $.ajax({url}).done((myJson, textStatus, jqXHR) => {
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
