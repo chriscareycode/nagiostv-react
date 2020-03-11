@@ -1,0 +1,10 @@
+.CustomLogoWrapper {
+  position: fixed;
+  top: 5px;
+  right: 10px;
+  z-index: 12;
+}
+
+.CustomLogo img {
+  height: 70px;
+}
