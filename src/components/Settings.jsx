@@ -83,8 +83,7 @@ class Settings extends Component {
     console.log('Cookie deleted.');
   }
 
-  // we write this as an anonymous function so we wont have to bind in render
-
+  // handle state changes for all the widgets on this page
   handleChange = (propName, dataType) => (event) => {
     // console.log('handleChange new');
     // console.log(propName, dataType);
@@ -97,6 +96,7 @@ class Settings extends Component {
     } else {
       val = event.target.value;
     }
+    
     this.setState({
       [propName]: val
     });
