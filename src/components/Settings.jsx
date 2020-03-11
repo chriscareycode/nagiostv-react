@@ -309,6 +309,21 @@ class Settings extends Component {
                   <td style={{ padding: '0px', height: '3px' }}></td>
                 </tr>
                 <tr>
+                  <th>Custom Logo:</th>
+                  <td>
+                    <select value={this.state.customLogoEnabled} onChange={this.handleChange('customLogoEnabled', 'boolean')}>
+                        <option value={true}>On</option>
+                        <option value={false}>Off</option>
+                    </select>
+                  </td>
+                </tr>
+                {this.state.customLogoEnabled && <tr>
+                  <th>Custom Logo URL:</th>
+                  <td>
+                    <input type="text" value={this.state.customLogoUrl} onChange={this.handleChange('customLogoUrl', 'string')} />
+                  </td>
+                </tr>}
+                <tr>
                   <th>Flynn:</th>
                   <td>
                     <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>

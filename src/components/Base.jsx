@@ -8,6 +8,7 @@ import { translate } from '../helpers/language';
 import { cleanDemoDataHostlist, cleanDemoDataServicelist } from '../helpers/nagiostv';
 import { convertHostObjectToArray, convertServiceObjectToArray } from '../helpers/nagiostv';
 import Flynn from './Flynn/Flynn.jsx';
+import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
 import Checkbox from './widgets/Checkbox.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
@@ -112,6 +113,8 @@ class Base extends Component {
     isDemoMode: false,
 
     // fun stuff
+    customLogoEnabled: false,
+    customLogoUrl: './sample-image/nagios.png',
     flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 2,
@@ -163,6 +166,8 @@ class Base extends Component {
     'language',
 
     // fun stuff
+    'customLogoEnabled',
+    'customLogoUrl',
     'flynnEnabled',
     'flynnConcernedAt',
     'flynnAngryAt',
@@ -854,6 +859,14 @@ class Base extends Component {
             flynnCssScale={this.state.flynnCssScale}
           />
         </div>}
+
+        {this.state.customLogoEnabled && <div className="CustomLogoWrapper">
+          <CustomLogo
+            settings={settingsObject}
+          />
+        </div>}
+
+        
 
         {/* header */}
 
