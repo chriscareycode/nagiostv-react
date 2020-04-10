@@ -114,7 +114,7 @@ class Base extends Component {
 
     // fun stuff
     customLogoEnabled: false,
-    customLogoUrl: './sample-image/nagios.png',
+    customLogoUrl: './sample-image/resedit.png',
     flynnEnabled: false,
     flynnConcernedAt: 1,
     flynnAngryAt: 2,
