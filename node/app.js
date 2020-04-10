@@ -77,13 +77,18 @@ app.use('/', express.static('../dist'));
 //***********************************************************************
 
 let proxyUrl = '';
-if (settingsNagios) { proxyUrl = settingsNagios.nagiosServerHost + settingsNagios.nagiosServerCgiPath + '/:resource'; }
+if (settingsNagios) { proxyUrl = settingsNagios.nagiosServerHost + settingsNagios.nagiosServerCgiPath; }
 console.log('Will proxy requests to ' + proxyUrl);
 
 var proxyOptions = {
   proxyReqPathResolver: function(req) {
-    if (settings.debug) { console.log('Proxying to URL: ' + proxyUrl + req.url); }
-    return require('url').parse(req.url).path;
+    if (settings.debug) { console.log('Proxying to URL: ' + proxyUrl + '/' + req.params.resource); }
+    //return require('url').parse(req.url).path;
+    var url = require('url').parse(req.url);
+    //console.log('proxy-' + url.path + '?' + url.query);
+    //console.log(req.params);
+    return proxyUrl + '/' + req.params.resource + '?' + url.query;
+    //return url.path + '?' + url.query;
   },
   proxyReqOptDecorator: function(proxyReqOpts, originalReq) {
     proxyReqOpts.rejectUnauthorized = false
@@ -94,8 +99,10 @@ var proxyOptions = {
 // Add auth if it is enabled
 if (settingsNagios && settingsNagios.auth) {
   proxyOptions.headers = {
-    Authorization: "Basic " + new Buffer(settingsNagios.username + ':' + settingsNagios.password).toString('base64')
+    Authorization: "Basic " + new Buffer.from(settingsNagios.username + ':' + settingsNagios.password).toString('base64')
   };
+  //console.log('Adding proxy auth');
+  //console.log(proxyOptions);
 }
 
 app.get('/nagios/:resource', proxy(proxyUrl + '/:resource', proxyOptions));
@@ -110,7 +117,7 @@ app.listen(settings.serverPort);
 console.log('Listening on port ' + settings.serverPort + '...');
 console.log(' ');
 console.log(`In NagiosTV settings you can now set the Nagios cgi-bin path to`);
-console.log(`http://<this server ip address>: ${settings.serverPort}`);
+console.log(`http://<this server ip address>:${settings.serverPort}/nagios/`);
 console.log(`And this server will proxy and add auth to the Nagios server at`);
 console.log(`${settingsNagios.nagiosServerHost}${settingsNagios.nagiosServerCgiPath}`);
 console.log(' ');
