@@ -36,9 +36,19 @@ class AlertItems extends Component {
 
   render() {
 
-    let trimmedItems = [...this.props.items];
+
+    const filteredHistoryArray = this.props.items.filter(item => {
+      if (this.props.settings.hideHistorySoft) {
+        if (item.state_type === 2) { return false; }
+      }
+      return true;
+    });
+
+    let trimmedItems = [...filteredHistoryArray];
     trimmedItems.length = this.state.howManyToRender;
     const { language } = this.props.settings;
+
+
 
     return (
       <div className="AlertItems">

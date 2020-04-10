@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import HostItems from './hosts/HostItems.jsx';
 import ServiceItems from './services/ServiceItems.jsx';
-import AlertItems from './alerts/AlertItems.jsx';
+import AlertSection from './alerts/AlertSection.jsx';
 import { prettyDateTime } from '../helpers/moment';
 import { translate } from '../helpers/language';
 import { cleanDemoDataHostlist, cleanDemoDataServicelist } from '../helpers/nagiostv';
@@ -12,7 +12,6 @@ import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
 import Checkbox from './widgets/Checkbox.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
-import HistoryChart from './widgets/HistoryChart.jsx';
 import Demo from './Demo.jsx';
 // css
 import './Base.css';
@@ -105,6 +104,7 @@ class Base extends Component {
     hideHistory: false,
     hideHistoryTitle: false,
     hideHistoryChart: false,
+    hideHistorySoft: false,
 
     hostSortOrder: 'newest',
 
@@ -159,6 +159,7 @@ class Base extends Component {
     'hideHistory',
     'hideHistoryTitle',
     'hideHistoryChart',
+    'hideHistorySoft',
 
     'hostSortOrder',
     
@@ -823,6 +824,17 @@ class Base extends Component {
       });
     }
 
+    // count how many soft history items
+    let howManyHistorySoft = 0;
+    if (this.state.alertlist) {
+      this.state.alertlist.forEach(alert => {
+        //console.log(alert);
+        if (alert.state_type === 2) {
+          howManyHistorySoft++;
+        }
+      });
+    }
+
     const settingsLoaded = this.state.isDoneLoading;
     
     const { language } = this.state;
@@ -865,8 +877,6 @@ class Base extends Component {
             settings={settingsObject}
           />
         </div>}
-
-        
 
         {/* header */}
 
@@ -1162,39 +1172,40 @@ class Base extends Component {
             </span>
           </div>}
 
-          {!this.state.hideHistoryChart && <HistoryChart
-            alertlist={this.state.alertlistHours}
-            alertlistLastUpdate={this.state.alertlistLastUpdate}
-            groupBy="hour"
-            alertHoursBack={24} 
-            alertDaysBack={1}
-          />}
+          {/* history filters */}
 
-          {!this.state.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
-            <span className="service-summary-title">
-            <strong>{this.state.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertDaysBack}</strong> {translate('days', language)}
-              {this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>}
-            </span>
+          {!this.state.hideFilters && <div className="service-hide-problems">
+
+            <Checkbox className="Checkbox soft uppercase"
+              handleCheckboxChange={this.handleCheckboxChange}
+              stateName={'hideHistorySoft'}
+              defaultChecked={!this.state.hideHistorySoft}
+              howMany={howManyHistorySoft}
+              howManyText={translate('soft', language)}
+            />
+
           </div>}
 
-          {!this.state.hideHistoryChart && <HistoryChart
+          {/* history alert chart */}
+
+          <AlertSection
             alertlist={this.state.alertlist}
-            alertlistLastUpdate={this.state.alertlistLastUpdate}
-            groupBy="day"
-            alertDaysBack={this.state.alertDaysBack} 
-          />}
-
-          {this.state.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
-
-          {!this.state.alertlistError && this.state.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
-            No alerts
-          </div>}
-
-          <AlertItems
-            items={this.state.alertlist}
+            alertlistHours={this.state.alertlistHours}
             showEmoji={this.state.showEmoji}
-            settings={settingsObject}
+            settingsObject={settingsObject}
+            language={this.state.language}
+            settingsFields={this.settingsFields}
+            hideHistoryChart={this.state.hideHistoryChart}
+            hideHistoryTitle={this.state.hideHistoryTitle}
+            hideHistoryChart={this.state.hideHistoryChart}
+            alertlistCount={this.state.alertlistCount}
+            alertlistLastUpdate={this.state.alertlistLastUpdate}
+            alertDaysBack={this.state.alertDaysBack}
+            alertlistErrorMessage={this.state.alertlistErrorMessage}
+            alertMaxItems={this.state.alertMaxItems}
           />
+
+          
 
         </div>}
 
