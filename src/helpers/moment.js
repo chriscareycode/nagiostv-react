@@ -28,43 +28,29 @@ export function formatDateTimeAgo(date) {
   let ret = '';
   if (tempTime.days()) { ret += tempTime.days() + 'd '; }
   if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+  // only show minute or second if we are at less than 1 hour
+  if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
 
-  return ret + tempTime.seconds() + 's';
+  return ret;
 }
 
-export function formatDateTimeAgoShort(date) {
+export function formatDateTimeAgoColor(date) {
+  
 	var m = moment(date);
   const diff = m.diff(moment()) * -1;
   const tempTime = moment.duration(diff);
 
   let ret = '';
   if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) {
-    ret += tempTime.hours() + 'h ';
-    return ret;
-  }
-  if (tempTime.minutes()) {
-    ret += tempTime.minutes() + 'm ';
-    return ret;
-  }
-
-  return ret + tempTime.seconds() + 's';
-}
-
-export function formatDateTimeAgoColor(date) {
-	var m = moment(date);
-  const diff = m.diff(moment()) * -1;
-  const tempTime = moment.duration(diff);
-
-  let ret = '';
-  if (tempTime.days()) { ret += tempTime.days() + 'd '}
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '}
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '}
+  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+  // only show minute or second if we are at less than 1 hour
+  if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
 
   let wrapperClass = 'color-green';
   if (tempTime.days() === 0 && tempTime.hours() >= 1) { wrapperClass = 'color-orange'; }
   if (tempTime.days() >= 1) { wrapperClass = 'color-red'; }
 
-  return <span className={wrapperClass}>{ret + tempTime.seconds() + 's'}</span>;
+  return <span className={wrapperClass}>{ret}</span>;
 }
