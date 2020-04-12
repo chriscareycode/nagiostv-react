@@ -1,0 +1,8 @@
+.Clock {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2em;
+  color: #ccc;
+}

@@ -15,7 +15,7 @@ class CustomLogo extends Component {
   render() {
     return (
       <div className="CustomLogo">
-        <img src={this.props.settings.customLogoUrl} />
+        <img alt="custom logo" src={this.props.settings.customLogoUrl} />
       </div>
     );
   }

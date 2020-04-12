@@ -52,6 +52,7 @@ class HistoryChart extends Component {
   }
 
   afterChartCreated(chart) {
+    //console.log('afterChartCreated', chart);
     this.internalChart = chart;
   }
 
@@ -93,6 +94,11 @@ class HistoryChart extends Component {
     
     // chart stuff
     const chart = this.internalChart;
+    //console.log('updateSeriesFromProps', chart);
+    if (Object.keys(chart).length === 0) {
+      console.log('No chart found. Maybe hidden.');
+      return;
+    }
 
     const groupBy = this.props.groupBy;
     
@@ -153,7 +159,7 @@ class HistoryChart extends Component {
       chart.series[3].setData(criticalData.reverse(), true);
     }
     
-    if (this.props.groupBy === 'hour') {
+    if (this.props.groupBy === 'hour' && chart.update) {
 
       chart.update({
         xAxis: {

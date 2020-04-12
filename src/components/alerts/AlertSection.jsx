@@ -12,12 +12,13 @@ import HistoryChart from '../widgets/HistoryChart.jsx';
 class AlertSection extends Component {
 
   // shouldComponentUpdate(nextProps, nextState) {
-  //   //console.log('shouldComponentUpdate', nextProps, nextState);
-  //   if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
+  //   console.log('shouldComponentUpdate', nextProps, nextState);
+  //   // if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
+  //   //   return true;
+  //   // } else {
+  //   //   return false;
+  //   // }
+  //   return true;
   // }
 
   render() {

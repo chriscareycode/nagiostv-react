@@ -1,0 +1,49 @@
+.NavSidebar {
+  position: fixed;
+  top: 51px;
+  bottom: 0px;
+  left: 0;
+  width: 50px;
+  border: 0px solid #333;
+  background-color: #222;
+  z-index: 13;
+}
+
+.NavSidebar .nav-sidebar-icon {
+  position: relative;
+  top: 10px;
+  width: 50px;
+  height: 50px;
+  border: 0px solid #333;
+  text-align: center;
+  font-size: 1.3em;
+  color: #666;
+}
+
+.NavSidebar .nav-sidebar-icon svg {
+  cursor: pointer;
+}
+
+.nav-sidebar-icon-selected {
+  color: #eee;
+}
+
+.NavSidebar .nav-sidebar-item {
+  position: static;
+  width: 50px;
+  height: 50px;
+  border: 0px solid #333;
+  text-align: center;
+}
+
+.NavSidebar .nav-sidebar-number {
+  margin-top: 20px;
+  color: orange;
+  font-size: 1.4em;
+  text-align: center;
+}
+
+.nav-sidebar-bottom-float {
+  position: absolute;
+  bottom: 0;
+}

@@ -1,6 +1,7 @@
 .Base {
   text-align: left;
   margin: 0 15px 0 15px;
+  background-color: #151515;
 }
 input[type=text] {
   width: 50%;
@@ -49,20 +50,35 @@ input[type=text] {
   top: 0;
   left: 0;
   right: 0;
-  min-height: 40px;
+  min-height: 50px;
   z-index: 10;
-  background-color: rgba(20,20,20,0.8);
-  border-bottom: 1px solid #333;
-  font-size: 1.1em;
+  background-color: #222;
+  border-bottom: 0px solid #333;
+  
 }
 .HeaderArea > div {
-  margin: 10px 0 10px 15px;
+  /*margin: 10px 0 10px 15px;*/
 }
 
-.ApplicationName {
+.HeaderArea > .header-corner-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #363644;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  line-height: 3.2em;
+}
+
+.header-application-name {
   font-size: 1.3em;
+  margin-top: 11px;
+  margin-left: 64px;
   margin-right: 10px;
   display: inline-block;
+  font-size: 1.1em;
+  color: #ddd;
 }
 
 /* Footer */
@@ -74,8 +90,8 @@ input[type=text] {
   right: 0;
   min-height: 35px;
   z-index: 12;
-  background-color: rgba(20,20,20,0.8);
-  border-top: 1px solid #333;
+  background-color: transparent;
+  border-top: 0px solid #333;
   text-align: center;
   font-size: 1.0em;
 }
@@ -140,10 +156,12 @@ input[type=text] {
   font-size: 1.1em;
   clear: both;
   /*overflow: hidden;*/
+  
 }
 .service-summary-title {
-  font-size: 1.3em;
+  font-size: 1.0em;
   margin-bottom: 5px;
+  color: #888;
 }
 
 /* all ok */
