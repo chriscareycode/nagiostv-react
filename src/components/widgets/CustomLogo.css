@@ -1,8 +1,6 @@
-.CustomLogoWrapper {
-  position: fixed;
-  top: 5px;
-  right: 10px;
-  z-index: 12;
+.CustomLogo {
+  display: inline-block;
+  vertical-align: top;
 }
 
 .CustomLogo img {

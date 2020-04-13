@@ -168,12 +168,19 @@ class Settings extends Component {
       );
     });
 
+    // languages
+    const locales = [{
+      name: 'en-US',
+      code: ''
+    }];
+    const localeOptions = locales.map((language, i) => {
+      return (
+        <option key={'locale-' + i} value={language.name}>{language.name} ({language.code})</option>
+      );
+    });
+
     return (
       <div className={`SettingsBox` + (this.state.open ? ' open' : '')}>
-
-      	<div className="SettingsSmall" onClick={this.toggle}>
-          <img src={SettingsIcon} alt="settings icon" />  
-        </div>
 
         <div className="SettingsBig">
 

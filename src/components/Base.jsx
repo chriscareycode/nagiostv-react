@@ -723,9 +723,12 @@ class Base extends Component {
     });
   }
 
-  toggleSettings = () => {
+  toggleSettings() {
     this.refs.settings.toggle();
-  };
+    this.setState({
+      showSettings: !this.state.showSettings
+    });
+  }
 
   saveCookie() {
     const cookieObject = {};
@@ -871,34 +874,40 @@ class Base extends Component {
           isCookieLoaded={this.state.isCookieLoaded}
         />
 
-        {/* flynn */}
-
-        {this.state.flynnEnabled && <div className="FlynnWrapper">
-          <Flynn
-            howManyDown={howManyHostAndServicesDown}
-            flynnConcernedAt={this.state.flynnConcernedAt}
-            flynnAngryAt={this.state.flynnAngryAt}
-            flynnBloodyAt={this.state.flynnBloodyAt}
-            flynnCssScale={this.state.flynnCssScale}
-          />
-        </div>}
-
-        {this.state.customLogoEnabled && <div className="CustomLogoWrapper">
-          <CustomLogo
-            settings={settingsObject}
-          />
-        </div>}
-
         {/* header */}
 
         <div className="HeaderArea">
           <div className="header-corner-area">N</div>
+          <div className="header-right-float">
+
+            {/* sound */}
+            {(this.state.playSoundEffects || this.state.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
+
+            {/* clock */}
+            <Clock />
+
+            {/* flynn */}
+            {this.state.flynnEnabled &&
+              <Flynn
+                howManyDown={howManyHostAndServicesDown}
+                flynnConcernedAt={this.state.flynnConcernedAt}
+                flynnAngryAt={this.state.flynnAngryAt}
+                flynnBloodyAt={this.state.flynnBloodyAt}
+                flynnCssScale={this.state.flynnCssScale}
+              />
+            }
+
+            {/* custom logo */}
+            {this.state.customLogoEnabled &&
+              <CustomLogo
+                settings={settingsObject}
+              />
+            }
+          </div>
+
           <div className="header-application-name">{this.state.titleString}</div>
 
-          <Clock />
-
           {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
-          {(this.state.playSoundEffects || this.state.speakItems) && <span style={{ position: 'relative', top: '-1px', marginLeft: '10px', color: '#aaa' }} className=""><FontAwesomeIcon icon={faVolumeUp} /></span>}
         </div>
 
         {/* footer */}
@@ -911,15 +920,16 @@ class Base extends Component {
 
           {/* right */}
           <div className="FooterAreaRight uppercase-first">
-            <span style={{ cursor: 'pointer' }} onClick={this.toggleSettings}>{translate('settings', language)}</span>
           </div>
 
           {/* middle */}
           <div className="FooterAreaMiddle">
-            {/*<span className="FooterAreaMiddleUpdate uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
-            &nbsp;&nbsp;*/}
-            <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
-            {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
+            <div className="footer-area-middle-version">
+              {/*<span className="FooterAreaMiddleUpdate uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
+              &nbsp;&nbsp;*/}
+              <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
+              {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
+            </div>
           </div>
         </div>
 
@@ -1220,9 +1230,6 @@ class Base extends Component {
         {/* endwrapper around the main content */}
         </div>
 
-        
-
-        <br />
         <br />
         <br />
         

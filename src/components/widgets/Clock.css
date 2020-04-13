@@ -1,8 +1,10 @@
 .Clock {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
+  display: inline-block;
   font-size: 1.2em;
   color: #ccc;
+  vertical-align: top;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 10px;
 }
