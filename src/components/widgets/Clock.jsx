@@ -49,8 +49,10 @@ class Clock extends Component {
   render() {
     return (
       <div className="Clock">
-        <FontAwesomeIcon className="" icon={faClock} />&nbsp;
-        {this.state.date.toLocaleTimeString('en-GB')}
+        {/*<FontAwesomeIcon className="" icon={faClock} />&nbsp;*/}
+        {this.state.date.toLocaleDateString(this.props.locale)}
+        &nbsp;
+        {this.state.date.toLocaleTimeString(this.props.locale)}
       </div>
     );
   }

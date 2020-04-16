@@ -121,7 +121,7 @@ class Base extends Component {
     flynnConcernedAt: 1,
     flynnAngryAt: 2,
     flynnBloodyAt: 4,
-    flynnCssScale: '0.8',
+    flynnCssScale: '1',
     showEmoji: false,
     speakItems: false,
     speakItemsVoice: '',
@@ -749,6 +749,7 @@ class Base extends Component {
     const settingsObject = {};
     this.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
+    
     // count how many items in each of the service states
     let howManyServices = 0;
     let howManyServicePending = 0;
@@ -872,6 +873,7 @@ class Base extends Component {
           settingsFields={this.settingsFields}
           updateStateFromSettings={this.updateStateFromSettings}
           isCookieLoaded={this.state.isCookieLoaded}
+          showSettings={this.state.showSettings}
         />
 
         {/* header */}
@@ -884,7 +886,7 @@ class Base extends Component {
             {(this.state.playSoundEffects || this.state.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
 
             {/* clock */}
-            <Clock />
+            <Clock locale={this.state.locale} />
 
             {/* flynn */}
             {this.state.flynnEnabled &&
@@ -913,21 +915,11 @@ class Base extends Component {
         {/* footer */}
 
         <div className="FooterArea">
-
-          {/* left */}
-          <div className="FooterAreaLeft">
-          </div>
-
-          {/* right */}
-          <div className="FooterAreaRight uppercase-first">
-          </div>
-
-          {/* middle */}
           <div className="FooterAreaMiddle">
             <div className="footer-area-middle-version">
               {/*<span className="FooterAreaMiddleUpdate uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
               &nbsp;&nbsp;*/}
-              <span>NagiosTV <span className="color-orange">v{this.state.currentVersionString}</span></span>
+              <span>NagiosTV <span className="">v{this.state.currentVersionString}</span></span>
               {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
             </div>
           </div>

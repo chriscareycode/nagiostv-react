@@ -72,7 +72,10 @@ class Flynn extends Component {
     const scale = 'scale(' + this.props.flynnCssScale + ')';
     
     return (
-      <div style={{ backgroundImage: 'url(' + flynnImage + ')', transform: scale }} className={flynnClass}></div>
+      <div className="flynn-wrap">
+        <div style={{ backgroundImage: 'url(' + flynnImage + ')', transform: scale }} className={flynnClass}>
+        </div>
+      </div>
     );
   }
 }

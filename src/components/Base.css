@@ -78,7 +78,9 @@ input[type=text] {
 
 .header-application-name {
   font-size: 1.3em;
-  margin-top: 11px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   margin-left: 64px;
   margin-right: 10px;
   display: inline-block;
@@ -93,7 +95,7 @@ input[type=text] {
   top: 50%;
   transform: translateY(-50%);
   color: #aaa;
-  margin-right: 10px;
+  margin-right: 15px;
 }
 
 /* Footer */
@@ -110,20 +112,6 @@ input[type=text] {
   text-align: center;
   font-size: 1.0em;
 }
-.FooterArea > div {
-  margin: 10px;
-  line-height: 1.3em;
-}
-.FooterAreaLeft {
-  position: absolute;
-  left: 0;
-  bottom: 0px;
-}
-.FooterAreaRight {
-  position: absolute;
-  right: 40px;
-  bottom: 0px;
-}
 
 .FooterAreaMiddle {
   
@@ -136,6 +124,7 @@ input[type=text] {
   margin:0 auto;
   padding: 5px 8px;
   border-radius: 5px;
+  color: #ddd;
 }
 
 
@@ -218,7 +207,7 @@ input[type=text] {
 .some-down-items {
   position: relative;
   border: 1px solid #004c00;
-  background-color: #111;
+  background-color: #001d00;
   font-size: 1.5em;
   border-radius: 5px;
   overflow: hidden;

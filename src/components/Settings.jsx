@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import './Settings.css';
 import Cookie from 'js-cookie';
-import SettingsIcon from './Settings.png';
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 import { languages } from '../helpers/language';
@@ -49,6 +48,10 @@ class Settings extends Component {
         this.loadLocalStateFromProps();
     }
     this.setState({ open: !this.state.open });
+
+    this.props.updateStateFromSettings({
+      showSettings: !this.props.showSettings
+    });
   }
 
   saveCookie() {
@@ -172,10 +175,13 @@ class Settings extends Component {
     const locales = [{
       name: 'en-US',
       code: ''
+    },{
+      name: 'en-GB',
+      code: ''
     }];
-    const localeOptions = locales.map((language, i) => {
+    const localeOptions = locales.map((locale, i) => {
       return (
-        <option key={'locale-' + i} value={language.name}>{language.name} ({language.code})</option>
+        <option key={'locale-' + i} value={locale.name}>{locale.name}</option>
       );
     });
 
@@ -251,6 +257,14 @@ class Settings extends Component {
                   <td>
                     <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
                         {languageOptions}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Locale:</th>
+                  <td>
+                    <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
+                        {localeOptions}
                     </select>
                   </td>
                 </tr>
@@ -350,7 +364,7 @@ class Settings extends Component {
                 {this.state.flynnEnabled && <tr>
                   <th>Flynn CSS scale</th>
                   <td>
-                    <input type="number" min="0" max="100" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                    <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
                     <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
                   </td>
                 </tr>}

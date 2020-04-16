@@ -1,9 +1,11 @@
 .CustomLogo {
   display: inline-block;
   vertical-align: top;
+  margin-right: 10px;
 }
 
 .CustomLogo img {
-  height: 55px;
+  height: 60px;
+  margin-top: 5px;
   margin-right: 8px;
 }

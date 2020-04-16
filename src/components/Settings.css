@@ -3,7 +3,7 @@
     position: fixed;
     height: 0px;
     width: 0px;
-    bottom: 10px;
+    bottom: 0px;
     right: 10px;
     z-index: 13;
     /*transition: all 200ms ease-in;*/
@@ -14,11 +14,11 @@
 .SettingsBox.open {
     
     position: fixed;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 60px);
     width: calc(100vw - 70px);
     /*height: 100vh;
     width: 100vw;*/
-    bottom: 10px;
+    bottom: 0px;
     right: 10px;
 
     
@@ -72,7 +72,7 @@
 .SettingsScroll {
     overflow-y: scroll;
     /*border: 1px solid green;*/
-    height: calc(100vh - 100px);
+    height: calc(100vh - 150px);
     margin-top: 10px;
     padding-top: 10px;
     padding-left: 10px;
