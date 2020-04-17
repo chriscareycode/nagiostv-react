@@ -4,8 +4,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import HostItem from './HostItem';
 
 // icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun } from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faSun } from '@fortawesome/free-solid-svg-icons';
 
 // css
 import './HostItems.css';

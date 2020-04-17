@@ -858,6 +858,7 @@ class Base extends Component {
         {/* nav sidebar */}
         <NavSidebar
           hideFilters={this.state.hideFilters}
+          hideHistoryChart={this.state.hideHistoryChart}
           updateStateFromSettings={this.updateStateFromSettings}
           showSettings={this.state.showSettings}
           toggleSettings={this.toggleSettings}
@@ -1178,7 +1179,7 @@ class Base extends Component {
 
           {!this.state.hideHistory && <div>
 
-            {!this.state.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
+            {(!this.state.hideHistoryTitle && !this.state.hideHistoryChart) && <div className="history-summary color-orange margin-top-10">
               <span className="service-summary-title">
               <strong>{this.state.alertlistHoursCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertHoursBack}</strong> {translate('hours', language)}
                 {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
