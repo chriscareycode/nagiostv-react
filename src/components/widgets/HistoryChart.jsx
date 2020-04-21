@@ -46,6 +46,12 @@ class HistoryChart extends Component {
         this.updateSeriesFromPropsDelay();
       }
     }
+
+    // if any filter checkboxes were toggled then we want to update as well
+    if (nextProps.hideAlertSoft !== this.props.hideAlertSoft) {
+      this.updateSeriesFromPropsDelay();
+    }
+
     // we never re-render this component since once highcharts is mounted, we don't want to re-render it over and over
     // we just want to use the update functions to update the existing chart
     return false;

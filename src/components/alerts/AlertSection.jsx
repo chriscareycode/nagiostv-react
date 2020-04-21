@@ -37,6 +37,7 @@ class AlertSection extends Component {
       });
     }
 
+    // filter the list of alert items
     const alertlist = this.props.alertlist.filter(alert => {
       if (this.props.hideAlertSoft) {
         if (alert.state_type === 2) {
@@ -45,7 +46,11 @@ class AlertSection extends Component {
       }
       return true;
     });
-    
+
+    // TODO: move alertlistHoursCount here
+
+    const alertlistCount = alertlist.length;
+
     return (
       <div className={`AlertSection`}>
 
@@ -64,13 +69,14 @@ class AlertSection extends Component {
           groupBy="hour"
           alertHoursBack={24} 
           alertDaysBack={1}
+          hideAlertSoft={this.props.hideAlertSoft}
         />}
 
         {/* full alert chart */}
 
         {!this.props.hideHistoryTitle && <div className="history-summary color-orange margin-top-10">
           <span className="service-summary-title">
-          <strong>{this.props.alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
+          <strong>{alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
             {this.props.alertlistCount > this.props.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
           </span>
         </div>}
@@ -90,6 +96,7 @@ class AlertSection extends Component {
           alertlistLastUpdate={this.props.alertlistLastUpdate}
           groupBy="day"
           alertDaysBack={this.props.alertDaysBack} 
+          hideAlertSoft={this.props.hideAlertSoft}
         />}
 
         {/* error area */}
