@@ -1,89 +1,47 @@
 .SettingsBox {
-    
-    position: fixed;
-    height: 0px;
-    width: 0px;
-    bottom: 0px;
-    right: 10px;
-    z-index: 13;
-    /*transition: all 200ms ease-in;*/
-    background-color: rgba(0,0,0,0.85);
-    
-    background-color: #222;
-}
-.SettingsBox.open {
-    
-    position: fixed;
-    height: calc(100vh - 60px);
-    width: calc(100vw - 70px);
-    /*height: 100vh;
-    width: 100vw;*/
-    bottom: 0px;
-    right: 10px;
-
-    
-}
-.SettingsBox > .SettingsSmall {
-    opacity: 1;
-    height: 30px;
-    width: 30px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    text-align: center;
-    cursor: pointer;
-}
-.SettingsBox > .SettingsSmall > img {
-    height: 30px;
-    width: 30px;  
-}
-.SettingsBox.open > .SettingsSmall {
-    opacity: 0;
-}
-
-.SettingsBox > .SettingsBig {
-    display: none;
-
-    margin-left: 10px;
-    margin-right: 10px;
-    /*border: 1px solid orange;*/
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-.SettingsBox.open > .SettingsBig {
-    display: block;
-}
-.SettingsBox > .SettingsBig h2 {
-    font-size: 1.2em;
-    color: yellow;
-}
-.SettingsBox > .SettingsBig h5 {
-    font-size: 1.1em;
-    margin: 10px 0px;
-    color: yellow;
+    background-color: #111;
+    position: relative;
 }
 
 .SettingsBox select {
     border: 1px solid #ccc;
 }
-.SettingsScroll {
-    overflow-y: scroll;
-    /*border: 1px solid green;*/
-    height: calc(100vh - 150px);
-    margin-top: 10px;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+
+.settings-top-space-for-header {
+    height: 45px;
+}
+
+.settings-header {
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    right: 0px;
+    background-color: #222;
+    border: 0px solid orange;
+}
+
+.settings-header-heading {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    font-size: 1.1em;
+    margin-left: 15px;
+    color: #ddd;
+}
+
+.settings-header-buttons {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    bottom: 5px;
+}
+
+.settings-header-buttons button {
+    font-size: 1.0em;
 }
 
 .SettingsCloseButton {
     background-color: #333;
     color: orange;
-    font-size: 1.1em;
-    font-weight: bold;
     border: 2px solid orange;
     border-radius: 5px;
     padding: 5px 10px;
@@ -96,8 +54,6 @@
 .SettingsSaveButton {
     background-color: #333;
     color: lime;
-    font-size: 1.1em;
-    font-weight: bold;
     border: 2px solid green;
     border-radius: 5px;
     padding: 5px 10px;
@@ -106,7 +62,6 @@
 .SettingsDeleteCookieButton {
     background-color: #333;
     color: orange;
-    font-size: 1.1em;
     font-weight: bold;
     border: 2px solid orange;
     padding: 5px 10px;
@@ -116,7 +71,6 @@
 .SettingsSaveToServerButton {
     background-color: #333;
     color: lime;
-    font-size: 1.1em;
     font-weight: bold;
     border: 2px solid green;
     padding: 5px 10px;
@@ -136,16 +90,17 @@
 }
 
 .raw-json-settings {
-    border: 2px solid orange;
+    border: 2px solid #424242;
+    background-color: #333;
+    padding: 10px;
     margin-top: 10px;
     margin-right: 20px;
-    width: calc(100% - 5px);
+    width: 100%;
+    max-width: 80vw;
     min-height: 100px;
     word-wrap: break-word;
-}
-
-.SaveToServerText {
-    margin-top: 10px;
+    white-space: pre-wrap;
+ 
 }
 
 .SettingsCenterDiv {
@@ -159,31 +114,23 @@
     margin-left: 10px;
 }
 
-.SettingsHeading {
-    padding-top: 15px;
-    padding-bottom: 10px;
-    font-size: 1.2em;
-}
-
 table.SettingsTable {
-    border: 2px solid #888;
+    border: 1px solid #555;
     background-color: #444;
     width: 100%;
-    font-size: 1.1em;
     margin-bottom: 10px;
-    padding-bottom: 10px;
+    margin-top: 15px;
 }
 
 table.SettingsTable td.SettingsTableHeader {
     background-color: #333;
-    border-bottom: 2px solid #777;
+    border-bottom: 2px solid #444;
     padding: 9px;
     margin-bottom: 5px;
 }
 table.SettingsTable th {
     text-align: right;
     padding: 8px;
-    
     white-space: nowrap;
     vertical-align: top;
 }
@@ -200,7 +147,6 @@ table.SettingsTable input[type=number] {
     font-size: 1.1em;
     width: 100px;
 }
-
 table.SettingsTable button {
     font-size: 1.1em;
     border-radius: 4px;

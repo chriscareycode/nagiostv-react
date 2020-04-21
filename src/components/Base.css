@@ -114,7 +114,10 @@ input[type=text] {
 }
 
 .FooterAreaMiddle {
-  
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .footer-area-middle-version {
@@ -150,6 +153,13 @@ input[type=text] {
     display: none !important;
   }
 }
+
+
+.main-content {
+  margin-left: 50px;
+}
+
+
 
 .SettingsButtonDiv {
   position: absolute;
@@ -238,25 +248,20 @@ input[type=text] {
 
 /**/
 
-.service-hide-problems {
-  margin-top: 8px;
+.sort-and-filter {
   line-height: 30px;
-  opacity: 0.5;
   transition: opacity 100ms ease-in;
+  margin-top: 5px;
 }
-
-.service-hide-problems:hover {
-  opacity: 1;
-}
-
-.service-hide-problems select {
+.sort-and-filter select {
   background-color: #353535;
   color: white;
   font-size: 0.7em;
   white-space: nowrap;
   opacity: 0.8;
+  margin-right: 6px;
 }
-.service-hide-problems label {
+.sort-and-filter label {
   border: 1px solid gray;
   border-radius: 4px;
   padding: 3px 7px;
@@ -264,98 +269,70 @@ input[type=text] {
   font-size: 0.7em;
   opacity: 0.8;
 }
-.service-hide-problems > label > span {
+.sort-and-filter > label > span {
   /*white-space: nowrap;*/
 }
-.service-hide-problems > label > input[type=checkbox] {
+.sort-and-filter > label > input[type=checkbox] {
   margin-left: 3px;
   margin-right: 6px;
   font-size: 1em;
   position: relative;
   top: -1px;
 }
-.service-hide-problems label.warning {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
+.sort-and-filter > label > input[type=checkbox]:first-of-type {
+  margin-left: 0px;
 }
-.service-hide-problems label.unknown {
-  border: 0px solid gray;
-  background-color: rgba(255, 177, 2, 0.3);
-}
-.service-hide-problems label.critical {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.service-hide-problems label.acked {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.service-hide-problems label.scheduled {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.service-hide-problems label.flapping {
-  border: 0px solid gray;
-  background-color: rgba(255, 177, 2, 0.3);
-}
-.service-hide-problems label.soft {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
-}
-
-/* host */
-
-.service-hide-problems label.down {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.service-hide-problems label.unreachable {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.service-hide-problems label.pending {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
-}
-
-/* summary-label */
-
-.summary-label {
-  padding: 3px 5px;
-  border-radius: 4px;
-  font-size: 0.5em;
-  position: relative;
-  top: -2px;
-  margin-left: 2px;
-  margin-right: 8px;
-}
-.summary-label-red {
-  border: 1px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-  color: orange;
-}
-.summary-label-orange {
-  border: 1px solid orange;
-  background-color: rgba(255, 177, 2, 0.3);
-  color: orange;
-}
-.summary-label-yellow {
+.sort-and-filter label.warning {
   border: 1px solid yellow;
   background-color: #585804;
   color: yellow;
 }
-.summary-label-green {
+.sort-and-filter label.unknown {
+  border: 1px solid gray;
+  background-color: rgba(255, 177, 2, 0.3);
+}
+.sort-and-filter label.critical {
+  border: 1px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+  color: orange;
+}
+.sort-and-filter label.acked {
   border: 1px solid green;
   background-color: rgba(0, 253, 43, 0.3);
-  color: orange;
 }
-.summary-label-gray {
+.sort-and-filter label.scheduled {
+  border: 1px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+}
+.sort-and-filter label.flapping {
   border: 1px solid gray;
-  background-color: rgba(181, 181, 181, 0.3);
-  color: orange;
+  background-color: rgba(255, 177, 2, 0.3);
 }
+.sort-and-filter label.soft {
+  border: 0px solid yellow;
+  background-color: #585804;
+  color: yellow;
+}
+.sort-and-filter label.dim {
+  border: 0px solid yellow;
+  opacity: 0.5;
+}
+
+/* host */
+
+.sort-and-filter label.down {
+  border: 0px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.sort-and-filter label.unreachable {
+  border: 0px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+}
+.sort-and-filter label.pending {
+  border: 0px solid gray;
+  background-color: rgba(250, 250, 250, 0.3);
+}
+
 
 /* fun stuff */
 
@@ -400,4 +377,7 @@ input[type=text] {
 }
 .font-size-0-8 {
   font-size: 0.8em;
+}
+button {
+  cursor: pointer;
 }

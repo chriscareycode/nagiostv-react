@@ -17,6 +17,12 @@ class NavSidebar extends Component {
   //   }
   // }
 
+  clickedDashboard = () => {
+    this.props.updateStateFromSettings({
+      currentPage: 'dashboard'
+    });
+  };
+
   clickedFilter = () => {
     this.props.updateStateFromSettings({
       hideFilters: !this.props.hideFilters
@@ -25,7 +31,7 @@ class NavSidebar extends Component {
 
   clickedSettings = () => {
     this.props.updateStateFromSettings({
-      showSettings: !this.props.showSettings
+      currentPage: 'settings'
     });
   };
 
@@ -42,7 +48,7 @@ class NavSidebar extends Component {
         
         <div className="nav-sidebar-icon">
           <span data-tip="Dashboard">
-            <FontAwesomeIcon className="nav-sidebar-icon-selected" icon={faTachometerAlt} />
+            <FontAwesomeIcon onClick={this.clickedDashboard} className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''} icon={faTachometerAlt} />
           </span>
         </div>
 
@@ -65,14 +71,14 @@ class NavSidebar extends Component {
         */}
 
         <div className="nav-sidebar-icon">
-          <span data-tip="Filters">
+          <span data-tip="Show All Filters">
             <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
           </span>
         </div>
         
         <div className="nav-sidebar-icon">
           <span data-tip="Settings">
-            <FontAwesomeIcon onClick={this.props.toggleSettings} className={this.props.showSettings ? 'nav-sidebar-icon-selected' : ''} icon={faTools} />
+            <FontAwesomeIcon onClick={this.clickedSettings} className={this.props.currentPage === 'settings' ? 'nav-sidebar-icon-selected' : ''} icon={faTools} />
           </span>
         </div>
 

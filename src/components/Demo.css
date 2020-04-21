@@ -30,11 +30,48 @@
 	font-size: 0.8em;
 	width: calc(100% - 15px);
 	margin: 4px 0;
-
 }
 
 .Demo button {
 	width: 45%;
 	font-size: 0.7em;
 	margin: 0 2px;
+}
+
+
+/* summary-label */
+
+.summary-label {
+  padding: 3px 5px;
+  border-radius: 4px;
+  font-size: 0.5em;
+  position: relative;
+  top: -2px;
+  margin-left: 2px;
+  margin-right: 8px;
+}
+.summary-label-red {
+  border: 1px solid red;
+  background-color: rgba(255, 2, 2, 0.3);
+  color: orange;
+}
+.summary-label-orange {
+  border: 1px solid orange;
+  background-color: rgba(255, 177, 2, 0.3);
+  color: orange;
+}
+.summary-label-yellow {
+  border: 1px solid yellow;
+  background-color: #585804;
+  color: yellow;
+}
+.summary-label-green {
+  border: 1px solid green;
+  background-color: rgba(0, 253, 43, 0.3);
+  color: orange;
+}
+.summary-label-gray {
+  border: 1px solid gray;
+  background-color: rgba(181, 181, 181, 0.3);
+  color: orange;
 }

@@ -80,8 +80,7 @@ class QuietFor extends Component {
     } else if (hours > 1 && hours <= 6) {
         icon = <FontAwesomeIcon className="color-orange" icon={faCloudSunRain} />;
         color = 'color-orange';
-    }
-    else {
+    } else {
         icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />;
         color = 'color-red';
     }

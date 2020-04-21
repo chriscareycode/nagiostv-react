@@ -1,7 +1,9 @@
 /*eslint array-callback-return: "off"*/
 import React, { Component } from 'react';
 import HostItems from './hosts/HostItems.jsx';
+import HostFilters from './hosts/HostFilters.jsx';
 import ServiceItems from './services/ServiceItems.jsx';
+import ServiceFilters from './services/ServiceFilters.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
 import { translate } from '../helpers/language';
 import { cleanDemoDataHostlist, cleanDemoDataServicelist } from '../helpers/nagiostv';
@@ -9,7 +11,6 @@ import { convertHostObjectToArray, convertServiceObjectToArray } from '../helper
 import Flynn from './Flynn/Flynn.jsx';
 import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
-import Checkbox from './widgets/Checkbox.jsx';
 import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import Demo from './Demo.jsx';
 import Clock from './widgets/Clock.jsx';
@@ -24,7 +25,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faTv } from '@fortawesome/free-solid-svg-icons';
 
 class Base extends Component {
 
@@ -32,10 +33,10 @@ class Base extends Component {
   useFakeSampleData = false;
 
   state = {
-    showSettings: false,
+    currentPage: 'dashboard',
 
-    currentVersion: 42,
-    currentVersionString: '0.4.11',
+    currentVersion: 43,
+    currentVersionString: '0.5.0',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
@@ -105,7 +106,7 @@ class Base extends Component {
     hideHistory: false,
     hideHistoryTitle: false,
     hideHistoryChart: false,
-    hideHistorySoft: false,
+    hideAlertSoft: false,
 
     hostSortOrder: 'newest',
 
@@ -161,7 +162,7 @@ class Base extends Component {
     'hideHistory',
     'hideHistoryTitle',
     'hideHistoryChart',
-    'hideHistorySoft',
+    'hideAlertSoft',
 
     'hostSortOrder',
     
@@ -189,11 +190,10 @@ class Base extends Component {
   constructor(props) {
     super(props);
 
-    // Bind functions
+    // Bind functions (move these to named arrow functons)
     this.updateStateFromSettings = this.updateStateFromSettings.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.toggleSettings = this.toggleSettings.bind(this);
-
+    
     // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
     // demo mode uses fake data and rotates through a couple of alerts as an example
     const urlParams = new URLSearchParams(window.location.search);
@@ -261,8 +261,6 @@ class Base extends Component {
         }
       }, 30000);
     } // if isDemoMode === false
-
-    //this.toggleSettings(); //open settings box by default (for local development)
 
   }
 
@@ -658,14 +656,8 @@ class Base extends Component {
   }
 
   showSettings() {
-    this.setState({ showSettings: true });
+    this.setState({ currentPage: 'settings' });
   }
-
-  hideSettings() {
-    this.setState({ showSettings: false });
-  }
-
-  
 
   /****************************************************************************
    *
@@ -720,13 +712,6 @@ class Base extends Component {
   updateStateFromSettings(settingsObject) {
     this.setState({
       ...settingsObject
-    });
-  }
-
-  toggleSettings() {
-    this.refs.settings.toggle();
-    this.setState({
-      showSettings: !this.state.showSettings
     });
   }
 
@@ -831,17 +816,6 @@ class Base extends Component {
       });
     }
 
-    // count how many soft history items
-    let howManyHistorySoft = 0;
-    if (this.state.alertlist) {
-      this.state.alertlist.forEach(alert => {
-        //console.log(alert);
-        if (alert.state_type === 2) {
-          howManyHistorySoft++;
-        }
-      });
-    }
-
     const settingsLoaded = this.state.isDoneLoading;
     
     const { language } = this.state;
@@ -860,27 +834,15 @@ class Base extends Component {
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
           updateStateFromSettings={this.updateStateFromSettings}
-          showSettings={this.state.showSettings}
-          toggleSettings={this.toggleSettings}
-        />
-
-        {/* settings */}
-
-        <Settings
-          ref="settings"
-          baseUrl={this.state.baseUrl}
-          baseUrlChanged={this.baseUrlChanged.bind(this)}
-          settings={settingsObject}
-          settingsFields={this.settingsFields}
-          updateStateFromSettings={this.updateStateFromSettings}
-          isCookieLoaded={this.state.isCookieLoaded}
-          showSettings={this.state.showSettings}
+          currentPage={this.state.currentPage}
         />
 
         {/* header */}
 
         <div className="HeaderArea">
-          <div className="header-corner-area">N</div>
+          <div className="header-corner-area">
+            <FontAwesomeIcon className="header-corner-area-icon" icon={faTv} />
+          </div>
           <div className="header-right-float">
 
             {/* sound */}
@@ -931,8 +893,6 @@ class Base extends Component {
         <div style={{ height: '55px' }}>
         </div>
 
-        {!settingsLoaded && <div>Settings are not loaded yet</div>}
-
         {/* Demo mode logic is inside this component */}
 
         {this.state.isDemoMode && <Demo
@@ -943,17 +903,34 @@ class Base extends Component {
           updateStateFromSettings={this.updateStateFromSettings}
         />}
 
-
         {/* wrapper around the main content */}
-        <div className="" style={{ marginLeft: '50px' }}>
+        <div className="main-content">
+
+          {!settingsLoaded && <div>Settings are not loaded yet</div>}
+
+          {/* settings */}
+
+          {this.state.currentPage === 'settings' && <Settings
+            ref="settings"
+            baseUrl={this.state.baseUrl}
+            baseUrlChanged={this.baseUrlChanged.bind(this)}
+            settings={settingsObject}
+            settingsFields={this.settingsFields}
+            updateStateFromSettings={this.updateStateFromSettings}
+            isCookieLoaded={this.state.isCookieLoaded}
+            currentPage={this.state.currentPage}
+          />}
+
+          {this.state.currentPage === 'dashboard' && <div className="dashboard-area">
 
             {/* hosts */}
 
             {settingsLoaded && <div className="service-summary">
             
-            <span className="service-summary-title">
-              Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
-                
+              <span className="service-summary-title">
+                Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
+              </span>
+
               {howManyHostDown > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostDown} {translate('down', language)}</span>}
               {howManyHostUnreachable > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostUnreachable} {translate('unreachable', language)}</span>}
               {howManyHostPending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyHostPending} {translate('pending', language)}</span>}
@@ -961,7 +938,7 @@ class Base extends Component {
               {howManyHostScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostScheduled} {translate('scheduled', language)}</span>}
               {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyHostFlapping} {translate('flapping', language)}</span>}
               {howManyHostSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyHostSoft} {translate('soft', language)}</span>}
-              
+
               {/* how many down emoji */}
               {this.state.showEmoji && <HowManyEmoji
                 howMany={howManyHosts}
@@ -969,101 +946,51 @@ class Base extends Component {
                 howManyCritical={howManyHostDown}
                 howManyDown={this.state.hostProblemsArray.length}
               />}
-            </span>
 
-            {/* sorting and filters */}
-            {!this.state.hideFilters && <div className="service-hide-problems">
-
-              <select value={this.state.hostSortOrder} varname={'hostSortOrder'} onChange={this.handleSelectChange}>
-                <option value="newest">{translate('newest first', language)}</option>
-                <option value="oldest">{translate('oldest first', language)}</option>
-              </select>
-
-              <Checkbox className="Checkbox down uppercase"
+              {/* host filters */}
+              <HostFilters
+                hideFilters={this.state.hideFilters}
+                hostSortOrder={this.state.hostSortOrder}
+                handleSelectChange={this.handleSelectChange}
                 handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostDown'}
-                defaultChecked={!this.state.hideHostDown}
-                howMany={howManyHostDown}
-                howManyText={translate('down', language)}
-              />
-
-              <Checkbox className="Checkbox unreachable uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostUnreachable'}
-                defaultChecked={!this.state.hideHostUnreachable}
-                howMany={howManyHostUnreachable}
-                howManyText={translate('unreachable', language)}
-              />
-
-              <Checkbox className="Checkbox pending uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostPending'}
-                defaultChecked={!this.state.hideHostPending}
-                howMany={howManyHostPending}
-                howManyText={translate('pending', language)}
-              />
-
-              <Checkbox className="Checkbox acked uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostAcked'}
-                defaultChecked={!this.state.hideHostAcked}
-                howMany={howManyHostAcked}
-                howManyText={translate('acked', language)}
-              />
-
-              <Checkbox className="Checkbox scheduled uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostScheduled'}
-                defaultChecked={!this.state.hideHostScheduled}
-                howMany={howManyHostScheduled}
-                howManyText={translate('scheduled', language)}
-              />
-
-              <Checkbox className="Checkbox flapping uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostFlapping'}
-                defaultChecked={!this.state.hideHostFlapping}
-                howMany={howManyHostFlapping}
-                howManyText={translate('flapping', language)}
-              />
-
-              <Checkbox className="Checkbox soft uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHostSoft'}
-                defaultChecked={!this.state.hideHostSoft}
-                howMany={howManyHostSoft}
-                howManyText={translate('soft', language)}
+                howManyHostDown={howManyHostDown}
+                howManyHostUnreachable={howManyHostUnreachable}
+                howManyHostPending={howManyHostPending}
+                howManyHostAcked={howManyHostAcked}
+                howManyHostScheduled={howManyHostScheduled}
+                howManyHostFlapping={howManyHostFlapping}
+                howManyHostSoft={howManyHostSoft}
+                language={language}
+                settingsObject={settingsObject}
               />
 
             </div>}
 
-          </div>}
+            {/** If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
+            {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
-          {/** If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
-          {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
+            {/* hostitems list */}
+            <HostItems
+              hostProblemsArray={this.state.hostProblemsArray}
+              commentlist={this.state.commentlist}
+              settings={settingsObject}
+              howManyHosts={howManyHosts}
+              howManyHostUp={howManyHostUp}
+              howManyHostDown={howManyHostDown}
+              howManyHostUnreachable={howManyHostUnreachable}
+              howManyHostPending={howManyHostPending}
+              howManyHostAcked={howManyHostAcked}
+              howManyHostScheduled={howManyHostScheduled}
+              howManyHostFlapping={howManyHostFlapping}
+            />
 
-          {/* hostitems list */}
-          <HostItems
-            hostProblemsArray={this.state.hostProblemsArray}
-            commentlist={this.state.commentlist}
-            settings={settingsObject}
+            {/* services */}
 
-            howManyHosts={howManyHosts}
-            howManyHostUp={howManyHostUp}
-            howManyHostDown={howManyHostDown}
-            howManyHostUnreachable={howManyHostUnreachable}
-            howManyHostPending={howManyHostPending}
-            howManyHostAcked={howManyHostAcked}
-            howManyHostScheduled={howManyHostScheduled}
-            howManyHostFlapping={howManyHostFlapping}
-          />
-
-          {/* services */}
-
-          {settingsLoaded && <div className="service-summary" style={{ marginTop: '12px'}}>
-            
-            <span className="service-summary-title">
-              Monitoring <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
+            {settingsLoaded && <div className="service-summary" style={{ marginTop: '12px'}}>
+              
+              <span className="service-summary-title">
+                Monitoring <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
+              </span>
 
               {howManyServiceCritical > 0 && <span className="summary-label summary-label-red uppercase">{howManyServiceCritical} {translate('critical', language)}</span>}
               {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceWarning} {translate('warning', language)}</span>}
@@ -1080,148 +1007,77 @@ class Base extends Component {
                 howManyCritical={howManyServiceCritical}
                 howManyDown={this.state.serviceProblemsArray.length}
               />}
-            </span>
 
-            {!this.state.hideFilters && <div className="service-hide-problems">
-
-              <select value={this.state.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.handleSelectChange}>
-                <option value="newest">{translate('newest first', language)}</option>
-                <option value="oldest">{translate('oldest first', language)}</option>
-              </select>
-
-              <Checkbox className="Checkbox critical uppercase"
+              {/* service filters */}
+              {!this.state.hideFilters && <ServiceFilters
+                hideFilters={this.state.hideFilters}
+                serviceSortOrder={this.state.serviceSortOrder}
+                handleSelectChange={this.handleSelectChange}
                 handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceCritical'}
-                defaultChecked={!this.state.hideServiceCritical}
-                howMany={howManyServiceCritical}
-                howManyText={translate('critical', language)}
-              />
-
-              <Checkbox className="Checkbox warning uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceWarning'}
-                defaultChecked={!this.state.hideServiceWarning}
-                howMany={howManyServiceWarning}
-                howManyText={translate('warning', language)}
-              />
-
-              <Checkbox className="Checkbox unknown uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceUnknown'}
-                defaultChecked={!this.state.hideServiceUnknown}
-                howMany={howManyServiceUnknown}
-                howManyText={translate('unknown', language)}
-              />
-
-              <Checkbox className="Checkbox pending uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServicePending'}
-                defaultChecked={!this.state.hideServicePending}
-                howMany={howManyServicePending}
-                howManyText={translate('pending', language)}
-              />
-
-              <Checkbox className="Checkbox acked uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceAcked'}
-                defaultChecked={!this.state.hideServiceAcked}
-                howMany={howManyServiceAcked}
-                howManyText={translate('acked', language)}
-              />
-
-              <Checkbox className="Checkbox scheduled uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceScheduled'}
-                defaultChecked={!this.state.hideServiceScheduled}
-                howMany={howManyServiceScheduled}
-                howManyText={translate('scheduled', language)}
-              />
-
-              <Checkbox className="Checkbox flapping uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceFlapping'}
-                defaultChecked={!this.state.hideServiceFlapping}
-                howMany={howManyServiceFlapping}
-                howManyText={translate('flapping', language)}
-              />
-
-              <Checkbox className="Checkbox soft uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideServiceSoft'}
-                defaultChecked={!this.state.hideServiceSoft}
-                howMany={howManyServiceSoft}
-                howManyText={translate('soft', language)}
-              />
+                howManyServices={howManyServices}
+                howManyServiceWarning={howManyServiceWarning}
+                howManyServicePending={howManyServicePending}
+                howManyServiceUnknown={howManyServiceUnknown}
+                howManyServiceCritical={howManyServiceCritical}
+                howManyServiceAcked={howManyServiceAcked}
+                howManyServiceScheduled={howManyServiceScheduled}
+                howManyServiceFlapping={howManyServiceFlapping}
+                howManyServiceSoft={howManyServiceSoft}
+                language={language}
+                settingsObject={settingsObject}
+              />}
 
             </div>}
+            
+            {/** If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
+            {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
-          </div>}
-          
-          {/** If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-          {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
+            <ServiceItems
+              serviceProblemsArray={this.state.serviceProblemsArray}
+              commentlist={this.state.commentlist}
+              settings={settingsObject}
 
-          <ServiceItems
-            serviceProblemsArray={this.state.serviceProblemsArray}
-            commentlist={this.state.commentlist}
-            settings={settingsObject}
-
-            howManyServices={howManyServices}
-            howManyServiceWarning={howManyServiceWarning}
-            howManyServicePending={howManyServicePending}
-            howManyServiceUnknown={howManyServiceUnknown}
-            howManyServiceCritical={howManyServiceCritical}
-            howManyServiceAcked={howManyServiceAcked}
-            howManyServiceScheduled={howManyServiceScheduled}
-            howManyServiceFlapping={howManyServiceFlapping}
-          />
-          
-          {/* history (alertlist) */}
-
-          {!this.state.hideHistory && <div>
-
-            {(!this.state.hideHistoryTitle && !this.state.hideHistoryChart) && <div className="history-summary color-orange margin-top-10">
-              <span className="service-summary-title">
-              <strong>{this.state.alertlistHoursCount}</strong> {translate('alerts in the past', language)} <strong>{this.state.alertHoursBack}</strong> {translate('hours', language)}
-                {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
-              </span>
-            </div>}
-
-            {/* history filters */}
-
-            {!this.state.hideFilters && <div className="service-hide-problems">
-
-              <Checkbox className="Checkbox soft uppercase"
-                handleCheckboxChange={this.handleCheckboxChange}
-                stateName={'hideHistorySoft'}
-                defaultChecked={!this.state.hideHistorySoft}
-                howMany={howManyHistorySoft}
-                howManyText={translate('soft', language)}
-              />
-
-            </div>}
-
-            {/* history alert chart */}
-
-            <AlertSection
-              alertlist={this.state.alertlist}
-              alertlistCount={this.state.alertlistCount}
-              alertlistHours={this.state.alertlistHours}
-              alertlistLastUpdate={this.state.alertlistLastUpdate}
-              alertlistErrorMessage={this.state.alertlistErrorMessage}
-              alertDaysBack={this.state.alertDaysBack}
-              alertMaxItems={this.state.alertMaxItems}
-              showEmoji={this.state.showEmoji}
-              settingsObject={settingsObject}
-              settingsFields={this.settingsFields}
-              language={this.state.language}
-              hideHistoryChart={this.state.hideHistoryChart}
-              hideHistoryTitle={this.state.hideHistoryTitle}
+              howManyServices={howManyServices}
+              howManyServiceWarning={howManyServiceWarning}
+              howManyServicePending={howManyServicePending}
+              howManyServiceUnknown={howManyServiceUnknown}
+              howManyServiceCritical={howManyServiceCritical}
+              howManyServiceAcked={howManyServiceAcked}
+              howManyServiceScheduled={howManyServiceScheduled}
+              howManyServiceFlapping={howManyServiceFlapping}
             />
+            
+            {/* history (alertlist) */}
 
-          </div>}
+            {!this.state.hideHistory && <div>
 
-        {/* endwrapper around the main content */}
-        </div>
+              {/* history alert chart */}
+
+              <AlertSection
+                alertlist={this.state.alertlist}
+                alertlistCount={this.state.alertlistCount}
+                alertlistHours={this.state.alertlistHours}
+                alertlistHoursCount={this.state.alertlistHoursCount}
+                alertlistLastUpdate={this.state.alertlistLastUpdate}
+                alertlistErrorMessage={this.state.alertlistErrorMessage}
+                alertDaysBack={this.state.alertDaysBack}
+                alertHoursBack={this.state.alertHoursBack}
+                alertMaxItems={this.state.alertMaxItems}
+                showEmoji={this.state.showEmoji}
+                settingsObject={settingsObject}
+                settingsFields={this.settingsFields}
+                language={this.state.language}
+                hideHistoryChart={this.state.hideHistoryChart}
+                hideHistoryTitle={this.state.hideHistoryTitle}
+                hideAlertSoft={this.state.hideAlertSoft}
+                handleCheckboxChange={this.handleCheckboxChange}
+              />
+
+            </div>}
+
+          </div>} {/* end dashboard-area */}
+        
+        </div> {/* endwrapper around the main content */}
 
         <br />
         <br />

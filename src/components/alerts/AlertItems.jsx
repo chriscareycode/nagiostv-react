@@ -38,7 +38,7 @@ class AlertItems extends Component {
 
 
     const filteredHistoryArray = this.props.items.filter(item => {
-      if (this.props.settings.hideHistorySoft) {
+      if (this.props.settings.hideAlertSoft) {
         if (item.state_type === 2) { return false; }
       }
       return true;

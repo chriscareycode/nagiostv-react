@@ -1,4 +1,9 @@
 .Checkbox {
 	margin-left: 4px;
 	white-space: nowrap;
+	cursor: pointer;
+}
+
+.Checkbox:first-of-type {
+	margin-left: 0px;
 }
