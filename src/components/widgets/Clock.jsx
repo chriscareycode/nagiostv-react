@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import { momentFormatDateTime } from '../../helpers/moment.js';
 import './Clock.css';
-
 
 // icons
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faClock } from '@fortawesome/free-solid-svg-icons';
-
 
 class Clock extends Component {
 
@@ -32,11 +31,6 @@ class Clock extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);
-    // if (nextProps.settings.customLogoEnabled !== this.props.settings.customLogoEnabled || nextProps.settings.customLogoUrl !== this.props.settings.customLogoUrl) {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
     return true;
   }
 
@@ -49,10 +43,7 @@ class Clock extends Component {
   render() {
     return (
       <div className="Clock">
-        {/*<FontAwesomeIcon className="" icon={faClock} />&nbsp;*/}
-        {this.state.date.toLocaleDateString(this.props.locale)}
-        &nbsp;
-        {this.state.date.toLocaleTimeString(this.props.locale)}
+        {momentFormatDateTime('now', this.props.locale, 'llll')}
       </div>
     );
   }

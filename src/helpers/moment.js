@@ -1,9 +1,19 @@
 import moment from 'moment';
 import React from 'react';
 
-export function prettyDateTime(date) {
+// Load more moment locales
+import 'moment/locale/en-gb';
+import 'moment/locale/fr';
+
+export function listLocales() {
+  return moment.locales();
+}
+
+export function momentFormatDateTime(date, locale, format) {
   if (date === 0) { return 'Never'; }
-	var m = moment(date).format('YYYY/MM/DD h:mm:ss a');
+  if (date === 'now') { date = new Date().getTime() }
+  if (!locale) { locale = 'en'; }
+	var m = moment(date).locale(locale).format(format);
   return m;
 }
 

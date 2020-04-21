@@ -111,7 +111,7 @@ class Base extends Component {
     hostSortOrder: 'newest',
 
     language: 'English',
-    locale: 'en-US',
+    locale: 'en',
     
     isDemoMode: false,
 

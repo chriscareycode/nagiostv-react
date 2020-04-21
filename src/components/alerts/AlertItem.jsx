@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-import { prettyDateTime } from '../../helpers/moment.js';
+import { momentFormatDateTime } from '../../helpers/moment.js';
 import { ifQuietFor } from '../../helpers/date-math.js';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
 import QuietFor from './QuietFor.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faAdjust } from '@fortawesome/free-solid-svg-icons';
+
 // css
 //import './AlertItem.css';
 
@@ -24,7 +25,7 @@ class AlertItem extends Component {
 
   render() {
     
-    const { language } = this.props;
+    const { language, locale } = this.props;
     const howMuchTimeIsQuietTime = 10;
     const { e, i } = this.props;
     const isSoft = e.state_type === 2;
@@ -43,7 +44,7 @@ class AlertItem extends Component {
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
           <div className={'AlertItemRight'}>
-            {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faYinYang} /></span>}
+            {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faAdjust} /></span>}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
             {1 === 2 && <span>({e.state})</span>}
@@ -52,7 +53,7 @@ class AlertItem extends Component {
             
           </div>
           <span style={{ textAlign: 'left' }}>
-            {prettyDateTime(e.timestamp)}<br />
+            {momentFormatDateTime(e.timestamp, locale, 'llll')}<br />
             <div style={{ marginTop: '2px' }}>
               {e.object_type === 1 && <span>{e.name}</span>}
               {e.object_type === 2 && <span>{e.host_name}</span>}

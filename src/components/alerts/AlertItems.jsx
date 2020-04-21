@@ -46,7 +46,7 @@ class AlertItems extends Component {
 
     let trimmedItems = [...filteredHistoryArray];
     trimmedItems.length = this.state.howManyToRender;
-    const { language } = this.props.settings;
+    const { language, locale } = this.props.settings;
 
 
 
@@ -75,6 +75,7 @@ class AlertItems extends Component {
               prevtime={prevtime}
               showEmoji={this.props.showEmoji}
               language={language}
+              locale={locale}
             />
           );
         })}

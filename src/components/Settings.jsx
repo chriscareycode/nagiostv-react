@@ -5,8 +5,9 @@ import './Settings.css';
 import Cookie from 'js-cookie';
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
+import { listLocales } from '../helpers/moment';
 import { languages } from '../helpers/language';
-import Moment from 'moment';
+
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTools } from '@fortawesome/free-solid-svg-icons';
@@ -197,16 +198,10 @@ class Settings extends Component {
     });
 
     // languages
-    const locales = [{
-      name: 'en-US',
-      code: ''
-    },{
-      name: 'en-GB',
-      code: ''
-    }];
+    const locales = listLocales();
     const localeOptions = locales.map((locale, i) => {
       return (
-        <option key={'locale-' + i} value={locale.name}>{locale.name}</option>
+        <option key={'locale-' + i} value={locale}>{locale}</option>
       );
     });
 
