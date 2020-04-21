@@ -49,6 +49,14 @@ class Settings extends Component {
     return false;
   }
 
+  timerHandle = null;
+
+  componentWillUnmount() {
+    if (this.timerHandle) {
+      clearTimeout(this.timerHandle);
+    }
+  }
+
   loadLocalStateFromProps() {
     //console.log('loadLocalStateFromProps()', this.props.settings);
 
@@ -78,8 +86,9 @@ class Settings extends Component {
       saveMessage: 'Settings saved'
     });
 
-    setTimeout(() => {
-        this.setState({ saveMessage: '' });
+    this.timerHandle = setTimeout(() => {
+      this.timerHandle = null;
+      this.setState({ saveMessage: '' });
     }, 5000);
   }
 
