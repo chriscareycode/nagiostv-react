@@ -26,7 +26,7 @@ class AlertFilters extends Component {
     return (
       <div className="sort-and-filter">
 
-        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <Checkbox className={this.props.howManyAlertSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
+        {(!this.props.hideFilters) && <Checkbox className={this.props.howManyAlertSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideAlertSoft'}
           defaultChecked={!this.props.hideAlertSoft}

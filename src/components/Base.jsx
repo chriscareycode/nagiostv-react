@@ -1079,6 +1079,7 @@ class Base extends Component {
                 hideHistoryTitle={this.state.hideHistoryTitle}
                 hideAlertSoft={this.state.hideAlertSoft}
                 handleCheckboxChange={this.handleCheckboxChange}
+                hideFilters={this.state.hideFilters}
               />
 
             </div>}
