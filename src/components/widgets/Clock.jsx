@@ -43,7 +43,9 @@ class Clock extends Component {
   render() {
     return (
       <div className="Clock">
-        {momentFormatDateTime('now', this.props.locale, 'llll')}
+        {momentFormatDateTime('now', this.props.locale, this.props.clockDateFormat)}
+        &nbsp;
+        {momentFormatDateTime('now', this.props.locale, this.props.clockTimeFormat)}
       </div>
     );
   }

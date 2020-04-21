@@ -112,6 +112,9 @@ class Base extends Component {
 
     language: 'English',
     locale: 'en',
+    dateFormat: 'llll',
+    clockDateFormat: 'll',
+    clockTimeFormat: 'LTS',
     
     isDemoMode: false,
 
@@ -169,6 +172,9 @@ class Base extends Component {
     'versionCheckDays',
     'language',
     'locale',
+    'dateFormat',
+    'clockDateFormat',
+    'clockTimeFormat',
 
     // fun stuff
     'customLogoEnabled',
@@ -849,7 +855,11 @@ class Base extends Component {
             {(this.state.playSoundEffects || this.state.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
 
             {/* clock */}
-            <Clock locale={this.state.locale} />
+            <Clock
+              locale={this.state.locale}
+              clockDateFormat={this.state.clockDateFormat}
+              clockTimeFormat={this.state.clockTimeFormat}
+            />
 
             {/* flynn */}
             {this.state.flynnEnabled &&
@@ -880,8 +890,6 @@ class Base extends Component {
         <div className="FooterArea">
           <div className="FooterAreaMiddle">
             <div className="footer-area-middle-version">
-              {/*<span className="FooterAreaMiddleUpdate uppercase-first display-inline-block">{translate('last update', language)}: <span className="color-orange">{prettyDateTime(this.state.servicelistLastUpdate)}</span></span>
-              &nbsp;&nbsp;*/}
               <span>NagiosTV <span className="">v{this.state.currentVersionString}</span></span>
               {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
             </div>
@@ -1049,7 +1057,7 @@ class Base extends Component {
             
             {/* history (alertlist) */}
 
-            {!this.state.hideHistory && <div>
+            {(settingsLoaded && !this.state.hideHistory) && <div>
 
               {/* history alert chart */}
 

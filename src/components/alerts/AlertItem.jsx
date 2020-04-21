@@ -25,7 +25,7 @@ class AlertItem extends Component {
 
   render() {
     
-    const { language, locale } = this.props;
+    const { language, locale, dateFormat } = this.props;
     const howMuchTimeIsQuietTime = 10;
     const { e, i } = this.props;
     const isSoft = e.state_type === 2;
@@ -53,7 +53,7 @@ class AlertItem extends Component {
             
           </div>
           <span style={{ textAlign: 'left' }}>
-            {momentFormatDateTime(e.timestamp, locale, 'llll')}<br />
+            {momentFormatDateTime(e.timestamp, locale, dateFormat)}<br />
             <div style={{ marginTop: '2px' }}>
               {e.object_type === 1 && <span>{e.name}</span>}
               {e.object_type === 2 && <span>{e.host_name}</span>}

@@ -80,9 +80,9 @@ class AlertSection extends Component {
           hideFilters={this.props.hideFilters}
           handleSelectChange={this.props.handleSelectChange}
           handleCheckboxChange={this.props.handleCheckboxChange}
+          hideAlertSoft={this.props.hideAlertSoft}
           howManyAlertSoft={howManyAlertSoft}
           language={this.props.language}
-          settingsObject={this.props.settingsObject}
         />
 
         {!this.props.hideHistoryChart && <HistoryChart

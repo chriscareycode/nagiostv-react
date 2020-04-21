@@ -8,6 +8,7 @@ class AlertFilters extends Component {
   shouldComponentUpdate(nextProps, nextState) {
     const propsToCauseRender = [
       'hideFilters',
+      'hideAlertSoft',
       'howManyAlertSoft'
     ];
     for(let i=0;i<propsToCauseRender.length;i++) {
@@ -28,7 +29,7 @@ class AlertFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <Checkbox className={this.props.howManyAlertSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideAlertSoft'}
-          defaultChecked={!this.props.settingsObject.hideAlertSoft}
+          defaultChecked={!this.props.hideAlertSoft}
           howMany={this.props.howManyAlertSoft}
           howManyText={translate('soft', language)}
         />}

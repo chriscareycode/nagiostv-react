@@ -13,8 +13,12 @@ export function momentFormatDateTime(date, locale, format) {
   if (date === 0) { return 'Never'; }
   if (date === 'now') { date = new Date().getTime() }
   if (!locale) { locale = 'en'; }
-	var m = moment(date).locale(locale).format(format);
-  return m;
+  if (format) {
+    var m = moment(date).locale(locale).format(format);
+    return m;
+  } else {
+    return '';
+  }
 }
 
 export function formatDateTime(date) {
