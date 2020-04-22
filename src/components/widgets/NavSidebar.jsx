@@ -71,7 +71,7 @@ class NavSidebar extends Component {
         */}
 
         <div className="nav-sidebar-icon">
-          <span data-tip="Show All Filters">
+          <span data-tip="Show Filters">
             <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
           </span>
         </div>
