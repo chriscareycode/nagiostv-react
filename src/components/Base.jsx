@@ -891,7 +891,7 @@ class Base extends Component {
           <div className="FooterAreaMiddle">
             <div className="footer-area-middle-version">
               <span>NagiosTV <span className="">v{this.state.currentVersionString}</span></span>
-              {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} available</a></span></span>}
+              {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} is available</a></span></span>}
             </div>
           </div>
         </div>
@@ -956,7 +956,7 @@ class Base extends Component {
               />}
 
               {/* host filters */}
-              <HostFilters
+              {!this.state.hideFilters && <HostFilters
                 hideFilters={this.state.hideFilters}
                 hostSortOrder={this.state.hostSortOrder}
                 handleSelectChange={this.handleSelectChange}
@@ -970,7 +970,7 @@ class Base extends Component {
                 howManyHostSoft={howManyHostSoft}
                 language={language}
                 settingsObject={settingsObject}
-              />
+              />}
 
             </div>}
 

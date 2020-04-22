@@ -282,29 +282,29 @@ input[type=text] {
   margin-left: 0px;
 }
 .sort-and-filter label.warning {
-  border: 1px solid yellow;
+  border: 0px solid yellow;
   background-color: #585804;
   color: yellow;
 }
 .sort-and-filter label.unknown {
-  border: 1px solid gray;
+  border: 0px solid gray;
   background-color: rgba(255, 177, 2, 0.3);
 }
 .sort-and-filter label.critical {
-  border: 1px solid red;
+  border: 0px solid red;
   background-color: rgba(255, 2, 2, 0.3);
   color: orange;
 }
 .sort-and-filter label.acked {
-  border: 1px solid green;
+  border: 0px solid green;
   background-color: rgba(0, 253, 43, 0.3);
 }
 .sort-and-filter label.scheduled {
-  border: 1px solid green;
+  border: 0px solid green;
   background-color: rgba(0, 253, 43, 0.3);
 }
 .sort-and-filter label.flapping {
-  border: 1px solid gray;
+  border: 0px solid gray;
   background-color: rgba(255, 177, 2, 0.3);
 }
 .sort-and-filter label.soft {
