@@ -380,3 +380,6 @@ input[type=text] {
 button {
   cursor: pointer;
 }
+.align-right {
+  text-align: right;
+}

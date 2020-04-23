@@ -1,0 +1,23 @@
+.AlertItem {
+  background-color: #222;
+  border: 0px solid #9c9c9c;
+  font-size: 1em;
+  padding: 4px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+
+  overflow: hidden;
+  color: white;
+  justify-content: center;
+}
+
+.AlertItemRight {
+  float: right;
+  border: 0px solid #ccc;
+  /*background-color: #444;*/
+  border-radius: 5px;
+  padding: 0px 5px;
+  position: relative;
+  top: 3px;
+  left: 4px;
+}

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust } from '@fortawesome/free-solid-svg-icons';
 
 // css
-//import './AlertItem.css';
+import './AlertItem.css';
 
 class AlertItem extends Component {
 
@@ -51,9 +51,11 @@ class AlertItem extends Component {
             {1 === 2 && <span>({e.object_type})</span>}
             <span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
             
+            <div className="align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
+
           </div>
           <span style={{ textAlign: 'left' }}>
-            {momentFormatDateTime(e.timestamp, locale, dateFormat)}<br />
+            
             <div style={{ marginTop: '2px' }}>
               {e.object_type === 1 && <span>{e.name}</span>}
               {e.object_type === 2 && <span>{e.host_name}</span>}
