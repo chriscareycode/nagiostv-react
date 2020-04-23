@@ -290,7 +290,7 @@ class Settings extends Component {
               <th>Date Format:</th>
               <td>
               <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
-                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
+                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
               </td>
             </tr>
           </tbody>
