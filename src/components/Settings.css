@@ -1,9 +1,9 @@
-.SettingsBox {
+.Settings {
     background-color: #111;
     position: relative;
 }
 
-.SettingsBox select {
+.Settings select {
     border: 1px solid #ccc;
 }
 
@@ -153,4 +153,8 @@ table.SettingsTable button {
 }
 table.SettingsTable select {
     font-size: 1.1em;
+}
+
+.Settings .input-error {
+    background-color: pink;
 }

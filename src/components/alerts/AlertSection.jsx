@@ -81,6 +81,9 @@ class AlertSection extends Component {
           </span>
         </div>}
 
+        {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
+        {(!this.props.isDemoMode && this.props.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
+
         {/* alert history filters */}
         <AlertFilters
           hideFilters={this.props.hideFilters}
@@ -99,10 +102,7 @@ class AlertSection extends Component {
           hideAlertSoft={this.props.hideAlertSoft}
         />}
 
-        {/* error area */}
-
-        {this.props.alertlistError && <div className="margin-top-10 border-red color-yellow ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
-
+        {/* No alerts */}
         {!this.props.alertlistError && this.props.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
           No alerts
         </div>}

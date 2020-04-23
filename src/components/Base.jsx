@@ -479,12 +479,9 @@ class Base extends Component {
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      console.log('fetchServiceData() ajax fail');
-      console.log(jqXHR, textStatus, errorThrown);
-      this.setState({
-        servicelistError: true,
-        servicelistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
-      });
+      
+      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'servicelistError', 'servicelistErrorMessage');
+    
     });
   }
 
@@ -547,10 +544,9 @@ class Base extends Component {
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      this.setState({
-        hostlistError: true,
-        hostlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
-      });
+
+      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'hostlistError', 'hostlistErrorMessage');
+
     });
   }
 
@@ -607,10 +603,9 @@ class Base extends Component {
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      this.setState({
-        alertlistError: true,
-        alertlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
-      });
+      
+      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'alertlistError', 'alertlistErrorMessage');
+
     });
   }
 
@@ -644,11 +639,26 @@ class Base extends Component {
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      this.setState({
-        commentlistError: true,
-        commentlistErrorMessage: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
-      });
+      
+      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'commentlistError', 'commentlistErrorMessage');
+
     });
+  }
+
+  handleFetchFail(jqXHR, textStatus, errorThrown, url, errorBooleanVariableName, errorMessageVariableName) {
+    if (jqXHR.status === 0) {
+      // CONNECTION REFUSED
+      this.setState({
+        [errorBooleanVariableName]: true,
+        [errorMessageVariableName]: 'ERROR: CONNECTION REFUSED to ' + url
+      });
+    } else {  
+      // UNKNOWN (TODO: add more errors here)
+      this.setState({
+        [errorBooleanVariableName]: true,
+        [errorMessageVariableName]: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
+      });
+    }
   }
 
   /****************************************************************************
@@ -841,6 +851,7 @@ class Base extends Component {
           hideHistoryChart={this.state.hideHistoryChart}
           updateStateFromSettings={this.updateStateFromSettings}
           currentPage={this.state.currentPage}
+          hostlistError={this.state.hostlistError}
         />
 
         {/* header */}
@@ -927,6 +938,7 @@ class Base extends Component {
             updateStateFromSettings={this.updateStateFromSettings}
             isCookieLoaded={this.state.isCookieLoaded}
             currentPage={this.state.currentPage}
+            hostlistError={this.state.hostlistError}
           />}
 
           {this.state.currentPage === 'dashboard' && <div className="dashboard-area">
@@ -974,7 +986,7 @@ class Base extends Component {
 
             </div>}
 
-            {/** If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
+            {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
             {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
             {/* hostitems list */}
@@ -990,6 +1002,7 @@ class Base extends Component {
               howManyHostAcked={howManyHostAcked}
               howManyHostScheduled={howManyHostScheduled}
               howManyHostFlapping={howManyHostFlapping}
+              isDemoMode={this.state.isDemoMode}
             />
 
             {/* services */}
@@ -1037,7 +1050,7 @@ class Base extends Component {
 
             </div>}
             
-            {/** If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
+            {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
             {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
             <ServiceItems
@@ -1059,7 +1072,7 @@ class Base extends Component {
 
             {(settingsLoaded && !this.state.hideHistory) && <div>
 
-              {/* history alert chart */}
+              {/* Alert History Section */}
 
               <AlertSection
                 alertlist={this.state.alertlist}
@@ -1067,6 +1080,7 @@ class Base extends Component {
                 alertlistHours={this.state.alertlistHours}
                 alertlistHoursCount={this.state.alertlistHoursCount}
                 alertlistLastUpdate={this.state.alertlistLastUpdate}
+                alertlistError={this.state.alertlistError}
                 alertlistErrorMessage={this.state.alertlistErrorMessage}
                 alertDaysBack={this.state.alertDaysBack}
                 alertHoursBack={this.state.alertHoursBack}

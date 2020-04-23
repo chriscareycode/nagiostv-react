@@ -24,6 +24,15 @@
   cursor: pointer;
 }
 
+.nav-sidebar-icon-error {
+  animation: error-blink 2s infinite alternate;
+}
+@keyframes error-blink {
+  0%   { color: red; }
+  50% { color: orange; }
+  100% { color: yellow; }
+}
+
 .nav-sidebar-icon-selected {
   color: #eee;
 }

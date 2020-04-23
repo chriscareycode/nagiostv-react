@@ -206,7 +206,7 @@ class Settings extends Component {
     });
 
     return (
-      <div className={`SettingsBox`}>
+      <div className={`Settings`}>
 
         <div className="settings-header">
 
@@ -222,7 +222,7 @@ class Settings extends Component {
           <div className="settings-header-buttons">
             {this.state.isDirty && <span>This page has unsaved changes</span>}
             {this.props.isCookieLoaded && <span role="img" aria-label="cookie"> 🍪 </span>}
-            <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Cookie</button>
+            <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
             <button className="SettingsCloseButton" onClick={this.closeSettings}>Close Settings</button>
           </div>
 
@@ -247,9 +247,17 @@ class Settings extends Component {
               <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
             </tr>
             <tr>
-              <th>Nagios cgi-bin path:</th>
+              <th>
+                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                Nagios cgi-bin path:
+              </th>
               <td>
-                <input type="text" value={this.state.baseUrl} onChange={this.handleChange('baseUrl', 'string')} />
+                <input
+                  type="text"
+                  className={this.props.hostlistError ? 'input-error' : ''}
+                  value={this.state.baseUrl}
+                  onChange={this.handleChange('baseUrl', 'string')}
+                />
                 <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
                   This path needs to point to where the cgi files are being served by the Nagios web user interface.
                   If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path

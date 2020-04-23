@@ -43,6 +43,10 @@ class NavSidebar extends Component {
 
   render() {
     
+    let settingsIconClassName = '';
+    if (this.props.currentPage === 'settings') { settingsIconClassName = 'nav-sidebar-icon-selected'; }
+    if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
+
     return (
       <div className="NavSidebar">
         
@@ -54,7 +58,11 @@ class NavSidebar extends Component {
 
         <div className="nav-sidebar-icon">
           <span data-tip="Settings">
-            <FontAwesomeIcon onClick={this.clickedSettings} className={this.props.currentPage === 'settings' ? 'nav-sidebar-icon-selected' : ''} icon={faTools} />
+            <FontAwesomeIcon
+              onClick={this.clickedSettings}
+              className={settingsIconClassName}
+              icon={faTools}
+            />
           </span>
         </div>
 
@@ -83,8 +91,6 @@ class NavSidebar extends Component {
             <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
           </span>
         </div>
-        
-        
 
         <div className="nav-sidebar-bottom-float">          
 
