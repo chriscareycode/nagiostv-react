@@ -47,3 +47,8 @@
   position: absolute;
   bottom: 0;
 }
+
+.nav-sidebar-hr {
+  border-bottom: 1px solid #555;
+  margin: 0 10px 10px 10px;
+}

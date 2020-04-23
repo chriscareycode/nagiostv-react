@@ -52,6 +52,14 @@ class NavSidebar extends Component {
           </span>
         </div>
 
+        <div className="nav-sidebar-icon">
+          <span data-tip="Settings">
+            <FontAwesomeIcon onClick={this.clickedSettings} className={this.props.currentPage === 'settings' ? 'nav-sidebar-icon-selected' : ''} icon={faTools} />
+          </span>
+        </div>
+
+        <div className="nav-sidebar-hr"></div>
+
         {/*
         <div className="nav-sidebar-icon">
           <FontAwesomeIcon className="" icon={faServer} />
@@ -76,11 +84,7 @@ class NavSidebar extends Component {
           </span>
         </div>
         
-        <div className="nav-sidebar-icon">
-          <span data-tip="Settings">
-            <FontAwesomeIcon onClick={this.clickedSettings} className={this.props.currentPage === 'settings' ? 'nav-sidebar-icon-selected' : ''} icon={faTools} />
-          </span>
-        </div>
+        
 
         <div className="nav-sidebar-bottom-float">          
 
