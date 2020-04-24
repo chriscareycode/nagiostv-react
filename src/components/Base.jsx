@@ -11,7 +11,7 @@ import { convertHostObjectToArray, convertServiceObjectToArray } from '../helper
 import Flynn from './Flynn/Flynn.jsx';
 import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
-import HowManyEmoji from './widgets/HowManyEmoji.jsx';
+//import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import Demo from './Demo.jsx';
 import Clock from './widgets/Clock.jsx';
 import NavSidebar from './widgets/NavSidebar.jsx';
