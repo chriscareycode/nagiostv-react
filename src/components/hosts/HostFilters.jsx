@@ -31,13 +31,13 @@ class HostFilters extends Component {
     const language = this.props.language;
 
     return (
-      <div className="sort-and-filter">
+      <>
 
         {!this.props.hideFilters && <select value={this.props.hostSortOrder} varname={'hostSortOrder'} onChange={this.props.handleSelectChange}>
           <option value="newest">{translate('newest first', language)}</option>
           <option value="oldest">{translate('oldest first', language)}</option>
         </select>}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostDown !== 0) && <Checkbox className={this.props.howManyHostDown ? 'Checkbox down uppercase' : 'Checkbox down uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostDown'}
@@ -45,7 +45,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostDown}
           howManyText={translate('down', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostUnreachable !== 0) && <Checkbox className={this.props.howManyHostUnreachable ? 'Checkbox unreachable uppercase' : 'Checkbox unreachable uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostUnreachable'}
@@ -53,7 +53,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostUnreachable}
           howManyText={translate('unreachable', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostPending !== 0) && <Checkbox className={this.props.howManyHostPending ? 'Checkbox pending uppercase' : 'Checkbox pending uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostPending'}
@@ -61,7 +61,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostPending}
           howManyText={translate('pending', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostAcked !== 0) && <Checkbox className={this.props.howManyHostAcked ? 'Checkbox acked uppercase' : 'Checkbox acked uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostAcked'}
@@ -69,7 +69,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostAcked}
           howManyText={translate('acked', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostScheduled !== 0) && <Checkbox className={this.props.howManyHostScheduled ? 'Checkbox scheduled uppercase' : 'Checkbox scheduled uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostScheduled'}
@@ -77,7 +77,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostScheduled}
           howManyText={translate('scheduled', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostFlapping !== 0) && <Checkbox className={this.props.howManyHostFlapping ? 'Checkbox flapping uppercase' : 'Checkbox flapping uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostFlapping'}
@@ -85,7 +85,7 @@ class HostFilters extends Component {
           howMany={this.props.howManyHostFlapping}
           howManyText={translate('flapping', language)}
         />}
-
+        &nbsp;
         {(!this.props.hideFilters || this.props.howManyHostSoft !== 0) && <Checkbox className={this.props.howManyHostSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostSoft'}
@@ -94,7 +94,7 @@ class HostFilters extends Component {
           howManyText={translate('soft', language)}
         />}
 
-      </div>
+      </>
     );
   }
 }

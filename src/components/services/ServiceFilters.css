@@ -1,0 +1,13 @@
+/* filters */
+
+.service-summary select {
+  background-color: #353535;
+  border: 1px solid #666;
+  color: white;
+  font-size: 0.9em;
+  white-space: nowrap;
+  opacity: 0.8;
+  margin-right: 6px;
+  position: relative;
+  top: -1px;
+}

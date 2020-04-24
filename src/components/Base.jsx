@@ -25,7 +25,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faTv } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp, faBars } from '@fortawesome/free-solid-svg-icons';
 
 class Base extends Component {
 
@@ -61,9 +61,7 @@ class Base extends Component {
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
     alertlist: [],
-    alertlistHours: [],
     alertlistCount: 0,
-    alertlistHoursCount: 0,
 
     commentlistError: false,
     commentlistErrorMessage: '',
@@ -588,18 +586,12 @@ class Base extends Component {
         alertlist.length = this.state.alertMaxItems;
       }
 
-      // get the alertlist for the past n hours
-      const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < this.state.alertHoursBack * 3600 * 1000);
-      const alertlistHoursCount = alertlistHours.length;
-
       this.setState({
         alertlistError: false,
         alertlistErrorMessage: '',
         alertlistLastUpdate: new Date().getTime(),
         alertlist, // it's already an array
-        alertlistHours,
-        alertlistCount,
-        alertlistHoursCount
+        alertlistCount
       });
 
     }).fail((jqXHR, textStatus, errorThrown) => {
@@ -738,6 +730,10 @@ class Base extends Component {
     console.log('Saved cookie', cookieObject);
   }
 
+  clickHamburger = () => {
+    console.log('clickHamburger');
+  };
+
   /****************************************************************************
    *
    * OK we finally made it to the render() function
@@ -858,7 +854,11 @@ class Base extends Component {
 
         <div className="HeaderArea">
           <div className="header-corner-area">
-            <FontAwesomeIcon className="header-corner-area-icon" icon={faTv} />
+            <FontAwesomeIcon
+              className="header-corner-area-icon"
+              icon={faBars}
+              onClick={this.clickHamburger}
+            />
           </div>
           <div className="header-right-float">
 
@@ -951,24 +951,8 @@ class Base extends Component {
                 Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
               </span>
 
-              {howManyHostDown > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostDown} {translate('down', language)}</span>}
-              {howManyHostUnreachable > 0 && <span className="summary-label summary-label-red uppercase">{howManyHostUnreachable} {translate('unreachable', language)}</span>}
-              {howManyHostPending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyHostPending} {translate('pending', language)}</span>}
-              {howManyHostAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostAcked} {translate('acked', language)}</span>}
-              {howManyHostScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyHostScheduled} {translate('scheduled', language)}</span>}
-              {howManyHostFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyHostFlapping} {translate('flapping', language)}</span>}
-              {howManyHostSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyHostSoft} {translate('soft', language)}</span>}
-
-              {/* how many down emoji */}
-              {this.state.showEmoji && <HowManyEmoji
-                howMany={howManyHosts}
-                howManyWarning={0}
-                howManyCritical={howManyHostDown}
-                howManyDown={this.state.hostProblemsArray.length}
-              />}
-
               {/* host filters */}
-              {!this.state.hideFilters && <HostFilters
+              <HostFilters
                 hideFilters={this.state.hideFilters}
                 hostSortOrder={this.state.hostSortOrder}
                 handleSelectChange={this.handleSelectChange}
@@ -982,7 +966,17 @@ class Base extends Component {
                 howManyHostSoft={howManyHostSoft}
                 language={language}
                 settingsObject={settingsObject}
+              />
+
+              {/* how many down emoji */}
+              {/*
+              {this.state.showEmoji && <HowManyEmoji
+                howMany={howManyHosts}
+                howManyWarning={0}
+                howManyCritical={howManyHostDown}
+                howManyDown={this.state.hostProblemsArray.length}
               />}
+              */}
 
             </div>}
 
@@ -1007,30 +1001,14 @@ class Base extends Component {
 
             {/* services */}
 
-            {settingsLoaded && <div className="service-summary" style={{ marginTop: '12px'}}>
+            {settingsLoaded && <div className="service-summary">
               
               <span className="service-summary-title">
                 Monitoring <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
               </span>
 
-              {howManyServiceCritical > 0 && <span className="summary-label summary-label-red uppercase">{howManyServiceCritical} {translate('critical', language)}</span>}
-              {howManyServiceWarning > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceWarning} {translate('warning', language)}</span>}
-              {howManyServicePending > 0 && <span className="summary-label summary-label-gray uppercase">{howManyServicePending} {translate('pending', language)}</span>}
-              {howManyServiceUnknown > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceUnknown} {translate('unknown', language)}</span>}
-              {howManyServiceAcked > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceAcked} {translate('acked', language)}</span>}
-              {howManyServiceScheduled > 0 && <span className="summary-label summary-label-green uppercase">{howManyServiceScheduled} {translate('scheduled', language)}</span>}
-              {howManyServiceFlapping > 0 && <span className="summary-label summary-label-orange uppercase">{howManyServiceFlapping} {translate('flapping', language)}</span>}
-              {howManyServiceSoft > 0 && <span className="summary-label summary-label-yellow uppercase">{howManyServiceSoft} {translate('soft', language)}</span>}
-
-              {this.state.showEmoji && <HowManyEmoji
-                howMany={howManyServices}
-                howManyWarning={howManyServiceWarning}
-                howManyCritical={howManyServiceCritical}
-                howManyDown={this.state.serviceProblemsArray.length}
-              />}
-
               {/* service filters */}
-              {!this.state.hideFilters && <ServiceFilters
+              <ServiceFilters
                 hideFilters={this.state.hideFilters}
                 serviceSortOrder={this.state.serviceSortOrder}
                 handleSelectChange={this.handleSelectChange}
@@ -1046,7 +1024,17 @@ class Base extends Component {
                 howManyServiceSoft={howManyServiceSoft}
                 language={language}
                 settingsObject={settingsObject}
+              />
+
+              {/* how many down emoji */}
+              {/*
+              {this.state.showEmoji && <HowManyEmoji
+                howMany={howManyServices}
+                howManyWarning={howManyServiceWarning}
+                howManyCritical={howManyServiceCritical}
+                howManyDown={this.state.serviceProblemsArray.length}
               />}
+              */}
 
             </div>}
             
@@ -1068,35 +1056,27 @@ class Base extends Component {
               howManyServiceFlapping={howManyServiceFlapping}
             />
             
-            {/* history (alertlist) */}
+            {/* Alert History Section */}
 
-            {(settingsLoaded && !this.state.hideHistory) && <div>
-
-              {/* Alert History Section */}
-
-              <AlertSection
-                alertlist={this.state.alertlist}
-                alertlistCount={this.state.alertlistCount}
-                alertlistHours={this.state.alertlistHours}
-                alertlistHoursCount={this.state.alertlistHoursCount}
-                alertlistLastUpdate={this.state.alertlistLastUpdate}
-                alertlistError={this.state.alertlistError}
-                alertlistErrorMessage={this.state.alertlistErrorMessage}
-                alertDaysBack={this.state.alertDaysBack}
-                alertHoursBack={this.state.alertHoursBack}
-                alertMaxItems={this.state.alertMaxItems}
-                showEmoji={this.state.showEmoji}
-                settingsObject={settingsObject}
-                settingsFields={this.settingsFields}
-                language={this.state.language}
-                hideHistoryChart={this.state.hideHistoryChart}
-                hideHistoryTitle={this.state.hideHistoryTitle}
-                hideAlertSoft={this.state.hideAlertSoft}
-                handleCheckboxChange={this.handleCheckboxChange}
-                hideFilters={this.state.hideFilters}
-              />
-
-            </div>}
+            {(settingsLoaded && !this.state.hideHistory) && <AlertSection
+              alertlist={this.state.alertlist}
+              alertlistCount={this.state.alertlistCount}
+              alertlistLastUpdate={this.state.alertlistLastUpdate}
+              alertlistError={this.state.alertlistError}
+              alertlistErrorMessage={this.state.alertlistErrorMessage}
+              alertDaysBack={this.state.alertDaysBack}
+              alertHoursBack={this.state.alertHoursBack}
+              alertMaxItems={this.state.alertMaxItems}
+              showEmoji={this.state.showEmoji}
+              settingsObject={settingsObject}
+              settingsFields={this.settingsFields}
+              language={this.state.language}
+              hideHistoryChart={this.state.hideHistoryChart}
+              hideHistoryTitle={this.state.hideHistoryTitle}
+              hideAlertSoft={this.state.hideAlertSoft}
+              handleCheckboxChange={this.handleCheckboxChange}
+              hideFilters={this.state.hideFilters}
+            />}
 
           </div>} {/* end dashboard-area */}
         

@@ -55,6 +55,7 @@ input[type=text] {
   border-bottom: 0px solid #333;
   
 }
+
 .HeaderArea > div {
   /*margin: 10px 0 10px 15px;*/
 }
@@ -68,6 +69,10 @@ input[type=text] {
   width: 50px;
   text-align: center;
   line-height: 3.2em;
+}
+
+.HeaderArea > .header-corner-area > svg.header-corner-area-icon {
+  cursor: pointer;
 }
 
 .HeaderArea > .header-right-float {
@@ -159,8 +164,6 @@ input[type=text] {
   margin-left: 50px;
 }
 
-
-
 .SettingsButtonDiv {
   position: absolute;
   bottom: 3px;
@@ -185,9 +188,10 @@ input[type=text] {
   
 }
 .service-summary-title {
-  font-size: 1.0em;
+  font-size: 1.2em;
+  margin-right: 8px;
   margin-bottom: 5px;
-  color: #888;
+  color: #bbb;
 }
 
 /* all ok */
@@ -243,94 +247,11 @@ input[type=text] {
 
 .history-summary {
   margin-top: 20px;
+  margin-bottom: 10px;
+  clear: both;
 }
 
-/**/
 
-.sort-and-filter {
-  line-height: 30px;
-  transition: opacity 100ms ease-in;
-  margin-top: 5px;
-}
-.sort-and-filter select {
-  background-color: #353535;
-  color: white;
-  font-size: 0.7em;
-  white-space: nowrap;
-  opacity: 0.8;
-  margin-right: 6px;
-}
-.sort-and-filter label {
-  border: 1px solid gray;
-  border-radius: 4px;
-  padding: 3px 7px;
-  background-color: rgba(250, 250, 250, 0.3);
-  font-size: 0.7em;
-  opacity: 0.8;
-}
-.sort-and-filter > label > span {
-  /*white-space: nowrap;*/
-}
-.sort-and-filter > label > input[type=checkbox] {
-  margin-left: 3px;
-  margin-right: 6px;
-  font-size: 1em;
-  position: relative;
-  top: -1px;
-}
-.sort-and-filter > label > input[type=checkbox]:first-of-type {
-  margin-left: 0px;
-}
-.sort-and-filter label.warning {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
-}
-.sort-and-filter label.unknown {
-  border: 0px solid gray;
-  background-color: rgba(255, 177, 2, 0.3);
-}
-.sort-and-filter label.critical {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-  color: orange;
-}
-.sort-and-filter label.acked {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.sort-and-filter label.scheduled {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
-}
-.sort-and-filter label.flapping {
-  border: 0px solid gray;
-  background-color: rgba(255, 177, 2, 0.3);
-}
-.sort-and-filter label.soft {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
-}
-.sort-and-filter label.dim {
-  border: 0px solid yellow;
-  opacity: 0.5;
-}
-
-/* host */
-
-.sort-and-filter label.down {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.sort-and-filter label.unreachable {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-}
-.sort-and-filter label.pending {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
-}
 
 
 /* fun stuff */

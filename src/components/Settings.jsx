@@ -217,10 +217,10 @@ class Settings extends Component {
 
           <div className="SettingsCenterDiv">
             {this.state.saveMessage && <span className="SettingSaveMessage color-green">{this.state.saveMessage}</span>}
+            {this.state.isDirty && <span>This page has unsaved changes</span>}
           </div>
 
           <div className="settings-header-buttons">
-            {this.state.isDirty && <span>This page has unsaved changes</span>}
             {this.props.isCookieLoaded && <span role="img" aria-label="cookie"> 🍪 </span>}
             <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
             <button className="SettingsCloseButton" onClick={this.closeSettings}>Close Settings</button>
