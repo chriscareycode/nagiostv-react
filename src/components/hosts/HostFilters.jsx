@@ -16,7 +16,8 @@ class HostFilters extends Component {
       'howManyHostPending',
       'howManyHostAcked',
       'howManyHostScheduled',
-      'howManyHostFlapping'
+      'howManyHostFlapping',
+      'howManyHostSoft'
     ];
     for(let i=0;i<propsToCauseRender.length;i++) {
       if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {

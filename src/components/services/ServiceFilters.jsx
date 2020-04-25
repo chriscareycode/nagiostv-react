@@ -16,7 +16,8 @@ class ServiceFilters extends Component {
       'howManyServiceCritical',
       'howManyServiceAcked',
       'howManyServiceScheduled',
-      'howManyServiceFlapping'
+      'howManyServiceFlapping',
+      'howManyServiceSoft'
     ];
     for(let i=0;i<propsToCauseRender.length;i++) {
       if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
