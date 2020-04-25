@@ -25,7 +25,7 @@ import $ from 'jquery';
 import _ from 'lodash';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
 
 class Base extends Component {
 
@@ -35,8 +35,8 @@ class Base extends Component {
   state = {
     currentPage: 'dashboard',
 
-    currentVersion: 44,
-    currentVersionString: '0.5.1',
+    currentVersion: 45,
+    currentVersionString: '0.5.2',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
