@@ -93,42 +93,50 @@ class AlertSection extends Component {
 
         {/* hourly alert chart */}
 
-        {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-summary margin-top-10">
-          <span className="service-summary-title">
-            <strong>{alertlistHoursCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertHoursBack}</strong> {translate('hours', language)}
-            {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
-          </span>
-        </div>}
+        {alertlist.length > 0 && <div>
 
-        {!this.props.hideHistoryChart && <HistoryChart
-          alertlist={alertlistHours}
-          alertlistLastUpdate={this.props.alertlistLastUpdate}
-          groupBy="hour"
-          alertHoursBack={24} 
-          alertDaysBack={1}
-          hideAlertSoft={this.props.hideAlertSoft}
-        />}
+          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-summary margin-top-10">
+            <span className="service-summary-title">
+              <strong>{alertlistHoursCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertHoursBack}</strong> {translate('hours', language)}
+              {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
+            </span>
+          </div>}
+
+          {(alertlist.length > 0 && !this.props.hideHistoryChart) && <HistoryChart
+            alertlist={alertlistHours}
+            alertlistLastUpdate={this.props.alertlistLastUpdate}
+            groupBy="hour"
+            alertHoursBack={24} 
+            alertDaysBack={1}
+            hideAlertSoft={this.props.hideAlertSoft}
+          />}
+
+        </div>}
 
         {/* full alert chart */}
 
-        {!this.props.hideHistoryTitle && <div className="history-summary margin-top-10">
-          <span className="service-summary-title">
-            <strong>{alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
-            {this.props.alertlistCount > this.props.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
-          </span>
+        {alertlist.length > 0 && <div>
+
+          {!this.props.hideHistoryTitle && <div className="history-summary margin-top-10">
+            <span className="service-summary-title">
+              <strong>{alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
+              {this.props.alertlistCount > this.props.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
+            </span>
+          </div>}
+
+          {/* history chart */}
+          {!this.props.hideHistoryChart && <HistoryChart
+            alertlist={alertlist}
+            alertlistLastUpdate={this.props.alertlistLastUpdate}
+            groupBy="day"
+            alertDaysBack={this.props.alertDaysBack} 
+            hideAlertSoft={this.props.hideAlertSoft}
+          />}
+
         </div>}
 
         {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
         {(!this.props.isDemoMode && this.props.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
-
-        {/* history chart */}
-        {!this.props.hideHistoryChart && <HistoryChart
-          alertlist={alertlist}
-          alertlistLastUpdate={this.props.alertlistLastUpdate}
-          groupBy="day"
-          alertDaysBack={this.props.alertDaysBack} 
-          hideAlertSoft={this.props.hideAlertSoft}
-        />}
 
         {/* No alerts */}
         {!this.props.alertlistError && this.props.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">

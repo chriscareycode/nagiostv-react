@@ -52,9 +52,9 @@ class ServiceItems extends Component {
     return (
       <div className="ServiceItems">
 
-        <div className={`all-ok-item ${this.props.serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
+        {!this.props.servicelistError && <div className={`all-ok-item ${this.props.serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
           <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {this.props.howManyServices} {translate('services are OK', language)}</span>{' '}
-        </div>
+        </div>}
 
         <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
           <div>
