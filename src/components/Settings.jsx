@@ -287,18 +287,11 @@ class Settings extends Component {
               </td>
             </tr>
             <tr>
-              <th>Locale:</th>
+              <th>Date Locale:</th>
               <td>
                 <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
                     {localeOptions}
                 </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Date Format:</th>
-              <td>
-              <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
-                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
               </td>
             </tr>
           </tbody>
@@ -308,12 +301,12 @@ class Settings extends Component {
         <table className="SettingsTable">
           <thead>
             <tr>
-              <td colSpan="2" className="SettingsTableHeader">History Settings</td>
+              <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th>History:</th>
+              <th>Alert History:</th>
               <td>
                 <select value={this.state.hideHistory} onChange={this.handleChange('hideHistory', 'boolean')}>
                     <option value={true}>Hide</option>
@@ -322,15 +315,15 @@ class Settings extends Component {
               </td>
             </tr>
             <tr>
-              <th>History Days Back:</th>
+              <th>Alert History Days Back:</th>
               <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
             </tr>
             <tr>
-              <th>History max # items:</th>
+              <th>Alert History max # items:</th>
               <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
             </tr>
             <tr>
-              <th>History Title:</th>
+              <th>Alert History Title:</th>
               <td>
                 <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
                     <option value={true}>Hide</option>
@@ -339,12 +332,19 @@ class Settings extends Component {
               </td>
             </tr>
             <tr>
-              <th>History Chart:</th>
+              <th>Alert History Chart:</th>
               <td>
                 <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                 </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Date Format:</th>
+              <td>
+              <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
+                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
               </td>
             </tr>
           </tbody>
