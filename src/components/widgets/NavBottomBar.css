@@ -1,0 +1,84 @@
+.NavBottomBar {
+  position: fixed;
+
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  height: 50px;
+  border: 0px solid #333;
+  background-color: #222;
+  z-index: 13;
+  text-align: center;
+  
+}
+
+.NavBottomBar .nav-sidebar-version {
+  position: static;
+  margin-left: 15px;
+  margin-right: 15px;
+  border: 0px solid orange;
+  text-align: center;
+  display: inline-block;
+  word-wrap: none;
+  vertical-align: middle;
+}
+
+.NavBottomBar .nav-sidebar-version-text {
+  
+}
+
+.NavBottomBar .nav-sidebar-icon {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: 0px solid #333;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  
+}
+
+.NavBottomBar .nav-sidebar-icon .nav-sidebar-icon-text {
+  font-size: 0.8em;
+  color: #555;
+}
+
+
+.NavBottomBar .nav-sidebar-icon span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.NavBottomBar .nav-sidebar-icon svg {
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #666;
+}
+
+.NavBottomBar .nav-sidebar-icon svg.nav-sidebar-icon-selected {
+  color: #eee;
+}
+
+.nav-sidebar-icon-error {
+  animation: error-blink 2s infinite alternate;
+}
+@keyframes error-blink {
+  0%   { color: red; }
+  50% { color: orange; }
+  100% { color: yellow; }
+}
+
+.NavBottomBar .nav-sidebar-number {
+  margin-top: 20px;
+  color: orange;
+  font-size: 1.4em;
+  text-align: center;
+}
+
+.nav-sidebar-bottom-float {
+  position: absolute;
+  bottom: 0;
+}
+

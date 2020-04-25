@@ -1,6 +1,7 @@
 .Settings {
     background-color: #111;
     position: relative;
+    margin-bottom: 30px;
 }
 
 .Settings select {
@@ -14,9 +15,9 @@
 .settings-header {
     position: fixed;
     top: 50px;
-    left: 50px;
+    left: 0px;
     right: 0px;
-    background-color: #222;
+    background-color: #2f2f2f;
     border: 0px solid orange;
 }
 
@@ -33,6 +34,7 @@
     top: 10px;
     right: 15px;
     bottom: 5px;
+    font-size: 0.9em;
 }
 
 .settings-header-buttons button {

@@ -14,7 +14,7 @@ import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import Demo from './Demo.jsx';
 import Clock from './widgets/Clock.jsx';
-import NavSidebar from './widgets/NavSidebar.jsx';
+import NavBottomBar from './widgets/NavBottomBar.jsx';
 // css
 import './Base.css';
 import './animation.css';
@@ -730,10 +730,6 @@ class Base extends Component {
     console.log('Saved cookie', cookieObject);
   }
 
-  clickHamburger = () => {
-    console.log('clickHamburger');
-  };
-
   /****************************************************************************
    *
    * OK we finally made it to the render() function
@@ -841,25 +837,10 @@ class Base extends Component {
     return (
       <div className="Base">
 
-        {/* nav sidebar */}
-        <NavSidebar
-          hideFilters={this.state.hideFilters}
-          hideHistoryChart={this.state.hideHistoryChart}
-          updateStateFromSettings={this.updateStateFromSettings}
-          currentPage={this.state.currentPage}
-          hostlistError={this.state.hostlistError}
-        />
-
         {/* header */}
 
         <div className="HeaderArea">
-          <div className="header-corner-area">
-            <FontAwesomeIcon
-              className="header-corner-area-icon"
-              icon={faBars}
-              onClick={this.clickHamburger}
-            />
-          </div>
+
           <div className="header-right-float">
 
             {/* sound */}
@@ -893,19 +874,25 @@ class Base extends Component {
 
           <div className="header-application-name">{this.state.titleString}</div>
 
+          {/* show the polling time */}
           {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
         </div>
 
         {/* footer */}
+        
+        <NavBottomBar
+          hideFilters={this.state.hideFilters}
+          hideHistoryChart={this.state.hideHistoryChart}
+          updateStateFromSettings={this.updateStateFromSettings}
+          currentPage={this.state.currentPage}
+          hostlistError={this.state.hostlistError}
 
-        <div className="FooterArea">
-          <div className="FooterAreaMiddle">
-            <div className="footer-area-middle-version">
-              <span>NagiosTV <span className="">v{this.state.currentVersionString}</span></span>
-              {this.state.latestVersion > this.state.currentVersion && <span> <span className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">NagiosTV v{this.state.latestVersionString} is available</a></span></span>}
-            </div>
-          </div>
-        </div>
+          currentVersion={this.state.currentVersion}
+          currentVersionString={this.state.currentVersionString}
+          latestVersion={this.state.latestVersion}
+          latestVersionString={this.state.latestVersionString}
+
+        />
 
         {/* spacer to counteract the floating header */}
 
@@ -997,6 +984,7 @@ class Base extends Component {
               howManyHostScheduled={howManyHostScheduled}
               howManyHostFlapping={howManyHostFlapping}
               isDemoMode={this.state.isDemoMode}
+              hostlistError={this.state.hostlistError}
             />
 
             {/* services */}
@@ -1054,6 +1042,7 @@ class Base extends Component {
               howManyServiceAcked={howManyServiceAcked}
               howManyServiceScheduled={howManyServiceScheduled}
               howManyServiceFlapping={howManyServiceFlapping}
+              servicelistError={this.state.servicelistError}
             />
             
             {/* Alert History Section */}

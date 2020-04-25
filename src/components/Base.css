@@ -60,6 +60,7 @@ input[type=text] {
   /*margin: 10px 0 10px 15px;*/
 }
 
+/*
 .HeaderArea > .header-corner-area {
   position: absolute;
   top: 0;
@@ -68,28 +69,37 @@ input[type=text] {
   height: 50px;
   width: 50px;
   text-align: center;
-  line-height: 3.2em;
+}
+
+.HeaderArea > .header-corner-area > svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .HeaderArea > .header-corner-area > svg.header-corner-area-icon {
   cursor: pointer;
 }
 
+*/
+
 .HeaderArea > .header-right-float {
-  float: right;
+  position: absolute;
+  top: 0;
+  right:  0px;
   height: 50px;
   vertical-align: top;
 }
 
 .header-application-name {
-  font-size: 1.3em;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  margin-left: 64px;
+  margin-left: 15px;
   margin-right: 10px;
   display: inline-block;
-  font-size: 1.1em;
+  font-size: 1.2em;
   color: #ddd;
 }
 
@@ -103,65 +113,39 @@ input[type=text] {
   margin-right: 15px;
 }
 
-/* Footer */
 
-.FooterArea {
-  position: fixed;
-  bottom: 0;
-  left: 50px;
-  right: 0;
-  min-height: 35px;
-  z-index: 12;
-  background-color: transparent;
-  border-top: 0px solid #333;
-  text-align: center;
-  font-size: 1.0em;
+
+/* https://www.stephen.io/mediaqueries/ */
+
+/* iPhone 10 */
+@media only screen 
+and (max-width: 1768px) {
+  
 }
 
-.FooterAreaMiddle {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+    .NavBottomBar svg {
+      font-size: 1.7em !important;
+    }
 }
 
-.footer-area-middle-version {
-  border: 0px solid gray;
-  background-color: #333;
-  display: table;
-  margin:0 auto;
-  padding: 5px 8px;
-  border-radius: 5px;
-  color: #ddd;
-}
-
-
-/* not sure why body doesnt influence this FooterArea font size, maybe because its float? */
 @media only screen and (max-device-width: 480px) {
-  .FooterArea {
-    font-size: 0.9em;
-  }
-  .FooterAreaMiddleUpdate {
-    display: none !important;
-  }
+   
 }
 
 @media only screen 
     and (device-width : 375px) 
     and (device-height : 812px) 
     and (-webkit-device-pixel-ratio : 3) {
-
-  .FooterArea {
-    font-size: 0.9em;
-  }
-  .FooterAreaMiddleUpdate {
-    display: none !important;
-  }
+  
 }
 
-
 .main-content {
-  margin-left: 50px;
+  margin-left: 0px;
 }
 
 .SettingsButtonDiv {
@@ -266,19 +250,19 @@ input[type=text] {
 /* more footer */
 
 .update-available {
-  background-color: yellow;
-  color: black;
+  
+
   font-weight: bold;
   padding: 1px 8px;
   border-radius: 5px;
   margin-left: 5px;
 }
 .update-available a {
-  color: black;
-  text-decoration: none;
+  color: yellow;
+  text-decoration: underline;
 }
 .update-available a:hover {
-  color: black;
+  color: yellow;
   text-decoration: underline;
 }
 
