@@ -7,7 +7,7 @@ import { translate } from '../../helpers/language';
 import AlertItems from './AlertItems.jsx';
 import AlertFilters from './AlertFilters.jsx';
 import HistoryChart from '../widgets/HistoryChart.jsx';
-//import './AlertSection.css';
+import './AlertSection.css';
 //import Checkbox from '../widgets/Checkbox.jsx';
 
 class AlertSection extends Component {

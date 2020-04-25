@@ -35,14 +35,12 @@
   text-align: center;
   display: inline-block;
   vertical-align: middle;
-  
 }
 
 .NavBottomBar .nav-sidebar-icon .nav-sidebar-icon-text {
   font-size: 0.8em;
   color: #555;
 }
-
 
 .NavBottomBar .nav-sidebar-icon span {
   position: absolute;
