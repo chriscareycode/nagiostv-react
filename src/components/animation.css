@@ -9,12 +9,12 @@
   transition: all 500ms ease-in;
 }
 
-.example-leave {
+.example-exit {
   opacity: 1;
   max-height: 75px;
 }
 
-.example-leave.example-leave-active {
+.example-exit.example-exit-active {
   opacity: 0.01;
   max-height: 0px;
   transition: all 500ms ease-in;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import HostItem from './HostItem';
 
 // icons
@@ -60,10 +60,7 @@ class HostItems extends Component {
           </div>
         </div>
 
-        <ReactCSSTransitionGroup
-          transitionName="example"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={500}>
+        <TransitionGroup>
           {filteredHostProblemsArray.map((e, i) => {
             //console.log('HostItem item');
             //console.log(e, i);
@@ -82,18 +79,24 @@ class HostItems extends Component {
             });
 
             return (
-              <HostItem
-                key={e.name}
-                settings={this.props.settings}
-                hostItem={e}
-                comment={comment}
-                comment_author={comment_author}
-                comment_entry_time={comment_entry_time}
-              />
+              <CSSTransition
+                key={`host-${e.name}`}
+                classNames="example"
+                timeout={{ enter: 500, exit: 500 }}
+                unmountOnExit
+              >
+                <HostItem
+                  settings={this.props.settings}
+                  hostItem={e}
+                  comment={comment}
+                  comment_author={comment_author}
+                  comment_entry_time={comment_entry_time}
+                />
+              </CSSTransition>
             );
             
           })}
-        </ReactCSSTransitionGroup>
+        </TransitionGroup>
       </div>
     );
   }

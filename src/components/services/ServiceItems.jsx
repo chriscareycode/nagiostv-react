@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ServiceItem from './ServiceItem';
 
 // icons
@@ -63,10 +63,7 @@ class ServiceItems extends Component {
           </div>
         </div>
 
-        <ReactCSSTransitionGroup
-          transitionName="example"
-          transitionEnterTimeout={500}
-          transitionLeaveTimeout={500}>
+        <TransitionGroup>
 
           {filteredServiceProblemsArray.map((e, i) => {
             //console.log('ServiceItem item');
@@ -86,18 +83,25 @@ class ServiceItems extends Component {
             });
 
             return (
-              <ServiceItem
+
+              <CSSTransition
                 key={e.host_name + '-' + e.description}
-                settings={this.props.settings}
-                serviceItem={e}
-                comment={comment}
-                comment_author={comment_author}
-                comment_entry_time={comment_entry_time}
-              />
+                classNames="example"
+                timeout={{ enter: 500, exit: 500 }}
+              >
+                <ServiceItem
+                  settings={this.props.settings}
+                  serviceItem={e}
+                  comment={comment}
+                  comment_author={comment_author}
+                  comment_entry_time={comment_entry_time}
+                />
+              </CSSTransition>
+              
             );
             
           })}
-        </ReactCSSTransitionGroup>
+        </TransitionGroup>
       </div>
     );
   }

@@ -14,9 +14,9 @@
     "js-cookie": "^2.2.0",
     "moment": "^2.22.2",
     "react": "^16.4.2",
-    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.4.2",
-    "react-scripts": "^3.3.0"
+    "react-scripts": "^3.3.0",
+    "react-transition-group": "^4.3.0"
   },
   "scripts": {
     "start": "BROWSER=none PORT=3015 react-scripts start",
