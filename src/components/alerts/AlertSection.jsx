@@ -139,8 +139,8 @@ class AlertSection extends Component {
         {(!this.props.isDemoMode && this.props.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
 
         {/* No alerts */}
-        {!this.props.alertlistError && this.props.alertlist.length === 0 && <div className="margin-top-10 color-green AllOkItem">
-          No alerts
+        {!this.props.alertlistError && this.props.alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
+          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">No alerts</span>
         </div>}
 
         {/* alert items */}
