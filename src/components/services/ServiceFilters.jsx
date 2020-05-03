@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/Checkbox.jsx';
+import Checkbox from '../widgets/FilterCheckbox.jsx';
 
 class ServiceFilters extends Component {
 
@@ -42,7 +42,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceCritical !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceCritical ? 'Checkbox critical uppercase' : 'Checkbox critical uppercase dim'}
+            filterName="critical"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceCritical'}
             defaultChecked={!this.props.settingsObject.hideServiceCritical}
@@ -54,7 +55,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceWarning !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceWarning ? 'Checkbox warning uppercase' : 'Checkbox warning uppercase dim'}
+            filterName="warning"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceWarning'}
             defaultChecked={!this.props.settingsObject.hideServiceWarning}
@@ -66,7 +68,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceUnknown !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceUnknown ? 'Checkbox unknown uppercase' : 'Checkbox unknown uppercase dim'}
+            filterName="unknown"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceUnknown'}
             defaultChecked={!this.props.settingsObject.hideServiceUnknown}
@@ -78,7 +81,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServicePending !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServicePending ? 'Checkbox pending uppercase' : 'Checkbox pending uppercase dim'}
+            filterName="pending"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServicePending'}
             defaultChecked={!this.props.settingsObject.hideServicePending}
@@ -90,7 +94,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceAcked !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceAcked ? 'Checkbox acked uppercase' : 'Checkbox acked uppercase dim'}
+            filterName="acked"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceAcked'}
             defaultChecked={!this.props.settingsObject.hideServiceAcked}
@@ -102,7 +107,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceScheduled !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceScheduled ? 'Checkbox scheduled uppercase' : 'Checkbox scheduled uppercase dim'}
+            filterName="scheduled"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceScheduled'}
             defaultChecked={!this.props.settingsObject.hideServiceScheduled}
@@ -114,7 +120,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceFlapping !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceFlapping ? 'Checkbox flapping uppercase' : 'Checkbox flapping uppercase dim'}
+            filterName="flapping"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceFlapping'}
             defaultChecked={!this.props.settingsObject.hideServiceFlapping}
@@ -126,7 +133,8 @@ class ServiceFilters extends Component {
         {(!this.props.hideFilters || this.props.howManyServiceSoft !== 0) && <span>
           &nbsp;
           <Checkbox
-            className={this.props.howManyServiceSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
+            filterName="soft"
+            hideFilters={this.props.hideFilters}
             handleCheckboxChange={this.props.handleCheckboxChange}
             stateName={'hideServiceSoft'}
             defaultChecked={!this.props.settingsObject.hideServiceSoft}

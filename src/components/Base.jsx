@@ -673,7 +673,7 @@ class Base extends Component {
    *
    ***************************************************************************/
 
-  handleCheckboxChange = (propName, dataType) => (event) => {
+  handleCheckboxChange = (event, propName, dataType) => {
     // console.log('handleCheckboxChange Base.jsx');
     // console.log(propName, dataType);
     // console.log('event.target', event.target);

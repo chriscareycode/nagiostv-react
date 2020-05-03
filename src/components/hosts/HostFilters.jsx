@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/Checkbox.jsx';
+import Checkbox from '../widgets/FilterCheckbox.jsx';
 
 class HostFilters extends Component {
 
@@ -39,7 +39,9 @@ class HostFilters extends Component {
           <option value="oldest">{translate('oldest first', language)}</option>
         </select>}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostDown !== 0) && <Checkbox className={this.props.howManyHostDown ? 'Checkbox down uppercase' : 'Checkbox down uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostDown !== 0) && <Checkbox
+          filterName="down"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostDown'}
           defaultChecked={!this.props.settingsObject.hideHostDown}
@@ -47,7 +49,9 @@ class HostFilters extends Component {
           howManyText={translate('down', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostUnreachable !== 0) && <Checkbox className={this.props.howManyHostUnreachable ? 'Checkbox unreachable uppercase' : 'Checkbox unreachable uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostUnreachable !== 0) && <Checkbox
+          filterName="unreachable"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostUnreachable'}
           defaultChecked={!this.props.settingsObject.hideHostUnreachable}
@@ -55,7 +59,9 @@ class HostFilters extends Component {
           howManyText={translate('unreachable', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostPending !== 0) && <Checkbox className={this.props.howManyHostPending ? 'Checkbox pending uppercase' : 'Checkbox pending uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostPending !== 0) && <Checkbox
+          filterName="pending"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostPending'}
           defaultChecked={!this.props.settingsObject.hideHostPending}
@@ -63,7 +69,9 @@ class HostFilters extends Component {
           howManyText={translate('pending', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostAcked !== 0) && <Checkbox className={this.props.howManyHostAcked ? 'Checkbox acked uppercase' : 'Checkbox acked uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostAcked !== 0) && <Checkbox
+          filterName="acked"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostAcked'}
           defaultChecked={!this.props.settingsObject.hideHostAcked}
@@ -71,7 +79,9 @@ class HostFilters extends Component {
           howManyText={translate('acked', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostScheduled !== 0) && <Checkbox className={this.props.howManyHostScheduled ? 'Checkbox scheduled uppercase' : 'Checkbox scheduled uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostScheduled !== 0) && <Checkbox
+          filterName="scheduled"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostScheduled'}
           defaultChecked={!this.props.settingsObject.hideHostScheduled}
@@ -79,7 +89,9 @@ class HostFilters extends Component {
           howManyText={translate('scheduled', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostFlapping !== 0) && <Checkbox className={this.props.howManyHostFlapping ? 'Checkbox flapping uppercase' : 'Checkbox flapping uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostFlapping !== 0) && <Checkbox
+          filterName="flapping"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostFlapping'}
           defaultChecked={!this.props.settingsObject.hideHostFlapping}
@@ -87,7 +99,9 @@ class HostFilters extends Component {
           howManyText={translate('flapping', language)}
         />}
         &nbsp;
-        {(!this.props.hideFilters || this.props.howManyHostSoft !== 0) && <Checkbox className={this.props.howManyHostSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyHostSoft !== 0) && <Checkbox
+          filterName="soft"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideHostSoft'}
           defaultChecked={!this.props.settingsObject.hideHostSoft}

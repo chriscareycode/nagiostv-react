@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './AlertFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/Checkbox.jsx';
+import Checkbox from '../widgets/FilterCheckbox.jsx';
 
 class AlertFilters extends Component {
 
@@ -25,7 +25,9 @@ class AlertFilters extends Component {
 
     return (
       <>
-        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <Checkbox className={this.props.howManyAlertSoft ? 'Checkbox soft uppercase' : 'Checkbox soft uppercase dim'}
+        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <Checkbox
+          filterName="soft"
+          hideFilters={this.props.hideFilters}
           handleCheckboxChange={this.props.handleCheckboxChange}
           stateName={'hideAlertSoft'}
           defaultChecked={!this.props.hideAlertSoft}

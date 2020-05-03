@@ -79,3 +79,10 @@
   border: 0px solid yellow;
   opacity: 0.5;
 }
+
+/* hidden checkbox */
+
+.Checkbox.checkbox-hidden input[type=checkbox] {
+  opacity: 0;
+  display: none;
+}

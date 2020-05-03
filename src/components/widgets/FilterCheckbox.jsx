@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './Checkbox.css';
+import './FilterCheckbox.css';
 
-class Checkbox extends Component {
+class FilterCheckbox extends Component {
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -12,10 +12,18 @@ class Checkbox extends Component {
   //   }
   // }
 
+  clicky = e => {
+    this.props.handleCheckboxChange(e, this.props.stateName, 'checkbox');
+  };
+
   render() {
     
+    let classN = 'Checkbox uppercase ' + this.props.filterName;
+    if (this.props.howMany) { classN += ' dim'; }
+    if (this.props.hideFilters) { classN += ' checkbox-hidden'; }
+
     return (
-      <label className={this.props.className} onClick={this.props.handleCheckboxChange(this.props.stateName, 'checkbox')}>
+      <label className={classN} onClick={this.clicky}>
         <span>
           <input type="checkbox" defaultChecked={this.props.defaultChecked}  />
           <span className={'checkbox-value'}>{this.props.howMany}</span> <span className={this.props.textClassName}>{this.props.howManyText}</span>
@@ -25,4 +33,4 @@ class Checkbox extends Component {
   }
 }
 
-export default Checkbox;
+export default FilterCheckbox;
