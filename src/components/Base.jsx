@@ -35,8 +35,8 @@ class Base extends Component {
   state = {
     currentPage: 'dashboard',
 
-    currentVersion: 45,
-    currentVersionString: '0.5.2',
+    currentVersion: 46,
+    currentVersionString: '0.5.3',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
@@ -214,6 +214,10 @@ class Base extends Component {
     this.getRemoteSettings();
     
     // fetch the initial data immediately. well, after 1 second
+    // Fetch Host data
+    // Fetch Service data
+    // If Alert History is visible, fetch Alert data
+    // Fetch Comment data
     setTimeout(() => {
       this.fetchHostData();
       this.fetchServiceData();
