@@ -19,7 +19,7 @@ class FilterCheckbox extends Component {
   render() {
     
     let classN = 'Checkbox uppercase ' + this.props.filterName;
-    if (this.props.howMany) { classN += ' dim'; }
+    //if (this.props.howMany) { classN += ' dim'; }
     if (this.props.hideFilters) { classN += ' checkbox-hidden'; }
 
     return (
