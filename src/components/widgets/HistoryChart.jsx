@@ -39,6 +39,10 @@ class HistoryChart extends Component {
 
       // update the first time alerts are loaded we will see them in the new props when old props have none
       if (nextProps.alertlist.length > this.props.alertlist.length) {
+        // more items
+        this.updateSeriesFromPropsDelay();
+      } else if (nextProps.alertlist.length < this.props.alertlist.length) {
+        // less items
         this.updateSeriesFromPropsDelay();
       // else if the timestamp of the newest alert is greater than the existing one then update
       // TODO: use _.get for this just in case there are other issues with fetching the value
