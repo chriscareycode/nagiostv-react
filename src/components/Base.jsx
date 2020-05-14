@@ -13,7 +13,7 @@ import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import Demo from './Demo.jsx';
-//import Clock from './widgets/Clock.jsx';
+import Clock from './widgets/Clock.jsx';
 import NavBottomBar from './widgets/NavBottomBar.jsx';
 // css
 import './Base.css';
@@ -851,11 +851,11 @@ class Base extends Component {
             {(this.state.playSoundEffects || this.state.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
 
             {/* clock */}
-            {/*<Clock
+            <Clock
               locale={this.state.locale}
               clockDateFormat={this.state.clockDateFormat}
               clockTimeFormat={this.state.clockTimeFormat}
-            />*/}
+            />
 
             {/* flynn */}
             {this.state.flynnEnabled &&
