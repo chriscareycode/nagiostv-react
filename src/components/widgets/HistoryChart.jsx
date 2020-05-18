@@ -176,6 +176,15 @@ class HistoryChart extends Component {
           tickInterval: 3600 * 1000,
           min: min,
           max: max
+          // show 1 hr ago instead of time
+          // labels: {
+          //   formatter: (e) => {
+          //     //console.log(e);
+          //     const diff = new Date().getTime() - e.value;
+          //     const hoursAgo = moment.duration(diff).asHours();
+          //     return Math.floor(hoursAgo) + 'h ago';
+          //   }
+          // }
         }
       });
 
