@@ -7,7 +7,7 @@ import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
-import Progress from '../widgets/Progress';
+//import Progress from '../widgets/Progress';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -119,7 +119,7 @@ class ServiceItem extends Component {
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
           </div>}
 
-          <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>
+          {/*<Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>*/}
         
         </div>
 
