@@ -7,7 +7,7 @@ import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faYinYang } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
-import Progress from '../widgets/Progress';
+//import Progress from '../widgets/Progress';
 
 const defaultStyles = {
   overflow: 'hidden',
@@ -115,7 +115,8 @@ class HostItem extends Component {
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} {translate('ago', language)} - {this.props.comment}</span>
           </div>}
 
-          <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>
+          {/*<Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>*/}
+
         </div>
       </div>
     );
