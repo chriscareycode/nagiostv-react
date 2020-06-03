@@ -784,7 +784,8 @@ class Base extends Component {
           if (this.state.servicelist[host][service].is_flapping) {
             howManyServiceFlapping++;
           }
-          if (this.state.servicelist[host][service].state_type === 0) {
+          // only count soft items if they are not up
+          if (this.state.servicelist[host][service].status !== 2 && this.state.servicelist[host][service].state_type === 0) {
             howManyServiceSoft++;
           }
         });
@@ -823,7 +824,8 @@ class Base extends Component {
         if (this.state.hostlist[host].is_flapping) {
           howManyHostFlapping++;
         }
-        if (this.state.hostlist[host].state_type === 0) {
+        // only count soft items if they are not up
+        if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].state_type === 0) {
           howManyHostSoft++;
         }
       });
