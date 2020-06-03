@@ -35,8 +35,8 @@ class Base extends Component {
   state = {
     currentPage: 'dashboard',
 
-    currentVersion: 46,
-    currentVersionString: '0.5.3',
+    currentVersion: 47,
+    currentVersionString: '0.5.4',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
