@@ -462,7 +462,8 @@ class Base extends Component {
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (hours >= 1) {
+      // we disable the stale check if in demo mode since the demo data is always stale
+      if (!this.state.isDemoMode && hours >= 1) {
         this.setState({
           servicelistError: true,
           servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
@@ -527,7 +528,7 @@ class Base extends Component {
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (hours >= 1) {
+      if (!this.state.isDemoMode && hours >= 1) {
         this.setState({
           hostlistError: true,
           hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,

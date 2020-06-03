@@ -64,7 +64,9 @@ class Demo extends Component {
     const hostlist = {...this.props.hostlist};
 
     Object.keys(hostlist).some(key => {
+      // "UP" and "not SOFT"
       if (hostlist[key].status === 2) {
+        // Set status to DOWN
         hostlist[key].status = 4;
         hostlist[key].last_time_up = new Date().getTime();
         return true;
@@ -86,7 +88,9 @@ class Demo extends Component {
     const hostlist = {...this.props.hostlist};
 
     Object.keys(hostlist).some(key => {
+      // If status is "DOWN"
       if (hostlist[key].status === 4) {
+        // Set status to "UP"
         hostlist[key].status = 2;
         hostlist[key].last_time_up = new Date().getTime();
         return true;
