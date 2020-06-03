@@ -80,7 +80,7 @@ class ServiceItem extends Component {
     const e = this.props.serviceItem; // clean this up
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
-    const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
+    //const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     const nowTime = new Date().getTime();
 
     return (

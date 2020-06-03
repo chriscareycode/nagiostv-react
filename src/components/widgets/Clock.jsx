@@ -8,6 +8,7 @@ import './Clock.css';
 
 const Clock = (props) => {
 
+  // eslint-disable-next-line
   const [date, setDate] = useState(new Date().getTime());
 
   const tick = () => {
