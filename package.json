@@ -8,7 +8,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "axios": "^0.19.0",
-    "highcharts": "^8.1.0",
+    "highcharts": "^8.1.2",
     "highcharts-react-official": "^3.0.0",
     "jquery": "^3.5.1",
     "js-cookie": "^2.2.0",
@@ -17,7 +17,8 @@
     "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.4.2",
     "react-scripts": "^3.4.1",
-    "react-transition-group": "^4.4.1"
+    "react-transition-group": "^4.4.1",
+    "url-search-params-polyfill": "^8.1.0"
   },
   "scripts": {
     "start": "BROWSER=none PORT=3015 react-scripts start",
@@ -31,5 +32,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "customize-cra": "^1.0.0",
+    "customize-cra-react-refresh": "^1.1.0",
+    "react-app-rewired": "^2.1.6"
+  }
 }

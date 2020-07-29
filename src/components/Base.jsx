@@ -26,6 +26,8 @@ import _ from 'lodash';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+// Polyfill
+import 'url-search-params-polyfill';
 
 class Base extends Component {
 
