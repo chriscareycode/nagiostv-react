@@ -117,6 +117,7 @@ class Base extends Component {
     clockTimeFormat: 'LTS',
     
     isDemoMode: false,
+    isDebugMode: false,
 
     // fun stuff
     customLogoEnabled: false,
@@ -208,6 +209,10 @@ class Base extends Component {
     if (isDemoMode) {
       this.useFakeSampleData = true;
     }
+
+    // turn on debug mode if ?debug=true
+    const isDebugMode = urlParams.get('debug') === 'true';
+    this.state.isDebugMode = isDebugMode;
   }
 
   componentDidMount() {

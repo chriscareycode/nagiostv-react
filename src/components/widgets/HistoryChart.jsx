@@ -49,11 +49,13 @@ class HistoryChart extends Component {
       } else if (nextProps.alertlist.length > 0 && nextProps.alertlist[0].timestamp > this.props.alertlist[0].timestamp) {
         this.updateSeriesFromPropsDelay();
       }
+      return true;
     }
 
     // if any filter checkboxes were toggled then we want to update as well
     if (nextProps.hideAlertSoft !== this.props.hideAlertSoft) {
       this.updateSeriesFromPropsDelay();
+      return true;
     }
 
     // we never re-render this component since once highcharts is mounted, we don't want to re-render it over and over
@@ -141,6 +143,9 @@ class HistoryChart extends Component {
     const max = d.getTime();
     //console.log('min max', min, max);
 
+    // HighCharts setData
+    // https://api.highcharts.com/class-reference/Highcharts.Series.html#setData
+    
     // OK
     if (Object.keys(groupedOks).length > 0) {
       let okData = this.massageGroupByDataIntoHighchartsData(groupedOks, min, max);
@@ -293,7 +298,15 @@ class HistoryChart extends Component {
     }]
   };
 
+  
   render() {
+    
+    const debugMode = document.location.search.indexOf('debug') !== -1;
+    const alertlistDebug = this.props.alertlist.map((al, i) => {
+      if (this.props.groupBy === 'hour') { console.log(al); }
+      return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale('en').format('llll')} - {al.description} - {al.plugin_output}</div>);
+    });
+
     return (
       <div className="HistoryChart" style={{ paddingRight: '10px' }}>
         <HighchartsReact
@@ -301,6 +314,9 @@ class HistoryChart extends Component {
           options={this.chartConfig}
           callback={ this.afterChartCreated }
         />
+
+        {(debugMode && this.props.groupBy === 'hour') && <div style={{ marginBottom: '30px' }}>{alertlistDebug}</div>}
+        
       </div>
     );
   }
