@@ -15,6 +15,7 @@ import Settings from './Settings.jsx';
 import Demo from './Demo.jsx';
 import Clock from './widgets/Clock.jsx';
 import NavBottomBar from './widgets/NavBottomBar.jsx';
+import HostGroupFilter from './hosts/HostGroupFilter.jsx';
 // css
 import './Base.css';
 import './animation.css';
@@ -942,7 +943,13 @@ class Base extends Component {
             hostlistError={this.state.hostlistError}
           />}
 
+          {/* dashboard - the main page */}
+
           {this.state.currentPage === 'dashboard' && <div className="dashboard-area">
+
+            {/* hostgroups */}
+
+            <HostGroupFilter />
 
             {/* hosts */}
 
