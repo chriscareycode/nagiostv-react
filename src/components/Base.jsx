@@ -71,6 +71,12 @@ class Base extends Component {
     commentlistLastUpdate: 0,
     commentlist: {},
 
+    hostgroupError: false,
+    hostgroupErrorMessage: '',
+    hostgroupLastUpdate: 0,
+    hostgroup: {},
+    hostgroupFilter: '',
+
     // add to settings?
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
@@ -170,6 +176,7 @@ class Base extends Component {
     'hideAlertSoft',
 
     'hostSortOrder',
+    'hostgroupFilter',
     
     'versionCheckDays',
     'language',
@@ -221,12 +228,13 @@ class Base extends Component {
     // Load Remote Settings - then it calls the loadCookie routine
     this.getRemoteSettings();
     
-    // fetch the initial data immediately. well, after 1 second
+    // fetch the initial data after 1 second
     // Fetch Host data
     // Fetch Service data
     // If Alert History is visible, fetch Alert data
     // Fetch Comment data
     setTimeout(() => {
+      this.fetchHostGroupData();
       this.fetchHostData();
       this.fetchServiceData();
       if (!this.state.hideHistory) { this.fetchAlertData(); }
@@ -245,6 +253,7 @@ class Base extends Component {
       // we fetch alerts on a slower frequency interval
       if (!this.state.hideHistory) { 
         setInterval(() => {
+          this.fetchHostGroupData();
           this.fetchAlertData();
         }, this.state.fetchAlertFrequency * 1000);
       }
@@ -435,6 +444,8 @@ class Base extends Component {
       url = './sample-data/servicelist.json';
     } else {
       url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
+      const hostgroupFilter = this.state.hostgroupFilter;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
     }
     //console.log('Requesting Service Data: ' + url);
 
@@ -502,6 +513,8 @@ class Base extends Component {
       url = './sample-data/hostlist.json';
     } else {
       url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
+      const hostgroupFilter = this.state.hostgroupFilter;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
     }
 
     $.ajax({
@@ -569,6 +582,8 @@ class Base extends Component {
       url = './sample-data/alertlist.json';
     } else {
       url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+      const hostgroupFilter = this.state.hostgroupFilter;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
     }
 
     $.ajax({
@@ -634,7 +649,7 @@ class Base extends Component {
         return;
       }
 
-      // Make an array from the object
+      //
       const commentlist = myJson.data.commentlist;
       this.setState({
         commentlistError: false,
@@ -646,6 +661,43 @@ class Base extends Component {
     }).fail((jqXHR, textStatus, errorThrown) => {
       
       this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'commentlistError', 'commentlistErrorMessage');
+
+    });
+  }
+
+  fetchHostGroupData() {
+    const url = this.state.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          hostgroupError: true,
+          hostgroupErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
+
+      // Pluck out the hostgrouplist result
+      const hostgroup = _.get(myJson.data, 'hostgrouplist', {});
+
+      this.setState({
+        hostgroupError: false,
+        hostgroupErrorMessage: '',
+        hostgroupLastUpdate: new Date().getTime(),
+        hostgroup // object
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      
+      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'hostgroupError', 'hostgroupErrorMessage');
 
     });
   }
@@ -735,6 +787,16 @@ class Base extends Component {
       ...settingsObject
     });
   }
+
+  updateStateAndReloadNagiosData = (settingsObject) => {
+    this.setState({
+      ...settingsObject
+    }, () => {
+      this.fetchHostData();
+      this.fetchServiceData();
+      this.fetchAlertData();
+    });
+  };
 
   saveCookie() {
     const cookieObject = {};
@@ -949,7 +1011,11 @@ class Base extends Component {
 
             {/* hostgroups */}
 
-            <HostGroupFilter />
+            <HostGroupFilter
+              hostgroup={this.state.hostgroup}
+              hostgroupFilter={this.state.hostgroupFilter}
+              updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
+            />
 
             {/* hosts */}
 
