@@ -204,10 +204,6 @@ class Base extends Component {
 
   constructor(props) {
     super(props);
-
-    // Bind functions (move these to named arrow functons)
-    this.updateStateFromSettings = this.updateStateFromSettings.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
     
     // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
     // demo mode uses fake data and rotates through a couple of alerts as an example
@@ -767,7 +763,7 @@ class Base extends Component {
     });
   }
 
-  handleSelectChange(event) {
+  handleSelectChange = (event) => {
     // console.log('handleSelectChange Base.jsx');
     // console.log(event);
     // console.log(event.target.getAttribute('varname'));
@@ -779,31 +775,34 @@ class Base extends Component {
       // Save to cookie AFTER state is set
       this.saveCookie();
     });
-  }
+  };
 
   // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
-  updateStateFromSettings(settingsObject) {
+  updateStateFromSettings = (settingsObject) => {
     this.setState({
       ...settingsObject
     });
-  }
+  };
 
   updateStateAndReloadNagiosData = (settingsObject) => {
     this.setState({
       ...settingsObject
     }, () => {
+      // Save Cookie
+      this.saveCookie();
+      // Reload data from server now
       this.fetchHostData();
       this.fetchServiceData();
       this.fetchAlertData();
     });
   };
 
-  saveCookie() {
+  saveCookie = () => {
     const cookieObject = {};
     this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
     Cookie.set('settings', cookieObject);
     console.log('Saved cookie', cookieObject);
-  }
+  };
 
   /****************************************************************************
    *
@@ -1011,11 +1010,11 @@ class Base extends Component {
 
             {/* hostgroups */}
 
-            <HostGroupFilter
+            {!this.state.hideFilters && <HostGroupFilter
               hostgroup={this.state.hostgroup}
               hostgroupFilter={this.state.hostgroupFilter}
               updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
-            />
+            />}
 
             {/* hosts */}
 
@@ -1023,6 +1022,7 @@ class Base extends Component {
             
               <span className="service-summary-title">
                 Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
+                {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
               </span>
 
               {/* host filters */}
@@ -1080,6 +1080,7 @@ class Base extends Component {
               
               <span className="service-summary-title">
                 Monitoring <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
+                {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
               </span>
 
               {/* service filters */}
