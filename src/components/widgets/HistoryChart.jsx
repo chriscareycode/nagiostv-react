@@ -34,6 +34,8 @@ class HistoryChart extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
 
+    //console.log('shouldComponentUpdate() nextProps, nextState', nextProps, nextState);
+
     // check for updates each time the alert list data refreshes
     if (nextProps.alertlistLastUpdate !== this.props.alertlistLastUpdate) {
 
@@ -41,13 +43,16 @@ class HistoryChart extends Component {
       if (nextProps.alertlist.length > this.props.alertlist.length) {
         // more items
         this.updateSeriesFromPropsDelay();
+        //console.log('more items');
       } else if (nextProps.alertlist.length < this.props.alertlist.length) {
         // less items
         this.updateSeriesFromPropsDelay();
+        //console.log('less items');
       // else if the timestamp of the newest alert is greater than the existing one then update
       // TODO: use _.get for this just in case there are other issues with fetching the value
       } else if (nextProps.alertlist.length > 0 && nextProps.alertlist[0].timestamp > this.props.alertlist[0].timestamp) {
         this.updateSeriesFromPropsDelay();
+        //console.log('newer timestamp');
       }
       return true;
     }
@@ -113,6 +118,9 @@ class HistoryChart extends Component {
     }
 
     const groupBy = this.props.groupBy;
+
+    //console.log('updateSeriesFromProps', groupBy);
+    //console.log('this.props.alertlist', this.props.alertlist);
     
     // group the alerts into an object with keys that are for each day
     // this is a super awesome one liner for grouping
@@ -149,8 +157,10 @@ class HistoryChart extends Component {
     // OK
     if (Object.keys(groupedOks).length > 0) {
       let okData = this.massageGroupByDataIntoHighchartsData(groupedOks, min, max);
-      //console.log('Setting 0', okData);
+      //console.log('Setting 0 okData', groupBy, okData);
       chart.series[0].setData(okData.reverse(), true);
+    } else {
+      chart.series[0].setData([], true);
     }
 
     // WARNING
@@ -158,6 +168,8 @@ class HistoryChart extends Component {
       let warningData = this.massageGroupByDataIntoHighchartsData(groupedWarnings, min, max);
       //console.log('Setting 1', warningData);
       chart.series[1].setData(warningData.reverse(), true);
+    } else {
+      chart.series[1].setData([], true);
     }
 
     // UNKNOWN
@@ -165,6 +177,8 @@ class HistoryChart extends Component {
       let unknownData = this.massageGroupByDataIntoHighchartsData(groupedUnknowns, min, max);
       //console.log('Setting 1', warningData);
       chart.series[2].setData(unknownData.reverse(), true);
+    } else {
+      chart.series[2].setData([], true);
     }
 
     // CRITICAL
@@ -172,6 +186,8 @@ class HistoryChart extends Component {
       let criticalData = this.massageGroupByDataIntoHighchartsData(groupedCriticals, min, max);
       //console.log('Setting 2', criticalData);
       chart.series[3].setData(criticalData.reverse(), true);
+    } else {
+      chart.series[3].setData([], true);
     }
     
     if (this.props.groupBy === 'hour' && chart.update) {
