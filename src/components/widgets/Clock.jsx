@@ -18,14 +18,14 @@ const Clock = (props) => {
   useEffect(
     () => {
       //start timer
-      console.log('clock start timer');
+      //console.log('clock start timer');
       const timer = setInterval(() => {
         tick();
       }, 15);
 
       return () => {
         //stop timer
-        console.log('clock stop timer');
+        //console.log('clock stop timer');
         if (timer) {
           clearInterval(timer);
         }
