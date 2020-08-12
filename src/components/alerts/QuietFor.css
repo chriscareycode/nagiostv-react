@@ -9,6 +9,22 @@
 	border: 1px solid #004c00;
 }
 
+.QuietFor.quietfor-normal-size {
+
+}
+.QuietFor.quietfor-medium-size {
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+.QuietFor.quietfor-large-size {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+.QuietFor.quietfor-xlarge-size {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
 .QuietFor.color-green {
 	border: 1px solid #004c00;
 	background-color: #001d00;

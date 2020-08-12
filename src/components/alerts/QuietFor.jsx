@@ -70,23 +70,28 @@ class QuietFor extends Component {
     
     let icon = 'faCloud';
     let color = 'color-white';
+    let size = 'quietfor-normal-size'
     if (hours > 12) {
         icon = <FontAwesomeIcon className="color-green" icon={faSun} />;
         color = 'color-green';
+        size = 'quietfor-xlarge-size';
     } else if (hours > 6 && hours <= 12) {
         icon = <FontAwesomeIcon className="color-yellow" icon={faCloudSun} />;
         color = 'color-yellow';
+        size = 'quietfor-large-size';
     } else if (hours > 1 && hours <= 6) {
         icon = <FontAwesomeIcon className="color-orange" icon={faCloudSunRain} />;
         color = 'color-orange';
+        size = 'quietfor-medium-size';
     } else {
         icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />;
         color = 'color-red';
+        
     }
     
     //console.log('quietFor render');
     return (
-      <div className={`QuietFor ${color}`}>
+      <div className={`QuietFor ${color} ${size}`}>
         <div className="QuietForIcon">{icon}</div>
         <span className="QuietForClock"><FontAwesomeIcon className="color-white" icon={faClock} /></span>
         <span className={`${color}`}>
