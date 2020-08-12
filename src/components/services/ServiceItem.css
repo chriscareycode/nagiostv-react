@@ -4,20 +4,21 @@
 }
 .comment {
 	text-align: left;
-	font-size: 1em;
+	font-size: 0.9em;
 	background-color: rgba(0, 0, 0, 0.3);
 	margin-bottom: -5px;
 	margin-left: -5px;
 	margin-right: -5px;
-	padding: 2px 4px;
+	padding: 4px 4px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+	border-top: 1px solid #333;
 }
 
 .comment-color {
   color: #88c1ff;
   color: #00d8ff; /* blueish */
-  color: lime;
+  color: #fdfdfd;
 }
 
 .checking-now {
