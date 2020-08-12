@@ -262,6 +262,7 @@ and (max-width: 1768px) {
 }
 .uppercase-first:first-letter {
   text-transform: uppercase;
+  margin: 0;
 }
 .display-inline-block {
   display: inline-block;
