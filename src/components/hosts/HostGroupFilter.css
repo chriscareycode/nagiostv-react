@@ -1,6 +1,6 @@
 .HostGroupFilter {
   margin-top: 10px;
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: #bbb;
 }
 .HostGroupFilter select {
@@ -8,4 +8,5 @@
   color: #000;
   background-color: #999;
   padding-left: 5px;
+  border: 0;
 }
