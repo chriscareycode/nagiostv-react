@@ -254,9 +254,19 @@ class Base extends Component {
         }, this.state.fetchAlertFrequency * 1000);
       }
 
-      // this is not super clean but I'm going to delay this by 30s to give the setState() in the getCookie()
-      // time to complete. It's async so we could have a race condition getting the version check setting
-      // to arrive in this.state.versionCheckDays
+      // If a Cookie is set then run version check after 30s.
+      // If no Cookie is set then run version check after 30m.
+      // Cookie helps us prevent version check too often if NagiosTV is on a rotation
+      // where the page is loading over and over every few minutes.
+      // If we do not have a Cookie then it could cause too many checks.
+
+      const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
+      let versionCheckTimeout = 30 * 1000; // 30s
+      if (!lastVersionCheckTimeCookie) {
+        console.log('Cookie not found so delaying first version check by 30m');
+        versionCheckTimeout = 1800 * 1000; // 30m
+      }
+
       setTimeout(() => {
         const versionCheckDays = this.state.versionCheckDays;
         // if someone turns off the version check, it should never check
@@ -280,7 +290,7 @@ class Base extends Component {
         } else {
           console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
         }
-      }, 30000);
+      }, versionCheckTimeout);
     } // if isDemoMode === false
 
   }
