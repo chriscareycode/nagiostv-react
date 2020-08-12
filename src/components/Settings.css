@@ -160,3 +160,10 @@ table.SettingsTable select {
 .Settings .input-error {
     background-color: pink;
 }
+
+.Settings .settings-unsaved-changes-text {
+    background-color: brown;
+    color: yellow;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
