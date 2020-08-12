@@ -260,9 +260,8 @@ and (max-width: 1768px) {
 .uppercase {
   text-transform: uppercase;
 }
-.uppercase-first:first-letter {
-  text-transform: uppercase;
-  margin: 0;
+.uppercase-first {
+  text-transform: capitalize;
 }
 .display-inline-block {
   display: inline-block;
