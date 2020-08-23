@@ -260,10 +260,9 @@ class Base extends Component {
       // where the page is loading over and over every few minutes.
       // If we do not have a Cookie then it could cause too many checks.
 
-      const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
       let versionCheckTimeout = 30 * 1000; // 30s
-      if (!lastVersionCheckTimeCookie) {
-        console.log('Cookie not found so delaying first version check by 30m');
+      if (!navigator.cookieEnabled) {
+        console.log('Cookie not enabled so delaying first version check by 30m');
         versionCheckTimeout = 1800 * 1000; // 30m
       }
 
