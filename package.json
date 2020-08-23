@@ -16,7 +16,7 @@
     "react": "^16.4.2",
     "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.4.2",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.3",
     "react-transition-group": "^4.4.1",
     "url-search-params-polyfill": "^8.1.0"
   },
