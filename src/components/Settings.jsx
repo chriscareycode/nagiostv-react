@@ -10,7 +10,7 @@ import { languages } from '../helpers/language';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTools } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 
 class Settings extends Component {
 
@@ -217,7 +217,7 @@ class Settings extends Component {
 
           <div className="SettingsCenterDiv">
             {this.state.saveMessage && <span className="SettingSaveMessage color-green">{this.state.saveMessage}</span>}
-            {this.state.isDirty && <span className="settings-unsaved-changes-text">⚠️ This page has unsaved changes</span>}
+            {this.state.isDirty && <span className="settings-unsaved-changes-text"><FontAwesomeIcon icon={faExclamationTriangle} /> This page has unsaved changes</span>}
           </div>
 
           <div className="settings-header-buttons">
