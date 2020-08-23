@@ -116,8 +116,10 @@ app.listen(settings.serverPort);
 
 console.log('Listening on port ' + settings.serverPort + '...');
 console.log(' ');
-console.log(`In NagiosTV settings you can now set the Nagios cgi-bin path to`);
-console.log(`http://<this server ip address>:${settings.serverPort}/nagios/`);
-console.log(`And this server will proxy and add auth to the Nagios server at`);
+console.log(`This server will proxy and add auth to the Nagios server at`);
 console.log(`${settingsNagios.nagiosServerHost}${settingsNagios.nagiosServerCgiPath}`);
+console.log(' ');
+console.log(`In NagiosTV settings you can now set the Nagios cgi-bin path to:`);
+console.log(`http://<this server ip address>:${settings.serverPort}/nagios/`);
+console.log(`http://localhost:${settings.serverPort}/nagios/`);
 console.log(' ');
