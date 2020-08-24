@@ -16,23 +16,30 @@
     "react": "^16.4.2",
     "react-app-polyfill": "^1.0.6",
     "react-dom": "^16.4.2",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.1",
     "react-transition-group": "^4.4.1",
     "url-search-params-polyfill": "^8.1.0"
   },
   "scripts": {
     "start": "BROWSER=none PORT=3015 react-scripts start",
     "build": "react-scripts build",
-    "build:dev": "react-scripts build -- --profile",
+    "build:dev": "react-scripts build --profile",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "ie 11",
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "devDependencies": {
     "customize-cra": "^1.0.0",
     "customize-cra-react-refresh": "^1.1.0",
