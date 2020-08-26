@@ -66,7 +66,7 @@ class AlertItems extends Component {
         {/* loop through the trimmed items */}        
         {trimmedItems.map((e, i) => {
           const host = (e.object_type === 1 ? e.name : e.host_name);
-          const prevtime = (i > 1 ? this.props.items[i-1].timestamp : 0);
+          const prevtime = (i > 0 ? this.props.items[i-1].timestamp : 0);
           return (
             <AlertItem
               key={'alert-' + host + '-' + e.object_type + '-' + e.timestamp + '-' + i}

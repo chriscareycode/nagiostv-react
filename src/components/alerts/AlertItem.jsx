@@ -33,7 +33,7 @@ class AlertItem extends Component {
     return (
       <div>
         {/* show quiet for */}
-        {(i > 1) && ifQuietFor(e.timestamp, this.props.prevtime, howMuchTimeIsQuietTime) &&
+        {(i > 0) && ifQuietFor(e.timestamp, this.props.prevtime, howMuchTimeIsQuietTime) &&
           <QuietFor
           	nowtime={e.timestamp}
           	prevtime={this.props.prevtime}
