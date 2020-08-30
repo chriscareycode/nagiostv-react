@@ -10,6 +10,7 @@ class ServiceFilters extends Component {
     const propsToCauseRender = [
       'hideFilters',
       'serviceSortOrder',
+      'howManyServices',
       'howManyServiceWarning',
       'howManyServicePending',
       'howManyServiceUnknown',
@@ -31,6 +32,8 @@ class ServiceFilters extends Component {
     
     const language = this.props.language;
 
+    const howManyServiceOk = this.props.howManyServices - this.props.howManyServiceWarning - this.props.howManyServiceCritical;
+
     return (
       <>
 
@@ -39,6 +42,11 @@ class ServiceFilters extends Component {
           <option value="oldest">{translate('oldest first', language)}</option>
         </select>}
 
+        {(this.props.howManyServiceWarning !== 9 || this.props.howManyServiceCritical !== 0) && <span>
+          &nbsp;
+          <span className="filter-ok-label filter-ok-label-green"><strong>{howManyServiceOk}</strong> OK</span>
+        </span>}
+        
         {(!this.props.hideFilters || this.props.howManyServiceCritical !== 0) && <span>
           &nbsp;
           <Checkbox

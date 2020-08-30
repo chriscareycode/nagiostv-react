@@ -32,9 +32,12 @@ import 'url-search-params-polyfill';
 
 class Base extends Component {
 
-  // use fake sample data if we are doing local development
+  /********************************************************************************** */
+  // FOR DEVELOPERS: Set this to use fake sample data if we are doing local development
+  /********************************************************************************** */
   useFakeSampleData = false;
 
+  // React State
   state = {
     currentPage: 'dashboard',
 
@@ -873,7 +876,7 @@ class Base extends Component {
     // count how many items in each of the host states
     const howManyHosts = Object.keys(this.state.hostlist).length;
     let howManyHostPending = 0;
-    let howManyHostUp = 0;
+    let howManyHostUp = 0; // TODO: is this being used? think not
     let howManyHostDown = 0;
     let howManyHostUnreachable = 0;
     let howManyHostAcked = 0;
@@ -1040,6 +1043,7 @@ class Base extends Component {
                 hostSortOrder={this.state.hostSortOrder}
                 handleSelectChange={this.handleSelectChange}
                 handleCheckboxChange={this.handleCheckboxChange}
+                howManyHosts={howManyHosts}
                 howManyHostDown={howManyHostDown}
                 howManyHostUnreachable={howManyHostUnreachable}
                 howManyHostPending={howManyHostPending}

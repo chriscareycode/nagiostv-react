@@ -86,6 +86,7 @@ class AlertSection extends Component {
             handleSelectChange={this.props.handleSelectChange}
             handleCheckboxChange={this.props.handleCheckboxChange}
             hideAlertSoft={this.props.hideAlertSoft}
+            howManyAlerts={this.props.alertlist.length}
             howManyAlertSoft={howManyAlertSoft}
             language={this.props.language}
           />

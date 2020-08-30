@@ -25,15 +25,21 @@ class AlertFilters extends Component {
 
     return (
       <>
-        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <Checkbox
-          filterName="soft"
-          hideFilters={this.props.hideFilters}
-          handleCheckboxChange={this.props.handleCheckboxChange}
-          stateName={'hideAlertSoft'}
-          defaultChecked={!this.props.hideAlertSoft}
-          howMany={this.props.howManyAlertSoft}
-          howManyText={translate('soft', language)}
-        />}
+
+        <span className="filter-ok-label filter-ok-label-gray"><strong>{this.props.howManyAlerts}</strong> Alerts</span>
+
+        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <span>
+          &nbsp;
+          <Checkbox
+            filterName="soft"
+            hideFilters={this.props.hideFilters}
+            handleCheckboxChange={this.props.handleCheckboxChange}
+            stateName={'hideAlertSoft'}
+            defaultChecked={!this.props.hideAlertSoft}
+            howMany={this.props.howManyAlertSoft}
+            howManyText={translate('soft', language)}
+          />
+        </span>}
       </>
     );
   }

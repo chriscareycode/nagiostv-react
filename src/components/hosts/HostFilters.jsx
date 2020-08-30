@@ -10,7 +10,7 @@ class HostFilters extends Component {
     const propsToCauseRender = [
       'hideFilters',
       'hostSortOrder',
-      'howManyHostDown',
+      'howManyHosts',
       'howManyHostDown',
       'howManyHostUnreachable',
       'howManyHostPending',
@@ -30,6 +30,8 @@ class HostFilters extends Component {
   render() {
     
     const language = this.props.language;
+    
+    const howManyHostUp = this.props.howManyHosts - this.props.howManyHostUnreachable;
 
     return (
       <>
@@ -38,6 +40,11 @@ class HostFilters extends Component {
           <option value="newest">{translate('newest first', language)}</option>
           <option value="oldest">{translate('oldest first', language)}</option>
         </select>}
+
+        {(this.props.howManyHostDown !== 9) && <span>
+          &nbsp;
+          <span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
+        </span>}
 
         {(!this.props.hideFilters || this.props.howManyHostDown !== 0) && <span>
           &nbsp;
