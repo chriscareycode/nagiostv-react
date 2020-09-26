@@ -1,5 +1,7 @@
 # NagiosTV
 
+![Display](https://nagiostv.com/images/nagiostv-0.5.8.png)
+
 Compatible with Nagios Core 4 and Nagios XI
 
 NagiosTV is a user interface (UI) for the Nagios monitoring system https://www.nagios.org
@@ -25,11 +27,6 @@ Technology
 ------------
 NagiosTV is a JavaScript single page application.
 The frontend is using the React JavaScript framework.
-
-Screenshots
-------------
-
-![Display](https://chriscarey.com/software/nagiostv-react/images/nagiostv-0.3.1.png)
 
 Installing NagiosTV
 -------------
