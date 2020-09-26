@@ -47,8 +47,8 @@ $ sudo mv nagiostv /usr/local/nagios/share/
 
 Preparing the client settings file (optional)
 ------------
-By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file and set 
-permissions on that file so NagiosTV (Apache) can edit it. In the example below, I set the file permission to 777, but you could optionally just give access to the "apache" ("www-data" on Debian/ubuntu) user.
+By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. If you want the NagiosTV web interface to be able to save to this server configuration file, you will also want to set 
+permissions on that file. In the example below, I set the file permission to 777, but you could optionally just give access to the "apache" ("www-data" on Debian/ubuntu) user.
 
 ```console
 $ sudo touch client-settings.json
@@ -120,7 +120,7 @@ TODO
 
 History
 ------------
-The idea for NagiosTV was started around 2009. It was created to have a nice way to display Nagios status on a TV at work.
+NagiosTV was started around 2009. Originally it was called ajax-monitor-for-nagios. It was created to have a nice way to display Nagios status on a TV at work.
 Over the years I have continued to run it at home to monitor my own network.
 
 Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status.
