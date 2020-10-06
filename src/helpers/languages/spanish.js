@@ -42,7 +42,7 @@ export const phrases = {
 	'alerts in the past': 'alarmas en el anterior',
 	'trimming at': 'cortante en el',
 
-	'quiet for': 'tranquilo por',
+	'quiet': 'tranquilo',
 
 	'on': 'en',
 	'is': 'es',

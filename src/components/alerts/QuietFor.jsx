@@ -95,7 +95,7 @@ class QuietFor extends Component {
         <div className="QuietForIcon">{icon}</div>
         <span className="QuietForClock"><FontAwesomeIcon className="color-white" icon={faClock} /></span>
         <span className={`${color}`}>
-            <span className="uppercase-first display-inline-block">{translate('quiet for', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
+            <span className="uppercase-first display-inline-block">{translate('quiet', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
         </span>
       </div>
     );
