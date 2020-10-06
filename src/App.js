@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
-//import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { RecoilRoot } from 'recoil';
 import Base from './components/Base.jsx';
 
-class App extends Component {
+const App = () => {
 
-  render() {
-    return (
-      <div className="App">
+  return (
+    <div className="App">
+      <RecoilRoot>
         <Base />
-      </div>
-    );
-  }
-}
+      </RecoilRoot>
+    </div>
+  );
+  
+};
 
 export default App;
