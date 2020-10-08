@@ -10,12 +10,14 @@ import ServiceItem from './ServiceItem';
 // css
 import './ServiceItems.css';
 
-const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howManyServices, commentlist }) => {
+const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howManyServices, commentlist, hostProblemsArray }) => {
 
   const nodeRef = React.useRef(null);
 
   //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
   //console.log(Object.keys(this.props.serviceProblemsArray));
+
+  const notifyDisabledArray = hostProblemsArray.filter(item=>!item.notifications_enabled && [1,4,8].includes(item.status) );
   
   const filteredServiceProblemsArray = serviceProblemsArray.filter(item => {
     if (settings.hideServicePending) {
@@ -41,6 +43,10 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
     }
     if (settings.hideServiceSoft) {
       if (item.state_type === 0) { return false; }
+    }
+    if(settings.hideAnyDownHostNotifyDisabled){
+      // check this service against its host being disabled
+      return ! !!notifyDisabledArray.find(host => host.name === item.host_name)
     }
     return true;
   });
