@@ -16,6 +16,7 @@ import Demo from './Demo.jsx';
 import Clock from './widgets/Clock.jsx';
 import NavBottomBar from './widgets/NavBottomBar.jsx';
 import HostGroupFilter from './hosts/HostGroupFilter.jsx';
+import Checkbox from './widgets/FilterCheckbox.jsx';
 // css
 import './Base.css';
 import './animation.css';
@@ -103,6 +104,8 @@ class Base extends Component {
     hideServiceFlapping: false,
     hideServiceSoft: false,
 
+    hideAnyDownHostNotifyDisabled: false,
+
     serviceSortOrder: 'newest',
 
     hideHostPending: false,
@@ -180,6 +183,8 @@ class Base extends Component {
 
     'hostSortOrder',
     'hostgroupFilter',
+
+    'hideAnyDownHostNotifyDisabled',
     
     'versionCheckDays',
     'language',
@@ -1028,6 +1033,20 @@ class Base extends Component {
               updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
             />}
 
+            {!this.state.hideFilters && 
+              <span> &nbsp;
+                <Checkbox
+                  filterName="notifyDisable"
+                  hideFilters={this.hideFilters}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  stateName={'hideAnyDownHostNotifyDisabled'}
+                  defaultChecked={!settingsObject.hideAnyDownHostNotifyDisabled}
+                  howMany=""
+                  howManyText={translate('down host/services with host notifications disabled', language)}
+                />
+              </span>
+            }
+
             {/* hosts */}
 
             {settingsLoaded && <div className="service-summary">
@@ -1132,6 +1151,7 @@ class Base extends Component {
 
             <ServiceItems
               serviceProblemsArray={this.state.serviceProblemsArray}
+              hostProblemsArray={this.state.hostProblemsArray}
               commentlist={this.state.commentlist}
               settings={settingsObject}
 
