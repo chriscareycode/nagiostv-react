@@ -34,6 +34,7 @@ class Base extends Component {
 
   /********************************************************************************** */
   // FOR DEVELOPERS: Set this to use fake sample data if we are doing local development
+  //                 or add ?fakedata=true to the URL
   /********************************************************************************** */
   useFakeSampleData = false;
 
@@ -220,6 +221,12 @@ class Base extends Component {
     // turn on debug mode if ?debug=true
     const isDebugMode = urlParams.get('debug') === 'true';
     this.state.isDebugMode = isDebugMode;
+
+    // use fake data (dev) if ?fakedata=true
+    if (urlParams.get('fakedata') === 'true') {
+      this.useFakeSampleData = true;
+    }
+    
   }
 
   componentDidMount() {

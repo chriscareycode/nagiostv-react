@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "build:dev": "react-scripts build --profile",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "proxy": "node proxy.js"
   },
   "browserslist": {
     "production": [
