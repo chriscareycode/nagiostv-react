@@ -8,3 +8,8 @@
   margin-top: 15px;
   clear: both;
 }
+
+.history-summary-title {
+  font-size: 0.8em;
+  color: #bbb;
+}

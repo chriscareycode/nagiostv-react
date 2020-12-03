@@ -22,3 +22,24 @@
   left: 4px;
   text-align: right;
 }
+
+.alert-item-right-date {
+  font-size: 0.8em;
+  color: #bbb;
+}
+
+.alert-item-state-type-2 {
+  color: #999;
+}
+
+.alert-item-description {
+  font-size: 0.7em;
+    padding: 2px 4px;
+    border-radius: 4px;
+    position: relative;
+    top: -2px;
+    border: 1px solid #545454;
+    background-color: #3e3e3e;
+    
+    margin-right: 5px;
+}

@@ -991,7 +991,7 @@ class Base extends Component {
 
         {/* spacer to counteract the floating header */}
 
-        <div style={{ height: '55px' }}>
+        <div style={{ height: '45px' }}>
         </div>
 
         {/* Demo mode logic is inside this component */}

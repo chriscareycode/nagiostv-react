@@ -97,8 +97,8 @@ class AlertSection extends Component {
 
         {alertlist.length > 0 && <div>
 
-          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-summary margin-top-10">
-            <span className="service-summary-title">
+          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-summary margin-top-5">
+            <span className="history-summary-title">
               <strong>{alertlistHoursCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertHoursBack}</strong> {translate('hours', language)}
               {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
             </span>
@@ -120,7 +120,7 @@ class AlertSection extends Component {
         {alertlist.length > 0 && <div>
 
           {!this.props.hideHistoryTitle && <div className="history-summary margin-top-10">
-            <span className="service-summary-title">
+            <span className="history-summary-title">
               <strong>{alertlistCount}</strong> {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
               {this.props.alertlistCount > this.props.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
             </span>

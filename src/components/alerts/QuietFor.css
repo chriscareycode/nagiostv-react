@@ -1,12 +1,12 @@
 .QuietFor {
-	color: lime;
-	padding: 5px 5px;
-	margin: 20px 0px;
+	padding: 8px 5px;
+	margin: 10px 0px;
 	text-align: left;
-	background-color: #111;
+	background-color: #171717;
 	border-radius: 5px;
-	font-size: 1.1em;
-	border: 1px solid #004c00;
+	font-size: 0.9em;
+	border: 0px solid #464646;
+	color: #bbb;
 }
 
 .QuietFor.quietfor-normal-size {
@@ -51,5 +51,6 @@
 	margin-right: 5px;
 }
 .QuietForClock {
-	margin-right: 5px;
+	margin-left: 6px;
+	margin-right: 9px;
 }

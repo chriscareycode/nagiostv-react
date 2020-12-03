@@ -44,14 +44,15 @@ class AlertItem extends Component {
         {/* show alert item */}
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
           <div className={'AlertItemRight'}>
-            {isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faAdjust} /></span>}
+            {/*isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faAdjust} /></span>*/}
             {1 === 2 && <span>({e.state_type})</span>}
-            <span className="uppercase">{translate(nagiosAlertStateType(e.state_type), language)}</span>{' '}
+            <span className={`uppercase alert-item-state-type-${e.state_type}`}>{translate(nagiosAlertStateType(e.state_type), language)}</span>
+            {' '}
             {1 === 2 && <span>({e.state})</span>}
             {1 === 2 && <span>({e.object_type})</span>}
             <span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
             
-            <div className="align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
+            <div className="alert-item-right-date align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
 
           </div>
           <span style={{ textAlign: 'left' }}>
@@ -59,9 +60,9 @@ class AlertItem extends Component {
             <div style={{ marginTop: '2px' }}>
               {e.object_type === 1 && <span>{e.name}</span>}
               {e.object_type === 2 && <span>{e.host_name}</span>}
-              {' - '}
+              {' '}
               <span className={alertTextClass(e.object_type, e.state)}>
-                {e.object_type === 2 && <span className="color-orange">{e.description} - </span>}
+                {e.object_type === 2 && <span className="alert-item-description">{e.description}</span>}
                 {e.plugin_output}
               </span>
             </div>

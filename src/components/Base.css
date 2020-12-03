@@ -5,6 +5,9 @@
 input[type=text] {
   width: 50%;
 }
+.margin-top-5 {
+  margin-top: 5px;
+}
 .margin-top-10 {
   margin-top: 10px;
 }
@@ -49,46 +52,18 @@ input[type=text] {
   top: 0;
   left: 0;
   right: 0;
-  min-height: 50px;
+  height: 40px;
   z-index: 10;
   background-color: #222;
   border-bottom: 0px solid #333;
   
 }
 
-.HeaderArea > div {
-  /*margin: 10px 0 10px 15px;*/
-}
-
-/*
-.HeaderArea > .header-corner-area {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #363644;
-  height: 50px;
-  width: 50px;
-  text-align: center;
-}
-
-.HeaderArea > .header-corner-area > svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.HeaderArea > .header-corner-area > svg.header-corner-area-icon {
-  cursor: pointer;
-}
-
-*/
-
 .HeaderArea > .header-right-float {
   position: absolute;
   top: 0;
   right:  0px;
-  height: 50px;
+  height: 40px;
   vertical-align: top;
 }
 
@@ -99,7 +74,6 @@ input[type=text] {
   margin-left: 15px;
   margin-right: 10px;
   display: inline-block;
-  font-size: 1.2em;
   color: #ddd;
 }
 
@@ -172,7 +146,7 @@ and (max-width: 1768px) {
   
 }
 .service-summary-title {
-  font-size: 1.2em;
+  font-size: 1.0em;
   margin-right: 8px;
   margin-bottom: 5px;
   color: #bbb;
@@ -235,25 +209,6 @@ and (max-width: 1768px) {
   top: 10px;
   right: 18px;
   z-index: 11;
-}
-
-/* more footer */
-
-.update-available {
-  
-
-  font-weight: bold;
-  padding: 1px 8px;
-  border-radius: 5px;
-  margin-left: 5px;
-}
-.update-available a {
-  color: yellow;
-  text-decoration: underline;
-}
-.update-available a:hover {
-  color: yellow;
-  text-decoration: underline;
 }
 
 /* general purpose font related */

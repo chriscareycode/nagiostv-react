@@ -1,15 +1,17 @@
 .NavBottomBar {
   position: fixed;
-
   bottom: 0px;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   height: 50px;
-  border: 0px solid #333;
-  background-color: #222;
+  border: 2px solid #111;
+  border-bottom: none;
+  background-color: #222222d1;
   z-index: 13;
   text-align: center;
-  
+  font-size: 0.9em;
 }
 
 .NavBottomBar .nav-sidebar-version {
@@ -24,7 +26,11 @@
 }
 
 .NavBottomBar .nav-sidebar-version-text {
-  
+  background-color: #111;
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 0.9em;
+  color: #666;
 }
 
 .NavBottomBar .nav-sidebar-icon {
@@ -80,3 +86,19 @@
   bottom: 0;
 }
 
+
+/* more footer */
+
+.update-available {
+  padding: 1px 8px;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+.update-available a {
+  color: #a7a749;
+  text-decoration: none;
+}
+.update-available a:hover {
+  color: yellow;
+  text-decoration: underline;
+}

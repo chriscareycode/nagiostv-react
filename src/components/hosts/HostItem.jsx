@@ -5,7 +5,7 @@ import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch, faYinYang } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 //import Progress from '../widgets/Progress';
 
@@ -106,9 +106,9 @@ class HostItem extends Component {
 
           <div className="lastCheck">
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
-            {translate('Next check in', language)}:
-            {(e.next_check > nowTime) && <span className="color-peach"> {formatDateTime(e.next_check)}</span>}
-            {(e.next_check <= nowTime) && <span className="checking-now"> Checking now...</span>}
+            
+            {(e.next_check > nowTime) && <span>{translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
+            {(e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
           </div>
 
           {this.props.comment && <div className="comment">
