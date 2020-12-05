@@ -5,7 +5,7 @@ import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch, faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 //import Progress from '../widgets/Progress';
 
@@ -84,11 +84,13 @@ class HostItem extends Component {
 
     return (
       <div style={{ ...defaultStyles }} className={`HostItem`} onClick={this.mouseClick}>
-        <div className={`HostItemBorder ${hostBorderClass(e.status)}`}>
+        <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
-            {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faYinYang} spin /></span>}
+            {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
+            {/* for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
-            <span className="uppercase">{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            <span className={`uppercase host-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            {/* for debug turn this on to know what status this item is */}
             {1 === 2 && <span>({e.status})</span>}
             <span className={`uppercase ${hostTextClass(e.status)}`}>{translate(nagiosHostStatus(e.status), language)}</span>{' '}
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}

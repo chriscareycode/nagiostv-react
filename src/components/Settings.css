@@ -14,7 +14,7 @@
 
 .settings-header {
     position: fixed;
-    top: 50px;
+    top: 40px; /* TODO: needs to match with main header spacing, bad design */
     left: 0px;
     right: 0px;
     background-color: #2f2f2f;

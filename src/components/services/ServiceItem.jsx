@@ -6,7 +6,7 @@ import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios.js';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch, faYinYang } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 //import Progress from '../widgets/Progress';
 
 const defaultStyles = {
@@ -86,11 +86,13 @@ class ServiceItem extends Component {
     return (
       
       <div style={{ ...defaultStyles }} className={`ServiceItem`} onClick={this.mouseClick}>
-        <div className={`ServiceItemBorder ${serviceBorderClass(e.status)}`}>
+        <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
-            {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faYinYang} spin /></span>}
+            {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
+            {/* for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
-            <span className="uppercase">{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            <span className={`uppercase service-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            {/* for debug turn this on to know what status this item is */}
             {1 === 2 && <span>({e.status})</span>}
             <span className={`uppercase ${serviceTextClass(e.status)}`}>{translate(nagiosServiceStatus(e.status), language)}</span>{' '}
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}

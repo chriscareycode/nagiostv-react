@@ -377,7 +377,7 @@ class Settings extends Component {
               </td>
             </tr>}
             <tr>
-              <th>Flynn:</th>
+              <th>Doom Guy (Flynn):</th>
               <td>
                 <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
                     <option value={true}>On</option>
@@ -386,15 +386,15 @@ class Settings extends Component {
               </td>
             </tr>
             {this.state.flynnEnabled && <tr>
-              <th>Flynn angry at</th>
+              <th>Doom Guy angry at</th>
               <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
             </tr>}
             {this.state.flynnEnabled && <tr>
-              <th>Flynn bloody at</th>
+              <th>Doom Guy bloody at</th>
               <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
             </tr>}
             {this.state.flynnEnabled && <tr>
-              <th>Flynn CSS scale</th>
+              <th>Doom Guy CSS scale</th>
               <td>
                 <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
                 <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)

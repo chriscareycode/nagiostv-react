@@ -2,3 +2,13 @@
 	position: relative;
 	cursor: pointer;
 }
+
+{/* soft */}
+.host-item-soft {
+	opacity: 0.7;
+}
+
+{/* soft */}
+.host-item-state-type-0 {
+	color: #999;
+}

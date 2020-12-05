@@ -73,6 +73,9 @@ export function serviceTextClass(status) {
   let classString = '';
 
   switch(status) {
+    case 1:
+      classString = 'color-gray'; // pending
+      break;
     case 2:
       classString = 'color-green'; // ok
       break;
