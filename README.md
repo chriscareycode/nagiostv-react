@@ -1,6 +1,6 @@
 # NagiosTV
 
-![Display](https://nagiostv.com/images/nagiostv-0.5.9.png)
+![Display](https://nagiostv.com/images/nagiostv-0.5.8.png)
 
 Compatible with Nagios Core 4 and Nagios XI
 
