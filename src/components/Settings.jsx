@@ -135,7 +135,7 @@ class Settings extends Component {
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
-    axios.post('server.php', settingsObject).then(response => {
+    axios.post('save-client-settings.php', settingsObject).then(response => {
       //console.log('saved to server', response);
       
       if (typeof response.data === 'object') {
