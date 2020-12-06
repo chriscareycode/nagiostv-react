@@ -42,8 +42,8 @@ class Settings extends Component {
     this.loadLocalStateFromProps();
   }
 
-  componentWillReceiveProps(nextProps, nextState) {
-    if (!this.props.isCookieLoaded && nextProps.isCookieLoaded) {
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.props.isCookieLoaded && prevProps.isCookieLoaded) {
       this.loadLocalStateFromProps();
       console.log('settings - Loading Local State from Props');
       return true;
