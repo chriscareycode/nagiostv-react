@@ -7,7 +7,8 @@ import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 import { listLocales } from '../helpers/moment';
 import { languages } from '../helpers/language';
-
+// clipboard
+import * as clipboard from "clipboard-polyfill/text";
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
@@ -155,6 +156,12 @@ class Settings extends Component {
     }, 3000);
   }
 
+  copySettingsToClipboard = () => {
+    const settingsObject = {};
+    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+    clipboard.writeText(JSON.stringify(settingsObject));
+  };
+
   playCritical() {
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
@@ -296,6 +303,46 @@ class Settings extends Component {
           </tbody>
         </table>
 
+        {/* hosts */}
+        <table className="SettingsTable">
+          <thead>
+            <tr>
+              <td colSpan="2" className="SettingsTableHeader">Hosts Settings</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Hosts:</th>
+              <td>
+                <select value={this.state.hideHostSection} onChange={this.handleChange('hideHostSection', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* services */}
+        <table className="SettingsTable">
+          <thead>
+            <tr>
+              <td colSpan="2" className="SettingsTableHeader">Services Settings</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Services:</th>
+              <td>
+                <select value={this.state.hideServiceSection} onChange={this.handleChange('hideServiceSection', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
         {/* history */}
         <table className="SettingsTable">
           <thead>
@@ -385,21 +432,35 @@ class Settings extends Component {
                 </select>
               </td>
             </tr>
-            {this.state.flynnEnabled && <tr>
-              <th>Doom Guy angry at</th>
-              <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
-            </tr>}
-            {this.state.flynnEnabled && <tr>
-              <th>Doom Guy bloody at</th>
-              <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
-            </tr>}
-            {this.state.flynnEnabled && <tr>
-              <th>Doom Guy CSS scale</th>
-              <td>
-                <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
-                <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
+
+            {/** special colspan=2 section for doom guy settings */}
+            <tr>
+              <td colSpan="2">
+                <div style={{ paddingLeft: '40px' }}>
+                  <table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
+                    <tbody>
+                      {this.state.flynnEnabled && <tr>
+                        <th>Doom Guy angry at</th>
+                        <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
+                      </tr>}
+                      {this.state.flynnEnabled && <tr>
+                        <th>Doom Guy bloody at</th>
+                        <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
+                      </tr>}
+                      {this.state.flynnEnabled && <tr>
+                        <th>Doom Guy CSS scale</th>
+                        <td>
+                          <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                          <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
+                        </td>
+                      </tr>}
+                    </tbody>
+                  </table>
+                </div>
               </td>
-            </tr>}
+            </tr>
+            {/** end special colspan=2 section for doom guy settings */}
+
             <tr>
               <th>Emojis:</th>
               <td>
@@ -500,20 +561,38 @@ class Settings extends Component {
               <td>
                 <div className="font-size-0-8" style={{ margin: '5px' }}>
                   By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
-                  so they can be shared with all users of NagiosTV. You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
-                  the nagiostv folder and chown 777 client-settings.json so the Apache process has rights to write to it.
-
-                  <pre>
-                  sudo touch client-settings.json<br />
-                  sudo chmod 777 client-settings.json
-                  </pre>
-
-                  After those steps, you can try the "Save to Server" button.
-                  <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save to Server</button><br />
-                  <br />
-                  One other option is you can manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder with this data:
+                  so they can be shared with all users of NagiosTV as defaults when they load the page.
                   
-                  <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+                  <h4>Option 1: If you have PHP enabled on your server</h4>
+
+                  <div style={{ marginLeft: '30px' }}>
+
+                    You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
+                    the nagiostv folder and chown 777 client-settings.json so the Apache web server has rights to write to it.
+
+                    <pre>
+                    sudo touch client-settings.json<br />
+                    sudo chmod 777 client-settings.json
+                    </pre>
+
+                    After those steps, you can try this button:
+                    <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Automatic Save to Server</button><br />
+                    <br />
+
+                  </div>
+
+
+                  <h4>Option 2: Manually create the settings file and copy and paste the configuration in</h4>
+
+                  <div style={{ marginLeft: '30px' }}>
+                    Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
+                    
+                    Then paste in this data:
+
+                    <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy Settings to Clipboard for manual paste</button>
+
+                    <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+                  </div>
                 </div>
               </td>
             </tr>

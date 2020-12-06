@@ -1,42 +1,121 @@
 import React, { Component } from 'react';
 import { translate } from '../../helpers/language';
-//import moment from 'moment';
-// icons
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faClock, faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
 import AlertItems from './AlertItems.jsx';
 import AlertFilters from './AlertFilters.jsx';
 import HistoryChart from '../widgets/HistoryChart.jsx';
 import './AlertSection.css';
-//import Checkbox from '../widgets/Checkbox.jsx';
+import $ from 'jquery';
 
 class AlertSection extends Component {
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log('shouldComponentUpdate', nextProps, nextState);
-  //   // if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-  //   //   return true;
-  //   // } else {
-  //   //   return false;
-  //   // }
-  //   return true;
-  // }
+  state = {
+    alertlistError: false,
+    alertlistErrorMessage: '',
+    alertlistLastUpdate: 0,
+    alertlist: [],
+    alertlistCount: 0
+  };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    // const propsToCauseRender = [
-    //   'hideFilters',
-    //   'hideAlertSoft',
-    //   'howManyAlertSoft'
-    // ];
-    // for(let i=0;i<propsToCauseRender.length;i++) {
-    //   if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-    //     return true;
-    //   }
-    // }
-    return true;
+  timerHandle = null;
+
+  componentDidMount() {
+
+    setTimeout(() => {
+      this.fetchAlertData();
+    }, 1000);
+
+    if (this.props.isDemoMode === false) {
+      this.timerHandle = setInterval(() => {
+        this.fetchAlertData();
+      }, this.props.fetchAlertFrequency * 1000);
+    }
   }
 
-  
+  componentWillUnmount() {
+    if (this.timerHandle) {
+      clearInterval(this.timerHandle);
+    }
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const propsToCauseRender = [
+  //     'alertDaysBack',
+  //     'alertHoursBack',
+  //     'alertMaxItems',
+  //     'showEmoji'
+  //   ];
+  //   for(let i=0;i<propsToCauseRender.length;i++) {
+  //     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
+  //       return true;
+  //     }
+  //   }
+  //   const stateToCauseRender = [
+  //     'alertlistError',
+  //     'alertlistErrorMessage',
+  //     'alertlistLastUpdate'
+  //   ];
+  //   for(let i=0;i<stateToCauseRender.length;i++) {
+  //     if (nextState[stateToCauseRender[i]] !== this.state[stateToCauseRender[i]]) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  fetchAlertData() {
+    const starttime = this.props.alertDaysBack * 60 * 60 * 24;
+    
+    let url;
+    if (this.props.useFakeSampleData) {
+      url = './sample-data/alertlist.json';
+    } else {
+      url = `${this.props.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+      const hostgroupFilter = this.props.hostgroupFilter;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+    }
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (this.props.fetchAlertFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        this.setState({
+          alertlistError: true,
+          alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        });
+        return;
+      }
+
+      // Make an array from the object
+      const alertlist = _.get(myJson.data, 'alertlist', []).reverse();
+
+      // store the actual count of alert list items before we trim
+      const alertlistCount = alertlist.length;
+
+      // trim
+      if (alertlist.length > this.props.alertMaxItems) {
+        alertlist.length = this.props.alertMaxItems;
+      }
+
+      this.setState({
+        alertlistError: false,
+        alertlistErrorMessage: '',
+        alertlistLastUpdate: new Date().getTime(),
+        alertlist, // it's already an array
+        alertlistCount
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      
+      this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'alertlistError', 'alertlistErrorMessage');
+
+    });
+  }
 
   render() {
 
@@ -44,8 +123,8 @@ class AlertSection extends Component {
 
     // count how many soft history items
     let howManyAlertSoft = 0;
-    if (this.props.alertlist) {
-      this.props.alertlist.forEach(alert => {
+    if (this.state.alertlist) {
+      this.state.alertlist.forEach(alert => {
         //console.log(alert);
         if (alert.state_type === 2) {
           howManyAlertSoft++;
@@ -54,7 +133,7 @@ class AlertSection extends Component {
     }
 
     // filter the list of alert items
-    const alertlist = this.props.alertlist.filter(alert => {
+    const alertlist = this.state.alertlist.filter(alert => {
       if (this.props.hideAlertSoft) {
         if (alert.state_type === 2) {
           return false;
@@ -86,7 +165,7 @@ class AlertSection extends Component {
             handleSelectChange={this.props.handleSelectChange}
             handleCheckboxChange={this.props.handleCheckboxChange}
             hideAlertSoft={this.props.hideAlertSoft}
-            howManyAlerts={this.props.alertlist.length}
+            howManyAlerts={this.state.alertlist.length}
             howManyAlertSoft={howManyAlertSoft}
             language={this.props.language}
           />
@@ -106,7 +185,7 @@ class AlertSection extends Component {
 
           {(alertlist.length > 0 && !this.props.hideHistoryChart) && <HistoryChart
             alertlist={alertlistHours}
-            alertlistLastUpdate={this.props.alertlistLastUpdate}
+            alertlistLastUpdate={this.state.alertlistLastUpdate}
             groupBy="hour"
             alertHoursBack={24} 
             alertDaysBack={1}
@@ -122,14 +201,14 @@ class AlertSection extends Component {
           {!this.props.hideHistoryTitle && <div className="history-summary margin-top-10">
             <span className="history-summary-title">
               <strong>{alertlistCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
-              {this.props.alertlistCount > this.props.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
+              {this.state.alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
             </span>
           </div>}
 
           {/* history chart */}
           {!this.props.hideHistoryChart && <HistoryChart
             alertlist={alertlist}
-            alertlistLastUpdate={this.props.alertlistLastUpdate}
+            alertlistLastUpdate={this.state.alertlistLastUpdate}
             groupBy="day"
             alertDaysBack={this.props.alertDaysBack} 
             hideAlertSoft={this.props.hideAlertSoft}
@@ -138,10 +217,10 @@ class AlertSection extends Component {
         </div>}
 
         {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.props.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
+        {(!this.props.isDemoMode && this.state.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
 
         {/* No alerts */}
-        {!this.props.alertlistError && this.props.alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
+        {!this.state.alertlistError && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
           <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">No alerts</span>
         </div>}
 

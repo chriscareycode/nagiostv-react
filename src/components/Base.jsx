@@ -1,13 +1,10 @@
 /*eslint array-callback-return: "off"*/
 import React, { Component } from 'react';
-import HostItems from './hosts/HostItems.jsx';
-import HostFilters from './hosts/HostFilters.jsx';
-import ServiceItems from './services/ServiceItems.jsx';
-import ServiceFilters from './services/ServiceFilters.jsx';
+
+import HostSection from './hosts/HostSection.jsx';
+import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
-import { translate } from '../helpers/language';
-import { cleanDemoDataHostlist, cleanDemoDataServicelist } from '../helpers/nagiostv';
-import { convertHostObjectToArray, convertServiceObjectToArray } from '../helpers/nagiostv';
+
 import Flynn from './Flynn/Flynn.jsx';
 import CustomLogo from './widgets/CustomLogo.jsx';
 import Settings from './Settings.jsx';
@@ -40,6 +37,11 @@ class Base extends Component {
 
   // React State
   state = {
+
+    //**************************************************************************** */
+    // state which is used internally by NagiosTV
+    //**************************************************************************** */
+
     currentPage: 'dashboard',
 
     currentVersion: 52,
@@ -51,24 +53,6 @@ class Base extends Component {
     isRemoteSettingsLoaded: false,
     isCookieLoaded: false, // I have this to render things only after cookie is loaded
     isDoneLoading: false,
-
-    servicelistError: false,
-    servicelistErrorMessage: '',
-    servicelistLastUpdate: 0,
-    servicelist: {},
-    serviceProblemsArray: [],
-
-    hostlistError: false,
-    hostlistErrorMessage: '',
-    hostlistLastUpdate: 0,
-    hostlist: {},
-    hostProblemsArray: [],
-
-    alertlistError: false,
-    alertlistErrorMessage: '',
-    alertlistLastUpdate: 0,
-    alertlist: [],
-    alertlistCount: 0,
 
     commentlistError: false,
     commentlistErrorMessage: '',
@@ -87,14 +71,27 @@ class Base extends Component {
 
     hideFilters: true,
     
+    //**************************************************************************** */
     // user settings (defaults are set here also)
+    //**************************************************************************** */
+
     titleString: 'NagiosTV',
     baseUrl: '/nagios/cgi-bin/',
     versionCheckDays: 1,
-    alertDaysBack: 30,
-    alertHoursBack: 24,
-    alertMaxItems: 1000,
+    
+    // host related settings
+    hideHostSection: false,
+    hideHostPending: false,
+    hideHostDown: false,
+    hideHostUnreachable: false,
+    hideHostAcked: false,
+    hideHostScheduled: false,
+    hideHostFlapping: false,
+    hideHostSoft: false,
+    hostSortOrder: 'newest',
 
+    // service related settings
+    hideServiceSection: false,
     hideServicePending: false,
     hideServiceWarning: false,
     hideServiceUnknown: false,
@@ -103,24 +100,18 @@ class Base extends Component {
     hideServiceScheduled: false,
     hideServiceFlapping: false,
     hideServiceSoft: false,
-
     serviceSortOrder: 'newest',
-
-    hideHostPending: false,
-    hideHostDown: false,
-    hideHostUnreachable: false,
-    hideHostAcked: false,
-    hideHostScheduled: false,
-    hideHostFlapping: false,
-    hideHostSoft: false,
-
+        
+    // alert history related settings
+    alertDaysBack: 30,
+    alertHoursBack: 24,
+    alertMaxItems: 1000,
     hideHistory: false,
     hideHistoryTitle: false,
     hideHistoryChart: false,
     hideAlertSoft: false,
 
-    hostSortOrder: 'newest',
-
+    // general settings
     language: 'English',
     locale: 'en',
     dateFormat: 'llll',
@@ -130,7 +121,7 @@ class Base extends Component {
     isDemoMode: false,
     isDebugMode: false,
 
-    // fun stuff
+    // fun stuff settings
     customLogoEnabled: false,
     customLogoUrl: './sample-image/resedit.png',
     flynnEnabled: false,
@@ -149,12 +140,14 @@ class Base extends Component {
 
   // The settings which we persist are a subset of the state that we have above.
   // Here we list all the settings we want to persist to cookie / client-settings
+  // DEVELOPER: if you are adding a user setting above, you need to add it here too
   settingsFields = [
     'titleString',
     'baseUrl',
     'alertDaysBack',
     'alertMaxItems',
 
+    'hideServiceSection',
     'hideServicePending',
     'hideServiceWarning',
     'hideServiceUnknown',
@@ -166,6 +159,7 @@ class Base extends Component {
 
     'serviceSortOrder',
 
+    'hideHostSection',
     'hideHostPending',
     'hideHostDown',
     'hideHostUnreachable',
@@ -235,34 +229,22 @@ class Base extends Component {
     this.getRemoteSettings();
     
     // fetch the initial data after 1 second
-    // Fetch Host data
-    // Fetch Service data
-    // If Alert History is visible, fetch Alert data
-    // Fetch Comment data
+
     setTimeout(() => {
-      this.fetchHostGroupData();
-      this.fetchHostData();
-      this.fetchServiceData();
-      if (!this.state.hideHistory) { this.fetchAlertData(); }
+      
       // TODO: turn on comments for demo mode at some point
-      if (!this.state.isDemoMode) { this.fetchCommentData(); }
+      if (!this.state.isDemoMode) {
+        this.fetchHostGroupData();
+        this.fetchCommentData();
+      }
     }, 1000);
 
     if (this.state.isDemoMode === false) {
-      // fetch host problems and service problems on an interval
+      // fetch comments on an interval
       setInterval(() => {
-        this.fetchServiceData();
-        this.fetchHostData();
         this.fetchCommentData();
       }, this.state.fetchFrequency * 1000);
 
-      // we fetch alerts on a slower frequency interval
-      if (!this.state.hideHistory) { 
-        setInterval(() => {
-          this.fetchHostGroupData();
-          this.fetchAlertData();
-        }, this.state.fetchAlertFrequency * 1000);
-      }
 
       // If a Cookie is set then run version check after 30s.
       // If no Cookie is set then run version check after 30m.
@@ -452,198 +434,6 @@ class Base extends Component {
    *
    ***************************************************************************/
 
-  fetchServiceData() {
-
-    let url;
-    if (this.useFakeSampleData) {
-      url = './sample-data/servicelist.json';
-    } else {
-      url = this.state.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
-      const hostgroupFilter = this.state.hostgroupFilter;
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-    }
-    //console.log('Requesting Service Data: ' + url);
-
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (this.state.fetchFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
-
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        this.setState({
-          servicelistError: true,
-          servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        });
-        return;
-      }
-
-      // Make an array from the object
-      let servicelist = _.get(myJson.data, 'servicelist', {});
-
-      // If we are in demo mode then clean the fake data
-      if (this.state.isDemoMode) {
-        servicelist = cleanDemoDataServicelist(servicelist);
-      }
-
-      // convert the service object into an array (and sort it)
-      const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.state.serviceSortOrder);
-
-      // check for old stale data (detect if nagios is down)
-      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
-      const hours = duration.asHours().toFixed(1);
-
-      // we disable the stale check if in demo mode since the demo data is always stale
-      if (!this.state.isDemoMode && hours >= 1) {
-        this.setState({
-          servicelistError: true,
-          servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-          servicelistLastUpdate: new Date().getTime(),
-          servicelist,
-          serviceProblemsArray: serviceProblemsArray
-        });
-      } else {
-        this.setState({
-          servicelistError: false,
-          servicelistErrorMessage: '',
-          servicelistLastUpdate: new Date().getTime(),
-          servicelist,
-          serviceProblemsArray: serviceProblemsArray
-        });
-      }
-
-    }).fail((jqXHR, textStatus, errorThrown) => {
-      
-      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'servicelistError', 'servicelistErrorMessage');
-    
-    });
-  }
-
-  fetchHostData() {
-    let url;
-    if (this.useFakeSampleData) {
-      url = './sample-data/hostlist.json';
-    } else {
-      url = this.state.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
-      const hostgroupFilter = this.state.hostgroupFilter;
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-    }
-
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (this.state.fetchFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
-
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        this.setState({
-          hostlistError: true,
-          hostlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        });
-        return;
-      }
-
-      // Make an array from the object
-      let hostlist = _.get(myJson.data, 'hostlist', {});
-
-      // If we are in demo mode then clean the fake data
-      if (this.state.isDemoMode) {
-        hostlist = cleanDemoDataHostlist(hostlist);
-      }
-
-      // convert the host object into an array (and sort it)
-      const hostProblemsArray = convertHostObjectToArray(hostlist, this.state.hostSortOrder);
-
-      // check for old data (nagios down?)
-      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
-      const hours = duration.asHours().toFixed(1);
-
-      if (!this.state.isDemoMode && hours >= 1) {
-        this.setState({
-          hostlistError: true,
-          hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-          hostlistLastUpdate: new Date().getTime(),
-          hostlist,
-          hostProblemsArray: hostProblemsArray
-        });
-      } else {
-        this.setState({
-          hostlistError: false,
-          hostlistErrorMessage: '',
-          hostlistLastUpdate: new Date().getTime(),
-          hostlist,
-          hostProblemsArray: hostProblemsArray
-        });
-      }
-
-    }).fail((jqXHR, textStatus, errorThrown) => {
-
-      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'hostlistError', 'hostlistErrorMessage');
-
-    });
-  }
-
-  fetchAlertData() {
-    const starttime = this.state.alertDaysBack * 60 * 60 * 24;
-    
-    let url;
-    if (this.useFakeSampleData) {
-      url = './sample-data/alertlist.json';
-    } else {
-      url = `${this.state.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
-      const hostgroupFilter = this.state.hostgroupFilter;
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-    }
-
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (this.state.fetchAlertFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
-
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        this.setState({
-          alertlistError: true,
-          alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        });
-        return;
-      }
-
-      // Make an array from the object
-      const alertlist = _.get(myJson.data, 'alertlist', []).reverse();
-
-      // store the actual count of alert list items before we trim
-      const alertlistCount = alertlist.length;
-
-      // trim
-      if (alertlist.length > this.state.alertMaxItems) {
-        alertlist.length = this.state.alertMaxItems;
-      }
-
-      this.setState({
-        alertlistError: false,
-        alertlistErrorMessage: '',
-        alertlistLastUpdate: new Date().getTime(),
-        alertlist, // it's already an array
-        alertlistCount
-      });
-
-    }).fail((jqXHR, textStatus, errorThrown) => {
-      
-      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'alertlistError', 'alertlistErrorMessage');
-
-    });
-  }
-
   fetchCommentData() {
     const url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 
@@ -675,7 +465,7 @@ class Base extends Component {
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       
-      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'commentlistError', 'commentlistErrorMessage');
+      this.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'commentlistError', 'commentlistErrorMessage');
 
     });
   }
@@ -712,21 +502,21 @@ class Base extends Component {
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       
-      this.handleFetchFail(jqXHR, textStatus, errorThrown, url, 'hostgroupError', 'hostgroupErrorMessage');
+      this.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'hostgroupError', 'hostgroupErrorMessage');
 
     });
   }
 
-  handleFetchFail(jqXHR, textStatus, errorThrown, url, errorBooleanVariableName, errorMessageVariableName) {
+  handleFetchFail(self, jqXHR, textStatus, errorThrown, url, errorBooleanVariableName, errorMessageVariableName) {
     if (jqXHR.status === 0) {
       // CONNECTION REFUSED
-      this.setState({
+      self.setState({
         [errorBooleanVariableName]: true,
         [errorMessageVariableName]: 'ERROR: CONNECTION REFUSED to ' + url
       });
     } else {  
       // UNKNOWN (TODO: add more errors here)
-      this.setState({
+      self.setState({
         [errorBooleanVariableName]: true,
         [errorMessageVariableName]: 'ERROR: ' + jqXHR.status +  ' ' + errorThrown + ' - ' + url
       });
@@ -803,6 +593,7 @@ class Base extends Component {
     });
   };
 
+  // TODO: refactor this for splitting of data fetch into each component
   updateStateAndReloadNagiosData = (settingsObject) => {
     this.setState({
       ...settingsObject
@@ -812,7 +603,6 @@ class Base extends Component {
       // Reload data from server now
       this.fetchHostData();
       this.fetchServiceData();
-      this.fetchAlertData();
     });
   };
 
@@ -833,97 +623,13 @@ class Base extends Component {
 
     // populate settingsObject with all the settingsFields values (essentially, a subset of all the items in react state)
     const settingsObject = {};
-    this.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-
-    
-    // count how many items in each of the service states
-    let howManyServices = 0;
-    let howManyServicePending = 0;
-    let howManyServiceWarning = 0;
-    let howManyServiceUnknown = 0;
-    let howManyServiceCritical = 0;
-    let howManyServiceAcked = 0;
-    let howManyServiceScheduled = 0;
-    let howManyServiceFlapping = 0;
-    let howManyServiceSoft = 0;
-
-    if (this.state.servicelist) {
-      Object.keys(this.state.servicelist).forEach((host) => {
-        howManyServices += Object.keys(this.state.servicelist[host]).length;
-        Object.keys(this.state.servicelist[host]).forEach((service) => {
-          if (this.state.servicelist[host][service].status === 1) {
-            howManyServicePending++;
-          }
-          if (this.state.servicelist[host][service].status === 4) {
-            howManyServiceWarning++;
-          }
-          if (this.state.servicelist[host][service].status === 8) {
-            howManyServiceUnknown++;
-          }
-          if (this.state.servicelist[host][service].status === 16) {
-            howManyServiceCritical++;
-          }
-          if (this.state.servicelist[host][service].problem_has_been_acknowledged) {
-            howManyServiceAcked++;
-          }
-          if (this.state.servicelist[host][service].scheduled_downtime_depth > 0) {
-            howManyServiceScheduled++;
-          }
-          if (this.state.servicelist[host][service].is_flapping) {
-            howManyServiceFlapping++;
-          }
-          // only count soft items if they are not up
-          if (this.state.servicelist[host][service].status !== 2 && this.state.servicelist[host][service].state_type === 0) {
-            howManyServiceSoft++;
-          }
-        });
-      });
-    }
-
-    // count how many items in each of the host states
-    const howManyHosts = Object.keys(this.state.hostlist).length;
-    let howManyHostPending = 0;
-    let howManyHostUp = 0; // TODO: is this being used? think not
-    let howManyHostDown = 0;
-    let howManyHostUnreachable = 0;
-    let howManyHostAcked = 0;
-    let howManyHostScheduled = 0;
-    let howManyHostFlapping = 0;
-    let howManyHostSoft = 0;
-
-    if (this.state.hostlist) {
-      Object.keys(this.state.hostlist).forEach((host) => {
-
-        if (this.state.hostlist[host].status === 1) {
-          howManyHostPending++;
-        }
-        if (this.state.hostlist[host].status === 4) {
-          howManyHostDown++;
-        }
-        if (this.state.hostlist[host].status === 8) {
-          howManyHostUnreachable++;
-        }
-        if (this.state.hostlist[host].problem_has_been_acknowledged) {
-          howManyHostAcked++;
-        }
-        if (this.state.hostlist[host].scheduled_downtime_depth > 0) {
-          howManyHostScheduled++;
-        }
-        if (this.state.hostlist[host].is_flapping) {
-          howManyHostFlapping++;
-        }
-        // only count soft items if they are not up
-        if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].state_type === 0) {
-          howManyHostSoft++;
-        }
-      });
-    }
+    this.settingsFields.forEach(field => settingsObject[field] = this.state[field]); 
 
     const settingsLoaded = this.state.isDoneLoading;
     
     const { language } = this.state;
 
-    const howManyHostAndServicesDown = this.state.serviceProblemsArray.length + this.state.hostProblemsArray.length;
+    //const howManyHostAndServicesDown = this.state.serviceProblemsArray.length + this.state.hostProblemsArray.length;
 
     /**************************************************************************
     * Template Starts Here
@@ -949,6 +655,8 @@ class Base extends Component {
             />
 
             {/* flynn */}
+            {/*
+            need to figure out a new way to get howManyHostAndServicesDown
             {this.state.flynnEnabled &&
               <Flynn
                 howManyDown={howManyHostAndServicesDown}
@@ -958,6 +666,7 @@ class Base extends Component {
                 flynnCssScale={this.state.flynnCssScale}
               />
             }
+            */}
 
             {/* custom logo */}
             {this.state.customLogoEnabled &&
@@ -1035,132 +744,45 @@ class Base extends Component {
               updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
             />}
 
-            {/* hosts */}
+            {/* Hosts Section */}
 
-            {settingsLoaded && <div className="service-summary">
-            
-              <span className="service-summary-title">
-                Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
-                {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
-              </span>
-
-              {/* host filters */}
-              <HostFilters
-                hideFilters={this.state.hideFilters}
-                hostSortOrder={this.state.hostSortOrder}
-                handleSelectChange={this.handleSelectChange}
-                handleCheckboxChange={this.handleCheckboxChange}
-                howManyHosts={howManyHosts}
-                howManyHostDown={howManyHostDown}
-                howManyHostUnreachable={howManyHostUnreachable}
-                howManyHostPending={howManyHostPending}
-                howManyHostAcked={howManyHostAcked}
-                howManyHostScheduled={howManyHostScheduled}
-                howManyHostFlapping={howManyHostFlapping}
-                howManyHostSoft={howManyHostSoft}
-                language={language}
-                settingsObject={settingsObject}
-              />
-
-              {/* how many down emoji */}
-              {/*
-              {this.state.showEmoji && <HowManyEmoji
-                howMany={howManyHosts}
-                howManyWarning={0}
-                howManyCritical={howManyHostDown}
-                howManyDown={this.state.hostProblemsArray.length}
-              />}
-              */}
-
-            </div>}
-
-            {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
-            {(!this.state.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
-
-            {/* hostitems list */}
-            <HostItems
-              hostProblemsArray={this.state.hostProblemsArray}
-              commentlist={this.state.commentlist}
-              settings={settingsObject}
-              howManyHosts={howManyHosts}
-              howManyHostUp={howManyHostUp}
-              howManyHostDown={howManyHostDown}
-              howManyHostUnreachable={howManyHostUnreachable}
-              howManyHostPending={howManyHostPending}
-              howManyHostAcked={howManyHostAcked}
-              howManyHostScheduled={howManyHostScheduled}
-              howManyHostFlapping={howManyHostFlapping}
+            {(settingsLoaded && !this.state.hideHostSection) && <HostSection
               isDemoMode={this.state.isDemoMode}
-              hostlistError={this.state.hostlistError}
-            />
-
-            {/* services */}
-
-            {settingsLoaded && <div className="service-summary">
-              
-              <span className="service-summary-title">
-                Monitoring <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
-                {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
-              </span>
-
-              {/* service filters */}
-              <ServiceFilters
-                hideFilters={this.state.hideFilters}
-                serviceSortOrder={this.state.serviceSortOrder}
-                handleSelectChange={this.handleSelectChange}
-                handleCheckboxChange={this.handleCheckboxChange}
-                howManyServices={howManyServices}
-                howManyServiceWarning={howManyServiceWarning}
-                howManyServicePending={howManyServicePending}
-                howManyServiceUnknown={howManyServiceUnknown}
-                howManyServiceCritical={howManyServiceCritical}
-                howManyServiceAcked={howManyServiceAcked}
-                howManyServiceScheduled={howManyServiceScheduled}
-                howManyServiceFlapping={howManyServiceFlapping}
-                howManyServiceSoft={howManyServiceSoft}
-                language={language}
-                settingsObject={settingsObject}
-              />
-
-              {/* how many down emoji */}
-              {/*
-              {this.state.showEmoji && <HowManyEmoji
-                howMany={howManyServices}
-                howManyWarning={howManyServiceWarning}
-                howManyCritical={howManyServiceCritical}
-                howManyDown={this.state.serviceProblemsArray.length}
-              />}
-              */}
-
-            </div>}
-            
-            {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-            {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
-
-            <ServiceItems
-              serviceProblemsArray={this.state.serviceProblemsArray}
+              useFakeSampleData={this.useFakeSampleData}
+              baseUrl={this.state.baseUrl}
+              language={this.state.language}
+              hostgroupFilter={this.state.hostgroupFilter}
+              hideFilters={this.state.hideFilters}
+              hostSortOrder={this.state.hostSortOrder}
+              handleSelectChange={this.handleSelectChange}
+              handleCheckboxChange={this.handleCheckboxChange}
+              settingsObject={settingsObject}
               commentlist={this.state.commentlist}
-              settings={settingsObject}
+              handleFetchFail={this.handleFetchFail}
+              fetchFrequency={this.state.fetchFrequency}
+            />} 
 
-              howManyServices={howManyServices}
-              howManyServiceWarning={howManyServiceWarning}
-              howManyServicePending={howManyServicePending}
-              howManyServiceUnknown={howManyServiceUnknown}
-              howManyServiceCritical={howManyServiceCritical}
-              howManyServiceAcked={howManyServiceAcked}
-              howManyServiceScheduled={howManyServiceScheduled}
-              howManyServiceFlapping={howManyServiceFlapping}
-              servicelistError={this.state.servicelistError}
-            />
-            
+            {/* Services Section */}
+
+            {(settingsLoaded && !this.state.hideServiceSection) && <ServiceSection
+              isDemoMode={this.state.isDemoMode}
+              useFakeSampleData={this.useFakeSampleData}
+              baseUrl={this.state.baseUrl}
+              language={this.state.language}
+              hostgroupFilter={this.state.hostgroupFilter}
+              hideFilters={this.state.hideFilters}
+              serviceSortOrder={this.state.serviceSortOrder}
+              handleSelectChange={this.handleSelectChange}
+              handleCheckboxChange={this.handleCheckboxChange}
+              settingsObject={settingsObject}
+              commentlist={this.state.commentlist}
+              handleFetchFail={this.handleFetchFail}
+              fetchFrequency={this.state.fetchFrequency}
+            />}
+                        
             {/* Alert History Section */}
 
             {(settingsLoaded && !this.state.hideHistory) && <AlertSection
-              alertlist={this.state.alertlist}
-              alertlistCount={this.state.alertlistCount}
-              alertlistLastUpdate={this.state.alertlistLastUpdate}
-              alertlistError={this.state.alertlistError}
-              alertlistErrorMessage={this.state.alertlistErrorMessage}
               alertDaysBack={this.state.alertDaysBack}
               alertHoursBack={this.state.alertHoursBack}
               alertMaxItems={this.state.alertMaxItems}
@@ -1173,6 +795,11 @@ class Base extends Component {
               hideAlertSoft={this.state.hideAlertSoft}
               handleCheckboxChange={this.handleCheckboxChange}
               hideFilters={this.state.hideFilters}
+              useFakeSampleData={this.useFakeSampleData}
+              baseUrl={this.state.baseUrl}
+              hostgroupFilter={this.state.hostgroupFilter}
+              fetchAlertFrequency={this.state.fetchAlertFrequency}
+              handleFetchFail={this.handleFetchFail}
             />}
 
           </div>} {/* end dashboard-area */}
