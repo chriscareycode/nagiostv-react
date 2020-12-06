@@ -324,7 +324,9 @@ class Base extends Component {
         isRemoteSettingsLoaded: true
       });
 
-      this.getCookie();
+      // Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
+      // getCookie() is then going to call loadSettingsFromUrl()
+      this.getCookie();      
 
     }).catch((err) => {
       console.log('getRemoteSettings() ajax ERROR:', err);
@@ -361,10 +363,44 @@ class Base extends Component {
       this.updateStateFromSettings({
         ...cookieObject,
         isCookieLoaded: true
+      }, () => {
+        // Now that we have loaded cookie, load settings from URL bar and overwrite settings
+        this.loadSettingsFromUrl();
       });
     }
+    
+  }
 
-    this.setState({ isDoneLoading: true });
+  loadSettingsFromUrl() {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlObject = {};
+
+    for (var item of urlParams) {
+      //console.log('key: ' + item[0] + ', ' + 'value: ' + item[1]);
+
+      // special handling for when the value is true or false
+      // TODO: handle other special cases like this for other data types
+      if (item[1] === 'true') {
+        urlObject[item[0]] = true;
+      } else if (item[1] === 'false') {
+        urlObject[item[0]] = false;
+      } else {
+        urlObject[item[0]] = item[1];
+      }
+    }
+
+    //console.log('urlObject', urlObject);
+
+    this.updateStateFromSettings({
+      ...urlObject
+    }, () => {
+      
+      // Now that we are done loading remote settings, then cookie, then from URL, let the UI know settings are done loading
+      this.setState({ isDoneLoading: true });
+    });
+
+
   }
 
   lastVersionCheckTime = 0;
@@ -587,9 +623,12 @@ class Base extends Component {
   };
 
   // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
-  updateStateFromSettings = (settingsObject) => {
+  updateStateFromSettings = (settingsObject, callback) => {
     this.setState({
       ...settingsObject
+    }, () => {
+      // setState() has completed, call the callback if we have one
+      if (callback) { callback(); }
     });
   };
 
