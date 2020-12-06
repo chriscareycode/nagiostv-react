@@ -22,10 +22,13 @@ class HostSection extends Component {
     hostlist: {},
     hostProblemsArray: []
   };
-    
+  
+  isComponentMounted = false;
   timerHandle = null;
 
   componentDidMount() {
+
+    this.isComponentMounted = true;
 
     setTimeout(() => {
       this.fetchHostData();
@@ -44,6 +47,8 @@ class HostSection extends Component {
     if (this.timerHandle) {
       clearInterval(this.timerHandle);
     }
+
+    this.isComponentMounted = false;
   }
 
   fetchHostData() {
@@ -89,21 +94,25 @@ class HostSection extends Component {
       const hours = duration.asHours().toFixed(1);
 
       if (!this.props.isDemoMode && hours >= 1) {
-        this.setState({
-          hostlistError: true,
-          hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-          hostlistLastUpdate: new Date().getTime(),
-          hostlist,
-          hostProblemsArray: hostProblemsArray
-        });
+        if (this.isComponentMounted) {
+          this.setState({
+            hostlistError: true,
+            hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+            hostlistLastUpdate: new Date().getTime(),
+            hostlist,
+            hostProblemsArray: hostProblemsArray
+          });
+        }
       } else {
-        this.setState({
-          hostlistError: false,
-          hostlistErrorMessage: '',
-          hostlistLastUpdate: new Date().getTime(),
-          hostlist,
-          hostProblemsArray: hostProblemsArray
-        });
+        if (this.isComponentMounted) {
+          this.setState({
+            hostlistError: false,
+            hostlistErrorMessage: '',
+            hostlistLastUpdate: new Date().getTime(),
+            hostlist,
+            hostProblemsArray: hostProblemsArray
+          });
+        }
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {

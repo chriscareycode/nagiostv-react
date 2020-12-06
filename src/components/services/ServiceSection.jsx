@@ -22,11 +22,14 @@ class ServiceSection extends Component {
     servicelist: {},
     serviceProblemsArray: []
   };
-    
+  
+  isComponentMounted = false;
   timerHandle = null;
     
   componentDidMount() {
   
+    this.isComponentMounted = true;
+
     setTimeout(() => {
       this.fetchServiceData();
     }, 1000);
@@ -43,6 +46,8 @@ class ServiceSection extends Component {
     if (this.timerHandle) {
       clearInterval(this.timerHandle);
     }
+
+    this.isComponentMounted = false;
   }
 
   fetchServiceData() {
@@ -91,21 +96,25 @@ class ServiceSection extends Component {
 
       // we disable the stale check if in demo mode since the demo data is always stale
       if (!this.state.isDemoMode && hours >= 1) {
-        this.setState({
-          servicelistError: true,
-          servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-          servicelistLastUpdate: new Date().getTime(),
-          servicelist,
-          serviceProblemsArray: serviceProblemsArray
-        });
+        if (this.isComponentMounted) {
+          this.setState({
+            servicelistError: true,
+            servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+            servicelistLastUpdate: new Date().getTime(),
+            servicelist,
+            serviceProblemsArray: serviceProblemsArray
+          });
+        }
       } else {
-        this.setState({
-          servicelistError: false,
-          servicelistErrorMessage: '',
-          servicelistLastUpdate: new Date().getTime(),
-          servicelist,
-          serviceProblemsArray: serviceProblemsArray
-        });
+        if (this.isComponentMounted) {
+          this.setState({
+            servicelistError: false,
+            servicelistErrorMessage: '',
+            servicelistLastUpdate: new Date().getTime(),
+            servicelist,
+            serviceProblemsArray: serviceProblemsArray
+          });
+        }
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
@@ -222,7 +231,7 @@ class ServiceSection extends Component {
           howManyServiceFlapping={howManyServiceFlapping}
           servicelistError={this.state.servicelistError}
         />
-        
+
       </div>
     );
   }
