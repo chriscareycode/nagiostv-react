@@ -68,6 +68,7 @@ class Base extends Component {
     // add to settings?
     fetchFrequency: 15, // seconds
     fetchAlertFrequency: 60, // seconds
+    fetchHostGroupFrequency: 3600, // seconds
 
     hideFilters: true,
     
@@ -223,6 +224,16 @@ class Base extends Component {
     
   }
 
+  intervalHandleComment = null;
+  intervalHandleHostGroup = null;
+  intervalHandleVersionCheck = null;
+
+  componentWillUnmount() {
+    if (this.intervalHandleComment) { clearInterval(this.intervalHandleComment); }
+    if (this.intervalHandleHostGroup) { clearInterval(this.intervalHandleHostGroup); }
+    if (this.intervalHandleVersionCheck) { clearInterval(this.intervalHandleVersionCheck); }
+  }
+
   componentDidMount() {
 
     // Load Remote Settings - then it calls the loadCookie routine
@@ -241,10 +252,15 @@ class Base extends Component {
 
     if (this.state.isDemoMode === false) {
       // fetch comments on an interval
-      setInterval(() => {
+      this.intervalHandleComment = setInterval(() => {
         this.fetchCommentData();
       }, this.state.fetchFrequency * 1000);
 
+      // fetch hostgroup on an interval
+      this.intervalHandleHostGroup = setInterval(() => {
+        this.fetchHostGroupData();
+      }, this.state.fetchHostGroupFrequency * 1000);
+      
 
       // If a Cookie is set then run version check after 30s.
       // If no Cookie is set then run version check after 30m.
@@ -269,7 +285,7 @@ class Base extends Component {
           // console.log('Checking on intervalTime', intervalTime);
           // safety check that interval > 1hr
           if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
-            setInterval(() => {
+            this.intervalHandleVersionCheck = setInterval(() => {
               // inside the interval we check again if the user disabled the check
               if (this.state.versionCheckDays > 0) {
                 this.versionCheck();
@@ -822,6 +838,7 @@ class Base extends Component {
             {/* Alert History Section */}
 
             {(settingsLoaded && !this.state.hideHistory) && <AlertSection
+              isDemoMode={this.state.isDemoMode}
               alertDaysBack={this.state.alertDaysBack}
               alertHoursBack={this.state.alertHoursBack}
               alertMaxItems={this.state.alertMaxItems}

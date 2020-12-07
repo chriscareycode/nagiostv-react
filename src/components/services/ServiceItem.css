@@ -34,4 +34,10 @@
 {/* soft */}
 .service-item-state-type-0 {
 	color: #999;
+	font-size: 0.8em;
+}
+
+{/* hard */}
+.service-item-state-type-1 {
+	font-size: 0.8em;
 }

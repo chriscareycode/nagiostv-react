@@ -11,11 +11,16 @@ import HostFilters from './HostFilters.jsx';
 import moment from 'moment';
 import $ from 'jquery';
 
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
+
 //import './HostSection.css';
 
 class HostSection extends Component {
 
   state = {
+    isFetching: false,
     hostlistError: false,
     hostlistErrorMessage: '',
     hostlistLastUpdate: 0,
@@ -61,6 +66,8 @@ class HostSection extends Component {
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
     }
 
+    this.setState({ isFetching: true });
+
     $.ajax({
       method: "GET",
       url,
@@ -72,6 +79,7 @@ class HostSection extends Component {
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
         console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
         this.setState({
+          isFetching: false,
           hostlistError: true,
           hostlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
         });
@@ -96,6 +104,7 @@ class HostSection extends Component {
       if (!this.props.isDemoMode && hours >= 1) {
         if (this.isComponentMounted) {
           this.setState({
+            isFetching: false,
             hostlistError: true,
             hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
             hostlistLastUpdate: new Date().getTime(),
@@ -106,6 +115,7 @@ class HostSection extends Component {
       } else {
         if (this.isComponentMounted) {
           this.setState({
+            isFetching: false,
             hostlistError: false,
             hostlistErrorMessage: '',
             hostlistLastUpdate: new Date().getTime(),
@@ -118,7 +128,7 @@ class HostSection extends Component {
     }).fail((jqXHR, textStatus, errorThrown) => {
 
       this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'hostlistError', 'hostlistErrorMessage');
-
+      this.setState({ isFetching: false });
     });
   }
 
@@ -172,6 +182,8 @@ class HostSection extends Component {
           <span className="service-summary-title">
             Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
             {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
+
+            
           </span>
 
           {/* host filters */}
@@ -202,6 +214,8 @@ class HostSection extends Component {
           />}
           */}
 
+          {/* loading spinner */}
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s</span>
         </div>
 
         {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}

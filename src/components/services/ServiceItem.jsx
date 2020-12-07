@@ -89,12 +89,12 @@ class ServiceItem extends Component {
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
-            {/* for debug turn this on to know what state_type this item is */}
+            {/* SOFT / HARD for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className={`uppercase service-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
             {/* for debug turn this on to know what status this item is */}
             {1 === 2 && <span>({e.status})</span>}
-            <span className={`uppercase ${serviceTextClass(e.status)}`}>{translate(nagiosServiceStatus(e.status), language)}</span>{' '}
+            <span className={`uppercase ${serviceTextClass(e.status)}`}>{translate('service', language)} {translate(nagiosServiceStatus(e.status), language)}</span>{' '}
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}

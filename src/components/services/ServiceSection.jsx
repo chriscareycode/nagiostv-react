@@ -11,11 +11,16 @@ import ServiceFilters from './ServiceFilters.jsx';
 import moment from 'moment';
 import $ from 'jquery';
 
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
+
 //import './ServiceSection.css';
 
 class ServiceSection extends Component {
 
   state = {
+    isFetching: false,
     servicelistError: false,
     servicelistErrorMessage: '',
     servicelistLastUpdate: 0,
@@ -62,6 +67,8 @@ class ServiceSection extends Component {
     }
     //console.log('Requesting Service Data: ' + url);
 
+    this.setState({ isFetching: true });
+
     $.ajax({
       method: "GET",
       url,
@@ -73,6 +80,7 @@ class ServiceSection extends Component {
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
         console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
         this.setState({
+          isFetching: false,
           servicelistError: true,
           servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
         });
@@ -98,6 +106,7 @@ class ServiceSection extends Component {
       if (!this.state.isDemoMode && hours >= 1) {
         if (this.isComponentMounted) {
           this.setState({
+            isFetching: false,
             servicelistError: true,
             servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
             servicelistLastUpdate: new Date().getTime(),
@@ -108,6 +117,7 @@ class ServiceSection extends Component {
       } else {
         if (this.isComponentMounted) {
           this.setState({
+            isFetching: false,
             servicelistError: false,
             servicelistErrorMessage: '',
             servicelistLastUpdate: new Date().getTime(),
@@ -121,6 +131,8 @@ class ServiceSection extends Component {
       
       this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'servicelistError', 'servicelistErrorMessage');
     
+      this.setState({ isFetching: false });
+
     });
   }
 
@@ -210,6 +222,9 @@ class ServiceSection extends Component {
             howManyDown={this.state.serviceProblemsArray.length}
           />}
           */}
+
+          {/* loading spinner */}
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s</span>
 
         </div>
         

@@ -233,3 +233,18 @@ button {
 .align-right {
   text-align: right;
 }
+
+
+
+.loading-spinner {
+  color: rgb(138, 138, 45);
+  margin-left: 15px;
+  margin-right: 4px;
+  float: right;
+  font-size: 0.8em;
+}
+
+.loading-spinner.loading-spinner-fadeout {
+  color: #444;
+  transition: color 1000ms ease-in;
+}

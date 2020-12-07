@@ -6,9 +6,14 @@ import HistoryChart from '../widgets/HistoryChart.jsx';
 import './AlertSection.css';
 import $ from 'jquery';
 
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
+
 class AlertSection extends Component {
 
   state = {
+    isFetching: false,
     alertlistError: false,
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
@@ -74,6 +79,8 @@ class AlertSection extends Component {
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
     }
 
+    this.setState({ isFetching: true });
+
     $.ajax({
       method: "GET",
       url,
@@ -85,6 +92,7 @@ class AlertSection extends Component {
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
         console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
         this.setState({
+          isFetching: false,
           alertlistError: true,
           alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
         });
@@ -103,6 +111,7 @@ class AlertSection extends Component {
       }
 
       this.setState({
+        isFetching: false,
         alertlistError: false,
         alertlistErrorMessage: '',
         alertlistLastUpdate: new Date().getTime(),
@@ -113,6 +122,8 @@ class AlertSection extends Component {
     }).fail((jqXHR, textStatus, errorThrown) => {
       
       this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'alertlistError', 'alertlistErrorMessage');
+
+      this.setState({ isFetching: false });
 
     });
   }
@@ -145,9 +156,6 @@ class AlertSection extends Component {
     // get the alertlist for the past n hours
     const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < this.props.alertHoursBack * 3600 * 1000);
     const alertlistHoursCount = alertlistHours.length;
-
-    // TODO: move alertlistHoursCount here
-
     const alertlistCount = alertlist.length;
 
     return (
@@ -169,6 +177,10 @@ class AlertSection extends Component {
             howManyAlertSoft={howManyAlertSoft}
             language={this.props.language}
           />
+
+          {/* loading spinner */}
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchAlertFrequency}s</span>
+
         </div>
 
 
@@ -198,7 +210,7 @@ class AlertSection extends Component {
 
         {alertlist.length > 0 && <div>
 
-          {!this.props.hideHistoryTitle && <div className="history-summary margin-top-10">
+          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-summary margin-top-10">
             <span className="history-summary-title">
               <strong>{alertlistCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
               {this.state.alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
@@ -216,8 +228,8 @@ class AlertSection extends Component {
 
         </div>}
 
-        {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.props.alertlistErrorMessage}</div>}
+        {/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
+        {(!this.props.isDemoMode && this.state.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
 
         {/* No alerts */}
         {!this.state.alertlistError && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
