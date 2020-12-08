@@ -7,6 +7,7 @@ import AlertSection from './alerts/AlertSection.jsx';
 
 import Flynn from './Flynn/Flynn.jsx';
 import CustomLogo from './widgets/CustomLogo.jsx';
+import AutoUpdate from './AutoUpdate.jsx';
 import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 import Demo from './Demo.jsx';
@@ -772,6 +773,14 @@ class Base extends Component {
         <div className="main-content">
 
           {!settingsLoaded && <div>Settings are not loaded yet</div>}
+
+
+
+          {/* auto update */}
+
+          {this.state.currentPage === 'autoupdate' && <AutoUpdate
+            updateStateFromSettings={this.updateStateFromSettings}
+          />}
 
           {/* settings */}
 

@@ -1,9 +1,9 @@
 <?php
 
-  $temp_dir = 'auto-version-switch-temp';
+  $temp_dir = 'temp';
   $cwd = getcwd();
 
-  echo "cwd is $cwd<br />";
+  echo "cwd is $cwd\n";
 
   // test if php is installed, report back to browser
   if ($_GET['testphp'] == 'true') {
@@ -16,11 +16,18 @@
 
     // capture requested version
     $version = $_GET['version'];
+    $version_without_v = $version;
+    $pos = strpos($version, "v");
+    echo "pos found at [$pos]";
+    if ($pos !== false) {
+      $version_without_v = substr($version, $pos + 1);
+    }
+    
 
     // download software from github
     // https://api.github.com/repos/chriscareycode/nagiostv-react/tags
     // https://api.github.com/repos/chriscareycode/nagiostv-react/releases
-    $url = "https://github.com/chriscareycode/nagiostv-react/releases/download/v$version/nagiostv-$version.tar.gz";
+    $url = "https://github.com/chriscareycode/nagiostv-react/releases/download/v$version_without_v/nagiostv-$version_without_v.tar.gz";
 
     // Use basename() function to return the base name of file  
     $file_name = basename($url); 
@@ -29,13 +36,14 @@
     if (!file_exists($temp_dir)) {
       $mkdir_success = mkdir($temp_dir, 0777, true);
       if ($mkdir_success) {
-        echo "temp directory $temp_dir created<br>";
+        echo "temp directory $temp_dir created\n";
       } else {
-        echo "failed creating temp directory<br>";
+        echo "failed creating temp directory\n";
+        exit();
       }
     } else {
 
-      echo "deleting files<br />";
+      echo "temp directory exists, deleting files\n";
 
       // temp dir exists. delete all files in there
       $files = glob($temp_dir.'/*');  
@@ -52,13 +60,14 @@
     // Use file_get_contents() function to get the file 
     // from url and use file_put_contents() function to 
     // save the file by using base name
-    echo "Downloading $url<br />";
+    echo "Downloading $url to $temp_dir\n";
 
     if(file_put_contents("$temp_dir/$file_name", file_get_contents($url))) { 
-      echo "File $temp_dir/$file_name downloaded successfully<br>"; 
+      echo "File $temp_dir/$file_name downloaded successfully\n"; 
     } 
     else { 
-      echo "File downloading failed.<br>"; 
+      echo "File $temp_dir/$file_name downloaded failed\n"; 
+      exit();
     } 
 
     // move file
@@ -91,11 +100,13 @@
     // $phar->extractTo($temp_dir);
     
     shell_exec("tar xvfz $temp_dir/$file_name --directory $temp_dir/");
-    echo "done extracting<br>";
+    echo "Done extracting\n";
 
     shell_exec("cp -r $cwd/$temp_dir/nagiostv/* $cwd/");
-    echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/<br />";
-    echo "done copying<br>";
+    echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/\n";
+    echo "Done copying\n";
+
+    echo "All done. Refresh the page to load the new code.\n";
 
     //echo getcwd();
 

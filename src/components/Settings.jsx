@@ -182,6 +182,12 @@ class Settings extends Component {
     speakAudio('Naagios TV is cool', voice);
   }
 
+  clickedAutoUpdate = () => {
+    this.props.updateStateFromSettings({
+      currentPage: 'autoupdate'
+    });
+  };
+
   render() {
 
     const settingsObject = {};
@@ -598,7 +604,21 @@ class Settings extends Component {
             </tr>
           </tbody>
         </table>
-
+        
+        <table className="SettingsTable">
+          <thead>
+            <tr>
+              <td className="SettingsTableHeader">Update NagiosTV</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <button onClick={this.clickedAutoUpdate}>Update NagiosTV</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         
 
       </div>

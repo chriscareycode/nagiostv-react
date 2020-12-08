@@ -34,6 +34,12 @@ class NavBottomBar extends Component {
     });
   };
 
+  clickedAutoUpdate = () => {
+    this.props.updateStateFromSettings({
+      currentPage: 'autoupdate'
+    });
+  };
+
   clickedCharts = () => {
     this.props.updateStateFromSettings({
       hideHistoryChart: !this.props.hideHistoryChart
@@ -73,7 +79,7 @@ class NavBottomBar extends Component {
 
             <span>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
-            {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/releases">v{this.props.latestVersionString} available</a></div>}
+            {(this.props.latestVersion < this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
           </div>
         </div>
 

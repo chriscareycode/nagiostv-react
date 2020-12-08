@@ -97,6 +97,7 @@
 .update-available a {
   color: #a7a749;
   text-decoration: none;
+  cursor: pointer;
 }
 .update-available a:hover {
   color: yellow;
