@@ -18,6 +18,8 @@
     $version = $_GET['version'];
 
     // download software from github
+    // https://api.github.com/repos/chriscareycode/nagiostv-react/tags
+    // https://api.github.com/repos/chriscareycode/nagiostv-react/releases
     $url = "https://github.com/chriscareycode/nagiostv-react/releases/download/v$version/nagiostv-$version.tar.gz";
 
     // Use basename() function to return the base name of file  
