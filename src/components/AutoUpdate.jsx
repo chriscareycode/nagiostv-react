@@ -15,6 +15,11 @@ class AutoUpdate extends Component {
     updateErrorMessage: '',
     updateResult: '',
 
+    downgradeLoading: false,
+    downgradeError: false,
+    downgradeErrorMessage: '',
+    downgradeResult: '',
+
     selected: ''
   };
 
@@ -103,34 +108,61 @@ class AutoUpdate extends Component {
   render() {
 
     const options = this.state.githubFetchReleases.map((r, i) => {
-      return <option key={i}>{r.tag_name}</option>
+      return <option key={i}>{r.tag_name} {r.name}</option>
     });
 
     return (
       <div className="AutoUpdate">
-        <h2>NagiosTV Update</h2>
+        <h2>NagiosTV Updates</h2>
 
         <div>TODO: Instructions for manual upgrade here with Github link...</div>
 
-        <h2>Automatic Update</h2>
-        <div>If your server is running PHP you can try the automatic updater.</div>
+        <h2 style={{ color: 'lime' }}>Automatic Update</h2>
+
+        <div>Testing your server compatibility: TODO</div>
+
+        <div style={{ marginTop: '20px' }}>TODO: Read about this version at Github</div>
+
+        <div style={{ marginTop: '20px' }}>
+          TODO if test ok: <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.selected}</button>
+        </div>
+
+        {this.state.updateError && <div>
+          <div>updateError:</div>
+          {this.state.updateErrorMessage}
+        </div>}
+
+        {this.state.updateResult && <div style={{ marginTop: '20px' }}>
+          <div>Update Result:</div>
+          <textarea readOnly value={this.state.updateResult}></textarea>
+        </div>}
+
+        <h2 style={{ color: 'orange' }}>Downgrade</h2>
+        <div>If there is a problem with a build, you can downgrade until it is resolved. Your server, your control. My suggestion is to try to stay current for the latest features.</div>
+
+        TODO: testresult
 
         {this.state.githubFetchError && <div>
           <div>githubFetchError:</div>
           {this.state.githubFetchErrorMessage}
         </div>}
 
-        Select a version:&nbsp;
-        <select onChange={this.selectChanged}>
-          <option></option>
-          {options}
-        </select>
-        {this.state.githubLoading && <span> Loading...</span>}
+        <div style={{ marginTop: '20px' }}>
+          Select a version from Github:&nbsp;
+          <select onChange={this.selectChanged}>
+            <option></option>
+            {options}
+          </select>
+          {this.state.githubLoading && <span> Loading...</span>}
+        </div>
+
+        <div style={{ marginTop: '20px' }}>TODO: Read about this version at Github</div>
 
         {this.state.selected && <div style={{ marginTop: '20px' }}>
-          <div>Selected version: {this.state.selected}</div>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to {this.state.selected}</button>
+          {/*<div>Selected version: {this.state.selected}</div>*/}
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin version change to {this.state.selected}</button>
         </div>}
+
 
         {this.state.updateLoading && <span> Updating NagiosTV...</span>}
 
@@ -140,12 +172,13 @@ class AutoUpdate extends Component {
           {this.state.updateErrorMessage}
         </div>}
 
-        {this.state.updateResult && <div>
-          <div>updateResult:</div>
+        {this.state.updateResult && <div style={{ marginTop: '20px' }}>
+          <div>Update Result:</div>
           <textarea readOnly value={this.state.updateResult}></textarea>
         </div>}
 
-        <div style={{ marginTop: '20px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>
+        {/*<div style={{ marginTop: '100px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>*/}
+
       </div>
     );
   }
