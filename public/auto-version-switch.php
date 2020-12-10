@@ -3,13 +3,17 @@
   $temp_dir = 'temp';
   $cwd = getcwd();
 
-  echo "cwd is $cwd\n";
+  //echo "cwd is $cwd\n";
 
   // test if php is installed, report back to browser
   if ($_GET['testphp'] == 'true') {
 
-    $data = [ 'name' => 'God', 'age' => -1 ];
+    
+    $data = [ 'name' => 'God', 'age' => -1, 'server' => $_SERVER ];
     header('Content-Type: application/json');
+    if (isset($_SERVER['HTTP_ORIGIN'])) {
+      header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+    }
     echo json_encode($data);
 
   } elseif ($_GET['version']) {

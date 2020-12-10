@@ -5,9 +5,19 @@ import $ from 'jquery';
 class AutoUpdate extends Component {
 
   state = {
+    testphpLoading: false,
+    testphpError: false,
+    testphpErrorMessage: '',
+    testphpResult: {},
+
+    latestVersionLoading: false,
+    latestVersionError: false,
+    latestVersionErrorMessage: '',
+    latestVersion: '',
+
     githubLoading: false,
-    githubFetchError: false,
-    githubFetchErrorMessage: '',
+    githubError: false,
+    githubErrorMessage: '',
     githubFetchReleases: [],
     
     updateLoading: false,
@@ -24,6 +34,9 @@ class AutoUpdate extends Component {
   };
 
   componentDidMount() {
+
+    this.testPhp();
+    this.latestVersion();
     this.fetchReleasesFromGithub();
   }
 
@@ -36,6 +49,69 @@ class AutoUpdate extends Component {
     // }
     return true;
   }
+
+  testPhp = () => {
+    //console.log('testPhp');
+
+    this.setState({ githubLoading: true });
+
+    //const url = 'auto-version-switch.php?testphp=true';
+    const url = 'http://bigwood.local/nagios/nagiostv/auto-version-switch.php?testphp=true';
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
+      // Got data
+      console.log('testPhp result', myJson);
+      this.setState({
+        testphpLoading: false,
+        testphpError: false,
+        testphpErrorMessage: '',
+        testphpResult: myJson
+      });
+    }).catch((err) => {
+      // Error
+      this.setState({
+        testphpLoading: false,
+        testphpError: true,
+        testphpErrorMessage: 'Error calling the auto update script'
+      });
+    });
+  };
+
+  latestVersion = () => {
+    //console.log('testPhp');
+
+    this.setState({ githubLoading: true });
+
+    const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + this.props.currentVersionString;
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
+      // Got data
+      console.log('latestVersion result', myJson);
+      this.setState({
+        latestVersionLoading: false,
+        latestVersionError: false,
+        latestVersionErrorMessage: '',
+        latestVersion: myJson
+      });
+    }).catch((err) => {
+      // Error
+      this.setState({
+        latestVersionLoading: false,
+        latestVersionError: true,
+        latestVersionErrorMessage: 'Error calling the auto update script'
+      });
+    });
+  };
 
   fetchReleasesFromGithub = () => {
     //console.log('fetchReleasesFromGithub');
@@ -52,16 +128,16 @@ class AutoUpdate extends Component {
       // Got data from Github
       this.setState({
         githubLoading: false,
-        githubFetchError: false,
-        githubFetchErrorMessage: '',
+        githubError: false,
+        githubErrorMessage: '',
         githubFetchReleases: myJson
       });
     }).catch((err) => {
       // Error
       this.setState({
         githubLoading: false,
-        githubFetchError: true,
-        githubFetchErrorMessage: 'Error calling the auto update script'
+        githubError: true,
+        githubErrorMessage: 'Error calling the auto update script'
       });
     });
   };
@@ -115,16 +191,24 @@ class AutoUpdate extends Component {
       <div className="AutoUpdate">
         <h2>NagiosTV Updates</h2>
 
+        
+
+        <h2 style={{ color: 'yellow' }}>Manual Update</h2>
+
         <div>TODO: Instructions for manual upgrade here with Github link...</div>
 
         <h2 style={{ color: 'lime' }}>Automatic Update</h2>
 
-        <div>Testing your server compatibility: TODO</div>
-
-        <div style={{ marginTop: '20px' }}>TODO: Read about this version at Github</div>
+        {this.state.testphpLoading && <div>Testing your server compatibility...</div>}
+        {this.state.testphpError && <div>Error testing PHP</div>}
 
         <div style={{ marginTop: '20px' }}>
-          TODO if test ok: <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.selected}</button>
+          Latest version is: {this.state.latestVersion.version_string}<br />
+          TODO: Read about this version at Github
+        </div>
+
+        <div style={{ marginTop: '20px' }}>
+          TODO if test ok: <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.latestVersion.version_string}</button>
         </div>
 
         {this.state.updateError && <div>
@@ -142,9 +226,9 @@ class AutoUpdate extends Component {
 
         TODO: testresult
 
-        {this.state.githubFetchError && <div>
-          <div>githubFetchError:</div>
-          {this.state.githubFetchErrorMessage}
+        {this.state.githubError && <div>
+          <div>githubError:</div>
+          {this.state.githubErrorMessage}
         </div>}
 
         <div style={{ marginTop: '20px' }}>
