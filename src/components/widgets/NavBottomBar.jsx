@@ -79,7 +79,7 @@ class NavBottomBar extends Component {
 
             <span>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
-            {(this.props.latestVersion < this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
+            {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
           </div>
         </div>
 

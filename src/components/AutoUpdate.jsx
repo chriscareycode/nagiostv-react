@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './AutoUpdate.css';
 import $ from 'jquery';
+// icons
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 class AutoUpdate extends Component {
 
@@ -152,7 +155,7 @@ class AutoUpdate extends Component {
 
     this.setState({ updateLoading: true });
 
-    const url = `auto-version-switch.php?version=${this.state.selected}`;
+    const url = `auto-version-switch.php?version=v${this.state.latestVersion.version_string}`;
     $.ajax({
       method: "GET",
       url,
@@ -184,7 +187,7 @@ class AutoUpdate extends Component {
   render() {
 
     const options = this.state.githubFetchReleases.map((r, i) => {
-      return <option key={i}>{r.tag_name} {r.name}</option>
+      return <option key={i} value={r.tag_name}>{r.tag_name} {r.name}</option>
     });
 
     return (
@@ -195,24 +198,26 @@ class AutoUpdate extends Component {
 
         <h2 style={{ color: 'yellow' }}>Manual Update</h2>
 
-        <div>TODO: Instructions for manual upgrade here with Github link...</div>
+        <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
         <h2 style={{ color: 'lime' }}>Automatic Update</h2>
 
-        {this.state.testphpLoading && <div>Testing your server compatibility...</div>}
-        {this.state.testphpError && <div>Error testing PHP</div>}
-
         <div style={{ marginTop: '20px' }}>
-          Latest version is: {this.state.latestVersion.version_string}<br />
-          TODO: Read about this version at Github
+          Latest version is: <span style={{ color: 'lime' }}>{this.state.latestVersion.version_string}</span><br />
         </div>
 
-        <div style={{ marginTop: '20px' }}>
-          TODO if test ok: <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.latestVersion.version_string}</button>
-        </div>
+        {this.state.testphpLoading && <div style={{ marginTop: '20px' }}>Testing your server compatibility...</div>}
+        
+        {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
+          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Auto update disabled.
+        </div>}
+
+        {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.latestVersion.version_string}</button>
+        </div>}
 
         {this.state.updateError && <div>
-          <div>updateError:</div>
+          <div>Update Error:</div>
           {this.state.updateErrorMessage}
         </div>}
 
@@ -221,45 +226,49 @@ class AutoUpdate extends Component {
           <textarea readOnly value={this.state.updateResult}></textarea>
         </div>}
 
-        <h2 style={{ color: 'orange' }}>Downgrade</h2>
-        <div>If there is a problem with a build, you can downgrade until it is resolved. Your server, your control. My suggestion is to try to stay current for the latest features.</div>
+        <h2 style={{ color: 'orange' }}>Automatic Downgrade</h2>
+        
+        <div>If there is a problem with a build, you can downgrade until it is resolved. My suggestion is to try to stay current for the latest features.</div>
 
-        TODO: testresult
-
-        {this.state.githubError && <div>
-          <div>githubError:</div>
-          {this.state.githubErrorMessage}
+        {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
+          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Auto downgrade disabled.
         </div>}
 
-        <div style={{ marginTop: '20px' }}>
-          Select a version from Github:&nbsp;
-          <select onChange={this.selectChanged}>
-            <option></option>
-            {options}
-          </select>
-          {this.state.githubLoading && <span> Loading...</span>}
-        </div>
+        {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
+          
+          {this.state.githubError && <div>
+            <div>Github Error:</div>
+            {this.state.githubErrorMessage}
+          </div>}
 
-        <div style={{ marginTop: '20px' }}>TODO: Read about this version at Github</div>
+          <div style={{ marginTop: '20px' }}>
+            Select a version from Github:&nbsp;
+            <select onChange={this.selectChanged}>
+              <option></option>
+              {options}
+            </select>
+            {this.state.githubLoading && <span> Loading...</span>}
+          </div>
 
-        {this.state.selected && <div style={{ marginTop: '20px' }}>
-          {/*<div>Selected version: {this.state.selected}</div>*/}
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin version change to {this.state.selected}</button>
+          {this.state.selected && <div style={{ marginTop: '20px' }}>
+            {/*<div>Selected version: {this.state.selected}</div>*/}
+            <button disabled={this.state.downgradeLoading} onClick={this.beginUpdate}>Begin version change to {this.state.selected}</button>
+          </div>}
+
+          {this.state.downgradeLoading && <span> Downgrade NagiosTV...</span>}
+
+          {this.state.downgradeError && <div>
+            <div>Downgrade Error:</div>
+            {this.state.downgradeErrorMessage}
+          </div>}
+
+          {this.state.downgradeResult && <div style={{ marginTop: '20px' }}>
+            <div>Downgrade Result:</div>
+            <textarea readOnly value={this.state.downgradeResult}></textarea>
+          </div>}
+
         </div>}
 
-
-        {this.state.updateLoading && <span> Updating NagiosTV...</span>}
-
-
-        {this.state.updateError && <div>
-          <div>updateError:</div>
-          {this.state.updateErrorMessage}
-        </div>}
-
-        {this.state.updateResult && <div style={{ marginTop: '20px' }}>
-          <div>Update Result:</div>
-          <textarea readOnly value={this.state.updateResult}></textarea>
-        </div>}
 
         {/*<div style={{ marginTop: '100px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>*/}
 

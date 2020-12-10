@@ -1,4 +1,14 @@
 /*eslint array-callback-return: "off"*/
+
+/**
+ * TODO: 
+ * Handle offline - don't send ajax requests when no connection
+ * 
+ * net::ERR_INTERNET_DISCONNECTED
+ * net::ERR_ADDRESS_UNREACHABLE
+ * net::ERR_NETWORK_CHANGED
+ * 
+ */
 import React, { Component } from 'react';
 
 import HostSection from './hosts/HostSection.jsx';
