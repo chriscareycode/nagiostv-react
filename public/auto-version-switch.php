@@ -9,7 +9,7 @@
   if ($_GET['testphp'] == 'true') {
 
     
-    $data = [ 'name' => 'God', 'age' => -1, 'server' => $_SERVER ];
+    $data = [ 'name' => 'NagiosTV', 'server' => $_SERVER ];
     header('Content-Type: application/json');
     if (isset($_SERVER['HTTP_ORIGIN'])) {
       header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
@@ -22,7 +22,7 @@
     $version = $_GET['version'];
     $version_without_v = $version;
     $pos = strpos($version, "v");
-    echo "pos found at [$pos]";
+    //echo "pos found at [$pos]";
     if ($pos !== false) {
       $version_without_v = substr($version, $pos + 1);
     }
@@ -40,14 +40,14 @@
     if (!file_exists($temp_dir)) {
       $mkdir_success = mkdir($temp_dir, 0777, true);
       if ($mkdir_success) {
-        echo "temp directory $temp_dir created\n";
+        echo "Temp directory $temp_dir created.\n";
       } else {
-        echo "failed creating temp directory\n";
+        echo "Failed creating temp directory.\n";
         exit();
       }
     } else {
 
-      echo "temp directory exists, deleting files\n";
+      echo "Temp directory exists, deleting files in there..\n";
 
       // temp dir exists. delete all files in there
       $files = glob($temp_dir.'/*');  
@@ -64,13 +64,13 @@
     // Use file_get_contents() function to get the file 
     // from url and use file_put_contents() function to 
     // save the file by using base name
-    echo "Downloading $url to $temp_dir\n";
+    echo "Downloading $url to $temp_dir/\n";
 
     if(file_put_contents("$temp_dir/$file_name", file_get_contents($url))) { 
-      echo "File $temp_dir/$file_name downloaded successfully\n"; 
+      echo "File $temp_dir/$file_name downloaded successfully.\n"; 
     } 
     else { 
-      echo "File $temp_dir/$file_name downloaded failed\n"; 
+      echo "File $temp_dir/$file_name downloaded failed.\n"; 
       exit();
     } 
 
@@ -104,13 +104,13 @@
     // $phar->extractTo($temp_dir);
     
     shell_exec("tar xvfz $temp_dir/$file_name --directory $temp_dir/");
-    echo "Done extracting\n";
+    echo "Done extracting. Copying files from temp directory over top of the old build..\n";
+    echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/\n";
 
     shell_exec("cp -r $cwd/$temp_dir/nagiostv/* $cwd/");
-    echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/\n";
-    echo "Done copying\n";
+    echo "Done copying.\n";
 
-    echo "All done. Refresh the page to load the new code.\n";
+    echo "All done! Refresh the page to load the new code.\n";
 
     //echo getcwd();
 
@@ -120,7 +120,7 @@
 
 
   } else {
-    $data = [ 'name' => 'God', 'age' => -1 ];
+    $data = [ 'name' => 'NagiosTV' ];
     header('Content-Type: application/json');
     echo json_encode($data);
   }

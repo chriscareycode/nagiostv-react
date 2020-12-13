@@ -86,7 +86,7 @@ class AutoUpdate extends Component {
   };
 
   latestVersion = () => {
-    //console.log('testPhp');
+    //console.log('latestVersion');
 
     this.setState({ githubLoading: true });
 
@@ -180,6 +180,36 @@ class AutoUpdate extends Component {
     
   };
 
+  beginDowngrade = () => {
+    //console.log('beginDowngrade');
+
+    this.setState({ downgradeLoading: true });
+
+    const url = `auto-version-switch.php?version=${this.state.selected}`;
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "html",
+      timeout: 30 * 1000
+    }).done((result, textStatus, jqXHR) => {
+      // Got data from Github
+      this.setState({
+        downgradeLoading: false,
+        downgradeError: false,
+        downgradeErrorMessage: '',
+        downgradeResult: result
+      });
+    }).catch((err) => {
+      // Error
+      this.setState({
+        downgradeLoading: false,
+        downgradeError: true,
+        downgradeErrorMessage: ''
+      });
+    });
+    
+  };
+
   gotoDashboard = () => {
     this.updateStateFromSettings({ currentPage: 'dashboard' });
   };
@@ -194,44 +224,53 @@ class AutoUpdate extends Component {
       <div className="AutoUpdate">
         <h2>NagiosTV Updates</h2>
 
-        
-
+        {/* Manual Update */}
         <h2 style={{ color: 'yellow' }}>Manual Update</h2>
 
         <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
+        {/* Automatic Update */}
         <h2 style={{ color: 'lime' }}>Automatic Update</h2>
 
+        {/* latest version */}
         <div style={{ marginTop: '20px' }}>
-          Latest version is: <span style={{ color: 'lime' }}>{this.state.latestVersion.version_string}</span><br />
+          Latest version is:
+          {this.state.latestVersionLoading && <span style={{ color: 'lime' }}> Loading...</span>}
+          {this.state.latestVersionError && <span style={{ color: 'lime' }}> Error: {this.state.latestVersion.version_string}</span>}
+          {this.state.latestVersion.version_string && <span style={{ color: 'lime' }}> v{this.state.latestVersion.version_string}</span>}
         </div>
 
+        {/* php test */}
         {this.state.testphpLoading && <div style={{ marginTop: '20px' }}>Testing your server compatibility...</div>}
-        
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
           <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Auto update disabled.
         </div>}
 
+        {/* TODO: test if we have write access to the folder and all the files that we need */}
+
+        {/* update button */}
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version {this.state.latestVersion.version_string}</button>
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version v{this.state.latestVersion.version_string}</button>
         </div>}
 
+        {/* update error */}
         {this.state.updateError && <div>
           <div>Update Error:</div>
           {this.state.updateErrorMessage}
         </div>}
 
+        {/* update result */}
         {this.state.updateResult && <div style={{ marginTop: '20px' }}>
           <div>Update Result:</div>
           <textarea readOnly value={this.state.updateResult}></textarea>
         </div>}
 
-        <h2 style={{ color: 'orange' }}>Automatic Downgrade</h2>
+        <h2 style={{ color: 'orange' }}>or select a specific version</h2>
         
         <div>If there is a problem with a build, you can downgrade until it is resolved. My suggestion is to try to stay current for the latest features.</div>
 
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Auto downgrade disabled.
+          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version disabled.
         </div>}
 
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
@@ -252,7 +291,7 @@ class AutoUpdate extends Component {
 
           {this.state.selected && <div style={{ marginTop: '20px' }}>
             {/*<div>Selected version: {this.state.selected}</div>*/}
-            <button disabled={this.state.downgradeLoading} onClick={this.beginUpdate}>Begin version change to {this.state.selected}</button>
+            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade}>Begin version change to {this.state.selected}</button>
           </div>}
 
           {this.state.downgradeLoading && <span> Downgrade NagiosTV...</span>}
