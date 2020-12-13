@@ -3,13 +3,15 @@
   $temp_dir = 'temp';
   $cwd = getcwd();
 
+  $whoami = exec('whoami');
+
   //echo "cwd is $cwd\n";
 
   // test if php is installed, report back to browser
   if ($_GET['testphp'] == 'true') {
 
-    
-    $data = [ 'name' => 'NagiosTV', 'server' => $_SERVER ];
+    // get the path name from the script filename with dirname()
+    $data = [ 'name' => 'NagiosTV', 'script' => dirname($_SERVER['SCRIPT_FILENAME']), 'whoami' => $whoami ];
     header('Content-Type: application/json');
     if (isset($_SERVER['HTTP_ORIGIN'])) {
       header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);

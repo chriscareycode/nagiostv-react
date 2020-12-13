@@ -68,7 +68,7 @@ class AutoUpdate extends Component {
       timeout: 10 * 1000
     }).done((myJson, textStatus, jqXHR) => {
       // Got data
-      console.log('testPhp result', myJson);
+      //console.log('testPhp result', myJson);
       this.setState({
         testphpLoading: false,
         testphpError: false,
@@ -99,7 +99,7 @@ class AutoUpdate extends Component {
       timeout: 10 * 1000
     }).done((myJson, textStatus, jqXHR) => {
       // Got data
-      console.log('latestVersion result', myJson);
+      //console.log('latestVersion result', myJson);
       this.setState({
         latestVersionLoading: false,
         latestVersionError: false,
@@ -231,6 +231,12 @@ class AutoUpdate extends Component {
 
         {/* Automatic Update */}
         <h2 style={{ color: 'lime' }}>Automatic Update</h2>
+
+        {this.state.testphpResult.whoami && <div>
+          Automatic Update requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
+          Run the following command on the server<br />
+          <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
+        </div>}
 
         {/* latest version */}
         <div style={{ marginTop: '20px' }}>
