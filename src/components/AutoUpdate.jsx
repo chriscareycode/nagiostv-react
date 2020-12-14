@@ -273,7 +273,10 @@ class AutoUpdate extends Component {
 
         <h2 style={{ color: 'orange' }}>or select a specific version</h2>
         
-        <div>If there is a problem with a build, you can downgrade until it is resolved. My suggestion is to try to stay current for the latest features.</div>
+        <div>
+          You can downgrade to a older version if you choose. Take note that if you downgrade to a version that existed before this auto update/downgrade existed, then you will need to load this URL manually to switch again.
+          <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
+        </div>
 
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
           <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version disabled.
