@@ -101,18 +101,12 @@ To update this way, go into your nagiostv/ folder and run this command for more 
 $ sh autoupdate.sh
 ```
 
-TODO
-------------
-- Clean up the "save settings to server" feature, and settings screen
-- Fix settings screen to work on mobile (cant scroll right now)
-
 History
 ------------
-NagiosTV was started around 2009. Originally it was called ajax-monitor-for-nagios. It was created to have a nice way to display Nagios status on a TV at work.
-Over the years I have continued to run it at home to monitor my own network.
+NagiosTV was started around 2009. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
 
-Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status.
-This ended up being a very painful install for many, requires a database, and the database size continuously grew and needed maintenance.
+Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
+This ended up being a very painful install for many, requires a database server, and the database size continuously grew and needed maintenance and trimming.
 
 Later I released JavaScript versions which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
 
@@ -122,11 +116,11 @@ https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-
 
 No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API. This makes the install take just a couple minutes with no dependencies!
 
-Also this is the first version that (aside from the client-settings save feature) has no server-side component. It's all JavaScript in the browser.
+Also this is the first version that (aside from the client-settings save and autoupdate feature) has no server-side component. It's all JavaScript in the browser.
 
 Help
 ------------
-Feel free to reach out to me for help! I'm happy to help you get this project installed and work through installation issues.
+Try out the discussions area https://github.com/chriscareycode/nagiostv-react/discussions
 
 Development
 -------------
