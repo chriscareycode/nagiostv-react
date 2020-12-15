@@ -47,9 +47,13 @@ $ sudo mv nagiostv /usr/local/nagios/share/
 
 Preparing the client settings file (optional)
 ------------
-By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file edit the file by hand (settings screen has instructions for this and will provide the configuration for you). NagiosTV will read this client-settings file when loading. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set 
-permissions on that file. In the example below, I set the file permission to 777, but you could optionally just give access to the "apache" ("www-data" on Debian/ubuntu) user.
+By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. NagiosTV will read this client-settings file when loading. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set permissions on that file. In the example below, I set the file permission to 777, but you could optionally just give access to the "apache" ("www-data" on Debian/ubuntu) user. Change the www-data to your own apache user depending on Linux distro:
 
+```console
+$ sudo touch client-settings.json
+$ sudo chown www-data:www-data client-settings.json 
+```
+or
 ```console
 $ sudo touch client-settings.json
 $ sudo chmod 777 client-settings.json 
