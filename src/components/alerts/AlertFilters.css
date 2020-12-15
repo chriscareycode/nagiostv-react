@@ -4,6 +4,7 @@
   border-radius: 4px;
   position: relative;
   top: -2px;
+  white-space: nowrap;
 }
 
 .filter-ok-label-green {

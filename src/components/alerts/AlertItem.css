@@ -18,7 +18,7 @@
   border-radius: 5px;
   padding: 0px 5px;
   position: relative;
-  top: 3px;
+  top: 0px;
   left: 4px;
   text-align: right;
 }
@@ -30,23 +30,27 @@
 
 /* soft */
 .alert-item-state-type-2 {
-  color: #999;
-  font-size: 0.8em;
+  color: #bbb;
+  font-size: 0.7em;
 }
 
 /* hard */
 .alert-item-state-type-1 {
-  font-size: 0.8em;
+  font-size: 0.7em;
+}
+
+.alert-item-host-name { 
+  position: relative;
+  top: -1px;
 }
 
 .alert-item-description {
-  font-size: 0.7em;
-    padding: 2px 4px;
-    border-radius: 4px;
-    position: relative;
-    top: -2px;
-    border: 1px solid #545454;
-    background-color: #3e3e3e;
-    
-    margin-right: 5px;
+  font-size: 0.8em;
+  padding: 2px 4px;
+  border-radius: 4px;
+  position: relative;
+  top: -2px;
+  border: 1px solid #545454;
+  background-color:#101010;
+  margin-right: 5px;
 }
