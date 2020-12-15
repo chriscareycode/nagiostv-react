@@ -63,9 +63,9 @@ Upgrading Automatically
 ------------
 As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. *We call this automatic, but it does not update on it's own*. We have a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
 
-* downloading the release
-* unarchiving it
-* copying it into place over the old NagiosTV
+* download the release
+* unarchive the release into temp/ folder
+* copying the release over the old NagiosTV
 
 Find the update page at the bottom of the Settings page, or by clicking any update notification in the bottom bar. More instructions are displayed on the update page.
 
@@ -93,7 +93,9 @@ $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 
 AutoUpdate script
 -------------
-I'm now including a autoupdate script which can be used to upgrade or downgrade to any version easily. 
+* deprecated
+This command line autoupdate script can be used to upgrade or downgrade to any version easily. 
+This has been superceded by the AutoUpdate within the NagiosTV UI. (see above)
 To update this way, go into your nagiostv/ folder and run this command for more instructions:
 ```
 $ sh autoupdate.sh
