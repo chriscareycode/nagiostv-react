@@ -47,7 +47,7 @@ $ sudo mv nagiostv /usr/local/nagios/share/
 
 Preparing the client settings file (optional)
 ------------
-By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. NagiosTV will read this client-settings file when loading. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set permissions on that file. In the example below, I set the file permission to 777, but you could optionally just give access to the "apache" ("www-data" on Debian/ubuntu) user. Change the www-data to your own apache user depending on Linux distro:
+By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. We do not include this file in the NagiosTV release so it will not be overwritten when you upgrade. NagiosTV will read this client-settings file when the app loads. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set permissions on that file. In the example below, I show the two options below, first chown and second with chmod. Change the www-data to your own apache user, which is often different depending on white Linux distro you are running:
 
 ```console
 $ sudo touch client-settings.json
@@ -59,11 +59,24 @@ $ sudo touch client-settings.json
 $ sudo chmod 777 client-settings.json 
 ```
 
-Then inside the application, open Settings, and read more instructions there.
-
 Upgrading Automatically
 ------------
-As of version v0.6.0 there is now an automatic update routine included that you can run from within NagiosTV. Find the update page at the bottom of the Settings page, or by clicking any update notification in the bottom bar. More instructions are displayed on the update page.
+As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. *We call this automatic, but it does not update on it's own*. We have a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
+
+* downloading the release
+* unarchiving it
+* copying it into place over the old NagiosTV
+
+Find the update page at the bottom of the Settings page, or by clicking any update notification in the bottom bar. More instructions are displayed on the update page.
+
+Preparing NagiosTV for automatic update
+------------
+For automatic upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
+
+```console
+$ sudo chown www-data:www-data /usr/local/nagios/share/nagiostv
+```
+Then inside the application, open Settings and find the Update NagiosTV button, or click the update notification NagiosTV version in the bottom bar, and read more instructions there.
 
 Upgrading Manually
 ------------
