@@ -77,7 +77,7 @@ class NavBottomBar extends Component {
         <div className="nav-sidebar-version">
           <div className="nav-sidebar-version-text">
 
-            <span>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+            <span onClick={this.clickedAutoUpdate} style={{ cursor: 'pointer' }}>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
             {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
           </div>
