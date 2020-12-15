@@ -57,7 +57,11 @@ $ sudo chmod 777 client-settings.json
 
 Then inside the application, open Settings, and read more instructions there.
 
-Upgrading
+Upgrading Automatically
+------------
+As of version v0.6.0 there is now an automatic update routine included that you can run from within NagiosTV. Find the update page at the bottom of the Settings page, or by clicking any update notification in the bottom bar. More instructions are displayed on the update page.
+
+Upgrading Manually
 ------------
 Grab the latest release from here: https://github.com/chriscareycode/nagiostv-react/releases
 

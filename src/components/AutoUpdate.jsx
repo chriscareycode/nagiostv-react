@@ -232,12 +232,6 @@ class AutoUpdate extends Component {
         {/* Automatic Update */}
         <h2 style={{ color: 'lime' }}>Automatic Update</h2>
 
-        {this.state.testphpResult.whoami && <div>
-          Automatic Update requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
-          Run the following command on the server<br />
-          <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
-        </div>}
-
         {/* latest version */}
         <div style={{ marginTop: '20px' }}>
           Latest version is:
@@ -274,8 +268,7 @@ class AutoUpdate extends Component {
         <h2 style={{ color: 'orange' }}>or select a specific version</h2>
         
         <div>
-          You can downgrade to a older version if you choose. Take note that if you downgrade to a version that existed before this auto update/downgrade existed, then you will need to load this URL manually to switch again.
-          <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
+          You can downgrade to a older version if you would like to.
         </div>
 
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
@@ -317,6 +310,23 @@ class AutoUpdate extends Component {
 
         </div>}
 
+        {/* upgrade prep instructions */}
+        {this.state.testphpResult.whoami && <div>
+          <br />
+          <br />
+          * Automatic Update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
+          Run the following command on the server to change ownership to the Apache user:<br />
+          <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
+        </div>}
+
+        {/* downgrading warnings */}
+        <div>
+          <br />
+          <br />
+          * If you downgrade to a version before v0.6.0, this auto update page will not exist on that old version.<br />
+          So, how do you get back up to a newer version? You can load this URL manually to switch again (take note of the URL or you can find it on the README at Github).
+          <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
+        </div>
 
         {/*<div style={{ marginTop: '100px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>*/}
 
