@@ -91,7 +91,7 @@ class ServiceSection extends Component {
       let servicelist = _.get(myJson.data, 'servicelist', {});
 
       // If we are in demo mode then clean the fake data
-      if (this.state.isDemoMode) {
+      if (this.props.isDemoMode) {
         servicelist = cleanDemoDataServicelist(servicelist);
       }
 
@@ -103,7 +103,7 @@ class ServiceSection extends Component {
       const hours = duration.asHours().toFixed(1);
 
       // we disable the stale check if in demo mode since the demo data is always stale
-      if (!this.state.isDemoMode && hours >= 1) {
+      if (!this.props.isDemoMode && hours >= 1) {
         if (this.isComponentMounted) {
           this.setState({
             isFetching: false,
@@ -229,7 +229,7 @@ class ServiceSection extends Component {
         </div>
         
         {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-        {(!this.state.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
+        {(!this.props.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}
