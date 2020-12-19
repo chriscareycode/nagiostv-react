@@ -70,6 +70,7 @@
     cursor: pointer;
     margin-left: 10px;
 }
+
 .SettingsSaveToServerButton {
     background-color: #333;
     color: lime;
@@ -78,6 +79,16 @@
     padding: 5px 10px;
     cursor: pointer;
     margin-left: 10px;
+}
+.SettingsSaveToServerButton:disabled {
+    background-color: #333;
+    color: lime;
+    font-weight: bold;
+    border: 2px solid green;
+    padding: 5px 10px;
+    cursor: default;
+    margin-left: 10px;
+    opacity: 0.6;
 }
 
 .SettingsSection {
