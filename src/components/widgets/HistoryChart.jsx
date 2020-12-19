@@ -324,7 +324,7 @@ class HistoryChart extends Component {
     });
 
     return (
-      <div className="HistoryChart" style={{ paddingRight: '10px' }}>
+      <div className="HistoryChart">
         <HighchartsReact
           highcharts={Highcharts}
           options={this.chartConfig}
