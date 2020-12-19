@@ -17,31 +17,31 @@ class NavBottomBar extends Component {
   // }
 
   clickedDashboard = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'dashboard'
     });
   };
 
   clickedFilter = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       hideFilters: !this.props.hideFilters
     });
   };
 
   clickedSettings = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'settings'
     });
   };
 
   clickedAutoUpdate = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'autoupdate'
     });
   };
 
   clickedCharts = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       hideHistoryChart: !this.props.hideHistoryChart
     });
   };

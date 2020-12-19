@@ -211,7 +211,7 @@ class AutoUpdate extends Component {
   };
 
   gotoDashboard = () => {
-    this.updateStateFromSettings({ currentPage: 'dashboard' });
+    this.updateRootState({ currentPage: 'dashboard' });
   };
 
   render() {

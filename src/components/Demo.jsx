@@ -78,7 +78,7 @@ class Demo extends Component {
     const hostProblemsArray = convertHostObjectToArray(hostlist, this.props.hostSortOrder);
 
     // set state
-    this.props.updateStateFromSettings({
+    this.props.updateParentState({
       hostProblemsArray
     });
   }
@@ -102,7 +102,7 @@ class Demo extends Component {
     const hostProblemsArray = convertHostObjectToArray(hostlist, this.props.hostSortOrder);
 
     // set state
-    this.props.updateStateFromSettings({
+    this.props.updateParentState({
       hostProblemsArray
     });
   }
@@ -145,7 +145,7 @@ class Demo extends Component {
     const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.props.serviceSortOrder);
 
     // set state
-    this.props.updateStateFromSettings({
+    this.props.updateParentState({
       serviceProblemsArray
     });
   }
@@ -172,7 +172,7 @@ class Demo extends Component {
     const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.props.serviceSortOrder);
 
     // set state
-    this.props.updateStateFromSettings({
+    this.props.updateParentState({
       serviceProblemsArray
     });
   }

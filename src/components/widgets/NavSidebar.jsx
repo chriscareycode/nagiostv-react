@@ -18,25 +18,25 @@ class NavSidebar extends Component {
   // }
 
   clickedDashboard = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'dashboard'
     });
   };
 
   clickedFilter = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       hideFilters: !this.props.hideFilters
     });
   };
 
   clickedSettings = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'settings'
     });
   };
 
   clickedCharts = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       hideHistoryChart: !this.props.hideHistoryChart
     });
   };

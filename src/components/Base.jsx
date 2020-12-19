@@ -346,7 +346,7 @@ class Base extends Component {
       console.log('Found server default settings client-settings.json - Loading default settings:', myJson);
 
       // save settings to state
-      this.updateStateFromSettings({
+      this.updateRootState({
         ...myJson,
         isRemoteSettingsLoaded: true
       });
@@ -387,7 +387,7 @@ class Base extends Component {
       console.log('Found cookie. Loading settings:', cookieObject);
       
       // save settings to state
-      this.updateStateFromSettings({
+      this.updateRootState({
         ...cookieObject,
         isCookieLoaded: true
       }, () => {
@@ -419,7 +419,7 @@ class Base extends Component {
 
     //console.log('urlObject', urlObject);
 
-    this.updateStateFromSettings({
+    this.updateRootState({
       ...urlObject
     }, () => {
       
@@ -650,7 +650,7 @@ class Base extends Component {
   };
 
   // this is a function we pass down to the settings component to allow it to modify state here at Base.jsx
-  updateStateFromSettings = (settingsObject, callback) => {
+  updateRootState = (settingsObject, callback) => {
     this.setState({
       ...settingsObject
     }, () => {
@@ -753,7 +753,7 @@ class Base extends Component {
         <NavBottomBar
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
-          updateStateFromSettings={this.updateStateFromSettings}
+          updateRootState={this.updateRootState}
           currentPage={this.state.currentPage}
           hostlistError={this.state.hostlistError}
 
@@ -789,7 +789,7 @@ class Base extends Component {
           {/* auto update */}
 
           {this.state.currentPage === 'autoupdate' && <AutoUpdate
-            updateStateFromSettings={this.updateStateFromSettings}
+            updateRootState={this.updateRootState}
             currentVersionString={this.state.currentVersionString}
           />}
 
@@ -801,7 +801,7 @@ class Base extends Component {
             baseUrlChanged={this.baseUrlChanged.bind(this)}
             settings={settingsObject}
             settingsFields={this.settingsFields}
-            updateStateFromSettings={this.updateStateFromSettings}
+            updateRootState={this.updateRootState}
             isCookieLoaded={this.state.isCookieLoaded}
             currentPage={this.state.currentPage}
             hostlistError={this.state.hostlistError}

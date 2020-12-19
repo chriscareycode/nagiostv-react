@@ -70,7 +70,7 @@ class Settings extends Component {
   }
 
   closeSettings = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'dashboard'
     });
   };
@@ -81,7 +81,7 @@ class Settings extends Component {
     Cookie.set('settings', cookieObject);
     
     //console.log('Saved cookie', cookieObject);
-    this.props.updateStateFromSettings(cookieObject);
+    this.props.updateRootState(cookieObject);
 
     this.setState({
       isDirty: false,
@@ -105,7 +105,7 @@ class Settings extends Component {
 
     // flip the isCookieDetected boolean
     // TODO: this doesn't work for some reason
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       isCookieDetected: false
     });
 
@@ -183,7 +183,7 @@ class Settings extends Component {
   }
 
   clickedAutoUpdate = () => {
-    this.props.updateStateFromSettings({
+    this.props.updateRootState({
       currentPage: 'autoupdate'
     });
   };
