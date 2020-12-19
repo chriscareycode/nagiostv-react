@@ -250,7 +250,7 @@ class AutoUpdate extends Component {
 
         {/* update button */}
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="SettingsSaveToServerButton">Begin Update to latest version v{this.state.latestVersion.version_string}</button>
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="SettingsSaveToServerButton">Begin update to latest version v{this.state.latestVersion.version_string}</button>
         </div>}
 
         {/* update error */}
@@ -298,7 +298,7 @@ class AutoUpdate extends Component {
 
           {this.state.selected && <div style={{ marginTop: '20px' }}>
             {/*<div>Selected version: {this.state.selected}</div>*/}
-            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade}>Begin version change to {this.state.selected}</button>
+            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="SettingsSaveToServerButton">Begin version change to {this.state.selected}</button>
           </div>}
 
           {this.state.downgradeLoading && <span> Downgrade NagiosTV...</span>}

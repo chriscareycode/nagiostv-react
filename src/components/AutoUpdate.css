@@ -1,8 +1,9 @@
 .AutoUpdate textarea {
-  width: 100%;
+  width: 95%;
   height: 200px;
   background-color: #222;
   color: white;
+  border: 2px solid lime;
 }
 
 .auto-update-error {
