@@ -230,7 +230,7 @@ class AutoUpdate extends Component {
         <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
         {/* Automatic Update */}
-        <h2 style={{ color: 'lime' }}>Automatic Update</h2>
+        <h2 style={{ color: 'lime' }}>or one-click update to latest</h2>
 
         {/* latest version */}
         <div style={{ marginTop: '20px' }}>
@@ -250,13 +250,18 @@ class AutoUpdate extends Component {
 
         {/* update button */}
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate}>Begin Update to latest version v{this.state.latestVersion.version_string}</button>
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="SettingsSaveToServerButton">Begin Update to latest version v{this.state.latestVersion.version_string}</button>
         </div>}
 
         {/* update error */}
         {this.state.updateError && <div>
           <div>Update Error:</div>
           {this.state.updateErrorMessage}
+        </div>}
+
+        {/* update is working/loading */}
+        {this.state.updateLoading && <div style={{ marginTop: '20px' }}>
+          <div>Update is working - Please Wait...</div>
         </div>}
 
         {/* update result */}
@@ -303,6 +308,11 @@ class AutoUpdate extends Component {
             {this.state.downgradeErrorMessage}
           </div>}
 
+          {/* update is working/loading */}
+          {this.state.downgradeLoading && <div style={{ marginTop: '20px' }}>
+            <div>Downgrade is working - Please Wait...</div>
+          </div>}
+
           {this.state.downgradeResult && <div style={{ marginTop: '20px' }}>
             <div>Downgrade Result:</div>
             <textarea readOnly value={this.state.downgradeResult}></textarea>
@@ -320,13 +330,13 @@ class AutoUpdate extends Component {
         </div>}
 
         {/* downgrading warnings */}
-        <div>
+        {/*<div>
           <br />
           <br />
           * If you downgrade to a version before v0.6.0, this auto update page will not exist on that old version.<br />
           So, how do you get back up to a newer version? You can load this URL manually to switch again (take note of the URL or you can find it on the README at Github).
           <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
-        </div>
+        </div>*/}
 
         {/*<div style={{ marginTop: '100px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>*/}
 
