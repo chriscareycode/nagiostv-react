@@ -301,8 +301,6 @@ class AutoUpdate extends Component {
             <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="SettingsSaveToServerButton">Begin version change to {this.state.selected}</button>
           </div>}
 
-          {this.state.downgradeLoading && <span> Downgrade NagiosTV...</span>}
-
           {this.state.downgradeError && <div>
             <div>Downgrade Error:</div>
             {this.state.downgradeErrorMessage}
