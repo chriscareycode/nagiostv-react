@@ -42,6 +42,9 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
     if (settings.hideServiceSoft) {
       if (item.state_type === 0) { return false; }
     }
+    if (settings.hideServiceNotificationsDisabled) {
+      if (item.notifications_enabled === false) { return false; }
+    }
     return true;
   });
 

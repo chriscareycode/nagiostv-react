@@ -17,7 +17,8 @@ class HostFilters extends Component {
       'howManyHostAcked',
       'howManyHostScheduled',
       'howManyHostFlapping',
-      'howManyHostSoft'
+      'howManyHostSoft',
+      'howManyHostNotificationsDisabled'
     ];
     for(let i=0;i<propsToCauseRender.length;i++) {
       if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
@@ -134,6 +135,19 @@ class HostFilters extends Component {
             defaultChecked={!this.props.settingsObject.hideHostSoft}
             howMany={this.props.howManyHostSoft}
             howManyText={translate('soft', language)}
+          />
+        </span>}
+
+        {(!this.props.hideFilters || this.props.howManyHostNotificationsDisabled !== 0) && <span>
+          &nbsp;
+          <Checkbox
+            filterName="notifications_disabled"
+            hideFilters={this.props.hideFilters}
+            handleCheckboxChange={this.props.handleCheckboxChange}
+            stateName={'hideHostNotificationsDisabled'}
+            defaultChecked={!this.props.settingsObject.hideHostNotificationsDisabled}
+            howMany={this.props.howManyHostNotificationsDisabled}
+            howManyText={translate('notifications disabled', language)}
           />
         </span>}
 

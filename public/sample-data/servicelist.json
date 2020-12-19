@@ -135,7 +135,7 @@
           "next_notification": 0,
           "next_check": 1550994594000,
           "no_more_notifications": false,
-          "notifications_enabled": true,
+          "notifications_enabled": false,
           "problem_has_been_acknowledged": false,
           "acknowledgement_type": 0,
           "current_notification_number": 0,

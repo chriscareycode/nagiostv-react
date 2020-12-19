@@ -18,7 +18,8 @@ class ServiceFilters extends Component {
       'howManyServiceAcked',
       'howManyServiceScheduled',
       'howManyServiceFlapping',
-      'howManyServiceSoft'
+      'howManyServiceSoft',
+      'howManyServiceNotificationsDisabled'
     ];
     for(let i=0;i<propsToCauseRender.length;i++) {
       if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
@@ -148,6 +149,19 @@ class ServiceFilters extends Component {
             defaultChecked={!this.props.settingsObject.hideServiceSoft}
             howMany={this.props.howManyServiceSoft}
             howManyText={translate('soft', language)}
+          />
+        </span>}
+
+        {(!this.props.hideFilters || this.props.howManyServiceNotificationsDisabled !== 0) && <span>
+          &nbsp;
+          <Checkbox
+            filterName="notifications_disabled"
+            hideFilters={this.props.hideFilters}
+            handleCheckboxChange={this.props.handleCheckboxChange}
+            stateName={'hideServiceNotificationsDisabled'}
+            defaultChecked={!this.props.settingsObject.hideServiceNotificationsDisabled}
+            howMany={this.props.howManyServiceNotificationsDisabled}
+            howManyText={translate('notifications disabled', language)}
           />
         </span>}
 

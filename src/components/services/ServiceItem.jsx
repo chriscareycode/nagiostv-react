@@ -88,7 +88,10 @@ class ServiceItem extends Component {
       <div style={{ ...defaultStyles }} className={`ServiceItem`} onClick={this.mouseClick}>
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
+            {/* soft */}
             {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
+            {/* notifications disabled */}
+            {e.notifications_enabled === false && <span className="item-notifications-disabled">Notifications Disabled - </span>}
             {/* SOFT / HARD for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
             <span className={`uppercase service-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
@@ -99,7 +102,6 @@ class ServiceItem extends Component {
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
             <div className="lastOk"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
-          
           </div>
 
           <div style={{ textAlign: 'left' }}>

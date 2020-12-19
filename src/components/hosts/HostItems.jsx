@@ -39,6 +39,9 @@ class HostItems extends Component {
       if (this.props.settings.hideHostSoft) {
         if (item.state_type === 0) { return false; }
       }
+      if (this.props.settings.hideHostNotificationsDisabled) {
+        if (item.notifications_enabled === false) { return false; }
+      }
       return true;
     });
 

@@ -157,6 +157,7 @@ class HostSection extends Component {
     let howManyHostScheduled = 0;
     let howManyHostFlapping = 0;
     let howManyHostSoft = 0;
+    let howManyHostNotificationsDisabled = 0;
 
     if (this.state.hostlist) {
       Object.keys(this.state.hostlist).forEach((host) => {
@@ -182,6 +183,10 @@ class HostSection extends Component {
         // only count soft items if they are not up
         if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].state_type === 0) {
           howManyHostSoft++;
+        }
+        // count notifications_enabled === false
+        if (this.state.hostlist[host].notifications_enabled === false) {
+          howManyHostNotificationsDisabled++;
         }
       });
     }
@@ -215,6 +220,7 @@ class HostSection extends Component {
             hostSortOrder={this.props.hostSortOrder}
             handleSelectChange={this.props.handleSelectChange}
             handleCheckboxChange={this.props.handleCheckboxChange}
+
             howManyHosts={howManyHosts}
             howManyHostDown={howManyHostDown}
             howManyHostUnreachable={howManyHostUnreachable}
@@ -223,6 +229,8 @@ class HostSection extends Component {
             howManyHostScheduled={howManyHostScheduled}
             howManyHostFlapping={howManyHostFlapping}
             howManyHostSoft={howManyHostSoft}
+            howManyHostNotificationsDisabled={howManyHostNotificationsDisabled}
+
             language={language}
             settingsObject={settingsObject}
           />
@@ -249,6 +257,7 @@ class HostSection extends Component {
           hostProblemsArray={this.state.hostProblemsArray}
           commentlist={this.props.commentlist}
           settings={settingsObject}
+
           howManyHosts={howManyHosts}
           howManyHostUp={howManyHostUp}
           howManyHostDown={howManyHostDown}
@@ -257,6 +266,9 @@ class HostSection extends Component {
           howManyHostAcked={howManyHostAcked}
           howManyHostScheduled={howManyHostScheduled}
           howManyHostFlapping={howManyHostFlapping}
+          howManyHostSoft={howManyHostSoft}
+          howManyHostNotificationsDisabled={howManyHostNotificationsDisabled}
+
           isDemoMode={this.props.isDemoMode}
           hostlistError={this.state.hostlistError}
         />

@@ -160,6 +160,7 @@ class ServiceSection extends Component {
     let howManyServiceScheduled = 0;
     let howManyServiceFlapping = 0;
     let howManyServiceSoft = 0;
+    let howManyServiceNotificationsDisabled = 0;
 
     if (this.state.servicelist) {
       Object.keys(this.state.servicelist).forEach((host) => {
@@ -189,6 +190,10 @@ class ServiceSection extends Component {
           // only count soft items if they are not up
           if (this.state.servicelist[host][service].status !== 2 && this.state.servicelist[host][service].state_type === 0) {
             howManyServiceSoft++;
+          }
+          // count notifications_enabled === false
+          if (this.state.servicelist[host][service].notifications_enabled === false) {
+            howManyServiceNotificationsDisabled++;
           }
         });
       });
@@ -221,6 +226,7 @@ class ServiceSection extends Component {
             serviceSortOrder={this.props.serviceSortOrder}
             handleSelectChange={this.props.handleSelectChange}
             handleCheckboxChange={this.props.handleCheckboxChange}
+
             howManyServices={howManyServices}
             howManyServiceWarning={howManyServiceWarning}
             howManyServicePending={howManyServicePending}
@@ -230,6 +236,8 @@ class ServiceSection extends Component {
             howManyServiceScheduled={howManyServiceScheduled}
             howManyServiceFlapping={howManyServiceFlapping}
             howManyServiceSoft={howManyServiceSoft}
+            howManyServiceNotificationsDisabled={howManyServiceNotificationsDisabled}
+
             language={language}
             settingsObject={settingsObject}
           />
@@ -265,6 +273,9 @@ class ServiceSection extends Component {
           howManyServiceAcked={howManyServiceAcked}
           howManyServiceScheduled={howManyServiceScheduled}
           howManyServiceFlapping={howManyServiceFlapping}
+          howManyServiceSoft={howManyServiceSoft}
+          howManyServiceNotificationsDisabled={howManyServiceNotificationsDisabled}
+
           servicelistError={this.state.servicelistError}
         />
 

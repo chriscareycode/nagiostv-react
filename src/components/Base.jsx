@@ -100,6 +100,7 @@ class Base extends Component {
     hideHostScheduled: false,
     hideHostFlapping: false,
     hideHostSoft: false,
+    hideHostNotificationsDisabled: false,
     hostSortOrder: 'newest',
 
     // service related settings
@@ -112,6 +113,7 @@ class Base extends Component {
     hideServiceScheduled: false,
     hideServiceFlapping: false,
     hideServiceSoft: false,
+    hideServiceNotificationsDisabled: false,
     serviceSortOrder: 'newest',
         
     // alert history related settings
@@ -168,6 +170,7 @@ class Base extends Component {
     'hideServiceScheduled',
     'hideServiceFlapping',
     'hideServiceSoft',
+    'hideHostNotificationsDisabled',
 
     'serviceSortOrder',
 
@@ -179,6 +182,7 @@ class Base extends Component {
     'hideHostScheduled',
     'hideHostFlapping',
     'hideHostSoft',
+    'hideServiceNotificationsDisabled',
 
     'hideHistory',
     'hideHistoryTitle',
