@@ -12,6 +12,7 @@
   z-index: 13;
   text-align: center;
   font-size: 0.9em;
+  white-space: nowrap;
 }
 
 .NavBottomBar .nav-sidebar-version {
