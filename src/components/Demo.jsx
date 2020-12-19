@@ -12,56 +12,69 @@ class Demo extends Component {
   }
 
   automate() {
-    
-    this.addHostDown();
-    this.addHostDown();
-    this.addHostDown();
-    this.addServiceWarning();
-    this.addServiceWarning();
-    this.addServiceCritical();
-    this.addServiceCritical();
+    console.log('automate');
 
-    setTimeout(() => {
-      this.removeServiceWarning();
-    }, 6000);
+    if (this.props.type === 'host') {
 
-    setTimeout(() => {
-      this.removeHostDown();
-    }, 10000);
+      this.addHostDown();
+      this.addHostDown();
+      this.addHostDown();
 
-    setTimeout(() => {
+      setTimeout(() => {
+        this.removeHostDown();
+      }, 10000);
+
+      setTimeout(() => {
+        this.removeHostDown();
+      }, 25000);
+  
+  
+      setTimeout(() => {
+        this.removeHostDown();
+      }, 40000);
+
+    }
+
+    if (this.props.type === 'service') {
+
       this.addServiceWarning();
-    }, 12000);
+      this.addServiceWarning();
+      this.addServiceCritical();
+      this.addServiceCritical();
 
-    setTimeout(() => {
-      this.removeServiceCritical();
-    }, 15000);
+      setTimeout(() => {
+        this.removeServiceWarning();
+      }, 6000);
 
-    setTimeout(() => {
-      this.removeServiceWarning();
-    }, 20000);
+      setTimeout(() => {
+        this.addServiceWarning();
+      }, 12000);
+  
+      setTimeout(() => {
+        this.removeServiceCritical();
+      }, 15000);
+  
+      setTimeout(() => {
+        this.removeServiceWarning();
+      }, 20000);
 
-    setTimeout(() => {
-      this.removeHostDown();
-    }, 25000);
+      setTimeout(() => {
+        this.removeServiceCritical();
+      }, 30000);
+  
+      setTimeout(() => {
+        this.removeServiceWarning();
+      }, 35000);
 
-    setTimeout(() => {
-      this.removeServiceCritical();
-    }, 30000);
 
-    setTimeout(() => {
-      this.removeServiceWarning();
-    }, 35000);
-
-    setTimeout(() => {
-      this.removeHostDown();
-    }, 40000);
-
+    }
+    
   }
 
   addHostDown = () => {
     // loop through hostProblemsArray, set one to down, and set state
     const hostlist = {...this.props.hostlist};
+    //console.log('hostlist', hostlist);
 
     Object.keys(hostlist).some(key => {
       // "UP" and "not SOFT"

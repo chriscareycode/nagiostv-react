@@ -6,6 +6,7 @@ import { convertServiceObjectToArray } from '../../helpers/nagiostv';
 
 import ServiceItems from './ServiceItems.jsx';
 import ServiceFilters from './ServiceFilters.jsx';
+import Demo from '../Demo.jsx';
 
 // 3rd party addons
 import moment from 'moment';
@@ -56,6 +57,12 @@ class ServiceSection extends Component {
   }
 
   fetchServiceData() {
+
+    // if we are offline, let's just skip
+    if (!navigator.onLine) {
+      console.log('fetchServiceData() browser is offline');
+      return;
+    }
 
     let url;
     if (this.props.useFakeSampleData) {
@@ -136,6 +143,9 @@ class ServiceSection extends Component {
     });
   }
 
+  // allows demo mode to access the state in this component
+  updateParentState = state => this.setState(state);
+
   render() {
 
     const { language, settingsObject } = this.props;
@@ -186,6 +196,17 @@ class ServiceSection extends Component {
 
     return (
       <div className="ServiceSection">
+
+        {/* Demo mode logic is inside this component */}
+        {this.props.isDemoMode && <Demo
+          type={'service'}
+          //hostlist={this.state.hostlist}
+          //hostSortOrder={this.state.hostSortOrder}
+          servicelist={this.state.servicelist}
+          serviceSortOrder={this.state.serviceSortOrder}
+          updateParentState={this.updateParentState}
+          settingsObject={settingsObject}
+        />}
         
         <div className="service-summary">
               

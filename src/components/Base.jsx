@@ -20,7 +20,7 @@ import CustomLogo from './widgets/CustomLogo.jsx';
 import AutoUpdate from './AutoUpdate.jsx';
 import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
-import Demo from './Demo.jsx';
+
 import Clock from './widgets/Clock.jsx';
 import NavBottomBar from './widgets/NavBottomBar.jsx';
 import HostGroupFilter from './hosts/HostGroupFilter.jsx';
@@ -250,67 +250,67 @@ class Base extends Component {
     // Load Remote Settings - then it calls the loadCookie routine
     this.getRemoteSettings();
     
+    // If we are in demo mode then exit here
+    if (this.state.isDemoMode) {
+      return;
+    }
+
     // fetch the initial data after 1 second
+    setTimeout(() => {
+      // fetch data now
+      this.fetchHostGroupData();
+      this.fetchCommentData();
+    }, 1000);
+    
+    // Start the intervals for fetching data
+    
+    // fetch comments on an interval
+    this.intervalHandleComment = setInterval(() => {
+      this.fetchCommentData();
+    }, this.state.fetchFrequency * 1000);
+
+    // fetch hostgroup on an interval
+    this.intervalHandleHostGroup = setInterval(() => {
+      this.fetchHostGroupData();
+    }, this.state.fetchHostGroupFrequency * 1000);
+    
+
+    // If a Cookie is set then run version check after 30s.
+    // If no Cookie is set then run version check after 30m.
+    // Cookie helps us prevent version check too often if NagiosTV is on a rotation
+    // where the page is loading over and over every few minutes.
+
+    let versionCheckTimeout = 30 * 1000; // 30s
+    if (!navigator.cookieEnabled) {
+      console.log('Cookie not enabled so delaying first version check by 30m');
+      versionCheckTimeout = 1800 * 1000; // 30m
+    }
 
     setTimeout(() => {
-      
-      // TODO: turn on comments for demo mode at some point
-      if (!this.state.isDemoMode) {
-        this.fetchHostGroupData();
-        this.fetchCommentData();
-      }
-    }, 1000);
-
-    if (this.state.isDemoMode === false) {
-      // fetch comments on an interval
-      this.intervalHandleComment = setInterval(() => {
-        this.fetchCommentData();
-      }, this.state.fetchFrequency * 1000);
-
-      // fetch hostgroup on an interval
-      this.intervalHandleHostGroup = setInterval(() => {
-        this.fetchHostGroupData();
-      }, this.state.fetchHostGroupFrequency * 1000);
-      
-
-      // If a Cookie is set then run version check after 30s.
-      // If no Cookie is set then run version check after 30m.
-      // Cookie helps us prevent version check too often if NagiosTV is on a rotation
-      // where the page is loading over and over every few minutes.
-      // If we do not have a Cookie then it could cause too many checks.
-
-      let versionCheckTimeout = 30 * 1000; // 30s
-      if (!navigator.cookieEnabled) {
-        console.log('Cookie not enabled so delaying first version check by 30m');
-        versionCheckTimeout = 1800 * 1000; // 30m
-      }
-
-      setTimeout(() => {
-        const versionCheckDays = this.state.versionCheckDays;
-        // if someone turns off the version check, it should never check
-        if (versionCheckDays && versionCheckDays > 0) {
-          // version check - run once on app boot
-          this.versionCheck();
-          // version check - run every n days
-          const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
-          // console.log('Checking on intervalTime', intervalTime);
-          // safety check that interval > 1hr
-          if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
-            this.intervalHandleVersionCheck = setInterval(() => {
-              // inside the interval we check again if the user disabled the check
-              if (this.state.versionCheckDays > 0) {
-                this.versionCheck();
-              }
-            }, intervalTime);
-          } else {
-            console.log('intervalTime not yet an hour, not re-running check.', intervalTime);
-          }
+      const versionCheckDays = this.state.versionCheckDays;
+      // if someone turns off the version check, it should never check
+      if (versionCheckDays && versionCheckDays > 0) {
+        // version check - run once on app boot
+        this.versionCheck();
+        // version check - run every n days
+        const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
+        // console.log('Checking on intervalTime', intervalTime);
+        // safety check that interval > 1hr
+        if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
+          this.intervalHandleVersionCheck = setInterval(() => {
+            // inside the interval we check again if the user disabled the check
+            if (this.state.versionCheckDays > 0) {
+              this.versionCheck();
+            }
+          }, intervalTime);
         } else {
-          console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
+          console.log('intervalTime not yet an hour, not re-running check.', intervalTime);
         }
-      }, versionCheckTimeout);
-    } // if isDemoMode === false
-
+      } else {
+        console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
+      }
+    }, versionCheckTimeout);
+    
   }
 
   /* ************************************************************************************ */
@@ -768,16 +768,6 @@ class Base extends Component {
 
         <div style={{ height: '45px' }}>
         </div>
-
-        {/* Demo mode logic is inside this component */}
-
-        {this.state.isDemoMode && <Demo
-          hostlist={this.state.hostlist}
-          hostSortOrder={this.state.hostSortOrder}
-          servicelist={this.state.servicelist}
-          serviceSortOrder={this.state.serviceSortOrder}
-          updateStateFromSettings={this.updateStateFromSettings}
-        />}
 
         {/* wrapper around the main content */}
         <div className="main-content">

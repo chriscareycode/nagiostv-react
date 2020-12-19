@@ -6,6 +6,7 @@ import { convertHostObjectToArray } from '../../helpers/nagiostv';
 
 import HostItems from './HostItems.jsx';
 import HostFilters from './HostFilters.jsx';
+import Demo from '../Demo.jsx';
 
 // 3rd party addons
 import moment from 'moment';
@@ -57,6 +58,13 @@ class HostSection extends Component {
   }
 
   fetchHostData() {
+
+    // if we are offline, let's just skip
+    if (!navigator.onLine) {
+      console.log('fetchHostData() browser is offline');
+      return;
+    }
+
     let url;
     if (this.props.useFakeSampleData) {
       url = './sample-data/hostlist.json';
@@ -132,6 +140,9 @@ class HostSection extends Component {
     });
   }
 
+  // allows demo mode to access the state in this component
+  updateParentState = state => this.setState(state);
+
   render() {
 
     const { language, settingsObject } = this.props;
@@ -177,6 +188,18 @@ class HostSection extends Component {
 
     return (
       <div className="HostSection">
+
+        {/* Demo mode logic is inside this component */}
+        {this.props.isDemoMode && <Demo
+          type={'host'}
+          hostlist={this.state.hostlist}
+          hostSortOrder={this.state.hostSortOrder}
+          //servicelist={this.state.servicelist}
+          //serviceSortOrder={this.state.serviceSortOrder}
+          updateParentState={this.updateParentState}
+          settingsObject={settingsObject}
+        />}
+
         <div className="service-summary">
           
           <span className="service-summary-title">
