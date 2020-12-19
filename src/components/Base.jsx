@@ -670,9 +670,9 @@ class Base extends Component {
     }, () => {
       // Save Cookie
       this.saveCookie();
-      // Reload data from server now
-      this.fetchHostData();
-      this.fetchServiceData();
+      // Reload data from server now (TODO: cant do this since host and service fetch moved into child components)
+      //this.fetchHostData();
+      //this.fetchServiceData();
     });
   };
 

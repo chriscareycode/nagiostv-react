@@ -209,7 +209,7 @@ class HostSection extends Component {
           
           <span className="service-summary-title">
             Monitoring <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
-            {this.state.hostgroupFilter && <span>({this.state.hostgroupFilter})</span>}
+            {this.props.hostgroupFilter && <span>({this.props.hostgroupFilter})</span>}
 
             
           </span>
