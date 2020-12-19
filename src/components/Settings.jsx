@@ -367,15 +367,16 @@ class Settings extends Component {
               </td>
             </tr>
             <tr>
-              <th>Alert History Days Back:</th>
-              <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
+              <th>Alert History Chart:</th>
+              <td>
+                <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                </select>
+              </td>
             </tr>
             <tr>
-              <th>Alert History max # items:</th>
-              <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
-            </tr>
-            <tr>
-              <th>Alert History Title:</th>
+              <th>Alert History Titles:</th>
               <td>
                 <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
                     <option value={true}>Hide</option>
@@ -384,13 +385,12 @@ class Settings extends Component {
               </td>
             </tr>
             <tr>
-              <th>Alert History Chart:</th>
-              <td>
-                <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-              </td>
+              <th>Alert History Days Back:</th>
+              <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
+            </tr>
+            <tr>
+              <th>Alert History max # items:</th>
+              <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
             </tr>
             <tr>
               <th>Date Format:</th>
@@ -536,6 +536,21 @@ class Settings extends Component {
         <table className="SettingsTable">
           <thead>
             <tr>
+              <td className="SettingsTableHeader">Update NagiosTV</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <button onClick={this.clickedAutoUpdate} className="SettingsSaveToServerButton">Update NagiosTV</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table className="SettingsTable">
+          <thead>
+            <tr>
               <td className="SettingsTableHeader">Deleting Cookie</td>
             </tr>
           </thead>
@@ -605,20 +620,7 @@ class Settings extends Component {
           </tbody>
         </table>
         
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td className="SettingsTableHeader">Update NagiosTV</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <button onClick={this.clickedAutoUpdate}>Update NagiosTV</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        
         
 
       </div>
