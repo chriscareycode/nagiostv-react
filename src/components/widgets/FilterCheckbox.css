@@ -61,6 +61,11 @@
   background-color: #585804;
   color: yellow;
 }
+.Checkbox.notifications_disabled {
+  border: 0px solid yellow;
+  background-color: #484848;
+  color: white;
+}
 
 /* host */
 

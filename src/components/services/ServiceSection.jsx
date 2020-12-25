@@ -16,8 +16,6 @@ import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
 
-//import './ServiceSection.css';
-
 class ServiceSection extends Component {
 
   state = {
@@ -187,12 +185,13 @@ class ServiceSection extends Component {
           if (this.state.servicelist[host][service].is_flapping) {
             howManyServiceFlapping++;
           }
-          // only count soft items if they are not up
+          // only count soft items if they are not OK state
           if (this.state.servicelist[host][service].status !== 2 && this.state.servicelist[host][service].state_type === 0) {
             howManyServiceSoft++;
           }
           // count notifications_enabled === false
-          if (this.state.servicelist[host][service].notifications_enabled === false) {
+          // only count notifications_enabled items if they are not OK state
+          if (this.state.servicelist[host][service].status !== 2 && this.state.servicelist[host][service].notifications_enabled === false) {
             howManyServiceNotificationsDisabled++;
           }
         });

@@ -185,7 +185,8 @@ class HostSection extends Component {
           howManyHostSoft++;
         }
         // count notifications_enabled === false
-        if (this.state.hostlist[host].notifications_enabled === false) {
+        // only count these if they are not up
+        if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].notifications_enabled === false) {
           howManyHostNotificationsDisabled++;
         }
       });
