@@ -233,9 +233,12 @@ class HistoryChart extends Component {
           }
         }
       });
-      chart.series[0].update({
-        visible: false
-      });
+
+      // turn off the UP/OK filter on the day chart
+      // this will hide green items on that chart
+      // chart.series[0].update({
+      //   visible: false
+      // });
 
     }
 
