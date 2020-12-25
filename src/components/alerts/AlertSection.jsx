@@ -188,7 +188,7 @@ class AlertSection extends Component {
 
         {alertlist.length > 0 && <div>
 
-          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-chart-title margin-top-5">
+          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-chart-title margin-top-10">
             <span className="">
               <strong>{alertlistHoursCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertHoursBack}</strong> {translate('hours', language)}
               {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
