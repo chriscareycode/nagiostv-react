@@ -3,7 +3,21 @@ import { convertHostObjectToArray, convertServiceObjectToArray } from '../helper
 
 import './Demo.css';
 
+/**
+ * Demo
+ * 
+ * Now after refactoring Base.jsx and data fetching so that each section -
+ * HostSection and ServiceSection fetch and store data inside themselves,
+ * the data is no longer stored in Base.css so I'm including this Demo component on both HostSection and ServiceSection
+ * so that it can perform it's demo magic. I'd rather not do this since its sort of messy and with some future data
+ * storage global state that works better I'll refactor this again.
+ */
+
 class Demo extends Component {
+
+  state = {
+    isVisible: false
+  };
 
   componentDidMount() {
     setTimeout(() => {
@@ -31,6 +45,9 @@ class Demo extends Component {
   
       setTimeout(() => {
         this.removeHostDown();
+
+        
+
       }, 40000);
 
     }
@@ -64,6 +81,15 @@ class Demo extends Component {
   
       setTimeout(() => {
         this.removeServiceWarning();
+
+        // now at the end of the longest part of this automation, we set isVisible to true
+        // so that the interactive controls will display. We do not want people messing with them during the
+        // automatic demo.
+        
+        // though for right now since this is broken I'm going to hide the controls completely.
+        // TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
+        this.setState({ isVisible: true });
+
       }, 35000);
 
 
@@ -192,18 +218,27 @@ class Demo extends Component {
 
   render() {
 
+    // only show the demo controls once.
+    /**
+     * Only show the demo controls once.
+     * Since we are including the demo component twice, lets hide it for the other one.
+     */
+    if (this.props.type === 'host') {
+      return <div className="display-none"></div>;
+    }
+
     return (
       
-      <div className={`Demo`}>
+      <div className={this.state.isVisible ? 'Demo' : 'Demo display-none'}>
         <div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
         <table>
           <tbody>
             <tr>
-              <td>
+              {/*<td>
                 <div className="summary-label summary-label-red">Host DOWN</div>
                 <button onClick={this.addHostDown}>Add</button>
                 <button onClick={this.removeHostDown}>Remove</button>
-              </td>
+              </td>*/}
               <td>
                 <div className="summary-label summary-label-yellow">Service WARNING</div>
                 <button onClick={this.addServiceWarning}>Add</button>

@@ -26,6 +26,10 @@ input[type=text] {
   margin-right: 5px;
 }
 
+.display-none {
+  display: none;
+}
+
 .settings {
 
 }

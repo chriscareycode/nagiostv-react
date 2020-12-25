@@ -4,7 +4,7 @@
 	border-radius: 5px;
 	padding: 5px;
 	position: fixed;
-	width: 400px;
+	width: 500px;
 	left: 50%;
 	transform: translateX(-50%);
 	bottom: 65px;
@@ -30,4 +30,8 @@
 	width: 45%;
 	font-size: 0.7em;
 	margin: 0 2px;
+}
+
+.Demo .summary-label {
+	font-size: 0.9em;
 }
