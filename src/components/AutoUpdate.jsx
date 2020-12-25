@@ -225,12 +225,12 @@ class AutoUpdate extends Component {
         <h2>NagiosTV Updates</h2>
 
         {/* Manual Update */}
-        <h2 style={{ color: 'yellow' }}>Manual Update</h2>
+        <h3 style={{ color: '#ddd' }}>Manual Update</h3>
 
         <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
         {/* Automatic Update */}
-        <h2 style={{ color: 'lime' }}>or one-click update to latest</h2>
+        <h3 style={{ color: 'lime' }}>or one-click update to latest</h3>
 
         {/* latest version */}
         <div style={{ marginTop: '20px' }}>
@@ -270,7 +270,7 @@ class AutoUpdate extends Component {
           <textarea readOnly value={this.state.updateResult}></textarea>
         </div>}
 
-        <h2 style={{ color: 'orange' }}>or select a specific version</h2>
+        <h3 style={{ color: '#ddd' }}>or select a specific version</h3>
         
         <div>
           You can downgrade to a older version if you would like to.

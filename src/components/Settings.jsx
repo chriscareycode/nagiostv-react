@@ -324,6 +324,8 @@ class Settings extends Component {
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                 </select>
+                &nbsp;
+                You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
               </td>
             </tr>
           </tbody>
@@ -344,6 +346,8 @@ class Settings extends Component {
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                 </select>
+                &nbsp;
+                You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
               </td>
             </tr>
           </tbody>
@@ -364,6 +368,8 @@ class Settings extends Component {
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                 </select>
+                &nbsp;
+                You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
               </td>
             </tr>
             <tr>
@@ -533,20 +539,7 @@ class Settings extends Component {
           </tbody>
         </table>
 
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td className="SettingsTableHeader">Update NagiosTV</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <button onClick={this.clickedAutoUpdate} className="SettingsSaveToServerButton">Update NagiosTV</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        
 
         <table className="SettingsTable">
           <thead>
@@ -620,7 +613,20 @@ class Settings extends Component {
           </tbody>
         </table>
         
-        
+        <table className="SettingsTable">
+          <thead>
+            <tr>
+              <td className="SettingsTableHeader">Update NagiosTV</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <button onClick={this.clickedAutoUpdate} className="SettingsSaveToServerButton">Update NagiosTV</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
         
 
       </div>
