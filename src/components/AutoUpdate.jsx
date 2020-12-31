@@ -250,7 +250,7 @@ class AutoUpdate extends Component {
 
         {/* update button */}
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="SettingsSaveToServerButton">Begin update to latest version v{this.state.latestVersion.version_string}</button>
+          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="auto-update-button">Begin update to latest version v{this.state.latestVersion.version_string}</button>
         </div>}
 
         {/* update error */}
@@ -273,7 +273,7 @@ class AutoUpdate extends Component {
         <h3 style={{ color: '#ddd' }}>or select a specific version</h3>
         
         <div>
-          You can downgrade to a older version if you would like to.
+          You can pick any version off GitHub if you would like to.
         </div>
 
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
@@ -302,17 +302,17 @@ class AutoUpdate extends Component {
           </div>}
 
           {this.state.downgradeError && <div>
-            <div>Downgrade Error:</div>
+            <div>Switch version Error:</div>
             {this.state.downgradeErrorMessage}
           </div>}
 
           {/* update is working/loading */}
           {this.state.downgradeLoading && <div style={{ marginTop: '20px' }}>
-            <div>Downgrade is working - Please Wait...</div>
+            <div>Switch version is working - Please Wait...</div>
           </div>}
 
           {this.state.downgradeResult && <div style={{ marginTop: '20px' }}>
-            <div>Downgrade Result:</div>
+            <div>Switch version result:</div>
             <textarea readOnly value={this.state.downgradeResult}></textarea>
           </div>}
 
