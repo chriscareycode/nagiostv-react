@@ -316,7 +316,7 @@ class AutoUpdate extends Component {
 
           {this.state.selected && <div style={{ marginTop: '20px' }}>
             {/*<div>Selected version: {this.state.selected}</div>*/}
-            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="SettingsSaveToServerButton">Begin version change to {this.state.selected}</button>
+            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="auto-update-button">Begin version change to {this.state.selected}</button>
           </div>}
 
           {this.state.downgradeError && <div>
