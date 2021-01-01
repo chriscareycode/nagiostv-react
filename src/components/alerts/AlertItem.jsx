@@ -76,7 +76,9 @@ class AlertItem extends Component {
           <span style={{ textAlign: 'left' }}>
             
             <div style={{ marginTop: '2px' }}>
+              {/* host */}
               {e.object_type === 1 && <span className="alert-item-host-name">{e.name}</span>}
+              {/* service */}
               {e.object_type === 2 && <span className="alert-item-host-name">{e.host_name}</span>}
               {' '}
               <span className={alertTextClass(e.object_type, e.state)}>
