@@ -12,13 +12,16 @@
 	padding: 4px 4px;
 	border-bottom-right-radius: 5px;
 	border-bottom-left-radius: 5px;
+	border-radius: 5px;
 	border-top: 1px solid #333;
+	border-left: 1px solid #333;
+	border-right: 1px solid #333;
+	display: inline-block
 }
 
 .comment-color {
-  color: #88c1ff;
-  color: #00d8ff; /* blueish */
   color: #fdfdfd;
+  color: lime; /* to match with ACKED green. Since it's a good thing */
 }
 
 .checking-now {
