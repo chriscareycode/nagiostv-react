@@ -196,16 +196,17 @@ if ($query_string["query"] == "hostlist") {
     $res = array(
         "format_version" => 0,
         "result" => array(
-            "cgi" => "statusjson.cgi",
             "query" => "hostlist"
         )
     );
-                
-    $query = <<<"EOQ"
-    GET hosts
-    OutputFormat: json
-    ResponseHeader: fixed16
-    EOQ;
+    
+    # create the query
+    $query_arr = array();
+    $query_arr[] = "GET hosts";
+    $query_arr[] = "OutputFormat: json";
+    $query_arr[] = "ResponseHeader: fixed16";
+    $query = join($query_arr, "\n");
+
     
     $json = queryLivestatus($query);
     
@@ -272,16 +273,16 @@ if ($query_string["query"] == "hostlist") {
     $res = array(
         "format_version" => 0,
         "result" => array(
-            "cgi" => "statusjson.cgi",
             "query" => "servicelist"
         )
     );
                 
-    $query = <<<"EOQ"
-    GET services
-    OutputFormat: json
-    ResponseHeader: fixed16
-    EOQ;
+    # create query
+    $query_arr = array();
+    $query_arr[] = "GET services";
+    $query_arr[] = "OutputFormat: json";
+    $query_arr[] = "ResponseHeader: fixed16";
+    $query = join($query_arr, "\n");
     
     $json = queryLivestatus($query);
     
@@ -354,18 +355,18 @@ if ($query_string["query"] == "hostlist") {
     $res = array(
         "format_version" => 0,
         "result" => array(
-            "cgi" => "archivejson.cgi",
             "query" => "alertlist"
         )
     );
                 
-    $query = <<<"EOQ"
-    GET log
-    Filter: class = 1
-    Filter: time >= $alert_starttime
-    OutputFormat: json
-    ResponseHeader: fixed16
-    EOQ;
+    # create query
+    $query_arr = array();
+    $query_arr[] = "GET log";
+    $query_arr[] = "Filter: class = 1";
+    $query_arr[] = "Filter: time >= " . $alert_starttime;
+    $query_arr[] = "OutputFormat: json";
+    $query_arr[] = "ResponseHeader: fixed16";
+    $query = join($query_arr, "\n");
     
     $json = queryLivestatus($query);
     
@@ -433,16 +434,16 @@ if ($query_string["query"] == "hostlist") {
     $res = array(
         "format_version" => 0,
         "result" => array(
-            "cgi" => "statusjson.cgi",
             "query" => "commentlist"
         )
     );
 
-    $query = <<<"EOQ"
-    GET comments
-    OutputFormat: json
-    ResponseHeader: fixed16
-    EOQ;
+    # create query
+    $query_arr = array();
+    $query_arr[] = "GET comments";
+    $query_arr[] = "OutputFormat: json";
+    $query_arr[] = "ResponseHeader: fixed16";
+    $query = join($query_arr, "\n");
     
     $json = queryLivestatus($query);
     
@@ -490,16 +491,16 @@ if ($query_string["query"] == "hostlist") {
     $res = array(
         "format_version" => 0,
         "result" => array(
-            //"cgi" => "statusjson.cgi",
             "query" => "hostgrouplist"
         )
     );
 
-    $query = <<<"EOQ"
-    GET hostgroups
-    OutputFormat: json
-    ResponseHeader: fixed16
-    EOQ;
+    # create query
+    $query_arr = array();
+    $query_arr[] = "GET hostgroups";
+    $query_arr[] = "OutputFormat: json";
+    $query_arr[] = "ResponseHeader: fixed16";
+    $query = join($query_arr, "\n");
     
     $json = queryLivestatus($query);
     

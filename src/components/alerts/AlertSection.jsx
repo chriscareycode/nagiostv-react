@@ -97,10 +97,10 @@ class AlertSection extends Component {
       url = './sample-data/alertlist.json';
     } else if (this.props.settingsObject.dataSource === 'livestatus') {
       url = this.props.settingsObject.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
     } else {
       url = `${this.props.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
     }
 
     this.setState({ isFetching: true });

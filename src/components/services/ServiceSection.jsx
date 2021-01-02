@@ -89,10 +89,10 @@ class ServiceSection extends Component {
       url = './sample-data/servicelist.json';
     } else if (this.props.settingsObject.dataSource === 'livestatus') {
       url = this.props.settingsObject.livestatusPath + '?query=servicelist&details=true';
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
     } else {
       url = this.props.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
     }
     //console.log('Requesting Service Data: ' + url);
 
