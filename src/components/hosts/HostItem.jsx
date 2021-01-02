@@ -27,11 +27,6 @@ import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 //import Progress from '../widgets/Progress';
 
-const defaultStyles = {
-  overflow: 'hidden',
-  color: 'white'
-}
-
 class HostItem extends Component {
 
   componentDidMount() {
@@ -101,7 +96,7 @@ class HostItem extends Component {
     const nowTime = new Date().getTime();
 
     return (
-      <div style={{ ...defaultStyles }} className={`HostItem`} onClick={this.mouseClick}>
+      <div className={`HostItem`} onClick={this.mouseClick}>
         <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {/* soft */}
@@ -120,9 +115,11 @@ class HostItem extends Component {
             <div className="lastOk"><span>{translate('Last UP', language)}</span> {formatDateTimeAgoColor(e.last_time_up)} {translate('ago', language)}</div>
           </div>
           <div style={{ textAlign: 'left' }}>
-            <strong>{e.name}</strong>{' '}
-            <span className={hostTextClass(e.status)}>
-              <span className="color-orange">{e.description}</span>{' - '}
+            <strong>{e.name}</strong>
+            
+            {/*<span className="alert-item-description">{e.description}</span>*/}
+              
+            <span className={hostTextClass(e.status)} style={{ marginLeft: '8px' }}>
               {e.plugin_output}
             </span>
           </div>

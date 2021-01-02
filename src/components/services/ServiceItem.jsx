@@ -27,11 +27,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 //import Progress from '../widgets/Progress';
 
-const defaultStyles = {
-  overflow: 'hidden',
-  color: 'white'
-}
-
 class ServiceItem extends Component {
 
   componentDidMount() {
@@ -103,7 +98,7 @@ class ServiceItem extends Component {
 
     return (
       
-      <div style={{ ...defaultStyles }} className={`ServiceItem`} onClick={this.mouseClick}>
+      <div className={`ServiceItem`} onClick={this.mouseClick}>
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {/* soft */}
@@ -123,9 +118,9 @@ class ServiceItem extends Component {
           </div>
 
           <div style={{ textAlign: 'left' }}>
-            <strong>{e.host_name}</strong>{' - '}
+            <strong>{e.host_name}</strong>
             <span className={serviceTextClass(e.status)}>
-              <span className="color-orange">{e.description}</span>{' - '}
+              <span className="service-item-description">{e.description}</span>
               {e.plugin_output}
             </span>
           </div>

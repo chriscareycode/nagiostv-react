@@ -40,17 +40,18 @@
 }
 
 .alert-item-host-name { 
-  position: relative;
-  top: -1px;
+  
 }
 
 .alert-item-description {
-  font-size: 0.8em;
+  font-size: 1em;
   padding: 2px 4px;
   border-radius: 4px;
   position: relative;
-  top: -2px;
-  border: 1px solid #545454;
+  top: 0px;
+  border: 0px solid #545454;
   background-color:#101010;
-  margin-right: 5px;
+  margin-right: 7px;
+  margin-left: 2px;
+  color: #fbc37c;
 }
