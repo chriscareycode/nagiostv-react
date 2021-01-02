@@ -44,7 +44,7 @@ const HostGroupFilter = (props) => {
     <div className="HostGroupFilter">
       HostGroup Filter: {' '}
       <select onChange={onChangeHostGroupFilter} value={props.hostgroupFilter}>
-        <option value="">none</option>
+        <option value="">no filter</option>
         {options}
       </select>
     </div>
