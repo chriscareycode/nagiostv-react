@@ -1,11 +1,10 @@
-.NavBottomBar {
+.BottomPanel {
   position: fixed;
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  height: 50px;
   border: 2px solid #111;
   border-bottom: none;
   background-color: #222222d1;
@@ -15,10 +14,9 @@
   white-space: nowrap;
 }
 
-.NavBottomBar .nav-sidebar-version {
+.BottomPanel .nav-sidebar-version {
   position: static;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin: 5px;
   border: 0px solid orange;
   text-align: center;
   display: inline-block;
@@ -26,7 +24,7 @@
   vertical-align: middle;
 }
 
-.NavBottomBar .nav-sidebar-version-text {
+.BottomPanel .nav-sidebar-version-text {
   background-color: #111;
   border-radius: 5px;
   padding: 2px 5px;
@@ -34,7 +32,7 @@
   color: #666;
 }
 
-.NavBottomBar .nav-sidebar-icon {
+.BottomPanel .nav-sidebar-icon {
   position: relative;
   width: 50px;
   height: 50px;
@@ -44,25 +42,25 @@
   vertical-align: middle;
 }
 
-.NavBottomBar .nav-sidebar-icon .nav-sidebar-icon-text {
+.BottomPanel .nav-sidebar-icon .nav-sidebar-icon-text {
   font-size: 0.8em;
   color: #555;
 }
 
-.NavBottomBar .nav-sidebar-icon span {
+.BottomPanel .nav-sidebar-icon span {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.NavBottomBar .nav-sidebar-icon svg {
+.BottomPanel .nav-sidebar-icon svg {
   cursor: pointer;
   font-size: 1.2em;
   color: #666;
 }
 
-.NavBottomBar .nav-sidebar-icon svg.nav-sidebar-icon-selected {
+.BottomPanel .nav-sidebar-icon svg.nav-sidebar-icon-selected {
   color: #eee;
 }
 
@@ -75,7 +73,7 @@
   100% { color: yellow; }
 }
 
-.NavBottomBar .nav-sidebar-number {
+.BottomPanel .nav-sidebar-number {
   margin-top: 20px;
   color: orange;
   font-size: 1.4em;

@@ -1,0 +1,7 @@
+.help-option {
+    cursor: pointer;
+}
+
+.help-option:hover {
+    color: orange;
+}

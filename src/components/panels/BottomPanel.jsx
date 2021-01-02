@@ -17,14 +17,13 @@
  */
 
 import React, { Component } from 'react';
-import './NavSidebar.css';
-import ReactTooltip from 'react-tooltip';
+import './BottomPanel.css';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faFilter, faTachometerAlt, faTools } from '@fortawesome/free-solid-svg-icons';
 
-class NavSidebar extends Component {
+class BottomPanel extends Component {
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -35,29 +34,41 @@ class NavSidebar extends Component {
   //   }
   // }
 
-  clickedDashboard = () => {
+  // clickedDashboard = () => {
+  //   this.props.updateRootState({
+  //     currentPage: 'dashboard'
+  //   });
+  // };
+
+  // clickedFilter = () => {
+  //   this.props.updateRootState({
+  //     hideFilters: !this.props.hideFilters
+  //   });
+  // };
+
+  // clickedSettings = () => {
+  //   this.props.updateRootState({
+  //     currentPage: 'settings'
+  //   });
+  // };
+
+  clickedAutoUpdate = () => {
     this.props.updateRootState({
-      currentPage: 'dashboard'
+      currentPage: 'autoupdate'
     });
   };
 
-  clickedFilter = () => {
+  clickedNagiosTv = () => {
     this.props.updateRootState({
-      hideFilters: !this.props.hideFilters
+      currentPage: 'help'
     });
   };
 
-  clickedSettings = () => {
-    this.props.updateRootState({
-      currentPage: 'settings'
-    });
-  };
-
-  clickedCharts = () => {
-    this.props.updateRootState({
-      hideHistoryChart: !this.props.hideHistoryChart
-    });
-  };
+  // clickedCharts = () => {
+  //   this.props.updateRootState({
+  //     hideHistoryChart: !this.props.hideHistoryChart
+  //   });
+  // };
 
   render() {
     
@@ -66,11 +77,13 @@ class NavSidebar extends Component {
     if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
 
     return (
-      <div className="NavSidebar">
+      <div className="BottomPanel">
         
+        {/*
         <div className="nav-sidebar-icon">
           <span data-tip="Dashboard">
             <FontAwesomeIcon onClick={this.clickedDashboard} className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''} icon={faTachometerAlt} />
+            <div className="nav-sidebar-icon-text">Dash</div>
           </span>
         </div>
 
@@ -81,44 +94,47 @@ class NavSidebar extends Component {
               className={settingsIconClassName}
               icon={faTools}
             />
+            <div className="nav-sidebar-icon-text">Settings</div>
           </span>
         </div>
+        */}
+        
+        <div className="nav-sidebar-version">
+          <div className="nav-sidebar-version-text">
 
-        <div className="nav-sidebar-hr"></div>
+            <span onClick={this.clickedNagiosTv} style={{ cursor: 'pointer' }}>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+
+            {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
+          </div>
+        </div>
 
         {/*
         <div className="nav-sidebar-icon">
           <FontAwesomeIcon className="" icon={faServer} />
         </div>
-        */}
-
+            
         <div className="nav-sidebar-icon">
           <span data-tip="Show Charts">
             <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
+            <div className="nav-sidebar-icon-text">Charts</div>
           </span>
         </div>
 
-        {/*
         <div className="nav-sidebar-icon">
           <FontAwesomeIcon className="" icon={faBell} />
         </div>
-        */}
 
         <div className="nav-sidebar-icon">
           <span data-tip="Show Filters">
             <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
+            <div className="nav-sidebar-icon-text">Filter</div>
           </span>
         </div>
+        */}
 
-        <div className="nav-sidebar-bottom-float">          
-
-        </div>
-
-        <ReactTooltip place="right" type="dark" effect="solid"/>
-        
       </div>
     );
   }
 }
 
-export default NavSidebar;
+export default BottomPanel;

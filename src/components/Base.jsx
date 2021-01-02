@@ -29,31 +29,33 @@
  */
 import React, { Component } from 'react';
 
+// Import Hosts and Services
+import HostGroupFilter from './hosts/HostGroupFilter.jsx';
 import HostSection from './hosts/HostSection.jsx';
 import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
 
-import Flynn from './Flynn/Flynn.jsx';
-import CustomLogo from './widgets/CustomLogo.jsx';
+// Import Various
 import AutoUpdate from './AutoUpdate.jsx';
+import Help from './Help.js';
 import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 
-import Clock from './widgets/Clock.jsx';
-import NavBottomBar from './widgets/NavBottomBar.jsx';
-import HostGroupFilter from './hosts/HostGroupFilter.jsx';
-// css
+// Import Panels
+import TopMenu from './panels/TopMenu.js';
+import LeftPanel from './panels/LeftPanel.jsx';
+import BottomPanel from './panels/BottomPanel.jsx';
+
+// Import css
 import './Base.css';
 import './animation.css';
-// 3rd party addons
-import moment from 'moment';
+// Import 3rd party addons
+//import moment from 'moment';
 import Cookie from 'js-cookie';
 import $ from 'jquery';
 import _ from 'lodash';
-// icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeUp } from '@fortawesome/free-solid-svg-icons';
-// Polyfill
+
+// Import Polyfills
 import 'url-search-params-polyfill';
 
 class Base extends Component {
@@ -100,6 +102,7 @@ class Base extends Component {
     fetchHostGroupFrequency: 3600, // seconds
 
     hideFilters: true,
+    isLeftPanelOpen: false,
     
     //**************************************************************************** */
     // user settings (defaults are set here also)
@@ -726,53 +729,28 @@ class Base extends Component {
     return (
       <div className="Base">
 
-        {/* header */}
+        {/* Top Menu */}
 
-        <div className="HeaderArea">
+        <TopMenu
+          settingsObject={settingsObject}
+          isLeftPanelOpen={this.state.isLeftPanelOpen}
+          updateRootState={this.updateRootState}
+        />
 
-          <div className="header-right-float">
+        {/* Left Panel */}
 
-            {/* sound */}
-            {(this.state.playSoundEffects || this.state.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
+        <LeftPanel
+          settingsObject={settingsObject}
+          isLeftPanelOpen={this.state.isLeftPanelOpen}
+          currentPage={this.state.currentPage}
+          hideFilters={this.state.hideFilters}
+          hideHistoryChart={this.state.hideHistoryChart}
+          updateRootState={this.updateRootState}
+        />
 
-            {/* clock */}
-            <Clock
-              locale={this.state.locale}
-              clockDateFormat={this.state.clockDateFormat}
-              clockTimeFormat={this.state.clockTimeFormat}
-            />
-
-            {/* flynn */}
-            {/*
-            need to figure out a new way to get howManyHostAndServicesDown
-            {this.state.flynnEnabled &&
-              <Flynn
-                howManyDown={howManyHostAndServicesDown}
-                flynnConcernedAt={this.state.flynnConcernedAt}
-                flynnAngryAt={this.state.flynnAngryAt}
-                flynnBloodyAt={this.state.flynnBloodyAt}
-                flynnCssScale={this.state.flynnCssScale}
-              />
-            }
-            */}
-
-            {/* custom logo */}
-            {this.state.customLogoEnabled &&
-              <CustomLogo
-                settings={settingsObject}
-              />
-            }
-          </div>
-
-          <div className="header-application-name">{this.state.titleString}</div>
-
-          {/* show the polling time */}
-          {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
-        </div>
-
-        {/* footer */}
+        {/* Bottom Panel */}
         
-        <NavBottomBar
+        <BottomPanel
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
           updateRootState={this.updateRootState}
@@ -792,11 +770,16 @@ class Base extends Component {
         </div>
 
         {/* wrapper around the main content */}
-        <div className="main-content">
+        <div className={this.state.isLeftPanelOpen ? 'main-content left-panel-open' : 'main-content'}>
 
           {!settingsLoaded && <div>Settings are not loaded yet</div>}
 
+          {/* help */}
 
+          {this.state.currentPage === 'help' && <Help
+            updateRootState={this.updateRootState}
+            isLeftPanelOpen={this.state.isLeftPanelOpen}
+          />}
 
           {/* auto update */}
 

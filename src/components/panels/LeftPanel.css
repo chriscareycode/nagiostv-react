@@ -1,26 +1,34 @@
-.NavSidebar {
+.LeftPanel {
   position: fixed;
-  top: 51px;
+  top: 40px;
   bottom: 0px;
-  left: 0;
+  left: -50px;
   width: 50px;
   border: 0px solid #333;
   background-color: #222;
   z-index: 13;
+  overflow: hidden;
+  transition: left 250ms linear;
 }
 
-.NavSidebar .nav-sidebar-icon {
-  position: relative;
-  top: 10px;
+.LeftPanel.left-panel-open {
+  left: 0px;
+}
+
+.LeftPanel .nav-sidebar-icon {
+  
   width: 50px;
   height: 50px;
   border: 0px solid #333;
   text-align: center;
   font-size: 1.2em;
   color: #666;
+
+  display: grid;
+  place-content: center;
 }
 
-.NavSidebar .nav-sidebar-icon svg {
+.LeftPanel .nav-sidebar-icon svg {
   cursor: pointer;
 }
 
@@ -37,7 +45,7 @@
   color: #eee;
 }
 
-.NavSidebar .nav-sidebar-item {
+.LeftPanel .nav-sidebar-item {
   position: static;
   width: 50px;
   height: 50px;
@@ -45,7 +53,7 @@
   text-align: center;
 }
 
-.NavSidebar .nav-sidebar-number {
+.LeftPanel .nav-sidebar-number {
   margin-top: 20px;
   color: orange;
   font-size: 1.4em;

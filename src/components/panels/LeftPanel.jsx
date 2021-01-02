@@ -17,13 +17,14 @@
  */
 
 import React, { Component } from 'react';
-import './NavBottomBar.css';
+import './LeftPanel.css';
+import ReactTooltip from 'react-tooltip';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faFilter, faTachometerAlt, faTools } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faFilter, faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
-class NavBottomBar extends Component {
+class LeftPanel extends Component {
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -40,27 +41,33 @@ class NavBottomBar extends Component {
     });
   };
 
-  clickedFilter = () => {
-    this.props.updateRootState({
-      hideFilters: !this.props.hideFilters
-    });
-  };
-
   clickedSettings = () => {
     this.props.updateRootState({
       currentPage: 'settings'
     });
   };
 
-  clickedAutoUpdate = () => {
+  clickedHelp = () => {
+    this.props.updateRootState({
+      currentPage: 'help'
+    });
+  };
+
+  clickedUpdate = () => {
     this.props.updateRootState({
       currentPage: 'autoupdate'
     });
   };
 
+  clickedFilter = () => {
+    this.props.updateRootState({
+      hideFilters: !this.props.hideFilters
+    });
+  };
+
   clickedCharts = () => {
     this.props.updateRootState({
-      hideHistoryChart: !this.props.hideHistoryChart
+      hideHistoryChart: !this.props.settingsObject.hideHistoryChart
     });
   };
 
@@ -71,12 +78,15 @@ class NavBottomBar extends Component {
     if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
 
     return (
-      <div className="NavBottomBar">
+      <div className={this.props.isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
         
         <div className="nav-sidebar-icon">
           <span data-tip="Dashboard">
-            <FontAwesomeIcon onClick={this.clickedDashboard} className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''} icon={faTachometerAlt} />
-            <div className="nav-sidebar-icon-text">Dash</div>
+            <FontAwesomeIcon
+              onClick={this.clickedDashboard}
+              className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''}
+              icon={faTachometerAlt}
+            />
           </span>
         </div>
 
@@ -87,19 +97,30 @@ class NavBottomBar extends Component {
               className={settingsIconClassName}
               icon={faTools}
             />
-            <div className="nav-sidebar-icon-text">Settings</div>
           </span>
         </div>
 
-        
-        <div className="nav-sidebar-version">
-          <div className="nav-sidebar-version-text">
-
-            <span onClick={this.clickedAutoUpdate} style={{ cursor: 'pointer' }}>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
-
-            {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
-          </div>
+        <div className="nav-sidebar-icon">
+          <span data-tip="Update">
+            <FontAwesomeIcon
+              onClick={this.clickedUpdate}
+              className={this.props.currentPage === 'autoupdate' ? 'nav-sidebar-icon-selected' : ''}
+              icon={faUpload}
+            />
+          </span>
         </div>
+
+        <div className="nav-sidebar-icon">
+          <span data-tip="Help">
+            <FontAwesomeIcon
+              onClick={this.clickedHelp}
+              className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}
+              icon={faQuestionCircle}
+            />
+          </span>
+        </div>
+
+        <div className="nav-sidebar-hr"></div>
 
         {/*
         <div className="nav-sidebar-icon">
@@ -110,7 +131,6 @@ class NavBottomBar extends Component {
         <div className="nav-sidebar-icon">
           <span data-tip="Show Charts">
             <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
-            <div className="nav-sidebar-icon-text">Charts</div>
           </span>
         </div>
 
@@ -123,13 +143,18 @@ class NavBottomBar extends Component {
         <div className="nav-sidebar-icon">
           <span data-tip="Show Filters">
             <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
-            <div className="nav-sidebar-icon-text">Filter</div>
           </span>
         </div>
 
+        <div className="nav-sidebar-bottom-float">          
+
+        </div>
+
+        <ReactTooltip place="right" type="dark" effect="solid"/>
+        
       </div>
     );
   }
 }
 
-export default NavBottomBar;
+export default LeftPanel;

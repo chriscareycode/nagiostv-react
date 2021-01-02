@@ -258,7 +258,7 @@ class Settings extends Component {
 
         </div>
 
-        <div className="settings-top-space-for-header"></div>
+        {/*<div className="settings-top-space-for-header"></div>*/}
 
         {/* main settings */}
         <table className="SettingsTable">
@@ -322,6 +322,13 @@ class Settings extends Component {
                 <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
                     {localeOptions}
                 </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Date Format:</th>
+              <td>
+              <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
+                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
               </td>
             </tr>
           </tbody>
@@ -415,13 +422,6 @@ class Settings extends Component {
             <tr>
               <th>Alert History max # items:</th>
               <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
-            </tr>
-            <tr>
-              <th>Date Format:</th>
-              <td>
-              <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
-                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
-              </td>
             </tr>
           </tbody>
         </table>

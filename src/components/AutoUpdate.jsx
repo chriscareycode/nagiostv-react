@@ -242,6 +242,16 @@ class AutoUpdate extends Component {
       <div className="AutoUpdate">
         <h2>NagiosTV Updates</h2>
 
+        <div className="update-help-message">
+          There are a number of ways to update NagiosTV.
+          <ol>
+            <li>Manual Update - You can go through the process manually by downloading the archive
+          from GitHub and extacting it over top the old version.</li>
+            <li>One-click update - You can use the one-click update routines inside the UI here.</li>
+            <li>Command-line (CLI) - You can run the autoupdate.sh file in the NagiosTV directory.</li>
+          </ol>
+        </div>
+
         {/* Manual Update */}
         <h3 style={{ color: '#ddd' }}>Manual Update</h3>
 

@@ -1,0 +1,54 @@
+/* TopMenu.css */
+
+.TopMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    z-index: 10;
+    background-color: #222;
+    border-bottom: 0px solid #333;
+}
+  
+.TopMenu > .header-right-float {
+    position: absolute;
+    top: 0;
+    right:  0px;
+    height: 40px;
+    vertical-align: top;
+}
+  
+.TopMenu .header-application-name {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 45px;
+    margin-right: 10px;
+    display: inline-block;
+    color: #ddd;
+}
+  
+.sound-icon {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    margin-right: 15px;
+}
+
+.hot-dog-menu {
+    font-size: 1.2em;
+    display: grid;
+    place-content: center;
+    height: 40px;
+    width: 50px;
+    color: #666;
+    transition: color 250ms linear;
+}
+
+.hot-dog-menu.hot-dog-menu-active {
+    color: #fff;
+}

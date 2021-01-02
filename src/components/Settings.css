@@ -26,12 +26,12 @@
     border: 1px solid #ccc;
 }
 
-.settings-top-space-for-header {
+/* .settings-top-space-for-header {
     height: 45px;
-}
+} */
 
 .settings-header {
-    position: fixed;
+    position: sticky;
     top: 40px; /* TODO: needs to match with main header spacing, bad design */
     left: 0px;
     right: 0px;
