@@ -49,7 +49,7 @@ const Help = (props) => {
     <div className="Help">
       <h2>Help</h2>
 
-      <div className="help-option" onClick={clickedHotDogMenu}>Toggle the hot dog menu</div>
+      <div className="help-option" onClick={clickedHotDogMenu}>Toggle the menu</div>
 
       <div className="help-option" onClick={clickedUpdate}>Go to Updates</div>
       <div className="help-option" onClick={clickedSettings}>Go to Settings</div>

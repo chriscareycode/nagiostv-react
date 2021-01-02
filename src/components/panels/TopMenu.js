@@ -32,8 +32,6 @@ import './TopMenu.css';
 
 const TopMenu = (props) => {
 
-  
-
   const clickedHotDogMenu = () => {
     props.updateRootState({
       isLeftPanelOpen: !props.isLeftPanelOpen

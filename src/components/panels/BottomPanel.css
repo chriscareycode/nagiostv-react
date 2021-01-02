@@ -14,7 +14,7 @@
   white-space: nowrap;
 }
 
-.BottomPanel .nav-sidebar-version {
+.BottomPanel > .bottom-panel-area {
   position: static;
   margin: 5px;
   border: 0px solid orange;
@@ -22,15 +22,21 @@
   display: inline-block;
   word-wrap: none;
   vertical-align: middle;
-}
-
-.BottomPanel .nav-sidebar-version-text {
   background-color: #111;
   border-radius: 5px;
   padding: 2px 5px;
   font-size: 0.9em;
-  color: #666;
+  color: #999;
+  cursor: pointer;
 }
+
+
+
+.BottomPanel .current-version:hover {
+  color: orange;
+}
+
+/*
 
 .BottomPanel .nav-sidebar-icon {
   position: relative;
@@ -41,7 +47,6 @@
   display: inline-block;
   vertical-align: middle;
 }
-
 .BottomPanel .nav-sidebar-icon .nav-sidebar-icon-text {
   font-size: 0.8em;
   color: #555;
@@ -67,6 +72,7 @@
 .nav-sidebar-icon-error {
   animation: error-blink 2s infinite alternate;
 }
+
 @keyframes error-blink {
   0%   { color: red; }
   50% { color: orange; }
@@ -84,21 +90,20 @@
   position: absolute;
   bottom: 0;
 }
-
+*/
 
 /* more footer */
 
 .update-available {
   padding: 1px 8px;
   border-radius: 5px;
-  margin-left: 5px;
 }
+
 .update-available a {
   color: #a7a749;
   text-decoration: none;
   cursor: pointer;
 }
 .update-available a:hover {
-  color: yellow;
-  text-decoration: underline;
+  color: orange;
 }

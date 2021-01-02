@@ -243,7 +243,7 @@ class AutoUpdate extends Component {
         <h2>NagiosTV Updates</h2>
 
         <div className="update-help-message">
-          There are a number of ways to update NagiosTV.
+          There are a number of ways to update NagiosTV. You only need to pick one of these:
           <ol>
             <li>Manual Update - You can go through the process manually by downloading the archive
           from GitHub and extacting it over top the old version.</li>

@@ -19,7 +19,7 @@
     vertical-align: top;
 }
   
-.TopMenu .header-application-name {
+.TopMenu > .header-application-name {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -29,7 +29,7 @@
     color: #ddd;
 }
   
-.sound-icon {
+.TopMenu .sound-icon {
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -39,7 +39,7 @@
     margin-right: 15px;
 }
 
-.hot-dog-menu {
+.TopMenu > .hot-dog-menu {
     font-size: 1.2em;
     display: grid;
     place-content: center;
@@ -47,8 +47,9 @@
     width: 50px;
     color: #666;
     transition: color 250ms linear;
+    cursor: pointer;
 }
 
-.hot-dog-menu.hot-dog-menu-active {
-    color: #fff;
+.TopMenu > .hot-dog-menu.hot-dog-menu-active {
+  color: #fff;
 }

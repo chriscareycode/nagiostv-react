@@ -876,9 +876,6 @@ class Base extends Component {
           </div>} {/* end dashboard-area */}
         
         </div> {/* endwrapper around the main content */}
-
-        <br />
-        <br />
         
       </div>
     );

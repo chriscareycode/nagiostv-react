@@ -99,13 +99,14 @@ class BottomPanel extends Component {
         </div>
         */}
         
-        <div className="nav-sidebar-version">
-          <div className="nav-sidebar-version-text">
+        <div className="bottom-panel-area">
 
-            <span onClick={this.clickedNagiosTv} style={{ cursor: 'pointer' }}>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+          {/* current version */}
+          <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
-            {(this.props.latestVersion > this.props.currentVersion) && <div className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></div>}
-          </div>
+          {/* update available */}
+          {(this.props.latestVersion < this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
+          
         </div>
 
         {/*
