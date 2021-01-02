@@ -47,13 +47,16 @@ const Help = (props) => {
 
   return (
     <div className="Help">
-      <h2>Help</h2>
+      <h2>NagiosTV Info and Help</h2>
+      
 
       <div className="help-option" onClick={clickedHotDogMenu}>Toggle the menu</div>
-
-      <div className="help-option" onClick={clickedUpdate}>Go to Updates</div>
+      <br />
+      <div className="help-option" onClick={clickedDashboard}>Go to Dashboard</div>
       <div className="help-option" onClick={clickedSettings}>Go to Settings</div>
-      <div className="help-option" onClick={clickedDashboard}>Go back to Dashboard</div>
+      <div className="help-option" onClick={clickedUpdate}>Go to Updates</div>
+      <br />
+      <div><a href="https://nagiostv.com" target="_blank">https://nagiostv.com</a></div>
     </div>
   );
   

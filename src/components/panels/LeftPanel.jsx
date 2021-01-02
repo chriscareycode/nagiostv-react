@@ -111,7 +111,7 @@ class LeftPanel extends Component {
         </div>
 
         <div className="nav-sidebar-icon">
-          <span data-tip="Help">
+          <span data-tip="Info and Help">
             <FontAwesomeIcon
               onClick={this.clickedHelp}
               className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}

@@ -1,5 +1,6 @@
 .help-option {
     cursor: pointer;
+    margin-bottom: 5px;
 }
 
 .help-option:hover {
