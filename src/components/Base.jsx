@@ -109,7 +109,10 @@ class Base extends Component {
     //**************************************************************************** */
 
     titleString: 'NagiosTV',
-    baseUrl: '/nagios/cgi-bin/',
+    dataSource: 'cgi',
+    baseUrl: '/nagios/cgi-bin/', // Base path to Nagios cgi-bin folder
+    livestatusPath: 'connectors/livestatus.php',
+
     versionCheckDays: 1,
     
     // host related settings
@@ -178,7 +181,9 @@ class Base extends Component {
   // DEVELOPER: if you are adding a user setting above, you need to add it here too
   settingsFields = [
     'titleString',
+    'dataSource',
     'baseUrl',
+    'livestatusPath',
     'alertDaysBack',
     'alertMaxItems',
 
@@ -523,7 +528,15 @@ class Base extends Component {
    ***************************************************************************/
 
   fetchCommentData() {
-    const url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
+
+    let url;
+    if (this.props.useFakeSampleData) {
+      return;
+    } else if (this.state.dataSource === 'livestatus') {
+      url = this.state.livestatusPath + '?query=commentlist&details=true';
+    } else {
+      url = this.state.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
+    }
 
     $.ajax({
       method: "GET",
@@ -559,7 +572,15 @@ class Base extends Component {
   }
 
   fetchHostGroupData() {
-    const url = this.state.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
+
+    let url;
+    if (this.props.useFakeSampleData) {
+      return;
+    } else if (this.state.dataSource === 'livestatus') {
+      url = this.state.livestatusPath + '?query=hostgrouplist&details=true';
+    } else {
+      url = this.state.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
+    }
 
     $.ajax({
       method: "GET",

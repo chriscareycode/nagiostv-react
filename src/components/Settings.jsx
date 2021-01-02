@@ -279,6 +279,36 @@ class Settings extends Component {
             <tr>
               <th>
                 {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                Fetch data from
+              </th>
+              <td>
+                <select value={this.state.dataSource} onChange={this.handleChange('dataSource', 'string')}>
+                    <option value={'cgi'}>Nagios cgi-bin</option>
+                    <option value={'livestatus'}>MK Livestatus</option>
+                </select>
+              </td>
+            </tr>
+            {this.state.dataSource === 'livestatus' && <tr>
+              <th>
+                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                livestatus.php path:
+              </th>
+              <td>
+                <input
+                  type="text"
+                  className={this.props.hostlistError ? 'input-error' : ''}
+                  value={this.state.livestatusPath}
+                  onChange={this.handleChange('livestatusPath', 'string')}
+                />
+                <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
+                  This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
+                  In the connectors/ folder, copy livestatus-settings.ini.sample to livestatus-settings.ini and configure it.
+                </div>
+              </td>
+            </tr>}
+            <tr>
+              <th>
+                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
                 Nagios cgi-bin path:
               </th>
               <td>
@@ -290,8 +320,8 @@ class Settings extends Component {
                 />
                 <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
                   This path needs to point to where the cgi files are being served by the Nagios web user interface.
-                  If you are hosting NagiosTV on the same web server as the Nagios web user interface, then the default path
-                  <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> should work without additional authentication.
+                  If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, then the default path
+                  <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication.
                   
                   <span> Advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</span>
                 </div>

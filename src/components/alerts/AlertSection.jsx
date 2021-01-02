@@ -95,10 +95,12 @@ class AlertSection extends Component {
     let url;
     if (this.props.useFakeSampleData) {
       url = './sample-data/alertlist.json';
+    } else if (this.props.settingsObject.dataSource === 'livestatus') {
+      url = this.props.settingsObject.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
     } else {
       url = `${this.props.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
-      const hostgroupFilter = this.props.hostgroupFilter;
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
     }
 
     this.setState({ isFetching: true });

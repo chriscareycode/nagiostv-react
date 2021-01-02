@@ -1,0 +1,2 @@
+[livestatus]
+socket_path = /usr/local/nagios/var/rw/live.sock

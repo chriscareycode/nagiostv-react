@@ -90,10 +90,12 @@ class HostSection extends Component {
     let url;
     if (this.props.useFakeSampleData) {
       url = './sample-data/hostlist.json';
+    } else if (this.props.settingsObject.dataSource === 'livestatus') {
+      url = this.props.settingsObject.livestatusPath + '?query=hostlist&details=true';
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
     } else {
       url = this.props.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
-      const hostgroupFilter = this.props.hostgroupFilter;
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (this.props.hostgroupFilter) { url += `&hostgroup=${his.props.hostgroupFilter}`; }
     }
 
     this.setState({ isFetching: true });
