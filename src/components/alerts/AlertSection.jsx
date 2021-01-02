@@ -39,24 +39,28 @@ class AlertSection extends Component {
     alertlistCount: 0
   };
 
-  timerHandle = null;
+  timeoutHandle = null;
+  intervalHandle = null;
 
   componentDidMount() {
 
-    setTimeout(() => {
+    this.timeoutHandle = setTimeout(() => {
       this.fetchAlertData();
     }, 1000);
 
     if (this.props.isDemoMode === false) {
-      this.timerHandle = setInterval(() => {
+      this.intervalHandle = setInterval(() => {
         this.fetchAlertData();
       }, this.props.fetchAlertFrequency * 1000);
     }
   }
 
   componentWillUnmount() {
-    if (this.timerHandle) {
-      clearInterval(this.timerHandle);
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+    }
+    if (this.intervalHandle) {
+      clearInterval(this.intervalHandle);
     }
   }
 

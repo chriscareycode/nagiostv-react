@@ -46,27 +46,31 @@ class ServiceSection extends Component {
   };
   
   isComponentMounted = false;
-  timerHandle = null;
+  timeoutHandle = null;
+  intervalHandle = null;
     
   componentDidMount() {
   
     this.isComponentMounted = true;
 
-    setTimeout(() => {
+    this.timeoutHandle = setTimeout(() => {
       this.fetchServiceData();
     }, 1000);
 
     if (this.props.isDemoMode === false) {
       // fetch host problems and service problems on an interval
-      this.timerHandle = setInterval(() => {
+      this.intervalHandle = setInterval(() => {
         this.fetchServiceData();
       }, this.props.fetchFrequency * 1000);
     }
   }
 
   componentWillUnmount() {
-    if (this.timerHandle) {
-      clearInterval(this.timerHandle);
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+    }
+    if (this.intervalHandle) {
+      clearInterval(this.intervalHandle);
     }
 
     this.isComponentMounted = false;
