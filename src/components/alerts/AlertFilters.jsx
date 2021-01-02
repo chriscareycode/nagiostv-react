@@ -44,7 +44,7 @@ class AlertFilters extends Component {
     return (
       <>
 
-        <span className="filter-ok-label filter-ok-label-gray"><strong>{this.props.howManyAlerts}</strong> Alerts</span>
+        {/*<span className="filter-ok-label filter-ok-label-gray"><strong>{this.props.howManyAlerts}</strong> Alerts</span>*/}
 
         {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <span>
           &nbsp;

@@ -187,7 +187,7 @@ class AlertSection extends Component {
 
         <div className="history-summary">
           {!this.props.hideHistoryTitle && <span className="service-summary-title">
-            Alert History{' '}
+            <strong>{alertlistCount}</strong> alerts{' '}
             {settingsObject.hostgroupFilter && <span>({settingsObject.hostgroupFilter})</span>}
           </span>}
 
