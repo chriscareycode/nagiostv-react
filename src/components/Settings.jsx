@@ -236,6 +236,7 @@ class Settings extends Component {
       );
     });
 
+
     return (
       <div className={`Settings`}>
 
@@ -361,6 +362,20 @@ class Settings extends Component {
                 <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
               </td>
             </tr>
+            <tr>
+              <th>
+                Font Size
+              </th>
+              <td>
+                <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
+                    <option value={'0.8em'}>0.8</option>
+                    <option value={'0.9em'}>0.9</option>
+                    <option value={'1em'}>1</option>
+                    <option value={'1.1em'}>1.1</option>
+                    <option value={'1.2em'}>1.2</option>
+                </select>
+              </td>
+            </tr>
           </tbody>
         </table>
 
@@ -460,7 +475,7 @@ class Settings extends Component {
         <table className="SettingsTable">
           <thead>
             <tr>
-              <td colSpan="2" className="SettingsTableHeader">Fun Stuff</td>
+              <td colSpan="2" className="SettingsTableHeader">Audio and Visual</td>
             </tr>
           </thead>
           <tbody>

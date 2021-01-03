@@ -159,7 +159,8 @@ class Base extends Component {
     isDemoMode: false,
     isDebugMode: false,
 
-    // fun stuff settings
+    // audio and visual settings
+    fontSizeEm: '1em',
     customLogoEnabled: false,
     customLogoUrl: './sample-image/resedit.png',
     flynnEnabled: false,
@@ -225,7 +226,8 @@ class Base extends Component {
     'clockDateFormat',
     'clockTimeFormat',
 
-    // fun stuff
+    // audio and visual
+    'fontSizeEm',
     'customLogoEnabled',
     'customLogoUrl',
     'flynnEnabled',
@@ -748,7 +750,7 @@ class Base extends Component {
     **************************************************************************/
 
     return (
-      <div className="Base">
+      <div className="Base" style={{ fontSize: this.state.fontSizeEm}}>
 
         {/* Top Menu */}
 
