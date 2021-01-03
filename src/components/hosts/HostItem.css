@@ -18,3 +18,7 @@
 .host-item-state-type-1 {
 	font-size: 0.7em;
 }
+
+.host-item-host-name {
+	display: inline-block;
+}

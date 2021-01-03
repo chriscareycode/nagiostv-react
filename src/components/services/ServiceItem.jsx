@@ -118,7 +118,9 @@ class ServiceItem extends Component {
           </div>
 
           <div style={{ textAlign: 'left' }}>
-            <strong>{e.host_name}</strong>
+            
+            <div className="service-item-host-name">{e.host_name}</div>
+
             <span className={serviceTextClass(e.status)}>
               <span className="service-item-description">{e.description}</span>
               {e.plugin_output}

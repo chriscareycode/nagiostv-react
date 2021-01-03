@@ -114,8 +114,9 @@ class HostItem extends Component {
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
             <div className="lastOk"><span>{translate('Last UP', language)}</span> {formatDateTimeAgoColor(e.last_time_up)} {translate('ago', language)}</div>
           </div>
+
           <div style={{ textAlign: 'left' }}>
-            <strong>{e.name}</strong>
+            <div className="host-item-host-name">{e.name}</div>
             
             {/*<span className="alert-item-description">{e.description}</span>*/}
               
