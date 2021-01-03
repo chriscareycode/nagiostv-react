@@ -21,9 +21,13 @@ import './BottomPanel.css';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faFilter, faTachometerAlt, faTools } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar, faFilter, faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 class BottomPanel extends Component {
+
+  state = {
+    isVisible: true
+  };
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -34,41 +38,58 @@ class BottomPanel extends Component {
   //   }
   // }
 
-  // clickedDashboard = () => {
-  //   this.props.updateRootState({
-  //     currentPage: 'dashboard'
-  //   });
-  // };
+  clickedDashboard = () => {
+    this.props.updateRootState({
+      currentPage: 'dashboard'
+    });
+  };
 
-  // clickedFilter = () => {
-  //   this.props.updateRootState({
-  //     hideFilters: !this.props.hideFilters
-  //   });
-  // };
+  clickedSettings = () => {
+    this.props.updateRootState({
+      currentPage: 'settings'
+    });
+  };
 
-  // clickedSettings = () => {
-  //   this.props.updateRootState({
-  //     currentPage: 'settings'
-  //   });
-  // };
-
-  clickedAutoUpdate = () => {
+  clickedUpdate = () => {
     this.props.updateRootState({
       currentPage: 'autoupdate'
     });
   };
 
-  clickedNagiosTv = () => {
+  clickedInfo = () => {
     this.props.updateRootState({
       currentPage: 'help'
     });
   };
 
-  // clickedCharts = () => {
-  //   this.props.updateRootState({
-  //     hideHistoryChart: !this.props.hideHistoryChart
-  //   });
-  // };
+
+  clickedCharts = () => {
+    this.props.updateRootState({
+      hideHistoryChart: !this.props.hideHistoryChart
+    });
+  };
+
+  clickedFilter = () => {
+    this.props.updateRootState({
+      hideFilters: !this.props.hideFilters
+    });
+  };
+
+  
+
+  
+
+  clickedNagiosTv = () => {
+    // this.props.updateRootState({
+    //   currentPage: 'help'
+    // });
+
+    this.setState({
+      isVisible: !this.state.isVisible
+    });
+  };
+
+  
 
   render() {
     
@@ -77,26 +98,11 @@ class BottomPanel extends Component {
     if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
 
     return (
+      <>
       <div className="BottomPanel">
         
         {/*
-        <div className="nav-sidebar-icon">
-          <span data-tip="Dashboard">
-            <FontAwesomeIcon onClick={this.clickedDashboard} className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''} icon={faTachometerAlt} />
-            <div className="nav-sidebar-icon-text">Dash</div>
-          </span>
-        </div>
-
-        <div className="nav-sidebar-icon">
-          <span data-tip="Settings">
-            <FontAwesomeIcon
-              onClick={this.clickedSettings}
-              className={settingsIconClassName}
-              icon={faTools}
-            />
-            <div className="nav-sidebar-icon-text">Settings</div>
-          </span>
-        </div>
+        
         */}
         
         <div className="bottom-panel-area">
@@ -109,31 +115,76 @@ class BottomPanel extends Component {
           
         </div>
 
+        <div className={this.state.isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
+
+          <div className="nav-sidebar-icon">
+            <span data-tip="Dashboard">
+              <FontAwesomeIcon
+                onClick={this.clickedDashboard}
+                className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''}
+                icon={faTachometerAlt}
+              />
+              <div className="nav-sidebar-icon-text">Dash</div>
+            </span>
+          </div>
+
+          <div className="nav-sidebar-icon" onClick={this.clickedSettings}>
+            <span data-tip="Settings">
+              <FontAwesomeIcon
+                className={settingsIconClassName}
+                icon={faTools}
+              />
+              <div className="nav-sidebar-icon-text">Settings</div>
+            </span>
+          </div>
+
+          <div className="nav-sidebar-icon" onClick={this.clickedUpdate}>
+            <span data-tip="Update">
+              <FontAwesomeIcon
+                className={this.props.currentPage === 'autoupdate' ? 'nav-sidebar-icon-selected' : ''}
+                icon={faUpload}
+              />
+              <div className="nav-sidebar-icon-text">Update</div>
+            </span>
+          </div>
+
+          <div className="nav-sidebar-icon" onClick={this.clickedInfo}>
+            <span data-tip="Info">
+              <FontAwesomeIcon
+                className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}
+                icon={faQuestionCircle}
+              />
+              <div className="nav-sidebar-icon-text">Info</div>
+            </span>
+          </div>
+
+          <div className="nav-sidebar-icon-spacer"></div>
+              
+          <div className="nav-sidebar-icon">
+            <span data-tip="Show Charts">
+              <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
+              <div className="nav-sidebar-icon-text">Charts</div>
+            </span>
+          </div>
+
+          
+
+          <div className="nav-sidebar-icon">
+            <span data-tip="Show Filters">
+              <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
+              <div className="nav-sidebar-icon-text">Filter</div>
+            </span>
+          </div>
+
+        </div>
+
+
         {/*
-        <div className="nav-sidebar-icon">
-          <FontAwesomeIcon className="" icon={faServer} />
-        </div>
-            
-        <div className="nav-sidebar-icon">
-          <span data-tip="Show Charts">
-            <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
-            <div className="nav-sidebar-icon-text">Charts</div>
-          </span>
-        </div>
-
-        <div className="nav-sidebar-icon">
-          <FontAwesomeIcon className="" icon={faBell} />
-        </div>
-
-        <div className="nav-sidebar-icon">
-          <span data-tip="Show Filters">
-            <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
-            <div className="nav-sidebar-icon-text">Filter</div>
-          </span>
-        </div>
+        
         */}
 
       </div>
+      </>
     );
   }
 }
