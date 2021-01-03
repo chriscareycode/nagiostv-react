@@ -75,21 +75,11 @@ class BottomPanel extends Component {
     });
   };
 
-  
-
-  
-
   clickedNagiosTv = () => {
-    // this.props.updateRootState({
-    //   currentPage: 'help'
-    // });
-
     this.setState({
       isVisible: !this.state.isVisible
     });
   };
-
-  
 
   render() {
     
@@ -100,25 +90,21 @@ class BottomPanel extends Component {
     return (
       <>
       <div className="BottomPanel">
-        
-        {/*
-        
-        */}
-        
+                
         <div className="bottom-panel-area">
+          <div className="bottom-panel-area-text">
+            {/* current version */}
+            <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
-          {/* current version */}
-          <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
-
-          {/* update available */}
-          {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
-          
+            {/* update available */}
+            {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
+          </div>
         </div>
 
         <div className={this.state.isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 
           <div className="nav-sidebar-icon">
-            <span data-tip="Dashboard">
+            <span>
               <FontAwesomeIcon
                 onClick={this.clickedDashboard}
                 className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''}
@@ -129,7 +115,7 @@ class BottomPanel extends Component {
           </div>
 
           <div className="nav-sidebar-icon" onClick={this.clickedSettings}>
-            <span data-tip="Settings">
+            <span>
               <FontAwesomeIcon
                 className={settingsIconClassName}
                 icon={faTools}
@@ -139,7 +125,7 @@ class BottomPanel extends Component {
           </div>
 
           <div className="nav-sidebar-icon" onClick={this.clickedUpdate}>
-            <span data-tip="Update">
+            <span>
               <FontAwesomeIcon
                 className={this.props.currentPage === 'autoupdate' ? 'nav-sidebar-icon-selected' : ''}
                 icon={faUpload}
@@ -149,7 +135,7 @@ class BottomPanel extends Component {
           </div>
 
           <div className="nav-sidebar-icon" onClick={this.clickedInfo}>
-            <span data-tip="Info">
+            <span>
               <FontAwesomeIcon
                 className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}
                 icon={faQuestionCircle}
@@ -161,27 +147,20 @@ class BottomPanel extends Component {
           <div className="nav-sidebar-icon-spacer"></div>
               
           <div className="nav-sidebar-icon">
-            <span data-tip="Show Charts">
+            <span>
               <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
               <div className="nav-sidebar-icon-text">Charts</div>
             </span>
           </div>
 
-          
-
           <div className="nav-sidebar-icon">
-            <span data-tip="Show Filters">
+            <span>
               <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
               <div className="nav-sidebar-icon-text">Filter</div>
             </span>
           </div>
 
         </div>
-
-
-        {/*
-        
-        */}
 
       </div>
       </>

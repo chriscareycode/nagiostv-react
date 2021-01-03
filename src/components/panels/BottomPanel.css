@@ -18,19 +18,37 @@
 
 .BottomPanel > .bottom-panel-area {
   position: fixed;
-  bottom: 2px;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 13;
 
-  background-color: #111;
+  background-color: #222222;
   border: 1px solid #444;
-  border-radius: 5px;
+  border-bottom: 0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 
-  margin: 5px;
   text-align: center;
   display: inline-block;
-  word-wrap: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  
+  font-size: 0.9em;
+  color: #999;
+  cursor: pointer;
+}
+
+.BottomPanel> .bottom-panel-area > .bottom-panel-area-text {
+  
+  background-color: #111;
+  border: 0px solid #444;
+  border-radius: 5px;
+
+  margin: 3px 3px;
+  text-align: center;
+  display: inline-block;
+  white-space: nowrap;
   vertical-align: middle;
   
   padding: 2px 5px;
@@ -56,7 +74,7 @@
 
   text-align: center;
   display: inline-block;
-  word-wrap: none;
+  white-space: nowrap;
   vertical-align: middle;
   background-color: #111;
   padding: 2px 5px;

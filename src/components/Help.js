@@ -21,6 +21,7 @@ import './Help.css';
 
 const Help = (props) => {
 
+  {/*
   const clickedHotDogMenu = () => {
     props.updateRootState({
       isLeftPanelOpen: !props.isLeftPanelOpen
@@ -44,12 +45,16 @@ const Help = (props) => {
       currentPage: 'autoupdate'
     });
   };
+  */}
 
   return (
     <div className="Help">
       <h2>NagiosTV Info and Help</h2>
       <br />
-      <div><a href="https://nagiostv.com" target="_blank">https://nagiostv.com</a></div>
+      <div>Website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferer">https://nagiostv.com</a></div>
+      <br />
+      <div>GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferer">https://github.com/chriscareycode/nagiostv-react</a></div>
+      
       {/*
       <div className="help-bottom-area">
         <div className="help-option" onClick={clickedHotDogMenu}>Toggle the menu</div>
