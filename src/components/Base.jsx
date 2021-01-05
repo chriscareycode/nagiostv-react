@@ -75,8 +75,8 @@ class Base extends Component {
 
     currentPage: 'dashboard',
 
-    currentVersion: 57,
-    currentVersionString: '0.6.4',
+    currentVersion: 58,
+    currentVersionString: '0.6.5',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
