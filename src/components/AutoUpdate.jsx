@@ -247,18 +247,19 @@ class AutoUpdate extends Component {
           <ol>
             <li>Manual Update - You can go through the process manually by downloading the archive
           from GitHub and extacting it over top the old version.</li>
-            <li>One-click update - You can use the one-click update routines inside the UI here.</li>
+            <li>One-click update to latest - You can use the one-click update routines inside the UI here.</li>
+            <li>One-click pick any version - You can use the one-click update routines inside the UI here.</li>
             <li>Command-line (CLI) - You can run the autoupdate.sh file in the NagiosTV directory.</li>
           </ol>
         </div>
 
         {/* Manual Update */}
-        <h3 style={{ color: '#ddd' }}>Manual Update</h3>
+        <h3 style={{ color: 'peachpuff' }}>Manual Update</h3>
 
         <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
         {/* Automatic Update */}
-        <h3 style={{ color: 'lime' }}>or one-click update to latest</h3>
+        <h3 style={{ color: 'peachpuff' }}>One-click update to latest</h3>
 
         {/* latest version */}
         <div style={{ marginTop: '20px' }}>
@@ -267,6 +268,18 @@ class AutoUpdate extends Component {
           {this.state.latestVersionError && <span style={{ color: 'lime' }}> Error: {this.state.latestVersion.version_string}</span>}
           {this.state.latestVersion.version_string && <span style={{ color: 'lime' }}> v{this.state.latestVersion.version_string}</span>}
         </div>
+
+        {/* you are running version 0.0.0 */}
+        <div>
+          You are running: <span style={{ color: 'lime' }}>v{this.props.currentVersionString}</span>
+        </div>
+
+        {/* you are running latest version */}
+        {this.props.currentVersion === this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running the latest version.</div>}
+
+        {/* you are running a newer version */}
+        {this.props.currentVersion > this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running a version newer than the latest announced release.</div>}
+
 
         {/* php test */}
         {this.state.testphpLoading && <div style={{ marginTop: '20px' }}>Testing your server compatibility...</div>}
@@ -277,10 +290,11 @@ class AutoUpdate extends Component {
         {/* TODO: test if we have write access to the folder and all the files that we need */}
 
         {/* update button */}
-        {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
+        {(!this.state.testphpError && this.props.currentVersion < this.state.latestVersion.version) && <div style={{ marginTop: '20px' }}>
           <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="auto-update-button">Begin update to latest version v{this.state.latestVersion.version_string}</button>
         </div>}
 
+        
         {/* update error */}
         {this.state.updateError && <div>
           <div>Update Error:</div>
@@ -298,7 +312,7 @@ class AutoUpdate extends Component {
           <textarea readOnly value={this.state.updateResult}></textarea>
         </div>}
 
-        <h3 style={{ color: '#ddd' }}>or select a specific version</h3>
+        <h3 style={{ color: 'peachpuff' }}>or select a specific version to change to</h3>
         
         <div>
           You can pick any version off GitHub if you would like to.

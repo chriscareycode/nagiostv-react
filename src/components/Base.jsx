@@ -808,6 +808,7 @@ class Base extends Component {
 
           {this.state.currentPage === 'autoupdate' && <AutoUpdate
             updateRootState={this.updateRootState}
+            currentVersion={this.state.currentVersion}
             currentVersionString={this.state.currentVersionString}
           />}
 
