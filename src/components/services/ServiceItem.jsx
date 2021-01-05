@@ -114,11 +114,10 @@ class ServiceItem extends Component {
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
-            <div className="lastOk"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
+            <div className="last-ok"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
           </div>
 
-          <div style={{ textAlign: 'left' }}>
-            
+          <div>
             <div className="service-item-host-name">{e.host_name}</div>
 
             <span className={serviceTextClass(e.status)}>
@@ -127,7 +126,7 @@ class ServiceItem extends Component {
             </span>
           </div>
 
-          <div className="lastCheck">
+          <div className="next-check-in">
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
             
             {(e.next_check > nowTime) && <span>{translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}

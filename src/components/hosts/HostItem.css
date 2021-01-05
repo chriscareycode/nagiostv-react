@@ -12,11 +12,21 @@
 .host-item-state-type-0 {
 	color: #bbb;
 	font-size: 0.7em;
+	background-color: #111;
+	padding: 2px 3px;
+	border-radius: 4px;
+	position: relative;
+	top: -2px;
 }
 
 {/* hard */}
 .host-item-state-type-1 {
 	font-size: 0.7em;
+	background-color: #111;
+	padding: 2px 3px;
+	border-radius: 4px;
+	position: relative;
+	top: -2px;
 }
 
 .host-item-host-name {

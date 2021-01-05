@@ -26,12 +26,11 @@
   padding-left: 8px;
 }
 
-.lastOk {
-  font-size: 0.7em;
+.last-ok {
+  font-size: 0.8em;
 }
-.lastCheck {
-  text-align: left;
-  font-size: 0.7em;
+.next-check-in {
+  font-size: 0.8em;
 }
 
 /* border */

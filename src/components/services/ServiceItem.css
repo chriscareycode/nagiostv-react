@@ -3,8 +3,7 @@
 	cursor: pointer;
 }
 .comment {
-	text-align: left;
-	font-size: 0.7em;
+	font-size: 0.8em;
 	/*background-color: rgba(0, 0, 0, 0.3);
 	margin-bottom: -5px;
 	margin-left: -5px;
@@ -44,11 +43,21 @@
 .service-item-state-type-0 {
 	color: #bbb;
 	font-size: 0.7em;
+	background-color: #111;
+	padding: 2px 3px;
+	border-radius: 4px;
+	position: relative;
+	top: -2px;
 }
 
 {/* hard */}
 .service-item-state-type-1 {
 	font-size: 0.7em;
+	background-color: #111;
+	padding: 2px 3px;
+	border-radius: 4px;
+	position: relative;
+	top: -2px;
 }
 
 .item-notifications-disabled {
