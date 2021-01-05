@@ -19,7 +19,7 @@
 import React, { useState, useEffect } from 'react';
 
 // Import Widgets
-//import Flynn from '../Flynn/Flynn.jsx';
+import Flynn from '../Flynn/Flynn.jsx';
 import Clock from '../widgets/Clock.jsx';
 import CustomLogo from '../widgets/CustomLogo.jsx';
 
@@ -53,24 +53,21 @@ const TopMenu = (props) => {
             clockTimeFormat={props.settingsObject.clockTimeFormat}
         />
 
-        {/* flynn TODO TEMP DISABLED.. */}
-        {/*
-        need to figure out a new way to get howManyHostAndServicesDown
-        {this.state.flynnEnabled &&
+        {/* flynn */}
+        {props.settingsObject.flynnEnabled &&
             <Flynn
-            howManyDown={howManyHostAndServicesDown}
-            flynnConcernedAt={this.state.flynnConcernedAt}
-            flynnAngryAt={this.state.flynnAngryAt}
-            flynnBloodyAt={this.state.flynnBloodyAt}
-            flynnCssScale={this.state.flynnCssScale}
+              howManyDown={0}
+              flynnConcernedAt={props.settingsObject.flynnConcernedAt}
+              flynnAngryAt={props.settingsObject.flynnAngryAt}
+              flynnBloodyAt={props.settingsObject.flynnBloodyAt}
+              flynnCssScale={props.settingsObject.flynnCssScale}
             />
         }
-        */}
-
+        
         {/* custom logo */}
         {props.settingsObject.customLogoEnabled &&
             <CustomLogo
-            settings={this.props.settingsObject}
+            settings={props.settingsObject}
             />
         }
         </div>
