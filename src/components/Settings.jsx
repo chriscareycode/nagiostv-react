@@ -304,6 +304,7 @@ class Settings extends Component {
                 <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
                   This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
                   In the connectors/ folder, copy livestatus-settings.ini.sample to livestatus-settings.ini and configure it.
+                  Your livestatus-settings.ini will not be overwritten when NagiosTV is updated.
                 </div>
               </td>
             </tr>}
@@ -320,11 +321,20 @@ class Settings extends Component {
                   onChange={this.handleChange('baseUrl', 'string')}
                 />
                 <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-                  This path needs to point to where the cgi files are being served by the Nagios web user interface.
-                  If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, then the default path
-                  <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication.
-                  
-                  <span> Advanced: You can also enter a proxy URL here which performs authentication for you and serves the Nagios cgi files</span>
+                  This path needs to point to where the cgi files are being served by the Nagios web user interface.<br />
+                  <br />
+                  A note on authentication: Nagios cgi files rely on you to be authenticated so they know which user you are accessing Nagios as.
+                  Nagios uses this to determine which hosts/services and other rights you have.
+                  If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, as is the suggested installation method, then the default path
+                  <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication since you will already be logged in.<br />
+                  <br />
+                  <span>There are a few ways to bypass authentication (I will do a writeup on these soon in more detail): 
+                    <ul>
+                      <li>You can enter a proxy URL here which performs authentication for you and serves the Nagios cgi files. A Node.js based proxy example is included with this project.</li>
+                      <li>You can remove auth to cgi files statusjson.cgi and archivejson.cgi, and set default_user_name= in cgi.cfg</li>
+                      <li>You can use the MK Livestatus connector which connects on a socket and does not require authentication</li>
+                    </ul>
+                  </span>
                 </div>
               </td>
             </tr>
@@ -505,6 +515,7 @@ class Settings extends Component {
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                 </select>
+                <span style={{ color: 'orange' }}> This feature is temporarily broken while I refactor some code. He won't get angry or bloody.</span>
               </td>
             </tr>
 
