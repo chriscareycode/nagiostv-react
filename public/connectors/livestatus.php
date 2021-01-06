@@ -248,6 +248,10 @@ if ($query_string["query"] == "hostlist") {
         if ($item["is_flapping"] === 0) { $item["is_flapping"] = false; }
         if ($item["is_flapping"] === 1) { $item["is_flapping"] = true; }
 
+        # livestatus notifications_enabled is 0 or 1, needs to be false or true
+        if ($item["notifications_enabled"] === 0) { $item["notifications_enabled"] = false; }
+        if ($item["notifications_enabled"] === 1) { $item["notifications_enabled"] = true; }
+
         # livestatus acknowledged needs to be problem_has_been_acknowledged
         if ($item["acknowledged"] === 0) { $item["problem_has_been_acknowledged"] = false; }
         if ($item["acknowledged"] === 1) { $item["problem_has_been_acknowledged"] = true; }
@@ -319,9 +323,9 @@ if ($query_string["query"] == "hostlist") {
         if ($item["is_flapping"] === 0) { $item["is_flapping"] = false; }
         if ($item["is_flapping"] === 1) { $item["is_flapping"] = true; }
     
-        # livestatus acknowledged needs to be problem_has_been_acknowledged
-        if ($item["is_flapping"] === 0) { $item["is_flapping"] = false; }
-        if ($item["is_flapping"] === 1) { $item["is_flapping"] = true; }
+        # livestatus notifications_enabled is 0 or 1, needs to be false or true
+        if ($item["notifications_enabled"] === 0) { $item["notifications_enabled"] = false; }
+        if ($item["notifications_enabled"] === 1) { $item["notifications_enabled"] = true; }
         
         # livestatus acknowledged needs to be problem_has_been_acknowledged
         if ($item["acknowledged"] === 0) { $item["problem_has_been_acknowledged"] = false; }
@@ -391,6 +395,11 @@ if ($query_string["query"] == "hostlist") {
             $item[$value] = $decoded[$x][$index];
         }
 
+        # livestatus adds state_type of STARTED and STOPPED which I assume is Nagios start and stop times
+        # we do not need to see these in the alert list so we will just skip them so they will go away
+        if ($item["state_type"] == "STARTED") { continue; }
+        if ($item["state_type"] == "STOPPED") { continue; }
+
         # livestatus does not have the field name "status" like nagios cgi does. 
         # so we have to get it from the other field called "state"
         
@@ -413,7 +422,7 @@ if ($query_string["query"] == "hostlist") {
 
         $item["timestamp"] = $item["time"] * 1000;      
     
-        # reverse the array
+        # add the item to the list, reversed using unshift() instead of push()
         array_unshift($list, $item);
     }
     
