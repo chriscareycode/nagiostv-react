@@ -25,7 +25,7 @@ import CustomLogo from '../widgets/CustomLogo.jsx';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faVolumeUp } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faVolumeUp, faBullhorn } from '@fortawesome/free-solid-svg-icons';
 
 // Import CSS
 import './TopMenu.css';
@@ -38,13 +38,28 @@ const TopMenu = (props) => {
     });
   };
 
+  const clickedSound = () => {
+    props.updateRootState({
+      playSoundEffects: !props.settingsObject.playSoundEffects
+    });
+  };
+
+  const clickedSpeak = () => {
+    props.updateRootState({
+      speakItems: !props.settingsObject.speakItems
+    });
+  };
+
   return (
     <div className="TopMenu">
 
         <div className="header-right-float">
 
-        {/* sound */}
-        {(props.settingsObject.playSoundEffects || props.settingsObject.speakItems) && <div className="sound-icon"><FontAwesomeIcon icon={faVolumeUp} /></div>}
+        {/* sound effects icon */}
+        <div className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound}><FontAwesomeIcon icon={faVolumeUp}  /></div>
+
+        {/* speak items icon */}
+        <div className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'}  onClick={clickedSpeak}><FontAwesomeIcon icon={faBullhorn} /></div>
 
         {/* clock */}
         <Clock

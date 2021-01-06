@@ -37,6 +37,11 @@
     transform: translateY(-50%);
     color: #aaa;
     margin-right: 15px;
+    cursor: pointer;
+}
+
+.TopMenu .sound-icon.sound-icon-disabled {
+    color: #666;
 }
 
 .TopMenu > .hot-dog-menu {
