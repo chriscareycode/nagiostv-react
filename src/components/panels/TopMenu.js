@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 // Import Widgets
 import Flynn from '../Flynn/Flynn.jsx';
@@ -54,7 +54,6 @@ const TopMenu = (props) => {
     props.updateRootState({
       hideFilters: !props.hideFilters
     });
-    console.log('props.hideFilters', props.hideFilters);
   };
 
   const clickedCharts = () => {
