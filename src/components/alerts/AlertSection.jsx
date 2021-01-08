@@ -41,6 +41,7 @@ class AlertSection extends Component {
 
   timeoutHandle = null;
   intervalHandle = null;
+  isComponentMounted = false;
 
   componentDidMount() {
 
@@ -53,6 +54,8 @@ class AlertSection extends Component {
         this.fetchAlertData();
       }, this.props.fetchAlertFrequency * 1000);
     }
+
+    this.isComponentMounted = true;
   }
 
   componentWillUnmount() {
@@ -62,6 +65,7 @@ class AlertSection extends Component {
     if (this.intervalHandle) {
       clearInterval(this.intervalHandle);
     }
+    this.isComponentMounted = false;
   }
 
   // shouldComponentUpdate(nextProps, nextState) {
@@ -115,11 +119,15 @@ class AlertSection extends Component {
       // test that return data is json
       if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
         console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        this.setState({
-          isFetching: false,
-          alertlistError: true,
-          alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        });
+        
+        if (this.isComponentMounted) {
+          this.setState({
+            isFetching: false,
+            alertlistError: true,
+            alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+          });
+        }
+
         return;
       }
 
@@ -134,14 +142,16 @@ class AlertSection extends Component {
         alertlist.length = this.props.alertMaxItems;
       }
 
-      this.setState({
-        isFetching: false,
-        alertlistError: false,
-        alertlistErrorMessage: '',
-        alertlistLastUpdate: new Date().getTime(),
-        alertlist, // it's already an array
-        alertlistCount
-      });
+      if (this.isComponentMounted) {
+        this.setState({
+          isFetching: false,
+          alertlistError: false,
+          alertlistErrorMessage: '',
+          alertlistLastUpdate: new Date().getTime(),
+          alertlist, // it's already an array
+          alertlistCount
+        });
+      }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       
