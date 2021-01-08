@@ -75,8 +75,10 @@ class BottomPanel extends Component {
     return (
       <>
         <div className="BottomPanel">
-                  
-          <div className="bottom-panel-area">
+
+          {this.props.settingsObject.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
+
+          {this.props.settingsObject.hideBottomMenu === false && <div className="bottom-panel-area">
             <div className="bottom-panel-area-text">
               {/* current version */}
               <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
@@ -84,7 +86,7 @@ class BottomPanel extends Component {
               {/* update available */}
               {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
             </div>
-          </div>
+          </div>}
 
           <div className={this.state.isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 

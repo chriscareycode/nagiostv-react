@@ -782,6 +782,7 @@ class Base extends Component {
         {/* Bottom Panel */}
         
         <BottomPanel
+          settingsObject={settingsObject}
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
           updateRootState={this.updateRootState}

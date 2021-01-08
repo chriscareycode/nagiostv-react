@@ -16,9 +16,7 @@
   */
 }
 
-.BottomPanel a {
-  text-decoration: none;
-}
+
 
 .BottomPanel > .bottom-panel-area {
   position: fixed;
@@ -163,6 +161,11 @@
   bottom: 0;
 }
 
+/* styles for react router links */
+
+.BottomPanel a {
+  text-decoration: none;
+}
 .BottomPanel .is-active > svg {
   color: #eee !important;
   font-size: 0.9em !important;
@@ -183,8 +186,17 @@
   text-decoration: none;
   cursor: pointer;
 }
+
 .update-available a:hover {
   color: orange;
 }
 
-
+.bottom-panel-nagiostv-brand {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #444;
+  font-size: 0.7em;
+  
+}
