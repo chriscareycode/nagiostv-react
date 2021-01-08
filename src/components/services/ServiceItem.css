@@ -22,11 +22,11 @@
 .comment-color {
   font-size: 1.1em;
   color: #e27cfb; /* purple */
-  color: #fdfdfd;
   color: #fbdba0; /* peach */
   color: lime; /* to match with ACKED green. Since it's a good thing */
   color: #7cfd7c; /* soft/light green */
   color: #fdee7c;
+  color: #fdfdfd; /* whitish */
 }
 
 .checking-now {
