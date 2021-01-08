@@ -605,10 +605,35 @@ class Settings extends Component {
                 <button className="SettingsTestButton" onClick={this.playVoice}>Test</button>
               </td>
             </tr>}
+            <tr>
+              <th>Animated Progress Bar:</th>
+              <td>
+                <select value={this.state.showNextCheckInProgressBar} onChange={this.handleChange('showNextCheckInProgressBar', 'boolean')}>
+                  <option value={true}>On</option>
+                  <option value={false}>Off</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Hamburger Menu:</th>
+              <td>
+                <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
+                  <option value={true}>Hide</option>
+                  <option value={false}>Show</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Bottom Menu:</th>
+              <td>
+                <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
+                  <option value={true}>Hide</option>
+                  <option value={false}>Show</option>
+                </select>
+              </td>
+            </tr>
           </tbody>
         </table>
-
-        
 
         <table className="SettingsTable">
           <thead>

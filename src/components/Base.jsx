@@ -180,7 +180,10 @@ class Base extends Component {
     playSoundEffects: false,
     soundEffectCritical: './sample-audio/critical.mp3',
     soundEffectWarning: './sample-audio/warning.mp3',
-    soundEffectOk: './sample-audio/ok.mp3'
+    soundEffectOk: './sample-audio/ok.mp3',
+    showNextCheckInProgressBar: true,
+    hideHamburgerMenu: false,
+    hideBottomMenu: false
   };
 
   // The settings which we persist are a subset of the state that we have above.
@@ -247,7 +250,10 @@ class Base extends Component {
     'playSoundEffects',
     'soundEffectCritical',
     'soundEffectWarning',
-    'soundEffectOk'
+    'soundEffectOk',
+    'showNextCheckInProgressBar',
+    'hideHamburgerMenu',
+    'hideBottomMenu'
   ];
 
   constructor(props) {

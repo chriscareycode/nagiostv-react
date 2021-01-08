@@ -25,7 +25,7 @@ import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
-//import Progress from '../widgets/Progress';
+import Progress from '../widgets/Progress';
 
 class HostItem extends Component {
 
@@ -92,7 +92,7 @@ class HostItem extends Component {
     const e = this.props.hostItem; // clean this up
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
-    //const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
+    const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     const nowTime = new Date().getTime();
 
     return (
@@ -136,7 +136,7 @@ class HostItem extends Component {
             Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} {translate('ago', language)} - {this.props.comment}</span>
           </div>}
 
-          {/*<Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>*/}
+          {this.props.settings.showNextCheckInProgressBar && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
 
         </div>
       </div>

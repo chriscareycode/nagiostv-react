@@ -53,6 +53,8 @@ class Progress extends Component {
     started: false
   };
 
+  timeoutHandle = null;
+
   componentDidMount() {
     // setInterval(() => {
     //   this.setState({
@@ -61,7 +63,7 @@ class Progress extends Component {
     // }, 1000);
 
 
-    setTimeout(() => {
+    this.timeoutHandle = setTimeout(() => {
       this.setState({ started: true });
     }, 1 * 1000);
 
@@ -73,6 +75,12 @@ class Progress extends Component {
     //   }, 1 * 1000);
 
     // }, 14 * 1000);
+  }
+
+  componentWillUnmount() {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+    }
   }
 
   render() {
