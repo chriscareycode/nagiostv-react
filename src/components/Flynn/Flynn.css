@@ -1,9 +1,19 @@
 .flynn-wrap {
   display: inline-block;
-  margin-top: 5px;
-  margin-right: 15px;
+  height: 40px;
+  width: 45px;
+  position: relative;
 }
+
+
+
 .flynn {
+
+  position: absolute;
+  top: 5px;
+  right: 8px;
+
+
   /*background-image: url('/flynn/flynn.png');*/
   height: 64px;
   width: 48px;
@@ -11,7 +21,7 @@
   /*transform: scale(1);*/
   transform-origin: 100% 0%;
   cursor: pointer;
-  transition: transform 500ms linear;
+  /*transition: transform 500ms linear;*/
 }
 
 .flynn1 {background-position:0px 0px}

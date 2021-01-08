@@ -173,7 +173,7 @@ class Base extends Component {
     flynnConcernedAt: 1,
     flynnAngryAt: 2,
     flynnBloodyAt: 4,
-    flynnCssScale: '1',
+    flynnCssScale: '0.5',
     showEmoji: false,
     speakItems: false,
     speakItemsVoice: '',
@@ -760,6 +760,7 @@ class Base extends Component {
           settingsObject={settingsObject}
           isLeftPanelOpen={this.state.isLeftPanelOpen}
           updateRootState={this.updateRootState}
+          hideFilters={this.state.hideFilters}
         />
 
         {/* Left Panel */}
