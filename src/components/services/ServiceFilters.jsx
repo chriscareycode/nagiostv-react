@@ -51,7 +51,7 @@ class ServiceFilters extends Component {
     
     const language = this.props.language;
 
-    const howManyServiceOk = this.props.howManyServices - this.props.howManyServiceWarning - this.props.howManyServiceCritical;
+    const howManyServiceOk = this.props.howManyServices - this.props.howManyServiceWarning - this.props.howManyServiceCritical - this.props.howManyServiceUnknown;
 
     return (
       <>
