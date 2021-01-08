@@ -76,9 +76,8 @@ class AutoUpdate extends Component {
 
     this.setState({ githubLoading: true });
 
-    //const url = 'auto-version-switch.php?testphp=true';
-    const url = 'http://bigwood.local/nagios/nagiostv/auto-version-switch.php?testphp=true';
-
+    const url = 'auto-version-switch.php?testphp=true';
+    
     $.ajax({
       method: "GET",
       url,
