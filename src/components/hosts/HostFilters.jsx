@@ -50,7 +50,7 @@ class HostFilters extends Component {
     
     const language = this.props.language;
     
-    const howManyHostUp = this.props.howManyHosts - this.props.howManyHostUnreachable;
+    const howManyHostUp = this.props.howManyHosts - this.props.howManyHostDown - this.props.howManyHostUnreachable;
 
     return (
       <>
