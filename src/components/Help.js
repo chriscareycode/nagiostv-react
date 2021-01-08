@@ -21,32 +21,6 @@ import './Help.css';
 
 const Help = (props) => {
 
-  {/*
-  const clickedHotDogMenu = () => {
-    props.updateRootState({
-      isLeftPanelOpen: !props.isLeftPanelOpen
-    });
-  };
-
-  const clickedDashboard = () => {
-    props.updateRootState({
-      currentPage: 'dashboard'
-    });
-  };
-
-  const clickedSettings = () => {
-    props.updateRootState({
-      currentPage: 'settings'
-    });
-  };
-
-  const clickedUpdate = () => {
-    props.updateRootState({
-      currentPage: 'autoupdate'
-    });
-  };
-  */}
-
   return (
     <div className="Help">
       <h2>NagiosTV Info and Help</h2>

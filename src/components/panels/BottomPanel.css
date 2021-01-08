@@ -16,6 +16,10 @@
   */
 }
 
+.BottomPanel a {
+  text-decoration: none;
+}
+
 .BottomPanel > .bottom-panel-area {
   position: fixed;
   bottom: 0px;
@@ -127,14 +131,15 @@
 }
 
 .BottomPanel .nav-sidebar-icon svg {
-  
   font-size: 1.2em;
   color: #666;
 }
 
+/*
 .BottomPanel .nav-sidebar-icon svg.nav-sidebar-icon-selected {
   color: #eee;
 }
+*/
 
 .nav-sidebar-icon-error {
   animation: error-blink 2s infinite alternate;
@@ -158,6 +163,13 @@
   bottom: 0;
 }
 
+.BottomPanel .is-active > svg {
+  color: #eee !important;
+  font-size: 0.9em !important;
+}
+.BottomPanel .is-active > .nav-sidebar-icon-text {
+  color: #eee;
+}
 
 /* more footer */
 

@@ -29,7 +29,8 @@
 }
 
 .LeftPanel .nav-sidebar-icon svg {
-  cursor: pointer;
+  color: #666;
+  
 }
 
 .nav-sidebar-icon-error {
@@ -68,4 +69,17 @@
 .nav-sidebar-hr {
   border-bottom: 1px solid #555;
   margin: 0 10px 10px 10px;
+}
+
+/* styles for react router links */
+
+.LeftPanel a {
+  text-decoration: none;
+}
+.LeftPanel .is-active > svg {
+  color: #eee !important;
+  font-size: 0.9em !important;
+}
+.LeftPanel .is-active > .nav-sidebar-icon-text {
+  color: #eee;
 }

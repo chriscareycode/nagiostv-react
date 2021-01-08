@@ -17,6 +17,16 @@
  */
 
 import React, { Component } from 'react';
+
+// React Router
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink
+} from "react-router-dom";
+
 import './BottomPanel.css';
 
 // icons
@@ -38,31 +48,9 @@ class BottomPanel extends Component {
   //   }
   // }
 
-  clickedDashboard = () => {
-    this.props.updateRootState({
-      currentPage: 'dashboard'
-    });
-  };
+  
 
-  clickedSettings = () => {
-    this.props.updateRootState({
-      currentPage: 'settings'
-    });
-  };
-
-  clickedUpdate = () => {
-    this.props.updateRootState({
-      currentPage: 'autoupdate'
-    });
-  };
-
-  clickedInfo = () => {
-    this.props.updateRootState({
-      currentPage: 'help'
-    });
-  };
-
-
+  /*
   clickedCharts = () => {
     this.props.updateRootState({
       hideHistoryChart: !this.props.hideHistoryChart
@@ -74,6 +62,7 @@ class BottomPanel extends Component {
       hideFilters: !this.props.hideFilters
     });
   };
+  */
 
   clickedNagiosTv = () => {
     this.setState({
@@ -83,86 +72,94 @@ class BottomPanel extends Component {
 
   render() {
     
-    let settingsIconClassName = '';
-    if (this.props.currentPage === 'settings') { settingsIconClassName = 'nav-sidebar-icon-selected'; }
-    if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
-
     return (
       <>
-      <div className="BottomPanel">
+        <div className="BottomPanel">
+                  
+          <div className="bottom-panel-area">
+            <div className="bottom-panel-area-text">
+              {/* current version */}
+              <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+
+              {/* update available */}
+              {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
+            </div>
+          </div>
+
+          <div className={this.state.isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
+
+            <Router>
+            <div className="nav-sidebar-icon">
+              <span>
+                <NavLink exact={true} activeClassName='is-active' to="/">
+                  <FontAwesomeIcon
+                    className="nav-sidebar-icon-icon"
+                    icon={faTachometerAlt}
+                  />
+                  <div className="nav-sidebar-icon-text">Dash</div>
+                </NavLink>
+              </span>
+            </div>
+
+            <div className="nav-sidebar-icon" >
+              <span>
+                <NavLink activeClassName='is-active' to="/settings">
+                  <FontAwesomeIcon
+                    className="nav-sidebar-icon-icon"
+                    icon={faTools}
+                  />
+                  <div className="nav-sidebar-icon-text">Settings</div>
+                </NavLink>
+              </span>
+            </div>
+
+            <div className="nav-sidebar-icon">
+              <span>
+                <NavLink activeClassName='is-active' to="/update">
+                  <FontAwesomeIcon
+                    className="nav-sidebar-icon-icon"
+                    icon={faUpload}
+                  />
+                  <div className="nav-sidebar-icon-text">Update</div>
+                </NavLink>
+              </span>
+            </div>
+
+            <div className="nav-sidebar-icon">
+              <span>
+                <NavLink activeClassName='is-active' to="/help">
+                  <FontAwesomeIcon
+                    className="nav-sidebar-icon-icon"
+                    icon={faQuestionCircle}
+                  />
+                  <div className="nav-sidebar-icon-text">Info</div>
+                </NavLink>
+              </span>
+            </div>
+
+            {/*
+            <div className="nav-sidebar-icon-spacer"></div>
                 
-        <div className="bottom-panel-area">
-          <div className="bottom-panel-area-text">
-            {/* current version */}
-            <span onClick={this.clickedNagiosTv} className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+            <div className="nav-sidebar-icon">
+              <span className={this.props.hideHistoryChart ? '' : 'is-active'}>
+                <FontAwesomeIcon onClick={this.clickedCharts} icon={faChartBar} />
+                <div className="nav-sidebar-icon-text">Charts</div>
+              </span>
+            </div>
 
-            {/* update available */}
-            {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedAutoUpdate}>v{this.props.latestVersionString} available</a></span>}
-          </div>
-        </div>
+            <div className="nav-sidebar-icon">
+              <span className={this.props.hideFilters ? '' : 'is-active'}>
+                <FontAwesomeIcon onClick={this.clickedFilter} icon={faFilter} />
+                <div className="nav-sidebar-icon-text">Filter</div>
+              </span>
+            </div>
+            */}
 
-        <div className={this.state.isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
+            </Router>
 
-          <div className="nav-sidebar-icon">
-            <span>
-              <FontAwesomeIcon
-                onClick={this.clickedDashboard}
-                className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''}
-                icon={faTachometerAlt}
-              />
-              <div className="nav-sidebar-icon-text">Dash</div>
-            </span>
-          </div>
-
-          <div className="nav-sidebar-icon" onClick={this.clickedSettings}>
-            <span>
-              <FontAwesomeIcon
-                className={settingsIconClassName}
-                icon={faTools}
-              />
-              <div className="nav-sidebar-icon-text">Settings</div>
-            </span>
-          </div>
-
-          <div className="nav-sidebar-icon" onClick={this.clickedUpdate}>
-            <span>
-              <FontAwesomeIcon
-                className={this.props.currentPage === 'autoupdate' ? 'nav-sidebar-icon-selected' : ''}
-                icon={faUpload}
-              />
-              <div className="nav-sidebar-icon-text">Update</div>
-            </span>
-          </div>
-
-          <div className="nav-sidebar-icon" onClick={this.clickedInfo}>
-            <span>
-              <FontAwesomeIcon
-                className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}
-                icon={faQuestionCircle}
-              />
-              <div className="nav-sidebar-icon-text">Info</div>
-            </span>
-          </div>
-
-          <div className="nav-sidebar-icon-spacer"></div>
-              
-          <div className="nav-sidebar-icon">
-            <span>
-              <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
-              <div className="nav-sidebar-icon-text">Charts</div>
-            </span>
-          </div>
-
-          <div className="nav-sidebar-icon">
-            <span>
-              <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
-              <div className="nav-sidebar-icon-text">Filter</div>
-            </span>
           </div>
 
         </div>
-
-      </div>
       </>
     );
   }

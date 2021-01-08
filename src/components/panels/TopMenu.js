@@ -25,14 +25,14 @@ import CustomLogo from '../widgets/CustomLogo.jsx';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faVolumeUp, faBullhorn } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter } from '@fortawesome/free-solid-svg-icons';
 
 // Import CSS
 import './TopMenu.css';
 
 const TopMenu = (props) => {
 
-  const clickedHotDogMenu = () => {
+  const clickedHamburgerMenu = () => {
     props.updateRootState({
       isLeftPanelOpen: !props.isLeftPanelOpen
     });
@@ -50,16 +50,43 @@ const TopMenu = (props) => {
     });
   };
 
+  const clickedFilter = () => {
+    props.updateRootState({
+      hideFilters: !props.hideFilters
+    });
+    console.log('props.hideFilters', props.hideFilters);
+  };
+
+  const clickedCharts = () => {
+    props.updateRootState({
+      hideHistoryChart: !props.settingsObject.hideHistoryChart
+    });
+  };
+
   return (
     <div className="TopMenu">
 
         <div className="header-right-float">
 
+        {/* filter icon */}
+        <div className={props.hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedFilter} title="Filters">
+          <FontAwesomeIcon icon={faFilter} />
+        </div>
+
+        {/* chart icon */}
+        <div className={props.settingsObject.hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedCharts} title="History Chart">
+          <FontAwesomeIcon icon={faChartBar} />
+        </div>
+
         {/* sound effects icon */}
-        <div className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound}><FontAwesomeIcon icon={faVolumeUp}  /></div>
+        <div className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound} title="Sound Effects">
+          <FontAwesomeIcon icon={faVolumeUp}  />
+        </div>
 
         {/* speak items icon */}
-        <div className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'}  onClick={clickedSpeak}><FontAwesomeIcon icon={faBullhorn} /></div>
+        <div className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSpeak} title="Speak">
+          <FontAwesomeIcon icon={faBullhorn} />
+        </div>
 
         {/* clock */}
         <Clock
@@ -87,10 +114,15 @@ const TopMenu = (props) => {
         }
         </div>
 
-        {/* hot dog menu */}
-        <div className={props.isLeftPanelOpen ? "hot-dog-menu hot-dog-menu-active" : 'hot-dog-menu'} onClick={clickedHotDogMenu}>
-            <FontAwesomeIcon icon={faBars} />
-        </div>
+        {/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
+        {/*<div className="header-left-spacer"></div>*/}
+
+        {/* hamburger menu */}
+        {props.settingsObject.hideHamburgerMenu === false && <div className={props.isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
+            <div className="hamburger-menu-center">
+              <FontAwesomeIcon icon={faBars} />
+            </div>
+        </div>}
 
         {/* title string */}
         <div className="header-application-name">{props.settingsObject.titleString}</div>

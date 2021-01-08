@@ -228,10 +228,6 @@ class AutoUpdate extends Component {
     
   };
 
-  gotoDashboard = () => {
-    this.updateRootState({ currentPage: 'dashboard' });
-  };
-
   render() {
 
     const options = this.state.githubFetchReleases.map((r, i) => {
@@ -378,7 +374,7 @@ class AutoUpdate extends Component {
           <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
         </div>*/}
 
-        {/*<div style={{ marginTop: '100px' }}><button onClick={this.gotoDashboard}>Go back to Dashboard</button></div>*/}
+        
 
       </div>
     );

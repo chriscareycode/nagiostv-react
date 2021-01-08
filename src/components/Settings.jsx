@@ -19,6 +19,11 @@
  */
 
 import React, { Component } from 'react';
+// React Router
+import {
+  Link
+} from "react-router-dom";
+// CSS
 import './Settings.css';
 import Cookie from 'js-cookie';
 import axios from 'axios';
@@ -86,12 +91,6 @@ class Settings extends Component {
       ...settingsObject
     });
   }
-
-  closeSettings = () => {
-    this.props.updateRootState({
-      currentPage: 'dashboard'
-    });
-  };
 
   saveCookie() {
     const cookieObject = {};
@@ -200,11 +199,7 @@ class Settings extends Component {
     speakAudio('Naagios TV is cool', voice);
   }
 
-  clickedAutoUpdate = () => {
-    this.props.updateRootState({
-      currentPage: 'autoupdate'
-    });
-  };
+  
 
   render() {
 
@@ -254,7 +249,7 @@ class Settings extends Component {
 
           <div className="settings-header-buttons">
             <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
-            <button className="SettingsCloseButton" onClick={this.closeSettings}>Close Settings</button>
+            <Link to="/"><button className="SettingsCloseButton">Close Settings</button></Link>
           </div>
 
         </div>
@@ -686,22 +681,6 @@ class Settings extends Component {
             </tr>
           </tbody>
         </table>
-        
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td className="SettingsTableHeader">Update NagiosTV</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <button onClick={this.clickedAutoUpdate} className="SettingsSaveToServerButton">Update NagiosTV</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
 
       </div>
     );

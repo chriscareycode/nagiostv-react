@@ -55,6 +55,14 @@ import Cookie from 'js-cookie';
 import $ from 'jquery';
 import _ from 'lodash';
 
+// React Router
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
 // Import Polyfills
 import 'url-search-params-polyfill';
 
@@ -72,8 +80,6 @@ class Base extends Component {
     //**************************************************************************** */
     // state which is used internally by NagiosTV
     //**************************************************************************** */
-
-    currentPage: 'dashboard',
 
     currentVersion: 58,
     currentVersionString: '0.6.5',
@@ -644,10 +650,6 @@ class Base extends Component {
     this.setState({ baseUrl: event.target.value });
   }
 
-  showSettings() {
-    this.setState({ currentPage: 'settings' });
-  }
-
   /****************************************************************************
    *
    * Functions to Update State
@@ -765,7 +767,6 @@ class Base extends Component {
         <LeftPanel
           settingsObject={settingsObject}
           isLeftPanelOpen={this.state.isLeftPanelOpen}
-          currentPage={this.state.currentPage}
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
           updateRootState={this.updateRootState}
@@ -777,7 +778,6 @@ class Base extends Component {
           hideFilters={this.state.hideFilters}
           hideHistoryChart={this.state.hideHistoryChart}
           updateRootState={this.updateRootState}
-          currentPage={this.state.currentPage}
           hostlistError={this.state.hostlistError}
 
           currentVersion={this.state.currentVersion}
@@ -797,107 +797,117 @@ class Base extends Component {
 
           {!settingsLoaded && <div>Settings are not loaded yet</div>}
 
-          {/* help */}
+          <Router>
 
-          {this.state.currentPage === 'help' && <Help
-            updateRootState={this.updateRootState}
-            isLeftPanelOpen={this.state.isLeftPanelOpen}
-          />}
+          <Switch>
+            <Route exact path="/">
+              <div className="dashboard-area">
 
-          {/* auto update */}
+                {/* hostgroups */}
 
-          {this.state.currentPage === 'autoupdate' && <AutoUpdate
-            updateRootState={this.updateRootState}
-            currentVersion={this.state.currentVersion}
-            currentVersionString={this.state.currentVersionString}
-          />}
+                {!this.state.hideFilters && <HostGroupFilter
+                  hostgroup={this.state.hostgroup}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
+                />}
 
-          {/* settings */}
+                {/* Hosts Section */}
 
-          {this.state.currentPage === 'settings' && <Settings
-            ref="settings"
-            baseUrl={this.state.baseUrl}
-            baseUrlChanged={this.baseUrlChanged.bind(this)}
-            settings={settingsObject}
-            settingsFields={this.settingsFields}
-            updateRootState={this.updateRootState}
-            isCookieLoaded={this.state.isCookieLoaded}
-            currentPage={this.state.currentPage}
-            hostlistError={this.state.hostlistError}
-          />}
+                {(settingsLoaded && !this.state.hideHostSection) && <HostSection
+                  isDemoMode={this.state.isDemoMode}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  language={this.state.language}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  hideFilters={this.state.hideFilters}
+                  hostSortOrder={this.state.hostSortOrder}
+                  handleSelectChange={this.handleSelectChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  settingsObject={settingsObject}
+                  commentlist={this.state.commentlist}
+                  handleFetchFail={this.handleFetchFail}
+                  fetchFrequency={this.state.fetchFrequency}
+                />} 
 
-          {/* dashboard - the main page */}
+                {/* Services Section */}
 
-          {this.state.currentPage === 'dashboard' && <div className="dashboard-area">
+                {(settingsLoaded && !this.state.hideServiceSection) && <ServiceSection
+                  isDemoMode={this.state.isDemoMode}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  language={this.state.language}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  hideFilters={this.state.hideFilters}
+                  serviceSortOrder={this.state.serviceSortOrder}
+                  handleSelectChange={this.handleSelectChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  settingsObject={settingsObject}
+                  commentlist={this.state.commentlist}
+                  handleFetchFail={this.handleFetchFail}
+                  fetchFrequency={this.state.fetchFrequency}
+                />}
+                            
+                {/* Alert History Section */}
 
-            {/* hostgroups */}
+                {(settingsLoaded && !this.state.hideHistory) && <AlertSection
+                  isDemoMode={this.state.isDemoMode}
+                  alertDaysBack={this.state.alertDaysBack}
+                  alertHoursBack={this.state.alertHoursBack}
+                  alertMaxItems={this.state.alertMaxItems}
+                  showEmoji={this.state.showEmoji}
+                  settingsObject={settingsObject}
+                  settingsFields={this.settingsFields}
+                  language={this.state.language}
+                  hideHistoryChart={this.state.hideHistoryChart}
+                  hideHistoryTitle={this.state.hideHistoryTitle}
+                  hideAlertSoft={this.state.hideAlertSoft}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  hideFilters={this.state.hideFilters}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  fetchAlertFrequency={this.state.fetchAlertFrequency}
+                  handleFetchFail={this.handleFetchFail}
+                />}
 
-            {!this.state.hideFilters && <HostGroupFilter
-              hostgroup={this.state.hostgroup}
-              hostgroupFilter={this.state.hostgroupFilter}
-              updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
-            />}
+              </div>
 
-            {/* Hosts Section */}
+            </Route>
+            <Route path="/help">
+              <Help
+                updateRootState={this.updateRootState}
+                isLeftPanelOpen={this.state.isLeftPanelOpen}
+              />
+            </Route>
+            <Route path="/settings">
+              <Settings
+                ref="settings"
+                baseUrl={this.state.baseUrl}
+                baseUrlChanged={this.baseUrlChanged.bind(this)}
+                settings={settingsObject}
+                settingsFields={this.settingsFields}
+                updateRootState={this.updateRootState}
+                isCookieLoaded={this.state.isCookieLoaded}
+                hostlistError={this.state.hostlistError}
+              />
+            </Route>
+            <Route path="/update">
+              <AutoUpdate
+                updateRootState={this.updateRootState}
+                currentVersion={this.state.currentVersion}
+                currentVersionString={this.state.currentVersionString}
+              />
+            </Route>
+          </Switch>
+          </Router>
 
-            {(settingsLoaded && !this.state.hideHostSection) && <HostSection
-              isDemoMode={this.state.isDemoMode}
-              useFakeSampleData={this.useFakeSampleData}
-              baseUrl={this.state.baseUrl}
-              language={this.state.language}
-              hostgroupFilter={this.state.hostgroupFilter}
-              hideFilters={this.state.hideFilters}
-              hostSortOrder={this.state.hostSortOrder}
-              handleSelectChange={this.handleSelectChange}
-              handleCheckboxChange={this.handleCheckboxChange}
-              settingsObject={settingsObject}
-              commentlist={this.state.commentlist}
-              handleFetchFail={this.handleFetchFail}
-              fetchFrequency={this.state.fetchFrequency}
-            />} 
+          
 
-            {/* Services Section */}
 
-            {(settingsLoaded && !this.state.hideServiceSection) && <ServiceSection
-              isDemoMode={this.state.isDemoMode}
-              useFakeSampleData={this.useFakeSampleData}
-              baseUrl={this.state.baseUrl}
-              language={this.state.language}
-              hostgroupFilter={this.state.hostgroupFilter}
-              hideFilters={this.state.hideFilters}
-              serviceSortOrder={this.state.serviceSortOrder}
-              handleSelectChange={this.handleSelectChange}
-              handleCheckboxChange={this.handleCheckboxChange}
-              settingsObject={settingsObject}
-              commentlist={this.state.commentlist}
-              handleFetchFail={this.handleFetchFail}
-              fetchFrequency={this.state.fetchFrequency}
-            />}
-                        
-            {/* Alert History Section */}
 
-            {(settingsLoaded && !this.state.hideHistory) && <AlertSection
-              isDemoMode={this.state.isDemoMode}
-              alertDaysBack={this.state.alertDaysBack}
-              alertHoursBack={this.state.alertHoursBack}
-              alertMaxItems={this.state.alertMaxItems}
-              showEmoji={this.state.showEmoji}
-              settingsObject={settingsObject}
-              settingsFields={this.settingsFields}
-              language={this.state.language}
-              hideHistoryChart={this.state.hideHistoryChart}
-              hideHistoryTitle={this.state.hideHistoryTitle}
-              hideAlertSoft={this.state.hideAlertSoft}
-              handleCheckboxChange={this.handleCheckboxChange}
-              hideFilters={this.state.hideFilters}
-              useFakeSampleData={this.useFakeSampleData}
-              baseUrl={this.state.baseUrl}
-              hostgroupFilter={this.state.hostgroupFilter}
-              fetchAlertFrequency={this.state.fetchAlertFrequency}
-              handleFetchFail={this.handleFetchFail}
-            />}
+          
 
-          </div>} {/* end dashboard-area */}
+          
         
         </div> {/* endwrapper around the main content */}
         

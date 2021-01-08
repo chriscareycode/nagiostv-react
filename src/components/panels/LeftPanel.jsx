@@ -17,6 +17,16 @@
  */
 
 import React, { Component } from 'react';
+
+// React Router
+import {
+  HashRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink
+} from "react-router-dom";
+
 import './LeftPanel.css';
 import ReactTooltip from 'react-tooltip';
 
@@ -35,30 +45,7 @@ class LeftPanel extends Component {
   //   }
   // }
 
-  clickedDashboard = () => {
-    this.props.updateRootState({
-      currentPage: 'dashboard'
-    });
-  };
-
-  clickedSettings = () => {
-    this.props.updateRootState({
-      currentPage: 'settings'
-    });
-  };
-
-  clickedHelp = () => {
-    this.props.updateRootState({
-      currentPage: 'help'
-    });
-  };
-
-  clickedUpdate = () => {
-    this.props.updateRootState({
-      currentPage: 'autoupdate'
-    });
-  };
-
+  /*
   clickedFilter = () => {
     this.props.updateRootState({
       hideFilters: !this.props.hideFilters
@@ -70,88 +57,92 @@ class LeftPanel extends Component {
       hideHistoryChart: !this.props.settingsObject.hideHistoryChart
     });
   };
+  */
 
   render() {
     
-    let settingsIconClassName = '';
-    if (this.props.currentPage === 'settings') { settingsIconClassName = 'nav-sidebar-icon-selected'; }
-    if (this.props.hostlistError) { settingsIconClassName = 'nav-sidebar-icon-error'; }
-
+   
     return (
       <div className={this.props.isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
-        
-        <div className="nav-sidebar-icon">
-          <span data-tip="Dashboard">
-            <FontAwesomeIcon
-              onClick={this.clickedDashboard}
-              className={this.props.currentPage === 'dashboard' ? 'nav-sidebar-icon-selected' : ''}
-              icon={faTachometerAlt}
-            />
-          </span>
-        </div>
+        <Router>
+          <div className="nav-sidebar-icon">
+            <span data-tip="Dashboard">
+              <NavLink exact={true} activeClassName='is-active' to="/">
+                <FontAwesomeIcon
+                  className="nav-sidebar-icon-icon"
+                  icon={faTachometerAlt}
+                />
+              </NavLink>
+            </span>
+          </div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Settings">
-            <FontAwesomeIcon
-              onClick={this.clickedSettings}
-              className={settingsIconClassName}
-              icon={faTools}
-            />
-          </span>
-        </div>
+          <div className="nav-sidebar-icon">
+            <span data-tip="Settings">
+              <NavLink activeClassName='is-active' to="/settings">
+                <FontAwesomeIcon
+                  className="nav-sidebar-icon-icon"
+                  icon={faTools}
+                />
+              </NavLink>
+            </span>
+          </div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Update">
-            <FontAwesomeIcon
-              onClick={this.clickedUpdate}
-              className={this.props.currentPage === 'autoupdate' ? 'nav-sidebar-icon-selected' : ''}
-              icon={faUpload}
-            />
-          </span>
-        </div>
+          <div className="nav-sidebar-icon">
+            <span data-tip="Update">
+              <NavLink activeClassName='is-active' to="/update">
+                <FontAwesomeIcon
+                  className="nav-sidebar-icon-icon"
+                  icon={faUpload}
+                />
+              </NavLink>
+            </span>
+          </div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Info and Help">
-            <FontAwesomeIcon
-              onClick={this.clickedHelp}
-              className={this.props.currentPage === 'help' ? 'nav-sidebar-icon-selected' : ''}
-              icon={faQuestionCircle}
-            />
-          </span>
-        </div>
+          <div className="nav-sidebar-icon">
+            <span data-tip="Info and Help">
+              <NavLink activeClassName='is-active' to="/help">
+                <FontAwesomeIcon
+                  className="nav-sidebar-icon-icon"
+                  icon={faQuestionCircle}
+                />
+              </NavLink>
+            </span>
+          </div>
 
-        <div className="nav-sidebar-hr"></div>
+          {/*
+          <div className="nav-sidebar-icon">
+            <FontAwesomeIcon className="" icon={faServer} />
+          </div>
+          <div className="nav-sidebar-icon">
+            <FontAwesomeIcon className="" icon={faBell} />
+          </div>
+          */}
 
-        {/*
-        <div className="nav-sidebar-icon">
-          <FontAwesomeIcon className="" icon={faServer} />
-        </div>
-        */}
+          {/*
+          <div className="nav-sidebar-hr"></div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Show Charts">
-            <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
-          </span>
-        </div>
+          <div className="nav-sidebar-icon">
+            <span data-tip="Show Charts">
+              <FontAwesomeIcon onClick={this.clickedCharts} className={this.props.hideHistoryChart ? '' : 'nav-sidebar-icon-selected'} icon={faChartBar} />
+            </span>
+          </div>
 
-        {/*
-        <div className="nav-sidebar-icon">
-          <FontAwesomeIcon className="" icon={faBell} />
-        </div>
-        */}
+          <div className="nav-sidebar-icon">
+            <span data-tip="Show Filters">
+              <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
+            </span>
+          </div>
+          */}
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Show Filters">
-            <FontAwesomeIcon onClick={this.clickedFilter} className={this.props.hideFilters ? '' : 'nav-sidebar-icon-selected'} icon={faFilter} />
-          </span>
-        </div>
+          <div className="nav-sidebar-bottom-float">          
 
-        <div className="nav-sidebar-bottom-float">          
+          </div>
 
-        </div>
+          
+        </Router>
 
         <ReactTooltip place="right" type="dark" effect="solid"/>
-        
+
       </div>
     );
   }

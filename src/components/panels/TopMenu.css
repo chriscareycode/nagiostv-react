@@ -23,7 +23,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    margin-left: 45px;
+    margin-left: 15px;
     margin-right: 10px;
     display: inline-block;
     color: #ddd;
@@ -44,10 +44,15 @@
     color: #666;
 }
 
-.TopMenu > .hot-dog-menu {
+/* if we have the hamburger menu then we do not need the extra left margin */
+.TopMenu > .hamburger-menu + .header-application-name {
+    margin-left: 0px;
+}
+
+.TopMenu > .hamburger-menu {
     font-size: 1.2em;
-    display: grid;
-    place-content: center;
+    display: inline-block;
+    
     height: 40px;
     width: 50px;
     color: #666;
@@ -55,6 +60,13 @@
     cursor: pointer;
 }
 
-.TopMenu > .hot-dog-menu.hot-dog-menu-active {
+.TopMenu > .hamburger-menu > .hamburger-menu-center {
+    display: grid;
+    place-content: center;
+    height: 40px;
+    width: 50px;
+}
+
+.TopMenu > .hamburger-menu.hamburger-menu-active {
   color: #fff;
 }
