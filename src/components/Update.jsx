@@ -234,7 +234,7 @@ class Update extends Component {
     });
 
     return (
-      <div className="AutoUpdate">
+      <div className="Update">
         <h2>NagiosTV Updates</h2>
 
         <div className="update-help-message">
