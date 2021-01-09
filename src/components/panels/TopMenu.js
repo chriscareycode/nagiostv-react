@@ -18,6 +18,9 @@
 
 import React from 'react';
 
+// Import external libraries
+import ReactTooltip from 'react-tooltip';
+
 // Import Widgets
 import Flynn from '../Flynn/Flynn.jsx';
 import Clock from '../widgets/Clock.jsx';
@@ -68,22 +71,22 @@ const TopMenu = (props) => {
         <div className="header-right-float">
 
         {/* filter icon */}
-        <div className={props.hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedFilter} title="Filters">
+        <div data-tip="Show/Hide Filters" className={props.hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedFilter}>
           <FontAwesomeIcon icon={faFilter} />
         </div>
 
         {/* chart icon */}
-        <div className={props.settingsObject.hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedCharts} title="History Chart">
+        <div data-tip="Show/Hide Charts" className={props.settingsObject.hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedCharts}>
           <FontAwesomeIcon icon={faChartBar} />
         </div>
 
         {/* sound effects icon */}
-        <div className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound} title="Sound Effects">
+        <div data-tip="Sound Effects" className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound}>
           <FontAwesomeIcon icon={faVolumeUp}  />
         </div>
 
         {/* speak items icon */}
-        <div className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSpeak} title="Speak">
+        <div data-tip="Speak" className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSpeak}>
           <FontAwesomeIcon icon={faBullhorn} />
         </div>
 
@@ -128,6 +131,8 @@ const TopMenu = (props) => {
 
         {/* show the polling time */}
         {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+
+        <ReactTooltip place="bottom" type="dark" effect="solid"/>
     </div>
   );
   

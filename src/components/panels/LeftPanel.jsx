@@ -66,7 +66,7 @@ class LeftPanel extends Component {
       <div className={this.props.isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
         <Router>
           <div className="nav-sidebar-icon">
-            <span data-tip="Dashboard">
+            <span data-tip="Dashboard" data-place="right">
               <NavLink exact={true} activeClassName='is-active' to="/">
                 <FontAwesomeIcon
                   className="nav-sidebar-icon-icon"
@@ -77,7 +77,7 @@ class LeftPanel extends Component {
           </div>
 
           <div className="nav-sidebar-icon">
-            <span data-tip="Settings">
+            <span data-tip="Settings" data-place="right">
               <NavLink activeClassName='is-active' to="/settings">
                 <FontAwesomeIcon
                   className="nav-sidebar-icon-icon"
@@ -141,7 +141,7 @@ class LeftPanel extends Component {
           
         </Router>
 
-        <ReactTooltip place="right" type="dark" effect="solid"/>
+        
 
       </div>
     );
