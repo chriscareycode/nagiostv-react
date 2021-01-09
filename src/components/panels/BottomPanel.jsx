@@ -24,7 +24,9 @@ import {
   Switch,
   Route,
   Link,
-  NavLink
+  NavLink,
+  withRouter
+
 } from "react-router-dom";
 
 import './BottomPanel.css';
@@ -64,7 +66,40 @@ class BottomPanel extends Component {
   };
   */
 
-  clickedNagiosTv = () => {
+  clickedDashboard = (e) => {
+    this.navigateTo(e, '/');
+  };
+
+  clickedSettings = (e) => {
+    this.navigateTo(e, '/settings');
+  };
+
+  clickedUpdate = (e) => {
+    this.navigateTo(e, '/update');
+  };
+
+  clickedInfo = (e) => {
+    this.navigateTo(e, '/help');
+  };
+
+  navigateTo = (e, pathname) => {
+    e.preventDefault();
+    
+    this.props.history.push({
+      pathname,
+      //state: param
+    });
+
+    // Close menu
+    setTimeout(() => {
+      this.setState({
+        isVisible: !this.state.isVisible
+      });
+    }, 800);
+  };
+
+  clickedNagiosTv = (e) => {
+    e.preventDefault();
     this.setState({
       isVisible: !this.state.isVisible
     });
@@ -93,7 +128,7 @@ class BottomPanel extends Component {
             <Router>
             <div className="nav-sidebar-icon">
               <span>
-                <NavLink exact={true} activeClassName='is-active' to="/">
+                <NavLink exact={true} activeClassName='is-active' to="/" onClick={this.clickedDashboard}>
                   <FontAwesomeIcon
                     className="nav-sidebar-icon-icon"
                     icon={faTachometerAlt}
@@ -105,7 +140,7 @@ class BottomPanel extends Component {
 
             <div className="nav-sidebar-icon" >
               <span>
-                <NavLink activeClassName='is-active' to="/settings">
+                <NavLink activeClassName='is-active' to="/settings" onClick={this.clickedSettings}>
                   <FontAwesomeIcon
                     className="nav-sidebar-icon-icon"
                     icon={faTools}
@@ -117,7 +152,7 @@ class BottomPanel extends Component {
 
             <div className="nav-sidebar-icon">
               <span>
-                <NavLink activeClassName='is-active' to="/update">
+                <NavLink activeClassName='is-active' to="/update" onClick={this.clickedUpdate}>
                   <FontAwesomeIcon
                     className="nav-sidebar-icon-icon"
                     icon={faUpload}
@@ -129,7 +164,7 @@ class BottomPanel extends Component {
 
             <div className="nav-sidebar-icon">
               <span>
-                <NavLink activeClassName='is-active' to="/help">
+                <NavLink activeClassName='is-active' to="/help" onClick={this.clickedInfo}>
                   <FontAwesomeIcon
                     className="nav-sidebar-icon-icon"
                     icon={faQuestionCircle}
@@ -167,4 +202,4 @@ class BottomPanel extends Component {
   }
 }
 
-export default BottomPanel;
+export default withRouter(BottomPanel);
