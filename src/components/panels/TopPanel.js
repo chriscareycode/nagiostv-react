@@ -31,9 +31,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter } from '@fortawesome/free-solid-svg-icons';
 
 // Import CSS
-import './TopMenu.css';
+import './TopPanel.css';
 
-const TopMenu = (props) => {
+const TopPanel = (props) => {
 
   const clickedHamburgerMenu = () => {
     props.updateRootState({
@@ -66,7 +66,7 @@ const TopMenu = (props) => {
   };
 
   return (
-    <div className="TopMenu">
+    <div className="TopPanel">
 
         <div className="header-right-float">
 
@@ -138,4 +138,4 @@ const TopMenu = (props) => {
   
 }
 
-export default TopMenu;
+export default TopPanel;

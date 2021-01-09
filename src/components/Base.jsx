@@ -42,7 +42,7 @@ import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
 
 // Import Panels
-import TopMenu from './panels/TopMenu.js';
+import TopPanel from './panels/TopPanel.js';
 import LeftPanel from './panels/LeftPanel.jsx';
 import BottomPanel from './panels/BottomPanel.jsx';
 
@@ -764,7 +764,7 @@ class Base extends Component {
 
         {/* Top Menu */}
 
-        <TopMenu
+        <TopPanel
           settingsObject={settingsObject}
           isLeftPanelOpen={this.state.isLeftPanelOpen}
           updateRootState={this.updateRootState}

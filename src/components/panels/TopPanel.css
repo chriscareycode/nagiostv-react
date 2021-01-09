@@ -1,6 +1,6 @@
-/* TopMenu.css */
+/* TopPanel.css */
 
-.TopMenu {
+.TopPanel {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     border-bottom: 0px solid #333;
 }
   
-.TopMenu > .header-right-float {
+.TopPanel > .header-right-float {
     position: absolute;
     top: 0;
     right:  0px;
@@ -20,7 +20,7 @@
     margin-right: 15px;
 }
   
-.TopMenu > .header-application-name {
+.TopPanel > .header-application-name {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -30,7 +30,7 @@
     color: #ddd;
 }
   
-.TopMenu .sound-icon {
+.TopPanel .sound-icon {
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -41,16 +41,16 @@
     cursor: pointer;
 }
 
-.TopMenu .sound-icon.sound-icon-disabled {
+.TopPanel .sound-icon.sound-icon-disabled {
     color: #666;
 }
 
 /* if we have the hamburger menu then we do not need the extra left margin */
-.TopMenu > .hamburger-menu + .header-application-name {
+.TopPanel > .hamburger-menu + .header-application-name {
     margin-left: 0px;
 }
 
-.TopMenu > .hamburger-menu {
+.TopPanel > .hamburger-menu {
     font-size: 1.2em;
     display: inline-block;
     
@@ -61,13 +61,13 @@
     cursor: pointer;
 }
 
-.TopMenu > .hamburger-menu > .hamburger-menu-center {
+.TopPanel > .hamburger-menu > .hamburger-menu-center {
     display: grid;
     place-content: center;
     height: 40px;
     width: 50px;
 }
 
-.TopMenu > .hamburger-menu.hamburger-menu-active {
+.TopPanel > .hamburger-menu.hamburger-menu-active {
   color: #fff;
 }
