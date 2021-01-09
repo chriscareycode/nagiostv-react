@@ -48,6 +48,11 @@
   cursor: pointer;
 }
 
+.auto-update-button:disabled {
+  opacity: 0.6;
+  cursor: auto;
+}
+
 .update-help-message {
   border: 1px solid #ccc;
   border-radius: 5px;
