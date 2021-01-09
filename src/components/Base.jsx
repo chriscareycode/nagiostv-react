@@ -46,6 +46,8 @@ import TopPanel from './panels/TopPanel.js';
 import LeftPanel from './panels/LeftPanel.jsx';
 import BottomPanel from './panels/BottomPanel.jsx';
 
+import ScrollToTop from './widgets/ScrollToTop.jsx';
+
 // Import css
 import './Base.css';
 import './animation.css';
@@ -922,6 +924,7 @@ class Base extends Component {
         </div> {/* endwrapper around the main content */}
 
         </Router>
+        <ScrollToTop />
         
       </div>
     );
