@@ -81,8 +81,8 @@ class Base extends Component {
     // state which is used internally by NagiosTV
     //**************************************************************************** */
 
-    currentVersion: 60,
-    currentVersionString: '0.6.7',
+    currentVersion: 61,
+    currentVersionString: '0.6.8',
     latestVersion: 0,
     latestVersionString: '',
     lastVersionCheckTime: 0,
