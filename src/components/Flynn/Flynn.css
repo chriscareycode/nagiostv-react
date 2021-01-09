@@ -1,17 +1,15 @@
 .flynn-wrap {
   display: inline-block;
   height: 40px;
-  width: 45px;
+  width: 35px;
   position: relative;
 }
-
-
 
 .flynn {
 
   position: absolute;
   top: 5px;
-  right: 8px;
+  right: 0px;
 
 
   /*background-image: url('/flynn/flynn.png');*/
