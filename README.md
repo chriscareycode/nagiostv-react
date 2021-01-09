@@ -1,6 +1,6 @@
 # NagiosTV
 
-![Display](https://nagiostv.com/images/nagiostv-0.6.8.png)
+![Display](https://nagiostv.com/images/nagiostv-0.6.8a.png)
 
 Compatible with Nagios Core 4, Nagios XI, and MK Livestatus
 
