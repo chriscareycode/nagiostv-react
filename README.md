@@ -91,9 +91,8 @@ $ tar xvfz nagiostv-0.6.7.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
-AutoUpdate script
+Update CLI script
 -------------
-* deprecated
 This command line autoupdate script can be used to upgrade or downgrade to any version easily. 
 This has been superceded by the AutoUpdate within the NagiosTV UI. (see above)
 To update this way, go into your nagiostv/ folder and run this command for more instructions:
