@@ -1,12 +1,17 @@
 .HostGroupFilter {
   margin-top: 10px;
+  margin-bottom: 15px;
   font-size: 1.1em;
   color: #bbb;
 }
 .HostGroupFilter select {
-  font-size: 1.0em;
-  color: #000;
-  background-color: #999;
-  padding-left: 5px;
-  border: 0;
+  background-color: #353535;
+  border: 1px solid #666;
+  color: white;
+  font-size: 0.9em;
+  white-space: nowrap;
+  opacity: 0.8;
+  margin-right: 6px;
+  position: relative;
+  top: -1px;
 }

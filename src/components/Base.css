@@ -133,7 +133,7 @@ and (max-width: 1768px) {
   margin-top: 10px;
   margin-bottom: 7px;
   clear: both;
-  line-height: 1.4em;
+  line-height: 1.5em;
   /*overflow: hidden;*/
   
 }
@@ -232,7 +232,8 @@ button {
   color: rgb(138, 138, 45);
   margin-left: 15px;
   margin-right: 4px;
-  float: right;
+  position: absolute;
+  right: 0px;
   font-size: 0.8em;
 }
 
