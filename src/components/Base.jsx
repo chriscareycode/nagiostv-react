@@ -36,7 +36,7 @@ import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
 
 // Import Various
-import AutoUpdate from './AutoUpdate.jsx';
+import Update from './Update.jsx';
 import Help from './Help.js';
 import Settings from './Settings.jsx';
 //import HowManyEmoji from './widgets/HowManyEmoji.jsx';
@@ -760,6 +760,8 @@ class Base extends Component {
     return (
       <div className="Base" style={{ fontSize: this.state.fontSizeEm}}>
 
+        <Router>
+
         {/* Top Menu */}
 
         <TopMenu
@@ -805,7 +807,7 @@ class Base extends Component {
 
           {!settingsLoaded && <div>Settings are not loaded yet</div>}
 
-          <Router>
+          
 
           <Switch>
             <Route exact path="/">
@@ -900,14 +902,14 @@ class Base extends Component {
               />
             </Route>
             <Route path="/update">
-              <AutoUpdate
+              <Update
                 updateRootState={this.updateRootState}
                 currentVersion={this.state.currentVersion}
                 currentVersionString={this.state.currentVersionString}
               />
             </Route>
           </Switch>
-          </Router>
+          
 
           
 
@@ -918,6 +920,8 @@ class Base extends Component {
           
         
         </div> {/* endwrapper around the main content */}
+
+        </Router>
         
       </div>
     );

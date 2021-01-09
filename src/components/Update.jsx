@@ -17,13 +17,13 @@
  */
 
 import React, { Component } from 'react';
-import './AutoUpdate.css';
+import './Update.css';
 import $ from 'jquery';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
-class AutoUpdate extends Component {
+class Update extends Component {
 
   state = {
     testphpLoading: false,
@@ -380,4 +380,4 @@ class AutoUpdate extends Component {
   }
 }
 
-export default AutoUpdate;
+export default Update;
