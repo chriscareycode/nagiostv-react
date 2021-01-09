@@ -2,7 +2,7 @@
 
 ![Display](https://nagiostv.com/images/nagiostv-0.5.8.png)
 
-Compatible with Nagios Core 4 and Nagios XI
+Compatible with Nagios Core 4, Nagios XI, and MK Livestatus
 
 NagiosTV is a user interface (UI) for the Nagios monitoring system https://www.nagios.org
 
@@ -20,7 +20,7 @@ NagiosTV also has some fun addons:
 
 - Sound effects for state changes
 - Speak the state changes
-- Flynn, the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
+- Doom Guy (Flynn), the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
 - Emoticons to show how many items up vs down, and happiness the longer you have quiet time between issues.
 
 Technology
