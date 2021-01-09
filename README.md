@@ -113,7 +113,9 @@ Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of 
 
 https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
 
-No more need for ndoutils writing out to a database. No more installing 3rd party tools like status-json and MK livestatus to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API. This makes the install take just a couple minutes with no dependencies!
+No more need for ndoutils writing out to a database. No more requiring 3rd party tools like status-json and MK livestatus* to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API. This makes the install take just a couple minutes with no dependencies!
+
+* Though Nagios CGI is the default option, MK Livestatus support has now been added to this project as of version 0.6.5
 
 Also this is the first version that (aside from the client-settings save and autoupdate feature) has no server-side component. It's all JavaScript in the browser.
 
