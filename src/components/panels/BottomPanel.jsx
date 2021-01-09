@@ -38,7 +38,7 @@ import { faChartBar, faFilter, faTachometerAlt, faTools, faUpload, faQuestionCir
 class BottomPanel extends Component {
 
   state = {
-    isVisible: true
+    isVisible: false
   };
 
   // shouldComponentUpdate(nextProps, nextState) {
