@@ -102,22 +102,17 @@ $ sh autoupdate.sh
 
 History
 ------------
-NagiosTV was started around 2009. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
+NagiosTV was started around 2008. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
 
-Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
+Originally it was written in PHP for Nagios 3 and used the "ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
 This ended up being a very painful install for many, requires a database server, and the database size continuously grew and needed maintenance and trimming.
 
-Later I released JavaScript versions which used MK livestatus, and another version using status-json. These seemed better since they got rid of the database requirement, but still required setup and changes that many users were not willing to jump through.
+Later I released JavaScript versions which used "MK livestatus", and experimented with another another version using "status-json". These seemed a lot better since they got rid of the database requirement, but still required installation that many users were not willing or able to do.
 
-Now with Nagios 4, Nagios Core 4.0.7 and newer comes with new JSON CGI's out of the box which is a game changer for tapping into the Nagios data from a web application.
+Now with Nagios 4, Nagios Core 4.0.7 and newer comes with [new JSON CGI's built-in](https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/). This allows NagiosTV to read status data from Nagios with no external dependencies. 
 
-https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/
+This project is the latest in many rewrites of NagiosTV. It uses React, connecting to the new Nagios CGIs. More recently, MK Livestatus connector was added.
 
-No more need for ndoutils writing out to a database. No more requiring 3rd party tools like status-json and MK livestatus* to tap into Nagios. Those are great projects, but now we can make NagiosTV available to the most number of users, going with the built-in API. This makes the install take just a couple minutes with no dependencies!
-
-* Though Nagios CGI is the default option, MK Livestatus support has now been added to this project as of version 0.6.5
-
-Also this is the first version that (aside from the client-settings save and autoupdate feature) has no server-side component. It's all JavaScript in the browser.
 
 Help
 ------------
