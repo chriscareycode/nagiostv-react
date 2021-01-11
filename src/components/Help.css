@@ -1,5 +1,15 @@
 .Help {
-    
+    background-color: #111;
+    position: fixed;
+    margin-bottom: 30px;
+    top: 55px;
+    right: 25px;
+    bottom: 0px;
+    left: 25px;
+    z-index: 10;
+    border: 3px solid #444;
+    border-radius: 5px;
+    overflow-y: scroll;
 }
 
 .help-option {
