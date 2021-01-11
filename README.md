@@ -10,11 +10,11 @@ This user interface is designed to be viewed on a TV, phone, or desktop to quick
 
 Some of the features:
 
-- Multi language support - English, Spanish and French so far
 - New items slide in and out of place with smooth animations which looks really cool when things are happening.
 - Sorting - Ability to order items newest or oldest first
-- Filters - so you can hide ACKED or SCHEDULED or UNKNOWN or FLAPPING states
-- Last OK value goes from green, to yellow, to red - based on how long the item has been down
+- Filters - so you can hide WARNING, CRITICAL, UNREACHABLE, UNKNOWN, PENDING, ACKED, SCHEDULED, FLAPPING, or NOTIFICATIONS DISABLED states
+- Multi language support - English, Spanish and French so far
+- One-click update to latest version within the app
 
 NagiosTV also has some fun addons:
 
