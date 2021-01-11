@@ -764,162 +764,166 @@ class Base extends Component {
 
         <Router>
 
-          {/* Top Menu */}
+        {/* Top Menu */}
 
-          <TopPanel
-            settingsObject={settingsObject}
-            isLeftPanelOpen={this.state.isLeftPanelOpen}
-            updateRootState={this.updateRootState}
-            hideFilters={this.state.hideFilters}
-          />
+        <TopPanel
+          settingsObject={settingsObject}
+          isLeftPanelOpen={this.state.isLeftPanelOpen}
+          updateRootState={this.updateRootState}
+          hideFilters={this.state.hideFilters}
+        />
 
-          {/* Left Panel */}
+        {/* Left Panel */}
 
-          <LeftPanel
-            settingsObject={settingsObject}
-            isLeftPanelOpen={this.state.isLeftPanelOpen}
-            hideFilters={this.state.hideFilters}
-            hideHistoryChart={this.state.hideHistoryChart}
-            updateRootState={this.updateRootState}
-          />
+        <LeftPanel
+          settingsObject={settingsObject}
+          isLeftPanelOpen={this.state.isLeftPanelOpen}
+          hideFilters={this.state.hideFilters}
+          hideHistoryChart={this.state.hideHistoryChart}
+          updateRootState={this.updateRootState}
+        />
 
-          {/* Bottom Panel */}
+        {/* Bottom Panel */}
+        
+        <BottomPanel
+          settingsObject={settingsObject}
+          hideFilters={this.state.hideFilters}
+          hideHistoryChart={this.state.hideHistoryChart}
+          updateRootState={this.updateRootState}
+          hostlistError={this.state.hostlistError}
+
+          currentVersion={this.state.currentVersion}
+          currentVersionString={this.state.currentVersionString}
+          latestVersion={this.state.latestVersion}
+          latestVersionString={this.state.latestVersionString}
+
+        />
+
+        {/* spacer to counteract the floating header */}
+
+        <div style={{ height: '45px' }}>
+        </div>
+
+        {/* wrapper around the main content */}
+        <div className={this.state.isLeftPanelOpen ? 'main-content left-panel-open' : 'main-content'}>
+
+          {!settingsLoaded && <div>Settings are not loaded yet</div>}
+
           
-          <BottomPanel
-            settingsObject={settingsObject}
-            hideFilters={this.state.hideFilters}
-            hideHistoryChart={this.state.hideHistoryChart}
-            updateRootState={this.updateRootState}
-            hostlistError={this.state.hostlistError}
 
-            currentVersion={this.state.currentVersion}
-            currentVersionString={this.state.currentVersionString}
-            latestVersion={this.state.latestVersion}
-            latestVersionString={this.state.latestVersionString}
+          <Switch>
+            <Route exact path="/">
+              <div className="dashboard-area">
 
-          />
+                {/* hostgroups */}
 
-          {/* spacer to counteract the floating header */}
+                {!this.state.hideFilters && <HostGroupFilter
+                  hostgroup={this.state.hostgroup}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
+                />}
 
-          <div style={{ height: '45px' }}>
-          </div>
+                {/* Hosts Section */}
 
-          {/* wrapper around the main content */}
-          <div className={this.state.isLeftPanelOpen ? 'main-content left-panel-open' : 'main-content'}>
+                {(settingsLoaded && !this.state.hideHostSection) && <HostSection
+                  isDemoMode={this.state.isDemoMode}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  language={this.state.language}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  hideFilters={this.state.hideFilters}
+                  hostSortOrder={this.state.hostSortOrder}
+                  handleSelectChange={this.handleSelectChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  settingsObject={settingsObject}
+                  commentlist={this.state.commentlist}
+                  handleFetchFail={this.handleFetchFail}
+                  fetchFrequency={this.state.fetchFrequency}
+                />} 
 
-            {!settingsLoaded && <div>Settings are not loaded yet</div>}
+                {/* Services Section */}
 
-            <Switch>
+                {(settingsLoaded && !this.state.hideServiceSection) && <ServiceSection
+                  isDemoMode={this.state.isDemoMode}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  language={this.state.language}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  hideFilters={this.state.hideFilters}
+                  serviceSortOrder={this.state.serviceSortOrder}
+                  handleSelectChange={this.handleSelectChange}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  settingsObject={settingsObject}
+                  commentlist={this.state.commentlist}
+                  handleFetchFail={this.handleFetchFail}
+                  fetchFrequency={this.state.fetchFrequency}
+                />}
+                            
+                {/* Alert History Section */}
 
-              <Route path="/">
+                {(settingsLoaded && !this.state.hideHistory) && <AlertSection
+                  isDemoMode={this.state.isDemoMode}
+                  alertDaysBack={this.state.alertDaysBack}
+                  alertHoursBack={this.state.alertHoursBack}
+                  alertMaxItems={this.state.alertMaxItems}
+                  showEmoji={this.state.showEmoji}
+                  settingsObject={settingsObject}
+                  settingsFields={this.settingsFields}
+                  language={this.state.language}
+                  hideHistoryChart={this.state.hideHistoryChart}
+                  hideHistoryTitle={this.state.hideHistoryTitle}
+                  hideAlertSoft={this.state.hideAlertSoft}
+                  handleCheckboxChange={this.handleCheckboxChange}
+                  hideFilters={this.state.hideFilters}
+                  useFakeSampleData={this.useFakeSampleData}
+                  baseUrl={this.state.baseUrl}
+                  hostgroupFilter={this.state.hostgroupFilter}
+                  fetchAlertFrequency={this.state.fetchAlertFrequency}
+                  handleFetchFail={this.handleFetchFail}
+                />}
 
-                <Route path="/settings">
-                  <Settings
-                    ref="settings"
-                    baseUrl={this.state.baseUrl}
-                    baseUrlChanged={this.baseUrlChanged.bind(this)}
-                    settings={settingsObject}
-                    settingsFields={this.settingsFields}
-                    updateRootState={this.updateRootState}
-                    isCookieLoaded={this.state.isCookieLoaded}
-                    hostlistError={this.state.hostlistError}
-                  />
-                </Route>
+              </div>
 
-                <Route path="/help">
-                  <Help
-                    updateRootState={this.updateRootState}
-                    isLeftPanelOpen={this.state.isLeftPanelOpen}
-                  />
-                </Route>             
-                
-                <Route path="/update">
-                  <Update
-                    updateRootState={this.updateRootState}
-                    currentVersion={this.state.currentVersion}
-                    currentVersionString={this.state.currentVersionString}
-                  />
-                </Route>
+            </Route>
+            <Route path="/help">
+              <Help
+                updateRootState={this.updateRootState}
+                isLeftPanelOpen={this.state.isLeftPanelOpen}
+              />
+            </Route>
+            <Route path="/settings">
+              <Settings
+                ref="settings"
+                baseUrl={this.state.baseUrl}
+                baseUrlChanged={this.baseUrlChanged.bind(this)}
+                settings={settingsObject}
+                settingsFields={this.settingsFields}
+                updateRootState={this.updateRootState}
+                isCookieLoaded={this.state.isCookieLoaded}
+                hostlistError={this.state.hostlistError}
+              />
+            </Route>
+            <Route path="/update">
+              <Update
+                updateRootState={this.updateRootState}
+                currentVersion={this.state.currentVersion}
+                currentVersionString={this.state.currentVersionString}
+              />
+            </Route>
+          </Switch>
+          
 
-                <div className="dashboard-area">
+          
 
-                  {/* hostgroups */}
 
-                  {!this.state.hideFilters && <HostGroupFilter
-                    hostgroup={this.state.hostgroup}
-                    hostgroupFilter={this.state.hostgroupFilter}
-                    updateStateAndReloadNagiosData={this.updateStateAndReloadNagiosData}
-                  />}
 
-                  {/* Hosts Section */}
+          
 
-                  {(settingsLoaded && !this.state.hideHostSection) && <HostSection
-                    isDemoMode={this.state.isDemoMode}
-                    useFakeSampleData={this.useFakeSampleData}
-                    baseUrl={this.state.baseUrl}
-                    language={this.state.language}
-                    hostgroupFilter={this.state.hostgroupFilter}
-                    hideFilters={this.state.hideFilters}
-                    hostSortOrder={this.state.hostSortOrder}
-                    handleSelectChange={this.handleSelectChange}
-                    handleCheckboxChange={this.handleCheckboxChange}
-                    settingsObject={settingsObject}
-                    commentlist={this.state.commentlist}
-                    handleFetchFail={this.handleFetchFail}
-                    fetchFrequency={this.state.fetchFrequency}
-                  />} 
-
-                  {/* Services Section */}
-
-                  {(settingsLoaded && !this.state.hideServiceSection) && <ServiceSection
-                    isDemoMode={this.state.isDemoMode}
-                    useFakeSampleData={this.useFakeSampleData}
-                    baseUrl={this.state.baseUrl}
-                    language={this.state.language}
-                    hostgroupFilter={this.state.hostgroupFilter}
-                    hideFilters={this.state.hideFilters}
-                    serviceSortOrder={this.state.serviceSortOrder}
-                    handleSelectChange={this.handleSelectChange}
-                    handleCheckboxChange={this.handleCheckboxChange}
-                    settingsObject={settingsObject}
-                    commentlist={this.state.commentlist}
-                    handleFetchFail={this.handleFetchFail}
-                    fetchFrequency={this.state.fetchFrequency}
-                  />}
-                              
-                  {/* Alert History Section */}
-
-                  {(settingsLoaded && !this.state.hideHistory) && <AlertSection
-                    isDemoMode={this.state.isDemoMode}
-                    alertDaysBack={this.state.alertDaysBack}
-                    alertHoursBack={this.state.alertHoursBack}
-                    alertMaxItems={this.state.alertMaxItems}
-                    showEmoji={this.state.showEmoji}
-                    settingsObject={settingsObject}
-                    settingsFields={this.settingsFields}
-                    language={this.state.language}
-                    hideHistoryChart={this.state.hideHistoryChart}
-                    hideHistoryTitle={this.state.hideHistoryTitle}
-                    hideAlertSoft={this.state.hideAlertSoft}
-                    handleCheckboxChange={this.handleCheckboxChange}
-                    hideFilters={this.state.hideFilters}
-                    useFakeSampleData={this.useFakeSampleData}
-                    baseUrl={this.state.baseUrl}
-                    hostgroupFilter={this.state.hostgroupFilter}
-                    fetchAlertFrequency={this.state.fetchAlertFrequency}
-                    handleFetchFail={this.handleFetchFail}
-                  />}
-
-                </div>
-
-              </Route>
-
-            </Switch>
-
-          </div> {/* endwrapper around the main content */}
+          
+        
+        </div> {/* endwrapper around the main content */}
 
         </Router>
-
         <ScrollToTop />
         
       </div>
