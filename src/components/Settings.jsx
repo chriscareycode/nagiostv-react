@@ -254,458 +254,483 @@ class Settings extends Component {
 
         </div>
 
-        {/*<div className="settings-top-space-for-header"></div>*/}
+        <div className="settings-wrap">
 
-        {/* main settings */}
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td colSpan="2" className="SettingsTableHeader">Main Settings</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th style={{ padding: '0px', height: '3px' }}></th>
-              <td style={{ padding: '0px', height: '3px' }}></td>
-            </tr>
-            <tr>
-              <th>Title:</th>
-              <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
-            </tr>
-            <tr>
-              <th>
-                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                Fetch data from
-              </th>
-              <td>
-                <select value={this.state.dataSource} onChange={this.handleChange('dataSource', 'string')}>
-                    <option value={'cgi'}>Nagios cgi-bin</option>
-                    <option value={'livestatus'}>MK Livestatus</option>
-                </select>
-              </td>
-            </tr>
-            {this.state.dataSource === 'livestatus' && <tr>
-              <th>
-                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                livestatus.php path:
-              </th>
-              <td>
-                <input
-                  type="text"
-                  className={this.props.hostlistError ? 'input-error' : ''}
-                  value={this.state.livestatusPath}
-                  onChange={this.handleChange('livestatusPath', 'string')}
-                />
-                <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-                  This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
-                  In the connectors/ folder, copy livestatus-settings.ini.sample to livestatus-settings.ini and configure it.
-                  Your livestatus-settings.ini will not be overwritten when NagiosTV is updated.
-                </div>
-              </td>
-            </tr>}
-            <tr>
-              <th>
-                {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                Nagios cgi-bin path:
-              </th>
-              <td>
-                <input
-                  type="text"
-                  className={this.props.hostlistError ? 'input-error' : ''}
-                  value={this.state.baseUrl}
-                  onChange={this.handleChange('baseUrl', 'string')}
-                />
-                <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-                  This path needs to point to where the cgi files are being served by the Nagios web user interface.<br />
-                  <br />
-                  A note on authentication: Nagios cgi files rely on you to be authenticated so they know which user you are accessing Nagios as.
-                  Nagios uses this to determine which hosts/services and other rights you have.
-                  If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, as is the suggested installation method, then the default path
-                  <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication since you will already be logged in.<br />
-                  <br />
-                  <span>There are a few ways to bypass authentication (I will do a writeup on these soon in more detail): 
-                    <ul>
-                      <li>You can enter a proxy URL here which performs authentication for you and serves the Nagios cgi files. A Node.js based proxy example is included with this project.</li>
-                      <li>You can remove auth to cgi files statusjson.cgi and archivejson.cgi, and set default_user_name= in cgi.cfg</li>
-                      <li>You can use the MK Livestatus connector which connects on a socket and does not require authentication</li>
-                    </ul>
-                  </span>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th>New Version Check:</th>
-              <td>
-                <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
-                    <option value={0}>Off</option>
-                    <option value={1}>1 day</option>
-                    <option value={7}>1 week</option>
-                    <option value={30}>1 month</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Language:</th>
-              <td>
-                <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
-                    {languageOptions}
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Date Locale:</th>
-              <td>
-                <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
-                    {localeOptions}
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Date Format:</th>
-              <td>
-              <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
-                <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a></div>
-              </td>
-            </tr>
-            <tr>
-              <th>
-                Font Size
-              </th>
-              <td>
-                <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
-                    <option value={'0.8em'}>0.8</option>
-                    <option value={'0.9em'}>0.9</option>
-                    <option value={'1em'}>1</option>
-                    <option value={'1.1em'}>1.1</option>
-                    <option value={'1.2em'}>1.2</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
 
-        {/* hosts */}
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td colSpan="2" className="SettingsTableHeader">Hosts Settings</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Hosts:</th>
-              <td>
-                <select value={this.state.hideHostSection} onChange={this.handleChange('hideHostSection', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-                &nbsp;
-                You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          {/*<div className="settings-top-space-for-header"></div>*/}
 
-        {/* services */}
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td colSpan="2" className="SettingsTableHeader">Services Settings</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Services:</th>
-              <td>
-                <select value={this.state.hideServiceSection} onChange={this.handleChange('hideServiceSection', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-                &nbsp;
-                You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* history */}
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Alert History:</th>
-              <td>
-                <select value={this.state.hideHistory} onChange={this.handleChange('hideHistory', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-                &nbsp;
-                You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
-              </td>
-            </tr>
-            <tr>
-              <th>Alert History Chart:</th>
-              <td>
-                <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Alert History Titles:</th>
-              <td>
-                <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Alert History Days Back:</th>
-              <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
-            </tr>
-            <tr>
-              <th>Alert History max # items:</th>
-              <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
-            </tr>
-          </tbody>
-        </table>
-
-        {/* fun */}
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td colSpan="2" className="SettingsTableHeader">Audio and Visual</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th style={{ padding: '0px', height: '3px' }}></th>
-              <td style={{ padding: '0px', height: '3px' }}></td>
-            </tr>
-            <tr>
-              <th>Custom Logo:</th>
-              <td>
-                <select value={this.state.customLogoEnabled} onChange={this.handleChange('customLogoEnabled', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                </select>
-              </td>
-            </tr>
-            {this.state.customLogoEnabled && <tr>
-              <th>Custom Logo URL:</th>
-              <td>
-                <input type="text" value={this.state.customLogoUrl} onChange={this.handleChange('customLogoUrl', 'string')} />
-              </td>
-            </tr>}
-            <tr>
-              <th>Doom Guy (Flynn):</th>
-              <td>
-                <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                </select>
-                <span style={{ color: 'orange' }}> This feature is temporarily broken while I refactor some code. He won't get angry or bloody.</span>
-              </td>
-            </tr>
-
-            {/** special colspan=2 section for doom guy settings */}
-            <tr>
-              <td colSpan="2">
-                <div style={{ paddingLeft: '40px' }}>
-                  <table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
-                    <tbody>
-                      {this.state.flynnEnabled && <tr>
-                        <th>Doom Guy angry at</th>
-                        <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
-                      </tr>}
-                      {this.state.flynnEnabled && <tr>
-                        <th>Doom Guy bloody at</th>
-                        <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
-                      </tr>}
-                      {this.state.flynnEnabled && <tr>
-                        <th>Doom Guy CSS scale</th>
-                        <td>
-                          <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
-                          <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
-                        </td>
-                      </tr>}
-                    </tbody>
-                  </table>
-                </div>
-              </td>
-            </tr>
-            {/** end special colspan=2 section for doom guy settings */}
-
-            <tr>
-              <th>Emojis:</th>
-              <td>
-                <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
-                  <option value={true}>On</option>
-                  <option value={false}>Off</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Sound Effects:</th>
-              <td>
-                <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
-                  <option value={true}>On</option>
-                  <option value={false}>Off</option>
-                </select>
-              </td>
-            </tr>
-            {this.state.playSoundEffects && <tr>
-              <th>CRITICAL sound:</th>
-              <td>
-                <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} />
-                <button className="SettingsTestButton" onClick={this.playCritical}>Test</button>
-              </td>
-            </tr>}
-            {this.state.playSoundEffects && <tr>
-              <th>WARNING sound:</th>
-              <td>
-                <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} />
-                <button className="SettingsTestButton" onClick={this.playWarning}>Test</button>
-              </td>
-            </tr>}
-            {this.state.playSoundEffects && <tr>
-              <th>OK sound:</th>
-              <td>
-                <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} />
-                <button className="SettingsTestButton" onClick={this.playOk}>Test</button>
-              </td>
-            </tr>}
-            {this.state.playSoundEffects && <tr>
-              <th></th>
-              <td>
-                <div style={{ margin: '5px 0', fontSize: '0.8em' }}>* You can have multiple sound files for each state, and it will randomly choose one from the list. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
-              </td>
-            </tr>}
-            <tr>
-              <th>Speak Items:</th>
-              <td>
-                <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
-                  <option value={true}>On</option>
-                  <option value={false}>Off</option>
-                </select>
-              </td>
-            </tr>
-            {this.state.speakItems && <tr>
-              <th>Choose Voice:</th>
-              <td>
-                <select value={this.state.speakItemsVoice} onChange={this.handleChange('speakItemsVoice', 'string')}>
-                  {voiceOptions}
-                </select>
-                <button className="SettingsTestButton" onClick={this.playVoice}>Test</button>
-              </td>
-            </tr>}
-            <tr>
-              <th>Animated Progress Bar:</th>
-              <td>
-                <select value={this.state.showNextCheckInProgressBar} onChange={this.handleChange('showNextCheckInProgressBar', 'boolean')}>
-                  <option value={true}>On</option>
-                  <option value={false}>Off</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Hamburger Menu:</th>
-              <td>
-                <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
-                  <option value={true}>Hide</option>
-                  <option value={false}>Show</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <th>Bottom Menu:</th>
-              <td>
-                <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
-                  <option value={true}>Hide</option>
-                  <option value={false}>Show</option>
-                </select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td className="SettingsTableHeader">Deleting Cookie</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div className="font-size-0-8">
-                  <div>
-                  Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-                  for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again.
+          {/* main settings */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Main Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th style={{ padding: '0px', height: '3px' }}></th>
+                <td style={{ padding: '0px', height: '3px' }}></td>
+              </tr>
+              <tr>
+                <th>Title:</th>
+                <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
+              </tr>
+              <tr>
+                <th>
+                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  Fetch data from
+                </th>
+                <td>
+                  <select value={this.state.dataSource} onChange={this.handleChange('dataSource', 'string')}>
+                      <option value={'cgi'}>Nagios cgi-bin</option>
+                      <option value={'livestatus'}>MK Livestatus</option>
+                  </select>
+                </td>
+              </tr>
+              {this.state.dataSource === 'livestatus' && <tr>
+                <th>
+                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  livestatus.php path:
+                </th>
+                <td>
+                  <input
+                    type="text"
+                    className={this.props.hostlistError ? 'input-error' : ''}
+                    value={this.state.livestatusPath}
+                    onChange={this.handleChange('livestatusPath', 'string')}
+                  />
+                  <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
+                    This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
+                    In the connectors/ folder, copy livestatus-settings.ini.sample to livestatus-settings.ini and configure it.
+                    Your livestatus-settings.ini will not be overwritten when NagiosTV is updated.
                   </div>
-                  <br />
-                  {this.props.isCookieLoaded && <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>}
-                  {this.props.isCookieLoaded && <span> <span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span></span>}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <table className="SettingsTable">
-          <thead>
-            <tr>
-              <td className="SettingsTableHeader">Saving these settings on the server</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div className="font-size-0-8" style={{ margin: '5px' }}>
-                  By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
-                  so they can be shared with all users of NagiosTV as defaults when they load the page.
-                  
-                  <h4>Option 1: If you have PHP enabled on your server</h4>
-
-                  <div style={{ marginLeft: '30px' }}>
-
-                    You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
-                    the nagiostv folder and chown 777 client-settings.json so the Apache web server has rights to write to it.
-
-                    <pre>
-                    sudo touch client-settings.json<br />
-                    sudo chmod 777 client-settings.json
-                    </pre>
-
-                    After those steps, you can try this button:
-                    <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Automatic Save to Server</button><br />
+                </td>
+              </tr>}
+              <tr>
+                <th>
+                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  Nagios cgi-bin path:
+                </th>
+                <td>
+                  <input
+                    type="text"
+                    className={this.props.hostlistError ? 'input-error' : ''}
+                    value={this.state.baseUrl}
+                    onChange={this.handleChange('baseUrl', 'string')}
+                  />
+                  <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
+                    This path needs to point to where the cgi files are being served by the Nagios web user interface.<br />
                     <br />
-
+                    A note on authentication: Nagios cgi files rely on you to be authenticated so they know which user you are accessing Nagios as.
+                    Nagios uses this to determine which hosts/services and other rights you have.
+                    If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, as is the suggested installation method, then the default path
+                    <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication since you will already be logged in.<br />
+                    <br />
+                    <span>There are a few ways to bypass authentication (I will do a writeup on these soon in more detail): 
+                      <ul>
+                        <li>You can enter a proxy URL here which performs authentication for you and serves the Nagios cgi files. A Node.js based proxy example is included with this project.</li>
+                        <li>You can remove auth to cgi files statusjson.cgi and archivejson.cgi, and set default_user_name= in cgi.cfg</li>
+                        <li>You can use the MK Livestatus connector which connects on a socket and does not require authentication</li>
+                      </ul>
+                    </span>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <th>New Version Check:</th>
+                <td>
+                  <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
+                      <option value={0}>Off</option>
+                      <option value={1}>1 day</option>
+                      <option value={7}>1 week</option>
+                      <option value={30}>1 month</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Language:</th>
+                <td>
+                  <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
+                      {languageOptions}
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Date Locale:</th>
+                <td>
+                  <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
+                      {localeOptions}
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Date Format:</th>
+                <td>
+                <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
+                  <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a> under "Localized formats"</div>
+                </td>
+              </tr>
+              <tr>
+                <th>
+                  Font Size
+                </th>
+                <td>
+                  <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
+                      <option value={'0.8em'}>0.8em</option>
+                      <option value={'0.9em'}>0.9em</option>
+                      <option value={'1em'}>1em</option>
+                      <option value={'1.1em'}>1.1em</option>
+                      <option value={'1.2em'}>1.2em</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
+          {/* hosts */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Hosts Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Hosts:</th>
+                <td>
+                  <select value={this.state.hideHostSection} onChange={this.handleChange('hideHostSection', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                  &nbsp;
+                  You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-                  <h4>Option 2: Manually create the settings file and copy and paste the configuration in</h4>
+          {/* services */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Services Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Services:</th>
+                <td>
+                  <select value={this.state.hideServiceSection} onChange={this.handleChange('hideServiceSection', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                  &nbsp;
+                  You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-                  <div style={{ marginLeft: '30px' }}>
-                    Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
+          {/* history */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Alert History:</th>
+                <td>
+                  <select value={this.state.hideHistory} onChange={this.handleChange('hideHistory', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                  &nbsp;
+                  You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+              <tr>
+                <th>Alert History Chart:</th>
+                <td>
+                  <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Alert History Titles:</th>
+                <td>
+                  <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Alert History Days Back:</th>
+                <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
+              </tr>
+              <tr>
+                <th>Alert History max # items:</th>
+                <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* fun */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Audio and Visual</td>
+              </tr>
+            </thead>
+            <tbody>
+              
+
+              
+              <tr>
+                <th>Sound Effects:</th>
+                <td>
+                  <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                  </select>
+                </td>
+              </tr>
+              {this.state.playSoundEffects && <tr>
+                <th>CRITICAL sound:</th>
+                <td>
+                  <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} />
+                  <button className="SettingsTestButton" onClick={this.playCritical}>Test</button>
+                </td>
+              </tr>}
+              {this.state.playSoundEffects && <tr>
+                <th>WARNING sound:</th>
+                <td>
+                  <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} />
+                  <button className="SettingsTestButton" onClick={this.playWarning}>Test</button>
+                </td>
+              </tr>}
+              {this.state.playSoundEffects && <tr>
+                <th>OK sound:</th>
+                <td>
+                  <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} />
+                  <button className="SettingsTestButton" onClick={this.playOk}>Test</button>
+                </td>
+              </tr>}
+              {this.state.playSoundEffects && <tr>
+                <th></th>
+                <td>
+                  <div style={{ margin: '5px 0', fontSize: '0.8em' }}>* You can have multiple sound files for each state, and it will randomly choose one from the list. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
+                </td>
+              </tr>}
+              <tr>
+                <th>Speak Items:</th>
+                <td>
+                  <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                  </select>
+                </td>
+              </tr>
+              {this.state.speakItems && <tr>
+                <th>Choose Voice:</th>
+                <td>
+                  <select value={this.state.speakItemsVoice} onChange={this.handleChange('speakItemsVoice', 'string')}>
+                    {voiceOptions}
+                  </select>
+                  <button className="SettingsTestButton" onClick={this.playVoice}>Test</button>
+                </td>
+              </tr>}
+              <tr>
+                <th>Animated "Next Check In":</th>
+                <td>
+                  <select value={this.state.showNextCheckInProgressBar} onChange={this.handleChange('showNextCheckInProgressBar', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                  </select>
+                  &nbsp;
+                  Show a progress bar on each item that is a visual representation of the "Next check" time.
+                  (uses more CPU in the browser)
+                </td>
+              </tr>
+              
+              <tr>
+                <th>Bottom Menu:</th>
+                <td>
+                  <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Emojis:</th>
+                <td>
+                  <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* fun */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Top Menu</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th style={{ padding: '0px', height: '3px' }}></th>
+                <td style={{ padding: '0px', height: '3px' }}></td>
+              </tr>
+              <tr>
+                <th>Hamburger Menu:</th>
+                <td>
+                  <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Custom Logo:</th>
+                <td>
+                  <select value={this.state.customLogoEnabled} onChange={this.handleChange('customLogoEnabled', 'boolean')}>
+                      <option value={true}>On</option>
+                      <option value={false}>Off</option>
+                  </select>
+                </td>
+              </tr>
+              {this.state.customLogoEnabled && <tr>
+                <th>Custom Logo URL:</th>
+                <td>
+                  <input type="text" value={this.state.customLogoUrl} onChange={this.handleChange('customLogoUrl', 'string')} />
+                </td>
+              </tr>}
+              <tr>
+                <th>Doom Guy (Flynn):</th>
+                <td>
+                  <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
+                      <option value={true}>On</option>
+                      <option value={false}>Off</option>
+                  </select>
+                  <span style={{ color: 'orange' }}> This feature is temporarily broken while I refactor some code. He won't get angry or bloody.</span>
+                </td>
+              </tr>
+
+              {/** special colspan=2 section for doom guy settings */}
+              <tr>
+                <td colSpan="2">
+                  <div style={{ paddingLeft: '40px' }}>
+                    <table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
+                      <tbody>
+                        {this.state.flynnEnabled && <tr>
+                          <th>Doom Guy angry at</th>
+                          <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
+                        </tr>}
+                        {this.state.flynnEnabled && <tr>
+                          <th>Doom Guy bloody at</th>
+                          <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
+                        </tr>}
+                        {this.state.flynnEnabled && <tr>
+                          <th>Doom Guy CSS scale</th>
+                          <td>
+                            <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
+                            <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
+                          </td>
+                        </tr>}
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+              {/** end special colspan=2 section for doom guy settings */}
+
+              
+              
+            </tbody>
+          </table>
+
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td className="SettingsTableHeader">Deleting Cookie</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="font-size-0-8">
+                    <div>
+                    Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
+                    for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again.
+                    </div>
+                    <br />
+                    {this.props.isCookieLoaded && <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>}
+                    {this.props.isCookieLoaded && <span> <span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span></span>}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td className="SettingsTableHeader">Saving these settings on the server</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div className="font-size-0-8" style={{ margin: '5px' }}>
+                    By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
+                    so they can be shared with all users of NagiosTV as defaults when they load the page.
                     
-                    Then paste in this data:
+                    <h4>Option 1: If you have PHP enabled on your server</h4>
 
-                    <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy Settings to Clipboard for manual paste</button>
+                    <div style={{ marginLeft: '30px' }}>
 
-                    <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+                      You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
+                      the nagiostv folder and chown 777 client-settings.json so the Apache web server has rights to write to it.
+
+                      <pre>
+                      sudo touch client-settings.json<br />
+                      sudo chmod 777 client-settings.json
+                      </pre>
+
+                      After those steps, you can try this button:
+                      <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Automatic Save to Server</button><br />
+                      <br />
+
+                    </div>
+
+
+                    <h4>Option 2: Manually create the settings file and copy and paste the configuration in</h4>
+
+                    <div style={{ marginLeft: '30px' }}>
+                      Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
+                      
+                      Then paste in this data:
+
+                      <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy Settings to Clipboard for manual paste</button>
+
+                      <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+                    </div>
                   </div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
 
       </div>
     );
