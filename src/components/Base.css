@@ -130,7 +130,7 @@ and (max-width: 1768px) {
 /* service summary (17 hosts (0 problems)) */
 
 .service-summary {
-  margin-top: 10px;
+  margin-top: 13px;
   margin-bottom: 7px;
   clear: both;
   line-height: 1.5em;

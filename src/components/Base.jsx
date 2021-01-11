@@ -799,9 +799,10 @@ class Base extends Component {
 
         />
 
-        {/* spacer to counteract the floating header */}
+        {/* TODO: this is lame. let's get it in css...
+        Spacer to counteract the floating header */}
 
-        <div style={{ height: '45px' }}>
+        <div style={{ height: '40px' }}>
         </div>
 
         {/* wrapper around the main content */}
@@ -883,14 +884,16 @@ class Base extends Component {
                 />}
 
               </div>
-
+              <ScrollToTop />
             </Route>
+
             <Route path="/help">
               <Help
                 updateRootState={this.updateRootState}
                 isLeftPanelOpen={this.state.isLeftPanelOpen}
               />
             </Route>
+            
             <Route path="/settings">
               <Settings
                 ref="settings"
@@ -903,6 +906,7 @@ class Base extends Component {
                 hostlistError={this.state.hostlistError}
               />
             </Route>
+            
             <Route path="/update">
               <Update
                 updateRootState={this.updateRootState}
@@ -924,7 +928,7 @@ class Base extends Component {
         </div> {/* endwrapper around the main content */}
 
         </Router>
-        <ScrollToTop />
+        
         
       </div>
     );
