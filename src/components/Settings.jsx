@@ -545,25 +545,14 @@ class Settings extends Component {
                 </td>
               </tr>}
               <tr>
-                <th>Animated "Next Check In":</th>
+                <th>Progress bar for "Next Check In":</th>
                 <td>
                   <select value={this.state.showNextCheckInProgressBar} onChange={this.handleChange('showNextCheckInProgressBar', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
                   &nbsp;
-                  Show a progress bar on each item that is a visual representation of the "Next check" time.
-                  (uses more CPU in the browser)
-                </td>
-              </tr>
-              
-              <tr>
-                <th>Bottom Menu:</th>
-                <td>
-                  <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                  </select>
+                  Uses more CPU in the browser
                 </td>
               </tr>
               <tr>
@@ -582,7 +571,7 @@ class Settings extends Component {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Top Menu</td>
+                <td colSpan="2" className="SettingsTableHeader">Top and Bottom Menu</td>
               </tr>
             </thead>
             <tbody>
@@ -590,15 +579,7 @@ class Settings extends Component {
                 <th style={{ padding: '0px', height: '3px' }}></th>
                 <td style={{ padding: '0px', height: '3px' }}></td>
               </tr>
-              <tr>
-                <th>Hamburger Menu:</th>
-                <td>
-                  <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
-                  </select>
-                </td>
-              </tr>
+              
               <tr>
                 <th>Custom Logo:</th>
                 <td>
@@ -653,7 +634,24 @@ class Settings extends Component {
               </tr>
               {/** end special colspan=2 section for doom guy settings */}
 
-              
+              <tr>
+                <th>Hamburger Menu:</th>
+                <td>
+                  <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Bottom Menu:</th>
+                <td>
+                  <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
+                    <option value={true}>Hide</option>
+                    <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
               
             </tbody>
           </table>
