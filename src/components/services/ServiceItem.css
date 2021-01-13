@@ -1,6 +1,7 @@
 .ServiceItem {
 	position: relative;
 	cursor: pointer;
+	overflow: hidden;
 }
 .comment {
 	font-size: 0.8em;
