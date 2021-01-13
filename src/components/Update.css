@@ -49,8 +49,8 @@
 }
 
 .auto-update-button:disabled {
-  opacity: 0.6;
-  cursor: auto;
+  opacity: 0.6 !important;
+  cursor: default !important;
 }
 
 .update-help-message {
