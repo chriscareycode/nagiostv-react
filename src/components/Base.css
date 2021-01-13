@@ -155,7 +155,8 @@ and (max-width: 1768px) {
   overflow: hidden;
   max-height: 0px;
   opacity: 0;
-  transition: all 500ms ease-in;
+  transition: max-height 250ms ease-in, opacity 250ms ease-in;
+  transition-delay: 0ms;
 }
 .all-ok-item.hidden {
 
@@ -163,6 +164,7 @@ and (max-width: 1768px) {
 .all-ok-item.visible {
   max-height: 38px;
   opacity: 1;
+  transition-delay: 250ms;
 }
 
 /* these some-down-items live inside HostItems and ServiceItems */
