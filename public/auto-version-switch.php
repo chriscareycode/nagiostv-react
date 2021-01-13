@@ -26,7 +26,7 @@
   //echo "cwd is $cwd\n";
 
   // test if php is installed, report back to browser
-  if ($_GET['testphp'] == 'true') {
+  if (isset($_GET['testphp']) && $_GET['testphp'] == 'true') {
 
     // get the path name from the script filename with dirname()
     $data = [ 'name' => 'NagiosTV', 'script' => dirname($_SERVER['SCRIPT_FILENAME']), 'whoami' => $whoami ];
@@ -36,7 +36,7 @@
     }
     echo json_encode($data);
 
-  } elseif ($_GET['version']) {
+  } elseif (isset($_GET['version']) && $_GET['version']) {
 
     // capture requested version
     $version = $_GET['version'];
