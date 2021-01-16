@@ -356,11 +356,9 @@ class Update extends Component {
         </div>}
 
         {/* upgrade prep instructions */}
-        {this.state.testphpResult.whoami && <div>
-          <br />
-          <br />
-          * Automatic Update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
-          Run the following command on the server to change ownership to the Apache user:<br />
+        {this.state.testphpResult.whoami && <div className="update-server-setup-instructions">
+          Automatic Update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
+          Run the following command on the server to change ownership to the Apache user so the update routines can work:<br />
           <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
         </div>}
 

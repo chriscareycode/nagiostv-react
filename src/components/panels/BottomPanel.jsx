@@ -114,6 +114,8 @@ class BottomPanel extends Component {
 
   render() {
     
+    const isUpdateAvailable = this.props.latestVersion > this.props.currentVersion;
+
     return (
       <>
         <div className="BottomPanel">
@@ -126,7 +128,7 @@ class BottomPanel extends Component {
               <span className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
               {/* update available */}
-              {(this.props.latestVersion > this.props.currentVersion) && <span className="update-available"><a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a></span>}
+              {isUpdateAvailable && <span className="update-available"><a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a></span>}
             </div>
           </div>}
 
@@ -159,7 +161,7 @@ class BottomPanel extends Component {
 
             <div className="nav-sidebar-icon">
               <span>
-                <NavLink activeClassName='is-active' to="/update" onClick={this.clickedUpdate}>
+                <NavLink activeClassName='is-active' className={isUpdateAvailable ? 'update-available-button' : ''} to="/update" onClick={this.clickedUpdate}>
                   <FontAwesomeIcon
                     className="nav-sidebar-icon-icon"
                     icon={faUpload}

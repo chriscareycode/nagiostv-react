@@ -59,3 +59,12 @@
   background-color: #222;
   padding: 5px;
 }
+
+.update-server-setup-instructions {
+  background-color: #003a00;
+  margin-top: 20px;
+  border: 1px solid lime;
+  border-radius: 5px;
+  padding: 15px;
+
+}
