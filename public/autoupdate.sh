@@ -38,14 +38,15 @@ if [ ! $? -eq 0 ]; then
 	NAGIOSUSER="nagios"
 fi
 
+echo "===================================================================="
+echo "NagiosTV autoupdate script"
+echo "This script will allow you to downgrade or upgrade to any release"
+echo "on github at https://github.com/chriscareycode/nagiostv-react/releases"
+echo "===================================================================="
+
 # test if parameter was provided
 if [ -z "$1" ] || [ "$1" = "help" ] || [ "$1" = "HELP" ]
   then
-  	echo "===================================================================="
-  	echo "NagiosTV autoupdate script"
-  	echo "This script will allow you to downgrade or upgrade to any release"
-  	echo "on github at https://github.com/chriscareycode/nagiostv-react/releases"
-  	echo "===================================================================="
     echo ""
     echo "For this script to succeed, it needs permission to overwrite the nagiostv files and folders."
     echo "You will need to change the owner of the nagiostv folder to the currently logged in user with this command:"
@@ -63,11 +64,7 @@ if [ -z "$1" ] || [ "$1" = "help" ] || [ "$1" = "HELP" ]
     exit 1
 fi
 
-echo "===================================================================="
-echo "NagiosTV autoupdate script"
-echo "This script will allow you to downgrade or upgrade to any release"
-echo "on github at https://github.com/chriscareycode/nagiostv-react/releases"
-echo "===================================================================="
+
 
 # catch parameter of which version to update to
 VERSION=$1
