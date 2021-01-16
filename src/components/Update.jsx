@@ -279,7 +279,7 @@ class Update extends Component {
         {/* php test */}
         {this.state.testphpLoading && <div style={{ marginTop: '20px' }}>Testing your server compatibility...</div>}
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Auto update disabled.
+          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. One-click update disabled.  Use the manual update, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
         </div>}
 
         {/* TODO: test if we have write access to the folder and all the files that we need */}
@@ -314,7 +314,7 @@ class Update extends Component {
         </div>
 
         {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version disabled.
+          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version update disabled. Use the manual update, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
         </div>}
 
         {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
@@ -357,7 +357,7 @@ class Update extends Component {
 
         {/* upgrade prep instructions */}
         {this.state.testphpResult.whoami && <div className="update-server-setup-instructions">
-          Automatic Update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
+          One-click update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
           Run the following command on the server to change ownership to the Apache user so the update routines can work:<br />
           <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
         </div>}
