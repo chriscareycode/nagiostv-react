@@ -87,15 +87,11 @@ class HostItems extends Component {
             //console.log(e, i);
 
             // find comment for this hostitem
-            let comment = '';
-            let comment_author = '';
-            let comment_entry_time = '';
             const commentlist = this.props.commentlist;
+            const comments = [];
             Object.keys(commentlist).forEach((id) => {
               if (commentlist[id].comment_type === 1 && e.name === commentlist[id].host_name) {
-                comment = commentlist[id].comment_data;
-                comment_author = commentlist[id].author;
-                comment_entry_time = commentlist[id].entry_time;
+                comments.push(commentlist[id]);
               }
             });
 
@@ -109,9 +105,7 @@ class HostItems extends Component {
                 <HostItem
                   settings={this.props.settings}
                   hostItem={e}
-                  comment={comment}
-                  comment_author={comment_author}
-                  comment_entry_time={comment_entry_time}
+                  comments={comments}
                 />
               </CSSTransition>
             );

@@ -133,8 +133,12 @@ class ServiceItem extends Component {
             {(e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
           </div>
 
-          {this.props.comment && <div className="comment">
-            Comment: <span className="comment-color">({this.props.comment_author}): {formatDateTimeAgo(this.props.comment_entry_time)} ago - {this.props.comment}</span>
+          {this.props.comments.length > 0 && <div>
+            {this.props.comments.reverse().map((comment, i) => (
+              <div className="comment" key={i}>
+              Comment: <span className="comment-color">({comment.author}): {formatDateTimeAgo(comment.entry_time)} ago - {comment.comment_data}</span>
+              </div>
+            ))}
           </div>}
 
           {this.props.settings.showNextCheckInProgressBar && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}

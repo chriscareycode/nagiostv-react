@@ -91,15 +91,11 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
           //console.log(e, i);
 
           // find comment for this serviceitem
-          let comment = '';
-          let comment_author = '';
-          let comment_entry_time = 0;
+          const comments = [];
           //const commentlist = commentlist;
           Object.keys(commentlist).forEach((id) => {
             if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
-              comment = commentlist[id].comment_data;
-              comment_author = commentlist[id].author;
-              comment_entry_time = commentlist[id].entry_time;
+              comments.push(commentlist[id]);
             }
           });
 
@@ -114,9 +110,7 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
                 ref={nodeRef}
                 settings={settings}
                 serviceItem={e}
-                comment={comment}
-                comment_author={comment_author}
-                comment_entry_time={comment_entry_time}
+                comments={comments}
               />
             </CSSTransition>
             
