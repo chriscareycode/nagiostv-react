@@ -54,8 +54,9 @@ export function convertHostObjectToArray(hostlist, hostSortOrder) {
     Object.keys(hostlist).forEach((k) => {
       // if host status is NOT UP
       // or host is flapping,
+      // or host is scheduled downtime
       // we add it to the array
-      if (hostlist[k].status !== 2 || hostlist[k].is_flapping) {
+      if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
         hostProblemsArray.push(hostlist[k]);
       }
     });
@@ -84,9 +85,11 @@ export function convertServiceObjectToArray(servicelist, serviceSortOrder) {
       Object.keys(servicelist[k]).forEach((l) => {
         // if service status is NOT OK
         // or service is flapping,
+        // or host is scheduled downtime
         // we add it to the array
         if (servicelist[k][l].status !== 2 ||
-          servicelist[k][l].is_flapping) {
+          servicelist[k][l].is_flapping ||
+          servicelist[k][l].scheduled_downtime_depth > 0) {
           // add it to the array of service problems
           serviceProblemsArray.push(servicelist[k][l]);
         }
