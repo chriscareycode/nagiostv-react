@@ -83,10 +83,11 @@
     background-color: #333;
     color: orange;
     font-weight: bold;
+    font-size: 0.8em !important;
     border: 2px solid orange;
     padding: 5px 10px;
     cursor: pointer;
-    margin-left: 10px;
+    margin-top: 8px;
 }
 
 .SettingsSaveToServerButton {

@@ -153,7 +153,10 @@ class Settings extends Component {
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
 
-    axios.post('save-client-settings.php', settingsObject).then(response => {
+    // convert the settingsObject into a string, where we also pretty-print the json with carriage returns and spaces
+    const settingsString = JSON.stringify(settingsObject, null, 2);
+
+    axios.post('save-client-settings.php', settingsString).then(response => {
       //console.log('saved to server', response);
       
       if (typeof response.data === 'object') {
@@ -256,8 +259,43 @@ class Settings extends Component {
 
         <div className="settings-wrap">
 
-
           {/*<div className="settings-top-space-for-header"></div>*/}
+
+          {/* server settings */}
+          {this.props.isRemoteSettingsLoaded && <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td className="SettingsTableHeader">
+                <span className="color-orange">Server settings detected</span>
+                &nbsp;
+                - A client-settings.json file was successfully loaded from the server
+                </td>
+              </tr>
+            </thead>
+          </table>}
+
+          {/* cookie settings */}
+          {this.props.isCookieLoaded && <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td className="SettingsTableHeader">
+                <span><span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span> - This browser has custom NagiosTV settings saved to a cookie</span>
+                &nbsp;
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="">
+                  {this.props.isRemoteSettingsLoaded && <div>A server settings file client-settings.json was detected, and this browser also has local settings saved to a cookie.<br />The local cookie settings are overriding the server settings.<br />If you choose to delete the cookie, you will go back to the default settings configured on the server.<br />After you click the button, make sure to refresh the page.</div>}
+                  {this.props.isRemoteSettingsLoaded === false && <div>If you choose to delete the cookie, you will go back to NagiosTV defaults since a client-settings.json file was not found on the server.<br />After you click the button, make sure to refresh the page.</div>}
+                  <div>
+                    <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>}
 
           {/* main settings */}
           <table className="SettingsTable">
@@ -656,28 +694,9 @@ class Settings extends Component {
             </tbody>
           </table>
 
-          <table className="SettingsTable">
-            <thead>
-              <tr>
-                <td className="SettingsTableHeader">Deleting Cookie</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div className="font-size-0-8">
-                    <div>
-                    Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-                    for all clients, but they can still be customized individually. Delete the cookie and refresh the page to fetch server setting defaults again.
-                    </div>
-                    <br />
-                    {this.props.isCookieLoaded && <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>}
-                    {this.props.isCookieLoaded && <span> <span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span></span>}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          
+
+          
 
           <table className="SettingsTable">
             <thead>
@@ -689,9 +708,16 @@ class Settings extends Component {
               <tr>
                 <td>
                   <div className="font-size-0-8" style={{ margin: '5px' }}>
-                    By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
+                    <div>
+                      By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
                     so they can be shared with all users of NagiosTV as defaults when they load the page.
-                    
+                    </div>
+                    <br />
+                    <div>
+                      Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
+                      for all clients, but they can still be customized individually with settings saved in the cookie. Delete the cookie and refresh the page to fetch server setting defaults again.
+                    </div>
+
                     <h4>Option 1: If you have PHP enabled on your server</h4>
 
                     <div style={{ marginLeft: '30px' }}>
@@ -705,7 +731,7 @@ class Settings extends Component {
                       </pre>
 
                       After those steps, you can try this button:
-                      <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Automatic Save to Server</button><br />
+                      <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save settings to server</button><br />
                       <br />
 
                     </div>
@@ -715,12 +741,10 @@ class Settings extends Component {
 
                     <div style={{ marginLeft: '30px' }}>
                       Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
-                      
-                      Then paste in this data:
 
-                      <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy Settings to Clipboard for manual paste</button>
+                      <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
 
-                      <div className="raw-json-settings">{JSON.stringify(settingsObject)}</div>
+                      <div className="raw-json-settings">{JSON.stringify(settingsObject, null, 2)}</div>
                     </div>
                   </div>
                 </td>

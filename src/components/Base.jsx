@@ -903,6 +903,7 @@ class Base extends Component {
                 settingsFields={this.settingsFields}
                 updateRootState={this.updateRootState}
                 isCookieLoaded={this.state.isCookieLoaded}
+                isRemoteSettingsLoaded={this.state.isRemoteSettingsLoaded}
                 hostlistError={this.state.hostlistError}
               />
             </Route>
