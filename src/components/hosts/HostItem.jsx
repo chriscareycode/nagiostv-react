@@ -128,8 +128,12 @@ class HostItem extends Component {
           <div className="next-check-in">
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
             
-            {(e.next_check > nowTime) && <span>{translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
-            {(e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
+            {/* active checks get "Next check in 5m 22s" */}
+            {(e.check_type === 0 && e.next_check > nowTime) && <span>{translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
+            {(e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
+
+            {/* passive checks get "Last check 5m ago" */}
+            {e.check_type === 1 && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
           </div>
 
           {/* comments */}
@@ -141,7 +145,7 @@ class HostItem extends Component {
             ))}
           </div>}
 
-          {this.props.settings.showNextCheckInProgressBar && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
+          {(e.check_type === 0 && this.props.settings.showNextCheckInProgressBar) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
 
         </div>
       </div>
