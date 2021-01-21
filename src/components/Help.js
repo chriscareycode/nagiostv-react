@@ -28,6 +28,8 @@ const Help = (props) => {
       <div>Website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferer">https://nagiostv.com</a></div>
       <br />
       <div>GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferer">https://github.com/chriscareycode/nagiostv-react</a></div>
+      <br />
+      <div>Follow NagiosTV on Twitter for product updates: <a href="https://twitter.com/NagiosTV" target="_blank" rel="noopener noreferer">https://twitter.com/NagiosTV</a></div>
       
       {/*
       <div className="help-bottom-area">
