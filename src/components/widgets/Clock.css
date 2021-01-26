@@ -7,3 +7,18 @@
   transform: translateY(-50%);
 }
 
+@media only screen and (max-device-width: 480px) {
+  .Clock {
+    display:none;
+  }
+}
+
+@media only screen 
+    and (device-width : 375px) 
+    and (device-height : 812px) 
+    and (-webkit-device-pixel-ratio : 3) {
+
+  .Clock {
+    display:none;
+  }
+}
