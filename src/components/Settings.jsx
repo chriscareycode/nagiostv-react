@@ -179,7 +179,7 @@ class Settings extends Component {
   copySettingsToClipboard = () => {
     const settingsObject = {};
     this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-    clipboard.writeText(JSON.stringify(settingsObject));
+    clipboard.writeText(JSON.stringify(settingsObject, null, 2));
   };
 
   playCritical() {
