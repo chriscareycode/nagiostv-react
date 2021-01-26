@@ -30,14 +30,16 @@ import App from './App';
 // TODO: remove this from the project after a few versions.
 // Just to help clear out any client side cache that's hard as heck to clear.
 // Clear cache in the browser does not do it.
+
 try {
-    caches.keys().then(function(names) {
-        for (let name of names)
-            caches.delete(name);
-    });
+  caches.keys().then(function(names) {
+    for (let name of names)
+      caches.delete(name);
+  });
 } catch (e) {
-    console.log('Had a problem clearing the serviceWorker cache.');
+  console.log('Had a problem clearing the serviceWorker cache.');
 }
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 //registerServiceWorker();
