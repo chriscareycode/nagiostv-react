@@ -102,24 +102,24 @@ class HistoryChart extends Component {
     let returnArray = [];
 
     // trying to fix highcharts bug by adding first and last hour on the hourly chart
-    if (this.props.groupBy === 'hour') {
-      // only if there is not already an entry for the last hour group
-      if (!groupByData.hasOwnProperty(max)) {
-        returnArray.push({ x: max, y: 0, xNice: new Date(max) });
-      }
-    }
+    // if (this.props.groupBy === 'hour') {
+    //   // only if there is not already an entry for the last hour group
+    //   if (!groupByData.hasOwnProperty(max)) {
+    //     returnArray.push({ x: max, y: 0, xNice: new Date(max) });
+    //   }
+    // }
 
     Object.keys(groupByData).forEach(group => {
       returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
     });
 
     // trying to fix highcharts bug by adding first and last hour on the hourly chart
-    if (this.props.groupBy === 'hour') {
-      // only if there is not already an entry for the last hour group
-      if (!groupByData.hasOwnProperty(min)) {
-        returnArray.push({ x: min, y: 0, xNice: new Date(min) });
-      }
-    }
+    // if (this.props.groupBy === 'hour') {
+    //   // only if there is not already an entry for the last hour group
+    //   if (!groupByData.hasOwnProperty(min)) {
+    //     returnArray.push({ x: min, y: 0, xNice: new Date(min) });
+    //   }
+    // }
 
     return returnArray;
   }
@@ -137,8 +137,7 @@ class HistoryChart extends Component {
 
     const groupBy = this.props.groupBy;
 
-    //console.log('updateSeriesFromProps', groupBy);
-    //console.log('this.props.alertlist', this.props.alertlist);
+    //console.log('updateSeriesFromProps() this.props.alertlist', groupBy, this.props.alertlist);
     
     // group the alerts into an object with keys that are for each day
     // this is a super awesome one liner for grouping
@@ -146,6 +145,7 @@ class HistoryChart extends Component {
     // OK
     const alertOks = this.props.alertlist.filter(alert => alert.state === 1 || alert.state === 8);
     const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+    //console.log('updateSeriesFromProps() groupedOks', groupBy, groupedOks);
 
     // WARNING
     const alertWarnings = this.props.alertlist.filter(alert => alert.state === 16);
@@ -214,7 +214,7 @@ class HistoryChart extends Component {
         xAxis: {
           tickInterval: 3600 * 1000,
           min: min,
-          max: max
+          max: max + 1000 * 1000 // This 1000 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
           // show 1 hr ago instead of time
           // labels: {
           //   formatter: (e) => {
