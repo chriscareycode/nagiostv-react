@@ -2,11 +2,21 @@
 
 ![Display](https://nagiostv.com/images/nagiostv-0.6.8b.png)
 
-Compatible with Nagios Core 4, Nagios XI, and MK Livestatus
+Monitor your infrastructure with style.
 
-NagiosTV is a user interface (UI) for the Nagios monitoring system https://www.nagios.org
+NagiosTV is a user interface add-on for the Nagios monitoring system https://www.nagios.org
 
-This user interface is designed to be viewed on a TV, phone, or desktop to quickly see if all your services are up or down. This is not meant to be a replacement for the entire Nagios web interface, but a way to just look at the “what's down?” part.
+Compatible with Nagios Core 4, Nagios XI, and MK Livestatus.
+
+Bubble up the most important stuff to the top. Focus only on the work that needs to be done.
+
+Large bold fonts and bright colors - so it's easily read from across the room.
+
+A great conversation piece during an outage.
+
+Originally designed to be viewed on a wall mounted TV, but also looks great on your phone or desktop monitor.
+
+This is not meant to be a replacement for the entire Nagios web interface, but a way to just look at the “what's down?” part.
 
 Some of the features:
 
@@ -113,16 +123,11 @@ Now with Nagios 4, Nagios Core 4.0.7 and newer comes with [new JSON CGI's built-
 
 This project is the latest in many rewrites of NagiosTV. It uses React, connecting to the new Nagios CGIs. More recently, MK Livestatus connector was added.
 
-
-Help
-------------
-Try out the discussions area https://github.com/chriscareycode/nagiostv-react/discussions
-
 Development
 -------------
 Check out README-development.md for instructions to build and run in development mode
 
-Credits
+Created by
 ------------
 NagiosTV https://nagiostv.com
 Copyright (C) 2008-2021 Chris Carey https://chriscarey.com
