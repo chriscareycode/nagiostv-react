@@ -96,6 +96,13 @@ class ServiceItem extends Component {
     const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     const nowTime = new Date().getTime();
 
+    // When passive freshold check is done, this is reported as an active check (check_type=0)
+    // So we need another reliable way to determine if this is a stale passive alert.
+    // Some options we can use:
+    // check_type === 1
+    // checks_enabled === false
+    const isPassive = e.check_type === 1;
+
     return (
       
       <div className={`ServiceItem`} onClick={this.mouseClick}>
@@ -130,11 +137,11 @@ class ServiceItem extends Component {
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
             
             {/* active checks get "Next check in 5m 22s" */}
-            {(e.check_type === 0 && e.next_check > nowTime) && <span>{translate('Next check in', language)} <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
-            {(e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
+            {(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>{translate('Next check in', language)} <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
+            {(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
 
             {/* passive checks get "Last check 5m ago" */}
-            {e.check_type === 1 && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
+            {isPassive && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
 
           </div>
 
