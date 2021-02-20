@@ -16,6 +16,7 @@
   font-size: 1.0em;
   padding: 5px;
   border-radius: 5px;
+  min-height: 33px;
 }
 
 .ServiceItemError {
