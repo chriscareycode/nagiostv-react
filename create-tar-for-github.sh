@@ -4,6 +4,7 @@ npm run build
 # remove settings that should not be in the build
 rm build/client-settings.json
 rm build/connectors/livestatus-settings.ini
+rm build/node/settings-nagios.js
 
 mkdir -p releases/nagiostv
 rm releases/nagiostv-0.0.0.tar.gz
