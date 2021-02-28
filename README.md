@@ -1,6 +1,6 @@
 # NagiosTV
 
-![Display](https://nagiostv.com/images/nagiostv-0.6.8b.png)
+![Display](https://nagiostv.com/nagiostv-0.7.1-shot1.png)
 
 Monitor your infrastructure with style.
 
