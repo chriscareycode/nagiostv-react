@@ -110,6 +110,15 @@ To update this way, go into your nagiostv/ folder and run this command for more 
 $ sh autoupdate.sh
 ```
 
+FAQ - Bypassing Authentication
+-------------
+This is probably the most common question I get - "How do I disable or bypass authentication?"
+
+There are some circumstances where you may want to bypass authentication. For example, if you are running the display on a Television that would be difficult to deal with the login prompt. It is worth noting here that removing authentication for NagiosTV can decrease the security of your Nagios installation. If you do this, make sure your server is private and not connected to the Internet.
+
+I have done a writeup on how to bypass authentication over on the NagiosTV.com website: https://nagiostv.com/bypassing-authentication
+
+
 History
 ------------
 NagiosTV was started around 2008. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
