@@ -26,13 +26,14 @@ import $ from 'jquery';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 class AlertSection extends Component {
 
   state = {
     isFetching: false,
     alertlistError: false,
+    alertlistErrorCount: 0,
     alertlistErrorMessage: '',
     alertlistLastUpdate: 0,
     alertlist: [],
@@ -124,6 +125,7 @@ class AlertSection extends Component {
           this.setState({
             isFetching: false,
             alertlistError: true,
+            alertlistErrorCount: this.state.alertlistErrorCount + 1,
             alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
           });
         }
@@ -146,6 +148,7 @@ class AlertSection extends Component {
         this.setState({
           isFetching: false,
           alertlistError: false,
+          alertlistErrorCount: 0,
           alertlistErrorMessage: '',
           alertlistLastUpdate: new Date().getTime(),
           alertlist, // it's already an array
@@ -154,10 +157,13 @@ class AlertSection extends Component {
       }
 
     }).fail((jqXHR, textStatus, errorThrown) => {
-      
-      this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'alertlistError', 'alertlistErrorMessage');
 
-      this.setState({ isFetching: false });
+      this.setState({
+        isFetching: false,
+        alertlistError: true,
+        alertlistErrorCount: this.state.alertlistErrorCount + 1,
+        alertlistErrorMessage: 'ERROR: CONNECTION REFUSED to ' + url
+      });
 
     });
   }
@@ -213,7 +219,10 @@ class AlertSection extends Component {
           />
 
           {/* loading spinner */}
-          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchAlertFrequency}s</span>
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}>
+            {(!this.props.isDemoMode && this.state.alertlistError) && <span style={{ color: 'yellow'}}>{this.state.alertlistErrorCount} x <FontAwesomeIcon icon={faExclamationTriangle} /> &nbsp; </span>}
+            <FontAwesomeIcon icon={faSync} /> {this.props.fetchAlertFrequency}s
+          </span>
 
         </div>
 
@@ -263,7 +272,7 @@ class AlertSection extends Component {
         </div>}
 
         {/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.alertlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
+        {(!this.props.isDemoMode && this.state.alertlistError && this.state.alertlistErrorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
 
         {/* No alerts */}
         {!this.state.alertlistError && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>

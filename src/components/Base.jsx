@@ -838,7 +838,6 @@ class Base extends Component {
                   handleCheckboxChange={this.handleCheckboxChange}
                   settingsObject={settingsObject}
                   commentlist={this.state.commentlist}
-                  handleFetchFail={this.handleFetchFail}
                   fetchFrequency={this.state.fetchFrequency}
                 />} 
 
@@ -856,7 +855,6 @@ class Base extends Component {
                   handleCheckboxChange={this.handleCheckboxChange}
                   settingsObject={settingsObject}
                   commentlist={this.state.commentlist}
-                  handleFetchFail={this.handleFetchFail}
                   fetchFrequency={this.state.fetchFrequency}
                 />}
                             
@@ -880,7 +878,6 @@ class Base extends Component {
                   baseUrl={this.state.baseUrl}
                   hostgroupFilter={this.state.hostgroupFilter}
                   fetchAlertFrequency={this.state.fetchAlertFrequency}
-                  handleFetchFail={this.handleFetchFail}
                 />}
 
               </div>

@@ -32,7 +32,7 @@ import $ from 'jquery';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 //import './HostSection.css';
 
@@ -41,6 +41,7 @@ class HostSection extends Component {
   state = {
     isFetching: false,
     hostlistError: false,
+    hostlistErrorCount: 0,
     hostlistErrorMessage: '',
     hostlistLastUpdate: 0,
     hostlist: {},
@@ -113,6 +114,7 @@ class HostSection extends Component {
         this.setState({
           isFetching: false,
           hostlistError: true,
+          hostlistErrorCount: this.state.hostlistErrorCount + 1,
           hostlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
         });
         return;
@@ -149,6 +151,7 @@ class HostSection extends Component {
           this.setState({
             isFetching: false,
             hostlistError: false,
+            hostlistErrorCount: 0,
             hostlistErrorMessage: '',
             hostlistLastUpdate: new Date().getTime(),
             hostlist,
@@ -159,8 +162,13 @@ class HostSection extends Component {
 
     }).fail((jqXHR, textStatus, errorThrown) => {
 
-      this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'hostlistError', 'hostlistErrorMessage');
-      this.setState({ isFetching: false });
+      this.setState({
+        isFetching: false,
+        hostlistError: true,
+        hostlistErrorCount: this.state.hostlistErrorCount + 1,
+        hostlistErrorMessage: 'ERROR: CONNECTION REFUSED to ' + url
+      });
+
     });
   }
 
@@ -271,11 +279,14 @@ class HostSection extends Component {
           */}
 
           {/* loading spinner */}
-          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s</span>
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}>
+            {(!this.props.isDemoMode && this.state.hostlistError) && <span style={{ color: 'yellow'}}>{this.state.hostlistErrorCount} x <FontAwesomeIcon icon={faExclamationTriangle} /> &nbsp; </span>}
+            <FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s
+          </span>
         </div>
 
         {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.hostlistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
+        {(!this.props.isDemoMode && this.state.hostlistError && this.state.hostlistErrorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
 
         {/* hostitems list */}
         <HostItems

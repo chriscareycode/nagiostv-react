@@ -32,13 +32,14 @@ import $ from 'jquery';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 class ServiceSection extends Component {
 
   state = {
     isFetching: false,
     servicelistError: false,
+    servicelistErrorCount: 0,
     servicelistErrorMessage: '',
     servicelistLastUpdate: 0,
     servicelist: {},
@@ -111,6 +112,7 @@ class ServiceSection extends Component {
         this.setState({
           isFetching: false,
           servicelistError: true,
+          servicelistErrorCount: this.state.servicelistErrorCount + 1,
           servicelistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
         });
         return;
@@ -137,6 +139,7 @@ class ServiceSection extends Component {
           this.setState({
             isFetching: false,
             servicelistError: true,
+            servicelistErrorCount: this.state.servicelistErrorCount + 1,
             servicelistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
             servicelistLastUpdate: new Date().getTime(),
             servicelist,
@@ -148,6 +151,7 @@ class ServiceSection extends Component {
           this.setState({
             isFetching: false,
             servicelistError: false,
+            servicelistErrorCount: 0,
             servicelistErrorMessage: '',
             servicelistLastUpdate: new Date().getTime(),
             servicelist,
@@ -158,9 +162,12 @@ class ServiceSection extends Component {
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       
-      this.props.handleFetchFail(this, jqXHR, textStatus, errorThrown, url, 'servicelistError', 'servicelistErrorMessage');
-    
-      this.setState({ isFetching: false });
+      this.setState({
+        isFetching: false,
+        servicelistError: true,
+        servicelistErrorCount: this.state.servicelistErrorCount + 1,
+        servicelistErrorMessage: 'ERROR: CONNECTION REFUSED to ' + url
+      });
 
     });
   }
@@ -276,12 +283,15 @@ class ServiceSection extends Component {
           */}
 
           {/* loading spinner */}
-          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}><FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s</span>
+          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}>
+            {(!this.props.isDemoMode && this.state.servicelistError) && <span style={{ color: 'yellow'}}>{this.state.servicelistErrorCount} x <FontAwesomeIcon icon={faExclamationTriangle} /> &nbsp; </span>}
+            <FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s
+          </span>
 
         </div>
         
         {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.servicelistError) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
+        {(!this.props.isDemoMode && this.state.servicelistError && this.state.servicelistErrorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.servicelistErrorMessage}</div>}
 
         <ServiceItems
           serviceProblemsArray={this.state.serviceProblemsArray}

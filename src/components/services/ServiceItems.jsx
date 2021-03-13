@@ -73,9 +73,9 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
   return (
     <div className="ServiceItems">
 
-      {!servicelistError && <div className={`all-ok-item ${serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
+      <div className={`all-ok-item ${serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
         <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
-      </div>}
+      </div>
 
       <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
         <div>
