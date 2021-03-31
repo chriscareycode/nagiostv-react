@@ -163,10 +163,11 @@ export function momentFormatDateTime(date, locale, format) {
     var m = moment(date).locale(locale).format(format);
     return m;
   } else {
-    return '';
+    return 'Unknown format';
   }
 }
 
+// TODO: rename this to formatDateTimeDHMS
 export function formatDateTime(date) {
 	var m = moment(date);
   const diff = m.diff(moment());
