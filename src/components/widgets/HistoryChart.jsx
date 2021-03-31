@@ -166,7 +166,7 @@ class HistoryChart extends Component {
 
     // calculate min and max for hourly chart
     const min = d.getTime() - (86400 * 1000);
-    const max = d.getTime();
+    const max = d.getTime() + (0 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
     //console.log('min max', min, max);
 
     // HighCharts setData
@@ -214,7 +214,7 @@ class HistoryChart extends Component {
         xAxis: {
           tickInterval: 3600 * 1000,
           min: min,
-          max: max + 1000 * 1000 // This 1000 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
+          max: max
           // show 1 hr ago instead of time
           // labels: {
           //   formatter: (e) => {
