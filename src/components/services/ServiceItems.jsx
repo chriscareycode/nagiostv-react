@@ -20,6 +20,7 @@ import React from 'react';
 import { translate } from '../../helpers/language';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ServiceItem from './ServiceItem';
+import _ from 'lodash';
 
 // icons
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -66,6 +67,16 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
     return true;
   });
 
+  console.log('ServiceItems.tsx filteredServiceProblemsArray is', filteredServiceProblemsArray);
+
+  //const groupedItems = keyBy(filteredServiceProblemsArray, 'host_name');
+  const groupedServiceProblems = _(filteredServiceProblemsArray)
+                        .groupBy(x => x.host_name)
+                        .map((val, key) => ({ id: key, items: val }))
+                        .value();
+
+  console.log('ServiceItems.tsx groupedServiceProblems is', groupedServiceProblems);
+
   const howManyHidden = serviceProblemsArray.length - filteredServiceProblemsArray.length;
   const showSomeDownItems = serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
   const { language } = settings;
@@ -86,37 +97,46 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
 
       <TransitionGroup>
 
-        {filteredServiceProblemsArray.map((e, i) => {
-          //console.log('ServiceItem item');
-          //console.log(e, i);
+        {groupedServiceProblems.map((groupItem, groupIndex) => {
+          return groupItem.items.map((e, i) => {
+            //console.log('ServiceItem item');
+            //console.log(e, i);
+  
+            // find comment for this serviceitem
+            const comments = [];
+            //const commentlist = commentlist;
+            Object.keys(commentlist).forEach((id) => {
+              if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
+                comments.push(commentlist[id]);
+              }
+            });
+  
+            return (
+  
+              <CSSTransition
+                key={e.host_name + '-' + e.description}
+                classNames="example"
+                timeout={{ enter: 500, exit: 500 }}
+              >
+                <>
+                  {i === 0 && <div className="service-item-group-host">
+                    <span style={{ color: 'orange' }}>{groupItem.id}</span> <strong>{groupItem.items.length}</strong> services not OK
+                  </div>}
 
-          // find comment for this serviceitem
-          const comments = [];
-          //const commentlist = commentlist;
-          Object.keys(commentlist).forEach((id) => {
-            if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
-              comments.push(commentlist[id]);
-            }
-          });
-
-          return (
-
-            <CSSTransition
-              key={e.host_name + '-' + e.description}
-              classNames="example"
-              timeout={{ enter: 500, exit: 500 }}
-            >
-              <ServiceItem
-                ref={nodeRef}
-                settings={settings}
-                serviceItem={e}
-                comments={comments}
-              />
-            </CSSTransition>
-            
-          );
-          
+                  <ServiceItem
+                    ref={nodeRef}
+                    settings={settings}
+                    serviceItem={e}
+                    comments={comments}
+                  />
+                </>
+              </CSSTransition>
+              
+            );
+          })
         })}
+
+        
       </TransitionGroup>
     </div>
   );
