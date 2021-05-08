@@ -77,6 +77,18 @@ class ServiceSection extends Component {
     this.isComponentMounted = false;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.serviceSortOrder !== nextProps.serviceSortOrder) {
+      this.reSortTheData();
+    }
+    return true;
+  }
+
+  reSortTheData = () => {
+    // flip the data upside down
+    this.setState({ serviceProblemsArray: this.state.serviceProblemsArray.reverse() });
+  };
+
   fetchServiceData() {
 
     // if we are offline, let's just skip
@@ -127,7 +139,7 @@ class ServiceSection extends Component {
       }
 
       // convert the service object into an array (and sort it)
-      const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.state.serviceSortOrder);
+      const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.props.serviceSortOrder);
 
       // check for old stale data (detect if nagios is down)
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);

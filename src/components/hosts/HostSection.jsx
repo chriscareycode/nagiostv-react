@@ -80,6 +80,18 @@ class HostSection extends Component {
     this.isComponentMounted = false;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.hostSortOrder !== nextProps.hostSortOrder) {
+      this.reSortTheData();
+    }
+    return true;
+  }
+
+  reSortTheData = () => {
+    // flip the data upside down
+    this.setState({ hostProblemsArray: this.state.hostProblemsArray.reverse() });
+  };
+
   fetchHostData() {
 
     // if we are offline, let's just skip
