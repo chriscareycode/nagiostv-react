@@ -128,7 +128,11 @@ class BottomPanel extends Component {
               <span className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
               {/* update available */}
-              {isUpdateAvailable && <span className="update-available"><a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a></span>}
+              {isUpdateAvailable && (
+              <span className="update-available">
+                <a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a>
+              </span>
+              )}
             </div>
           </div>}
 
