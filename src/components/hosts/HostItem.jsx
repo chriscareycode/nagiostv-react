@@ -106,8 +106,6 @@ class HostItem extends Component {
       <div className={`HostItem`} onClick={this.mouseClick}>
         <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
-            {/* max-check-attempts */}
-            {isSoft && <span className="max-check-attempts">{e.current_attempt}/{e.max_attempts}</span>}
             {/* soft spinner */}
             {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
             {/* notifications disabled */}
