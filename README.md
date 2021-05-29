@@ -42,11 +42,11 @@ Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases or you can just copy and paste the command below to get it:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.3/nagiostv-0.7.3.tar.gz
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.4/nagiostv-0.7.4.tar.gz
 ```
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
 ```console
-$ tar xvfz nagiostv-0.7.3.tar.gz
+$ tar xvfz nagiostv-0.7.4.tar.gz
 ```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html`.
 ```console
@@ -96,8 +96,8 @@ Then pretty much the same process as above. Download and overwrite the nagiostv 
 Remember your web ui destination folder `/usr/local/nagios/share/nagiostv/` may vary depending on your Nagios install.
 You can do it on the box with:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.3/nagiostv-0.7.3.tar.gz
-$ tar xvfz nagiostv-0.7.3.tar.gz
+$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.4/nagiostv-0.7.4.tar.gz
+$ tar xvfz nagiostv-0.7.4.tar.gz
 $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
