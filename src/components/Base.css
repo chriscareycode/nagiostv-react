@@ -162,7 +162,7 @@ and (max-width: 1768px) {
 
 }
 .all-ok-item.visible {
-  max-height: 38px;
+  max-height: 120px;
   opacity: 1;
   transition-delay: 250ms;
 }
@@ -177,7 +177,8 @@ and (max-width: 1768px) {
   border-radius: 5px;
   overflow: hidden;
   max-height: 0px;
-  opacity: 0;
+  opacity: 1;
+  transition-delay: 0ms;
   transition: all 500ms ease-in;
 }
 .some-down-items > div {
@@ -187,7 +188,7 @@ and (max-width: 1768px) {
 
 }
 .some-down-items.visible {
-  max-height: 40px;
+  max-height: 120px;
   opacity: 1;
 }
 .some-down-hidden-text {
