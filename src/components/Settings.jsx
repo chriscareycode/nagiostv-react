@@ -419,6 +419,10 @@ class Settings extends Component {
                       <option value={'1em'}>1em</option>
                       <option value={'1.1em'}>1.1em</option>
                       <option value={'1.2em'}>1.2em</option>
+                      <option value={'1.5em'}>1.5em</option>
+                      <option value={'2em'}>2em</option>
+                      <option value={'3em'}>3em</option>
+                      <option value={'4em'}>4em</option>
                   </select>
                 </td>
               </tr>
