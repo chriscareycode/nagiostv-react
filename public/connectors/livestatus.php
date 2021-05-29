@@ -256,6 +256,9 @@ if ($query_string["query"] == "hostlist") {
         if ($item["acknowledged"] === 0) { $item["problem_has_been_acknowledged"] = false; }
         if ($item["acknowledged"] === 1) { $item["problem_has_been_acknowledged"] = true; }
 
+        # add max_attempts from max_check_attempts
+        if ($item["max_check_attempts"]) { $item["max_attempts"] = $item["max_check_attempts"]; }
+
         # attach the hostitem into the list
         $list[$item["name"]] = $item;
     }
@@ -331,6 +334,9 @@ if ($query_string["query"] == "hostlist") {
         if ($item["acknowledged"] === 0) { $item["problem_has_been_acknowledged"] = false; }
         if ($item["acknowledged"] === 1) { $item["problem_has_been_acknowledged"] = true; }
 
+        # add max_attempts from max_check_attempts
+        if ($item["max_check_attempts"]) { $item["max_attempts"] = $item["max_check_attempts"]; }
+        
         # set item into the correct spot in the JSON
         $list[ $item["host_name"] ][ $item["display_name"] ] = $item;
     }
