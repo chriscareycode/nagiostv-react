@@ -106,6 +106,9 @@ class ServiceItem extends Component {
     return (
       
       <div className={`ServiceItem`} onClick={this.mouseClick}>
+
+        {this.props.groupItemItemsIndex === 0 && <div className={`service-item-host-name ${e.host_name === 'white' ? 'border-red' : 'border-green'}`}>{e.host_name}</div>}
+        
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {/* soft */}
@@ -125,7 +128,7 @@ class ServiceItem extends Component {
           </div>
 
           <div>
-            <div className="service-item-host-name">{e.host_name}</div>
+            {/* <div className="service-item-host-name">{e.host_name}</div> */}
 
             <span className={serviceTextClass(e.status)}>
               <span className="service-item-description">{e.description}</span>

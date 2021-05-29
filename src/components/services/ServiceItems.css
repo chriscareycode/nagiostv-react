@@ -24,6 +24,28 @@
   padding: 5px;
   border-radius: 5px;
   min-height: 33px;
+  position: relative;
+  margin-left: 11%;
+}
+
+.service-item-first-item {
+  
+}
+
+.service-item-host-name {
+  border: 1px solid gray;
+  font-size: 1.0em;
+  padding: 5px;
+  border-radius: 5px;
+  min-height: 33px;
+  width: 8%;
+  position: absolute;
+  top: 0;
+  right: 100px;
+  bottom: 0px;
+  left: 0px;
+  text-align: right;
+  font-size: 0.8em;
 }
 
 .ServiceItemError {

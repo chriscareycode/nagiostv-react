@@ -21,6 +21,7 @@ import { translate } from '../../helpers/language';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ServiceItem from './ServiceItem';
 import _ from 'lodash';
+import { useSpring, useTransition, config, animated } from "react-spring";
 
 // icons
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -31,7 +32,7 @@ import './ServiceItems.css';
 
 const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howManyServices, commentlist }) => {
 
-  const nodeRef = React.useRef(null);
+  //const nodeRef = React.useRef(null);
 
   //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
   //console.log(Object.keys(this.props.serviceProblemsArray));
@@ -81,6 +82,8 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
   const showSomeDownItems = serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
   const { language } = settings;
 
+  
+
   return (
     <div className="ServiceItems">
 
@@ -98,7 +101,7 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
       <TransitionGroup>
 
         {groupedServiceProblems.map((groupItem, groupIndex) => {
-          return groupItem.items.map((e, i) => {
+          return groupItem.items.map((e, groupItemItemsIndex) => {
             //console.log('ServiceItem item');
             //console.log(e, i);
   
@@ -110,24 +113,50 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
                 comments.push(commentlist[id]);
               }
             });
+
+            const reactItemKey = e.host_name + '-' + e.description.replaceAll(' ', '-');
+
+            // const showB = true;
+            // const height = 100;
+            // const slideInStyles = useSpring({
+            //   config: { ...config.stiff },
+            //   from: { opacity: 0, height: 0 },
+            //   to: {
+            //     opacity: showB ? 1 : 0,
+            //     height: showB ? height : 0
+            //   }
+            // });
   
             return (
-  
+              // <animated.div style={{ ...slideInStyles, overflow: "hidden" }}>
+              //   <div>{e.host_name}-{e.description.replaceAll(' ', '-')}</div>
+              //   <ServiceItem
+              //     //ref={nodeRef}
+              //     settings={settings}
+              //     serviceItem={e}
+              //     comments={comments}
+              //     groupItemItemsIndex={groupItemItemsIndex}
+              //   />
+              // </animated.div>
+
               <CSSTransition
-                key={e.host_name + '-' + e.description}
+                key={reactItemKey}
                 classNames="example"
                 timeout={{ enter: 500, exit: 500 }}
               >
                 <>
-                  {i === 0 && <div className="service-item-group-host">
+                  {/* {i === 0 && <div className="service-item-group-host">
                     <span style={{ color: 'orange' }}>{groupItem.id}</span> <strong>{groupItem.items.length}</strong> services not OK
-                  </div>}
+                  </div>} */}
+
+                  <div>{reactItemKey}</div>
 
                   <ServiceItem
-                    ref={nodeRef}
+                    /*ref={nodeRef}*/
                     settings={settings}
                     serviceItem={e}
                     comments={comments}
+                    groupItemItemsIndex={groupItemItemsIndex}
                   />
                 </>
               </CSSTransition>
