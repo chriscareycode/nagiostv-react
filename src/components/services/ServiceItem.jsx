@@ -114,10 +114,17 @@ class ServiceItem extends Component {
             {e.notifications_enabled === false && <span className="item-notifications-disabled">Notifications Disabled - </span>}
             {/* SOFT / HARD for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
-            <span className={`uppercase service-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            {/* the words hard or soft */}
+            <span className={`uppercase service-item-state-type-${e.state_type}`}>
+              {translate(nagiosStateType(e.state_type), language)}
+              {/* current_attempt max_attempts */}
+              {isSoft && <span> {e.current_attempt}/{e.max_attempts}</span>}
+            </span>{' '}
             {/* for debug turn this on to know what status this item is */}
             {1 === 2 && <span>({e.status})</span>}
+            {/* the words CRITICAL WARNING OK */}
             <span className={`uppercase ${serviceTextClass(e.status)}`}>{translate(nagiosServiceStatus(e.status), language)}</span>{' '}
+            {/** other stuff */}
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}

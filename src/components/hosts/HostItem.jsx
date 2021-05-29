@@ -106,13 +106,20 @@ class HostItem extends Component {
       <div className={`HostItem`} onClick={this.mouseClick}>
         <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
-            {/* soft */}
+            {/* max-check-attempts */}
+            {isSoft && <span className="max-check-attempts">{e.current_attempt}/{e.max_attempts}</span>}
+            {/* soft spinner */}
             {isSoft && <span className="softIcon color-red"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
             {/* notifications disabled */}
             {e.notifications_enabled === false && <span className="item-notifications-disabled">Notifications Disabled - </span>}
             {/* for debug turn this on to know what state_type this item is */}
             {1 === 2 && <span>({e.state_type})</span>}
-            <span className={`uppercase host-item-state-type-${e.state_type}`}>{translate(nagiosStateType(e.state_type), language)}</span>{' '}
+            {/* soft */}
+            <span className={`uppercase host-item-state-type-${e.state_type}`}>
+              {translate(nagiosStateType(e.state_type), language)}
+              {/* current_attempt max_attempts */}
+              {isSoft && <span> {e.current_attempt}/{e.max_attempts}</span>}
+            </span>{' '}
             {/* for debug turn this on to know what status this item is */}
             {1 === 2 && <span>({e.status})</span>}
             <span className={`uppercase ${hostTextClass(e.status)}`}>{translate(nagiosHostStatus(e.status), language)}</span>{' '}
