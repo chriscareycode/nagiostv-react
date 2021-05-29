@@ -89,13 +89,21 @@ export function playSoundEffect(type, state, settings) {
   }
 }
 
+function massageSpeakingWords(words) {
+  // Convert NEMS uppercase to lowercase which speaks it better
+  const newWords = words.replace('NEMS', 'nems');
+  
+  return newWords;
+}
+
 export function speakAudio(words, voice) {
   
   //console.log('speakAudio', words, voice);
+  const massagedWords = massageSpeakingWords(words);
 
   let sayWhat;
   try {
-    sayWhat = new SpeechSynthesisUtterance(words);
+    sayWhat = new SpeechSynthesisUtterance(massagedWords);
   } catch(e) {
     console.log('SpeechSynthesisUtterance not supported on this browser');
     return;
