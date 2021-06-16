@@ -251,7 +251,7 @@ class Update extends Component {
         {/* Manual Update */}
         <h3 style={{ color: 'peachpuff' }}>Manual Update</h3>
 
-        <div>Go to <a target="_blank" rel="noopener noreferer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
+        <div>Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
         {/* Automatic Update */}
         <h3 style={{ color: 'peachpuff' }}>One-click update to latest</h3>
