@@ -74,7 +74,7 @@ class ServiceItem extends Component {
   doSpeakOutro() {
     const { language } = this.props.settings;
     const voice = this.props.settings.speakItemsVoice;
-    const speakWords = translate('service', language) + ' ' + this.props.serviceItem.host_name + ' ' + this.props.serviceItem.description + ' ' + translate('ok', language);
+    const speakWords = translate('service', language) + ' ' + this.props.serviceItem.description + ' ' + translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('ok', language);
     
     //console.log({speakWords});
     speakAudio(speakWords, voice);
