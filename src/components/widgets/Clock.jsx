@@ -33,10 +33,12 @@ const Clock = (props) => {
       //start timer
       console.log('clock start timer');
       const timer = setInterval(() => {
-        dateRef.current.innerHTML = 
-          momentFormatDateTime('now', props.locale, props.clockDateFormat) +
-          '&nbsp;' +
-          momentFormatDateTime('now', props.locale, props.clockTimeFormat);
+        if (dateRef && dateRef.current) {
+          dateRef.current.innerHTML = 
+            momentFormatDateTime('now', props.locale, props.clockDateFormat) +
+            '&nbsp;' +
+            momentFormatDateTime('now', props.locale, props.clockTimeFormat);
+        }
       }, 1000);
 
       return () => {
