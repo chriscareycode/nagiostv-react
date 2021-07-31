@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { momentFormatDateTime } from '../../helpers/moment.js';
 import './Clock.css';
 
@@ -26,24 +26,22 @@ import './Clock.css';
 
 const Clock = (props) => {
 
-  // eslint-disable-next-line
-  const [date, setDate] = useState(new Date().getTime());
-
-  const tick = () => {
-    setDate(new Date().getTime());
-  }
+  const dateRef = useRef(null);
 
   useEffect(
     () => {
       //start timer
-      //console.log('clock start timer');
+      console.log('clock start timer');
       const timer = setInterval(() => {
-        tick();
-      }, 15);
+        dateRef.current.innerHTML = 
+          momentFormatDateTime('now', props.locale, props.clockDateFormat) +
+          '&nbsp;' +
+          momentFormatDateTime('now', props.locale, props.clockTimeFormat);
+      }, 1000);
 
       return () => {
         //stop timer
-        //console.log('clock stop timer');
+        console.log('clock stop timer');
         if (timer) {
           clearInterval(timer);
         }
@@ -53,11 +51,7 @@ const Clock = (props) => {
   );
 
   return (
-    <div className="Clock">
-      {momentFormatDateTime('now', props.locale, props.clockDateFormat)}
-      &nbsp;
-      {momentFormatDateTime('now', props.locale, props.clockTimeFormat)}
-    </div>
+    <div className="Clock" ref={dateRef} />
   );
   
 }
