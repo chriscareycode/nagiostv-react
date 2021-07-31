@@ -28,7 +28,7 @@ import {
   withRouter
 
 } from "react-router-dom";
-
+import Cookie from 'js-cookie';
 import './BottomPanel.css';
 
 // icons
@@ -38,8 +38,14 @@ import { faChartBar, faFilter, faTachometerAlt, faTools, faUpload, faQuestionCir
 class BottomPanel extends Component {
 
   state = {
-    isVisible: false
+    isVisible: false,
+    skipVersionCookieVersion: 0,
+    skipVersionCookieVersionString: '',
   };
+
+  componentDidMount() {
+    this.loadSkipVersionCookie();
+  }
 
   // shouldComponentUpdate(nextProps, nextState) {
   //   //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -106,10 +112,41 @@ class BottomPanel extends Component {
   };
 
   clickedUpdateAvailable = (e) => {
-    this.setState({
-      isVisible: true
-    });
+    e.preventDefault();
     this.clickedUpdate(e);
+  };
+
+  loadSkipVersionCookie = () => {
+    const cookieString = Cookie.get('skipVersion');
+    if (cookieString) {
+      try {
+        const skipVersionObj = JSON.parse(cookieString);
+        if (skipVersionObj) {
+          //console.log('Loaded skipVersion cookie', skipVersionObj);
+          this.setState({
+            skipVersionCookieVersion: skipVersionObj.version,
+            skipVersionCookieVersionString: skipVersionObj.version_string
+          });
+        }
+      } catch (e) {
+        console.log('Could not parse the skipVersion cookie');
+      }
+    }
+  };
+
+  clickedSkipVersion = (e) => {
+    e.preventDefault();
+    const latestVersion = this.props.latestVersion;
+    const latestVersionString = this.props.latestVersionString;
+    const skipVersionObj = {
+      version: latestVersion,
+      version_string: latestVersionString
+    };
+    Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
+    this.setState({
+      skipVersionCookieVersion: latestVersion,
+      skipVersionCookieVersionString: latestVersionString
+    });
   };
 
   render() {
@@ -122,15 +159,21 @@ class BottomPanel extends Component {
 
           {this.props.settingsObject.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
 
-          {this.props.settingsObject.hideBottomMenu === false && <div className="bottom-panel-area" onClick={this.clickedNagiosTv}>
+          {this.props.settingsObject.hideBottomMenu === false && <div className="bottom-panel-area">
             <div className="bottom-panel-area-text">
               {/* current version */}
-              <span className="current-version">NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
+              <span className="current-version" onClick={this.clickedNagiosTv}>NagiosTV <span className="">v{this.props.currentVersionString}</span></span>
 
               {/* update available */}
-              {isUpdateAvailable && (
-              <span className="update-available">
-                <a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a>
+              {(isUpdateAvailable && this.state.skipVersionCookieVersion !== this.props.latestVersion) && (
+              <span>
+                <span className="update-available">
+                  <a onClick={this.clickedUpdateAvailable}>v{this.props.latestVersionString} available</a>
+                  &nbsp;-&nbsp;
+                  <a onClick={this.clickedSkipVersion}>skip this version</a>
+                </span>
+                
+                
               </span>
               )}
             </div>

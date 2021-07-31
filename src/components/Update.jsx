@@ -17,6 +17,7 @@
  */
 
 import React, { Component } from 'react';
+import Cookie from 'js-cookie';
 import './Update.css';
 import $ from 'jquery';
 // icons
@@ -26,6 +27,11 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 class Update extends Component {
 
   state = {
+
+    clickedCheckForUpdates: false,
+    skipVersionCookieVersion: 0,
+    skipVersionCookieVersionString: '',
+
     testphpLoading: false,
     testphpError: false,
     testphpErrorMessage: '',
@@ -55,10 +61,7 @@ class Update extends Component {
   };
 
   componentDidMount() {
-
-    this.testPhp();
-    this.latestVersion();
-    this.fetchReleasesFromGithub();
+    
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -70,6 +73,14 @@ class Update extends Component {
     // }
     return true;
   }
+
+  checkForUpdates = () => {
+    this.loadSkipVersionCookie();
+    this.testPhp();
+    this.latestVersion();
+    this.fetchReleasesFromGithub();
+    this.setState({ clickedCheckForUpdates: true });
+  };
 
   testPhp = () => {
     //console.log('testPhp');
@@ -227,6 +238,46 @@ class Update extends Component {
     
   };
 
+  loadSkipVersionCookie = () => {
+    const cookieString = Cookie.get('skipVersion');
+    if (cookieString) {
+      try {
+        const skipVersionObj = JSON.parse(cookieString);
+        if (skipVersionObj) {
+          //console.log('Loaded skipVersion cookie', skipVersionObj);
+          this.setState({
+            skipVersionCookieVersion: skipVersionObj.version,
+            skipVersionCookieVersionString: skipVersionObj.version_string
+          });
+        }
+      } catch (e) {
+        console.log('Could not parse the skipVersion cookie');
+      }
+    }
+  };
+
+  clickedSkipVersion = () => {
+    const latestVersion = this.state.latestVersion.version;
+    const latestVersionString = this.state.latestVersion.version_string;
+    const skipVersionObj = {
+      version: latestVersion,
+      version_string: latestVersionString
+    };
+    Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
+    this.setState({
+      skipVersionCookieVersion: latestVersion,
+      skipVersionCookieVersionString: latestVersionString
+    });
+  };
+
+  clearSkipVersionCookie = () => {
+    Cookie.remove('skipVersion');
+    this.setState({
+      skipVersionCookieVersion: 0,
+      skipVersionCookieVersionString: ''
+    });
+  };
+
   render() {
 
     const options = this.state.githubFetchReleases.map((r, i) => {
@@ -253,123 +304,151 @@ class Update extends Component {
 
         <div>Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
-        {/* Automatic Update */}
-        <h3 style={{ color: 'peachpuff' }}>One-click update to latest</h3>
+        {/* Check for Updates button */}
+        <h3 style={{ color: 'peachpuff' }}>Check for Updates</h3>
+        <div><button onClick={this.checkForUpdates}>Check for Updates</button></div>
 
-        {/* latest version */}
-        <div style={{ marginTop: '20px' }}>
-          Latest version is:
-          {this.state.latestVersionLoading && <span style={{ color: 'lime' }}> Loading...</span>}
-          {this.state.latestVersionError && <span style={{ color: 'lime' }}> Error: {this.state.latestVersion.version_string}</span>}
-          {this.state.latestVersion.version_string && <span style={{ color: 'lime' }}> v{this.state.latestVersion.version_string}</span>}
-        </div>
+        {this.state.clickedCheckForUpdates && <div>
 
-        {/* you are running version 0.0.0 */}
-        <div>
-          You are running: <span style={{ color: 'lime' }}>v{this.props.currentVersionString}</span>
-        </div>
+          {/* Automatic Update */}
+          <h3 style={{ color: 'peachpuff' }}>One-click update to latest</h3>
 
-        {/* you are running latest version */}
-        {this.props.currentVersion === this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running the latest version.</div>}
-
-        {/* you are running a newer version */}
-        {this.props.currentVersion > this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running a version newer than the latest announced release.</div>}
-
-
-        {/* php test */}
-        {this.state.testphpLoading && <div style={{ marginTop: '20px' }}>Testing your server compatibility...</div>}
-        {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. One-click update disabled.  Use the manual update, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
-        </div>}
-
-        {/* TODO: test if we have write access to the folder and all the files that we need */}
-
-        {/* update button */}
-        {(!this.state.testphpError && this.props.currentVersion < this.state.latestVersion.version) && <div style={{ marginTop: '20px' }}>
-          <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="auto-update-button">Begin update to latest version v{this.state.latestVersion.version_string}</button>
-        </div>}
-
-        
-        {/* update error */}
-        {this.state.updateError && <div>
-          <div>Update Error:</div>
-          {this.state.updateErrorMessage}
-        </div>}
-
-        {/* update is working/loading */}
-        {this.state.updateLoading && <div style={{ marginTop: '20px' }}>
-          <div>Update is working - Please Wait...</div>
-        </div>}
-
-        {/* update result */}
-        {this.state.updateResult && <div style={{ marginTop: '20px' }}>
-          <div>Update Result:</div>
-          <textarea readOnly value={this.state.updateResult}></textarea>
-        </div>}
-
-        <h3 style={{ color: 'peachpuff' }}>or select a specific version to change to</h3>
-        
-        <div>
-          You can pick any version off GitHub if you would like to.
-        </div>
-
-        {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-          <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version update disabled. Use the manual update, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
-        </div>}
-
-        {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
-          
-          {this.state.githubError && <div>
-            <div>Github Error:</div>
-            {this.state.githubErrorMessage}
-          </div>}
-
+          {/* latest version */}
           <div style={{ marginTop: '20px' }}>
-            Select a version from Github:&nbsp;
-            <select onChange={this.selectChanged}>
-              <option></option>
-              {options}
-            </select>
-            {this.state.githubLoading && <span> Loading...</span>}
+            Latest version is:
+            {this.state.latestVersionLoading && <span style={{ color: 'lime' }}> Loading...</span>}
+            {this.state.latestVersionError && <span style={{ color: 'lime' }}> Error: {this.state.latestVersion.version_string}</span>}
+            {this.state.latestVersion.version_string && <span>
+              <span style={{ color: 'lime' }}> v{this.state.latestVersion.version_string}</span>
+              &nbsp;
+              <a target="_blank" rel="noopener noreferrer" href={`https://github.com/chriscareycode/nagiostv-react/releases/tag/v${this.state.latestVersion.version_string}`}>See what's new in this version at GitHub</a>
+            </span>}
           </div>
 
-          {this.state.selected && <div style={{ marginTop: '20px' }}>
-            {/*<div>Selected version: {this.state.selected}</div>*/}
-            <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="auto-update-button">Begin version change to {this.state.selected}</button>
+          {/* you are running version 0.0.0 */}
+          <div>
+            You are running: <span style={{ color: 'lime' }}>v{this.props.currentVersionString}</span>
+          </div>
+
+          {/* you are running latest version */}
+          {this.props.currentVersion === this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running the latest version.</div>}
+
+          {/* you are running a newer version */}
+          {this.props.currentVersion > this.state.latestVersion.version && <div style={{ color: 'lime' }}>You are running a version newer than the latest announced release.</div>}
+
+          {/* skip this version */}
+          <h3 style={{ color: 'peachpuff' }}>Skip this version</h3>
+          {this.state.latestVersion.version_string && <div style={{ marginTop: 10 }}>
+            <button disabled={this.state.skipVersionCookieVersionString} onClick={this.clickedSkipVersion}>Skip version {this.state.latestVersion.version_string} - Stop notifying me about it</button>
+            {this.state.skipVersionCookieVersionString && <div style={{ color: 'yellow' }}>
+              You are set to skip version {this.state.skipVersionCookieVersionString}. We will not notify you about this version again.
+              &nbsp;
+              <button onClick={this.clearSkipVersionCookie}>Clear the skip version cookie</button>
+            </div>}
           </div>}
 
-          {this.state.downgradeError && <div>
-            <div>Switch version Error:</div>
-            {this.state.downgradeErrorMessage}
+          {/* php test */}
+          <h3 style={{ color: 'peachpuff' }}></h3>
+          {this.state.testphpLoading && <div>Testing your server compatibility...</div>}
+          {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
+            <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. One-click update disabled.  Use the manual update
+            {this.props.currentVersion < this.state.latestVersion.version && <span>
+              , or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
+            </span>}
+          </div>}
+
+          {/* TODO: test if we have write access to the folder and all the files that we need */}
+
+          {/* update button */}
+          {(!this.state.testphpError && this.props.currentVersion < this.state.latestVersion.version) && <div style={{ marginTop: '20px' }}>
+            <button disabled={this.state.updateLoading} onClick={this.beginUpdate} className="auto-update-button">Begin update to latest version v{this.state.latestVersion.version_string}</button>
+          </div>}
+
+          
+          {/* update error */}
+          {this.state.updateError && <div>
+            <div>Update Error:</div>
+            {this.state.updateErrorMessage}
           </div>}
 
           {/* update is working/loading */}
-          {this.state.downgradeLoading && <div style={{ marginTop: '20px' }}>
-            <div>Switch version is working - Please Wait...</div>
+          {this.state.updateLoading && <div style={{ marginTop: '20px' }}>
+            <div>Update is working - Please Wait...</div>
           </div>}
 
-          {this.state.downgradeResult && <div style={{ marginTop: '20px' }}>
-            <div>Switch version result:</div>
-            <textarea readOnly value={this.state.downgradeResult}></textarea>
+          {/* update result */}
+          {this.state.updateResult && <div style={{ marginTop: '20px' }}>
+            <div>Update Result:</div>
+            <textarea readOnly value={this.state.updateResult}></textarea>
           </div>}
 
-        </div>}
+          <h3 style={{ color: 'peachpuff' }}>or select a specific version to change to</h3>
+          
+          <div>
+            You can pick any version off GitHub if you would like to.
+          </div>
 
-        {/* upgrade prep instructions */}
-        {this.state.testphpResult.whoami && <div className="update-server-setup-instructions">
-          One-click update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
-          Run the following command on the server to change ownership to the Apache user so the update routines can work:<br />
-          <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
-        </div>}
+          {this.state.testphpError && <div className="auto-update-error" style={{ marginTop: '20px' }}>
+            <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Specific version update disabled. Use the manual update
+            {this.props.currentVersion < this.state.latestVersion.version && <span>
+              , or the cli <span className="auto-update-chown-command">sh autoupdate.sh {this.state.latestVersion.version_string}</span>
+            </span>}
+          </div>}
 
-        {/* downgrading warnings */}
-        {/*<div>
-          <br />
-          <br />
-          * If you downgrade to a version before v0.6.0, this auto update page will not exist on that old version.<br />
-          So, how do you get back up to a newer version? You can load this URL manually to switch again (take note of the URL or you can find it on the README at Github).
-          <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
-        </div>*/}
+          {!this.state.testphpError && <div style={{ marginTop: '20px' }}>
+            
+            {this.state.githubError && <div>
+              <div>Github Error:</div>
+              {this.state.githubErrorMessage}
+            </div>}
+
+            <div style={{ marginTop: '20px' }}>
+              Select a version from Github:&nbsp;
+              <select onChange={this.selectChanged}>
+                <option></option>
+                {options}
+              </select>
+              {this.state.githubLoading && <span> Loading...</span>}
+            </div>
+
+            {this.state.selected && <div style={{ marginTop: '20px' }}>
+              {/*<div>Selected version: {this.state.selected}</div>*/}
+              <button disabled={this.state.downgradeLoading} onClick={this.beginDowngrade} className="auto-update-button">Begin version change to {this.state.selected}</button>
+            </div>}
+
+            {this.state.downgradeError && <div>
+              <div>Switch version Error:</div>
+              {this.state.downgradeErrorMessage}
+            </div>}
+
+            {/* update is working/loading */}
+            {this.state.downgradeLoading && <div style={{ marginTop: '20px' }}>
+              <div>Switch version is working - Please Wait...</div>
+            </div>}
+
+            {this.state.downgradeResult && <div style={{ marginTop: '20px' }}>
+              <div>Switch version result:</div>
+              <textarea readOnly value={this.state.downgradeResult}></textarea>
+            </div>}
+
+          </div>}
+
+          {/* upgrade prep instructions */}
+          {this.state.testphpResult.whoami && <div className="update-server-setup-instructions">
+            One-click update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
+            Run the following command on the server to change ownership to the Apache user so the update routines can work:<br />
+            <div className="auto-update-chown-command">sudo chown -R {this.state.testphpResult.whoami}:{this.state.testphpResult.whoami} {this.state.testphpResult.script}</div>
+          </div>}
+
+          {/* downgrading warnings */}
+          {/*<div>
+            <br />
+            <br />
+            * If you downgrade to a version before v0.6.0, this auto update page will not exist on that old version.<br />
+            So, how do you get back up to a newer version? You can load this URL manually to switch again (take note of the URL or you can find it on the README at Github).
+            <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
+          </div>*/}
+        </div>}
 
         
 
