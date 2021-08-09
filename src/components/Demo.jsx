@@ -44,7 +44,7 @@ class Demo extends Component {
   }
 
   automate() {
-    console.log('automate');
+    console.log('Demo.jsx automate');
 
     if (this.props.type === 'host') {
 

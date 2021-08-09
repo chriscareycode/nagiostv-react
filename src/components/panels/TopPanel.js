@@ -28,7 +28,7 @@ import CustomLogo from '../widgets/CustomLogo.jsx';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter, faSort } from '@fortawesome/free-solid-svg-icons';
 
 // Import CSS
 import './TopPanel.css';
@@ -65,10 +65,21 @@ const TopPanel = (props) => {
     });
   };
 
+  const clickedAutomaticScroll = () => {
+    props.updateRootState({
+      automaticScroll: !props.settingsObject.automaticScroll
+    });
+  };
+
   return (
     <div className="TopPanel">
 
         <div className="header-right-float">
+
+        {/* automatic scroll icon */}
+        <div data-tip="Automatic Scroll" className={props.settingsObject.automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedAutomaticScroll}>
+          <FontAwesomeIcon icon={faSort} />
+        </div>
 
         {/* filter icon */}
         <div data-tip="Show/Hide Filters" className={props.hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedFilter}>

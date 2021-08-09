@@ -17,7 +17,7 @@
  */
 
 export function cleanDemoDataHostlist(hostlist) {
-  console.log(hostlist);
+  //console.log(hostlist);
   Object.keys(hostlist).forEach(key => {
     //if (hostlist[key].status === 2) {
     hostlist[key].status = 2;

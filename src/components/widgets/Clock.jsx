@@ -31,7 +31,7 @@ const Clock = (props) => {
   useEffect(
     () => {
       //start timer
-      console.log('clock start timer');
+      console.log('Clock() Start 1s interval');
       const timer = setInterval(() => {
         if (dateRef && dateRef.current) {
           dateRef.current.innerHTML = 
@@ -43,7 +43,7 @@ const Clock = (props) => {
 
       return () => {
         //stop timer
-        console.log('clock stop timer');
+        console.log('Clock() Stop interval');
         if (timer) {
           clearInterval(timer);
         }

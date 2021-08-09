@@ -47,6 +47,7 @@ import LeftPanel from './panels/LeftPanel.jsx';
 import BottomPanel from './panels/BottomPanel.jsx';
 
 import ScrollToTop from './widgets/ScrollToTop.jsx';
+import ScrollToSection from './widgets/ScrollToSection';
 
 // Import css
 import './Base.css';
@@ -185,7 +186,8 @@ class Base extends Component {
     soundEffectOk: './sample-audio/ok.mp3',
     showNextCheckInProgressBar: true,
     hideHamburgerMenu: false,
-    hideBottomMenu: false
+    hideBottomMenu: false,
+    automaticScroll: false
   };
 
   // The settings which we persist are a subset of the state that we have above.
@@ -255,7 +257,8 @@ class Base extends Component {
     'soundEffectOk',
     'showNextCheckInProgressBar',
     'hideHamburgerMenu',
-    'hideBottomMenu'
+    'hideBottomMenu',
+    'automaticScroll'
   ];
 
   constructor(props) {
@@ -860,6 +863,9 @@ class Base extends Component {
                             
                 {/* Alert History Section */}
 
+                {/** AboveAlertScroll used for ScrollToSection component */}
+                <div className="AboveAlertScroll" />
+
                 {(settingsLoaded && !this.state.hideHistory) && <AlertSection
                   isDemoMode={this.state.isDemoMode}
                   alertDaysBack={this.state.alertDaysBack}
@@ -880,8 +886,16 @@ class Base extends Component {
                   fetchAlertFrequency={this.state.fetchAlertFrequency}
                 />}
 
+                {/** BottomScroll used for ScrollToSection component */}
+                <div className="BottomScroll" />
+
               </div>
               <ScrollToTop />
+
+              {settingsLoaded && settingsObject.automaticScroll && <ScrollToSection
+                settingsObject={settingsObject}
+              />}
+
             </Route>
 
             <Route path="/help">

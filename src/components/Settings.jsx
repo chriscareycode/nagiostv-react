@@ -310,7 +310,7 @@ class Settings extends Component {
                 <td style={{ padding: '0px', height: '3px' }}></td>
               </tr>
               <tr>
-                <th>Title:</th>
+                <th>Page title:</th>
                 <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
               </tr>
               <tr>
@@ -328,7 +328,7 @@ class Settings extends Component {
               {this.state.dataSource === 'livestatus' && <tr>
                 <th>
                   {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                  livestatus.php path:
+                  livestatus.php path URL:
                 </th>
                 <td>
                   <input
@@ -347,7 +347,7 @@ class Settings extends Component {
               <tr>
                 <th>
                   {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                  Nagios cgi-bin path:
+                  Nagios cgi-bin path URL:
                 </th>
                 <td>
                   <input
@@ -375,16 +375,28 @@ class Settings extends Component {
                 </td>
               </tr>
               <tr>
-                <th>New Version Check:</th>
+                <th>Check for new version:</th>
                 <td>
                   <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
-                      <option value={0}>Off</option>
+                      <option value={0}>Never</option>
                       <option value={1}>1 day</option>
                       <option value={7}>1 week</option>
                       <option value={30}>1 month</option>
                   </select>
                 </td>
               </tr>
+              
+            </tbody>
+          </table>
+
+          {/* regional */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Regional Settings</td>
+              </tr>
+            </thead>
+            <tbody>
               <tr>
                 <th>Language:</th>
                 <td>
@@ -406,24 +418,6 @@ class Settings extends Component {
                 <td>
                 <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
                   <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a> under "Localized formats"</div>
-                </td>
-              </tr>
-              <tr>
-                <th>
-                  Font Size
-                </th>
-                <td>
-                  <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
-                      <option value={'0.8em'}>0.8em</option>
-                      <option value={'0.9em'}>0.9em</option>
-                      <option value={'1em'}>1em</option>
-                      <option value={'1.1em'}>1.1em</option>
-                      <option value={'1.2em'}>1.2em</option>
-                      <option value={'1.5em'}>1.5em</option>
-                      <option value={'2em'}>2em</option>
-                      <option value={'3em'}>3em</option>
-                      <option value={'4em'}>4em</option>
-                  </select>
                 </td>
               </tr>
             </tbody>
@@ -530,7 +524,24 @@ class Settings extends Component {
             </thead>
             <tbody>
               
-
+              <tr>
+                <th>
+                  Font Size
+                </th>
+                <td>
+                  <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
+                      <option value={'0.8em'}>0.8em</option>
+                      <option value={'0.9em'}>0.9em</option>
+                      <option value={'1em'}>1em</option>
+                      <option value={'1.1em'}>1.1em</option>
+                      <option value={'1.2em'}>1.2em</option>
+                      <option value={'1.5em'}>1.5em</option>
+                      <option value={'2em'}>2em</option>
+                      <option value={'3em'}>3em</option>
+                      <option value={'4em'}>4em</option>
+                  </select>
+                </td>
+              </tr>
               
               <tr>
                 <th>Sound Effects:</th>
@@ -601,6 +612,15 @@ class Settings extends Component {
                 <th>Emojis:</th>
                 <td>
                   <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
+                    <option value={true}>On</option>
+                    <option value={false}>Off</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Automatic Scroll:</th>
+                <td>
+                  <select value={this.state.automaticScroll} onChange={this.handleChange('automaticScroll', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
