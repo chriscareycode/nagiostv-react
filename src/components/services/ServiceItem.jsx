@@ -109,7 +109,7 @@ class ServiceItem extends Component {
         <div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {/* soft */}
-            {isSoft && <span className="softIcon color-yellow"><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
+            {isSoft && <span className={`softIcon ${serviceTextClass(e.status)}`}><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
             {/* notifications disabled */}
             {e.notifications_enabled === false && <span className="item-notifications-disabled">Notifications Disabled - </span>}
             {/* SOFT / HARD for debug turn this on to know what state_type this item is */}
