@@ -81,7 +81,7 @@ class HostItems extends Component {
           </div>
         </div>
 
-        <TransitionGroup>
+        <TransitionGroup className="host-items-wrap">
           {filteredHostProblemsArray.map((e, i) => {
             //console.log('HostItem item');
             //console.log(e, i);

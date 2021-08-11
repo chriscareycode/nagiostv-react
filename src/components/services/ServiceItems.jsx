@@ -84,7 +84,7 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
         </div>
       </div>
 
-      <TransitionGroup>
+      <TransitionGroup className="service-items-wrap">
 
         {filteredServiceProblemsArray.map((e, i) => {
           //console.log('ServiceItem item');

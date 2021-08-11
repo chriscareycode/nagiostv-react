@@ -624,6 +624,8 @@ class Settings extends Component {
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
+                  &nbsp;
+                  When there are many down hosts or services this will scroll the screen through all the items
                 </td>
               </tr>
             </tbody>
