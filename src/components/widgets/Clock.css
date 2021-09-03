@@ -5,6 +5,7 @@
   position: relative;
   top: 50%;
   transform: translateY(-50%);
+  user-select: none;
 }
 
 @media only screen and (max-device-width: 480px) {

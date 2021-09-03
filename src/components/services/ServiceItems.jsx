@@ -17,6 +17,17 @@
  */
 
 import React from 'react';
+
+// Recoil
+import { useRecoilValue } from 'recoil';
+//import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import {
+  //serviceIsFetchingAtom,
+  //serviceAtom,
+  serviceHowManyAtom
+} from '../../atoms/serviceAtom';
+import { commentlistAtom } from '../../atoms/commentlistAtom';
+
 import { translate } from '../../helpers/language';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ServiceItem from './ServiceItem';
@@ -28,9 +39,36 @@ import ServiceItem from './ServiceItem';
 // css
 import './ServiceItems.css';
 
-const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howManyServices, commentlist }) => {
+const ServiceItems = ({
+  serviceProblemsArray,
+  settings,
+  //servicelistError,
+  //howManyServices,
+  //commentlist
+}) => {
 
-  const nodeRef = React.useRef(null);
+  //const nodeRef = React.useRef(null);
+
+  const commentlistState = useRecoilValue(commentlistAtom);
+  const commentlist = commentlistState.response;
+  
+  const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+
+  const {
+    howManyServices,
+    // howManyServiceOk,
+    // howManyServiceWarning,
+    // howManyServiceUnknown,
+    // howManyServiceCritical,
+    // howManyServicePending,
+    // howManyServiceAcked,
+    // howManyServiceScheduled,
+    // howManyServiceFlapping,
+    // howManyServiceSoft,
+    // howManyServiceNotificationsDisabled,
+  } = serviceHowManyState;
+
+
 
   //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
   //console.log(Object.keys(this.props.serviceProblemsArray));
@@ -80,7 +118,7 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
       <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
         <div>
           <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceProblemsArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
-          <span className="some-down-hidden-text">({howManyHidden} hidden)</span>
+          <span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
         </div>
       </div>
 
@@ -93,11 +131,13 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
           // find comment for this serviceitem
           const comments = [];
           //const commentlist = commentlist;
-          Object.keys(commentlist).forEach((id) => {
-            if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
-              comments.push(commentlist[id]);
-            }
-          });
+          if (commentlist) {
+            Object.keys(commentlist).forEach((id) => {
+              if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
+                comments.push(commentlist[id]);
+              }
+            });
+          }
 
           return (
 
@@ -107,7 +147,7 @@ const ServiceItems = ({ serviceProblemsArray, settings, servicelistError, howMan
               timeout={{ enter: 500, exit: 500 }}
             >
               <ServiceItem
-                ref={nodeRef}
+                //ref={nodeRef}
                 settings={settings}
                 serviceItem={e}
                 comments={comments}

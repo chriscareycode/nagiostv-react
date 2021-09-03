@@ -16,185 +16,98 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { hostIsFetchingAtom, hostAtom, hostHowManyAtom } from '../../atoms/hostAtom';
 
+import PollingSpinner from '../widgets/PollingSpinner';
 import { translate } from '../../helpers/language';
 import { cleanDemoDataHostlist } from '../../helpers/nagiostv';
 import { convertHostObjectToArray } from '../../helpers/nagiostv';
 
-import HostItems from './HostItems.jsx';
-import HostFilters from './HostFilters.jsx';
-import Demo from '../Demo.jsx';
+import HostItems from './HostItems';
+import HostFilters from './HostFilters';
+import Demo from '../Demo';
 
 // 3rd party addons
 import moment from 'moment';
 import $ from 'jquery';
 
-// icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-
 //import './HostSection.css';
 
-class HostSection extends Component {
+let isComponentMounted = false;
 
-  state = {
-    isFetching: false,
-    hostlistError: false,
-    hostlistErrorCount: 0,
-    hostlistErrorMessage: '',
-    hostlistLastUpdate: 0,
-    hostlist: {},
-    hostProblemsArray: []
-  };
+const HostSection = () => {
+
+  //console.log('HostSection run', new Date());
+
+  // Recoil state (this section)
+  const [hostIsFetching, setHostIsFetching] = useRecoilState(hostIsFetchingAtom);
+  const [hostState, setHostState] = useRecoilState(hostAtom);
+  const setHostHowManyState = useSetRecoilState(hostHowManyAtom);
+  // Recoil state (main)
+  const [bigState, setBigState] = useRecoilState(bigStateAtom);
+  const clientSettings = useRecoilValue(clientSettingsAtom);
+
+  // Chop the bigState into vars
+  const {
+    isDemoMode,
+    //isDebugMode,
+    useFakeSampleData,
+    //isDoneLoading,
+    //hostgroup,
+    //settingsLoaded,
+    //fetchHostFrequency,
+    //hideFilters,
+  } = bigState;
+
+  // Chop the clientSettings into vars
+  const {
+    fetchHostFrequency,
+    hostSortOrder,
+    hostgroupFilter,
+    //hideHistory,
+    //hideHostDown,
+    //hideHostSection,
+    language,
+  } = clientSettings;
   
-  isComponentMounted = false;
-  timeoutHandle = null;
-  intervalHandle = null;
+  useEffect(() => {
 
-  componentDidMount() {
+    isComponentMounted = true;
 
-    this.isComponentMounted = true;
-
-    this.timeoutHandle = setTimeout(() => {
-      this.fetchHostData();
+    const timeoutHandle = setTimeout(() => {
+      fetchHostData();
     }, 1000);
+    let intervalHandle = null;
 
-    if (this.props.isDemoMode === false) {
+    if (isDemoMode === false) {
       // we fetch alerts on a slower frequency interval
-      this.intervalHandle = setInterval(() => {
-        this.fetchHostData();
-      }, this.props.fetchFrequency * 1000);
-      
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.timeoutHandle) {
-      clearTimeout(this.timeoutHandle);
-    }
-    if (this.intervalHandle) {
-      clearInterval(this.intervalHandle);
+      intervalHandle = setInterval(() => {
+        fetchHostData();
+      }, fetchHostFrequency * 1000);
     }
 
-    this.isComponentMounted = false;
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.hostSortOrder !== nextProps.hostSortOrder) {
-      this.reSortTheData();
-    }
-    return true;
-  }
-
-  reSortTheData = () => {
-    // flip the data upside down
-    this.setState({ hostProblemsArray: this.state.hostProblemsArray.reverse() });
-  };
-
-  fetchHostData() {
-
-    // if we are offline, let's just skip
-    if (!navigator.onLine) {
-      console.log('fetchHostData() browser is offline');
-      return;
-    }
-
-    let url;
-    if (this.props.useFakeSampleData) {
-      url = './sample-data/hostlist.json';
-    } else if (this.props.settingsObject.dataSource === 'livestatus') {
-      url = this.props.settingsObject.livestatusPath + '?query=hostlist&details=true';
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
-    } else {
-      url = this.props.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
-    }
-
-    this.setState({ isFetching: true });
-
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (this.props.fetchFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
-
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        this.setState({
-          isFetching: false,
-          hostlistError: true,
-          hostlistErrorCount: this.state.hostlistErrorCount + 1,
-          hostlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        });
-        return;
+    return () => {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
       }
-
-      // Make an array from the object
-      let hostlist = _.get(myJson.data, 'hostlist', {});
-
-      // If we are in demo mode then clean the fake data
-      if (this.props.isDemoMode) {
-        hostlist = cleanDemoDataHostlist(hostlist);
+      if (intervalHandle) {
+        clearInterval(intervalHandle);
       }
-
-      // convert the host object into an array (and sort it)
-      const hostProblemsArray = convertHostObjectToArray(hostlist, this.props.hostSortOrder);
-
-      // check for old data (nagios down?)
-      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
-      const hours = duration.asHours().toFixed(1);
-
-      if (!this.props.isDemoMode && hours >= 1) {
-        if (this.isComponentMounted) {
-          this.setState({
-            isFetching: false,
-            hostlistError: true,
-            hostlistErrorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-            hostlistLastUpdate: new Date().getTime(),
-            hostlist,
-            hostProblemsArray: hostProblemsArray
-          });
-        }
-      } else {
-        if (this.isComponentMounted) {
-          this.setState({
-            isFetching: false,
-            hostlistError: false,
-            hostlistErrorCount: 0,
-            hostlistErrorMessage: '',
-            hostlistLastUpdate: new Date().getTime(),
-            hostlist,
-            hostProblemsArray: hostProblemsArray
-          });
-        }
-      }
-
-    }).fail((jqXHR, textStatus, errorThrown) => {
-
-      this.setState({
-        isFetching: false,
-        hostlistError: true,
-        hostlistErrorCount: this.state.hostlistErrorCount + 1,
-        hostlistErrorMessage: 'ERROR: CONNECTION REFUSED to ' + url
-      });
-
-    });
-  }
-
-  // allows demo mode to access the state in this component
-  updateParentState = state => this.setState(state);
-
-  render() {
-
-    const { language, settingsObject } = this.props;
+      isComponentMounted = false;
+    };
+  }, []);
+  
+  const howManyCounter = useCallback((hostlist) => {
+    //console.log('HostSection howManyCounter() useCallback() hostState.response changed');
 
     // count how many items in each of the host states
-    const howManyHosts = Object.keys(this.state.hostlist).length;
+    const howManyHosts = Object.keys(hostlist).length;
     let howManyHostPending = 0;
-    let howManyHostUp = 0; // TODO: is this being used? think not
+    let howManyHostUp = 0;
     let howManyHostDown = 0;
     let howManyHostUnreachable = 0;
     let howManyHostAcked = 0;
@@ -203,127 +116,218 @@ class HostSection extends Component {
     let howManyHostSoft = 0;
     let howManyHostNotificationsDisabled = 0;
 
-    if (this.state.hostlist) {
-      Object.keys(this.state.hostlist).forEach((host) => {
+    if (hostlist) {
+      Object.keys(hostlist).forEach((host) => {
 
-        if (this.state.hostlist[host].status === 1) {
+        if (hostlist[host].status === 1) {
           howManyHostPending++;
         }
-        if (this.state.hostlist[host].status === 4) {
+        if (hostlist[host].status === 4) {
           howManyHostDown++;
         }
-        if (this.state.hostlist[host].status === 8) {
+        if (hostlist[host].status === 8) {
           howManyHostUnreachable++;
         }
-        if (this.state.hostlist[host].problem_has_been_acknowledged) {
+        if (hostlist[host].problem_has_been_acknowledged) {
           howManyHostAcked++;
         }
-        if (this.state.hostlist[host].scheduled_downtime_depth > 0) {
+        if (hostlist[host].scheduled_downtime_depth > 0) {
           howManyHostScheduled++;
         }
-        if (this.state.hostlist[host].is_flapping) {
+        if (hostlist[host].is_flapping) {
           howManyHostFlapping++;
         }
         // only count soft items if they are not up
-        if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].state_type === 0) {
+        if (hostlist[host].status !== 2 && hostlist[host].state_type === 0) {
           howManyHostSoft++;
         }
         // count notifications_enabled === false
         // only count these if they are not up
-        if (this.state.hostlist[host].status !== 2 && this.state.hostlist[host].notifications_enabled === false) {
+        if (hostlist[host].status !== 2 && hostlist[host].notifications_enabled === false) {
           howManyHostNotificationsDisabled++;
         }
       });
+
+      howManyHostUp = howManyHosts - howManyHostDown - howManyHostUnreachable;
     }
 
-    return (
-      <div className="HostSection">
+    setHostHowManyState({
+      howManyHosts,
+      howManyHostPending,
+      howManyHostUp,
+      howManyHostDown,
+      howManyHostUnreachable,
+      howManyHostAcked,
+      howManyHostScheduled,
+      howManyHostFlapping,
+      howManyHostSoft,
+      howManyHostNotificationsDisabled,
+    });
 
-        {/* Demo mode logic is inside this component */}
-        {this.props.isDemoMode && <Demo
-          type={'host'}
-          hostlist={this.state.hostlist}
-          hostSortOrder={this.state.hostSortOrder}
-          //servicelist={this.state.servicelist}
-          //serviceSortOrder={this.state.serviceSortOrder}
-          updateParentState={this.updateParentState}
-          settingsObject={settingsObject}
-        />}
 
-        <div className="service-summary">
-          
-          <span className="service-summary-title">
-            <strong>{howManyHosts}</strong> {howManyHosts.length === 1 ? translate('host', language) : translate('hosts', language)}{' '}
-            {this.props.hostgroupFilter && <span>({this.props.hostgroupFilter})</span>}
+  }, [hostState]);
 
-            
-          </span>
+  const fetchHostData = () => {
 
-          {/* host filters */}
-          <HostFilters
-            hideFilters={this.props.hideFilters}
-            hostSortOrder={this.props.hostSortOrder}
-            handleSelectChange={this.props.handleSelectChange}
-            handleCheckboxChange={this.props.handleCheckboxChange}
+    // if we are offline, let's just skip
+    // if (!navigator.onLine) {
+    //   console.log('fetchHostData() browser is offline');
+    //   return;
+    // }
 
-            howManyHosts={howManyHosts}
-            howManyHostDown={howManyHostDown}
-            howManyHostUnreachable={howManyHostUnreachable}
-            howManyHostPending={howManyHostPending}
-            howManyHostAcked={howManyHostAcked}
-            howManyHostScheduled={howManyHostScheduled}
-            howManyHostFlapping={howManyHostFlapping}
-            howManyHostSoft={howManyHostSoft}
-            howManyHostNotificationsDisabled={howManyHostNotificationsDisabled}
+    let url;
+    if (useFakeSampleData) {
+      url = './sample-data/hostlist.json';
+    } else if (clientSettings.dataSource === 'livestatus') {
+      url = clientSettings.livestatusPath + '?query=hostlist&details=true';
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+    } else {
+      url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+    }
 
-            language={language}
-            settingsObject={settingsObject}
-          />
+    setHostIsFetching(true);
 
-          {/* how many down emoji */}
-          {/*
-          {this.state.showEmoji && <HowManyEmoji
-            howMany={howManyHosts}
-            howManyWarning={0}
-            howManyCritical={howManyHostDown}
-            howManyDown={this.state.hostProblemsArray.length}
-          />}
-          */}
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (fetchHostFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
-          {/* loading spinner */}
-          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}>
-            {(!this.props.isDemoMode && this.state.hostlistError) && <span style={{ color: 'yellow'}}>{this.state.hostlistErrorCount} x <FontAwesomeIcon icon={faExclamationTriangle} /> &nbsp; </span>}
-            <FontAwesomeIcon icon={faSync} /> {this.props.fetchFrequency}s
-          </span>
-        </div>
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+        setHostIsFetching(false);
+        setHostState(curr => ({
+          ...curr,
+          error: true,
+          errorCount: curr.errorCount + 1,
+          errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        }));
+        return;
+      }
 
-        {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.hostlistError && this.state.hostlistErrorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.hostlistErrorMessage}</div>}
+      // Success
 
-        {/* hostitems list */}
-        <HostItems
-          hostProblemsArray={this.state.hostProblemsArray}
-          commentlist={this.props.commentlist}
-          settings={settingsObject}
+      // Make an array from the object
+      let my_list = _.get(myJson.data, 'hostlist', {});
 
-          howManyHosts={howManyHosts}
-          howManyHostUp={howManyHostUp}
-          howManyHostDown={howManyHostDown}
-          howManyHostUnreachable={howManyHostUnreachable}
-          howManyHostPending={howManyHostPending}
-          howManyHostAcked={howManyHostAcked}
-          howManyHostScheduled={howManyHostScheduled}
-          howManyHostFlapping={howManyHostFlapping}
-          howManyHostSoft={howManyHostSoft}
-          howManyHostNotificationsDisabled={howManyHostNotificationsDisabled}
+      // If we are in demo mode then clean the fake data
+      if (isDemoMode) {
+        my_list = cleanDemoDataHostlist(my_list);
+      }
 
-          isDemoMode={this.props.isDemoMode}
-          hostlistError={this.state.hostlistError}
+      // convert the host object into an array (and sort it)
+      const myArray = convertHostObjectToArray(my_list);
+
+      // check for old data (nagios down?)
+      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+      const hours = duration.asHours().toFixed(1);
+
+      if (!isDemoMode && hours >= 1) {
+        if (isComponentMounted) {
+          setHostIsFetching(false);
+
+          setHostState(curr => ({
+            error: true,
+            errorCount: curr.errorCount + 1,
+            errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+            lastUpdate: new Date().getTime(),
+            response: my_list,
+            problemsArray: myArray
+          }));
+        }
+      } else {
+        
+        if (isComponentMounted) {
+          setHostIsFetching(false);
+
+          setHostState(curr => ({
+            error: false,
+            errorCount: 0,
+            errorMessage: '',
+            lastUpdate: new Date().getTime(),
+            response: my_list,
+            problemsArray: myArray
+          }));
+
+          howManyCounter(my_list);
+        }
+      }
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      if (isComponentMounted) {
+        setHostIsFetching(false);
+
+        setHostState(curr => ({
+          ...curr,
+          error: true,
+          errorCount: curr.errorCount + 1,
+          errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+        }));
+      }
+    });
+  };
+
+  const hostlist = hostState.response;
+
+  // Mutating state on hostState.problemsArray is not allowed (the sort below)
+  // so we need to copy this to something
+  let hostProblemsArray = [];
+  if (Array.isArray(hostState.problemsArray)) {
+    hostProblemsArray = [...hostState.problemsArray];
+  }
+
+  const howManyHosts = Object.keys(hostlist).length;
+
+  // Sort the data based on the hostSortOrder value
+  let sort = 1;
+  if (hostSortOrder === 'oldest') { sort = -1; }
+  //console.log('hostProblemsArray', hostProblemsArray);
+  hostProblemsArray.sort((a, b) => {
+    if (a.last_time_up < b.last_time_up) { return 1 * sort; }
+    if (a.last_time_up > b.last_time_up) { return -1 * sort; }
+    return 0;
+  });
+
+  return (
+    <div className="HostSection">
+
+      <div className="service-summary">
+        
+        <span className="service-summary-title">
+          <strong>{howManyHosts}</strong> {howManyHosts === 1 ? translate('host', language) : translate('hosts', language)}{' '}
+          {hostgroupFilter && <span>({hostgroupFilter})</span>}
+        </span>
+
+        {/* host filters */}
+        <HostFilters />
+
+        {/* loading spinner */}
+        <PollingSpinner
+          isFetching={hostIsFetching}
+          isDemoMode={isDemoMode}
+          error={hostState.error}
+          errorCount={hostState.errorCount}
+          //fetchFrequency={fetchHostFrequency}
+          fetchVariableName={'fetchHostFrequency'}
         />
 
       </div>
-    );
-  }
-}
+
+      {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
+      {(!isDemoMode && hostState.error && hostState.errorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {hostState.errorMessage}</div>}
+
+      {/* hostitems list */}
+      <HostItems
+        hostProblemsArray={hostState.problemsArray}
+        settings={clientSettings}
+        hostlistError={hostState.error}
+      />
+
+    </div>
+  );
+  
+};
 
 export default HostSection;

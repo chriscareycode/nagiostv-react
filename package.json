@@ -7,6 +7,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "@steveeeie/react-page-transition": "^1.2.1",
     "axios": "^0.21.1",
     "clipboard-polyfill": "^3.0.1",
     "highcharts": "^9.1.0",
@@ -21,10 +22,12 @@
     "react-scripts": "^4.0.3",
     "react-tooltip": "^4.2.11",
     "react-transition-group": "^4.4.1",
+    "recoil": "^0.4.0",
+    "styled-components": "^5.3.0",
     "url-search-params-polyfill": "^8.1.0"
   },
   "scripts": {
-    "start": "BROWSER=none PORT=3015 react-scripts start",
+    "start": "BROWSER=none PORT=3016 react-scripts start",
     "build": "react-scripts build",
     "build:dev": "react-scripts build --profile",
     "test": "react-scripts test --env=jsdom",

@@ -18,8 +18,8 @@
 
 import React, { Component } from 'react';
 import './HistoryChart.css';
-import Highcharts from 'highcharts'
-import HighchartsReact from 'highcharts-react-official'
+import Highcharts from 'highcharts';
+import HighchartsReact from 'highcharts-react-official';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -35,7 +35,7 @@ class HistoryChart extends Component {
   }
 
   componentDidMount() {
-    this.updateSeriesFromPropsDelay();
+    this.updateSeriesFromProps();
 
     const intervalHandle = setInterval(() => {
       this.updateSeriesFromPropsDelay();
@@ -165,7 +165,7 @@ class HistoryChart extends Component {
     d.setMilliseconds(0);
 
     // calculate min and max for hourly chart
-    const min = d.getTime() - (86400 * 1000);
+    const min = d.getTime() - (86400 * 1000) + (3600 * 1000);
     const max = d.getTime() + (0 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
     //console.log('min max', min, max);
 
@@ -184,7 +184,8 @@ class HistoryChart extends Component {
     // WARNING
     if (Object.keys(groupedWarnings).length > 0) {
       let warningData = this.massageGroupByDataIntoHighchartsData(groupedWarnings, min, max);
-      //console.log('Setting 1', warningData);
+      // console.log('Setting 1', warningData);
+      // console.log('chart.series', chart.series);
       chart.series[1].setData(warningData.reverse(), true);
     } else {
       chart.series[1].setData([], true);
@@ -237,6 +238,8 @@ class HistoryChart extends Component {
           }
         }
       });
+
+      chart.redraw(false);
     }
 
     if (this.props.groupBy === 'day') {
@@ -251,6 +254,8 @@ class HistoryChart extends Component {
           }
         }
       });
+
+      chart.redraw(false);
 
       // turn off the UP/OK filter on the day chart
       // this will hide green items on that chart

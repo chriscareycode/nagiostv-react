@@ -18,6 +18,9 @@
 
 import React from 'react';
 
+import { useRecoilState } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+
 // Import external libraries
 import ReactTooltip from 'react-tooltip';
 
@@ -35,94 +38,141 @@ import './TopPanel.css';
 
 const TopPanel = (props) => {
 
+  const [bigState, setBigState] = useRecoilState(bigStateAtom);
+  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+
+  const {
+    //isDoneLoading,
+    isLeftPanelOpen,
+    //settingsLoaded,
+    hideFilters,
+  } = bigState;
+
+  const {
+    hideHistoryChart,
+    //fontSizeEm,
+    playSoundEffects,
+    speakItems,
+    automaticScroll,
+  } = clientSettings;
+
   const clickedHamburgerMenu = () => {
-    props.updateRootState({
-      isLeftPanelOpen: !props.isLeftPanelOpen
-    });
+    setBigState(curr => ({
+      ...curr,
+      isLeftPanelOpen: !curr.isLeftPanelOpen
+    }));
   };
 
   const clickedSound = () => {
-    props.updateRootState({
-      playSoundEffects: !props.settingsObject.playSoundEffects
-    });
+    setClientSettings(curr => ({
+      ...curr,
+      playSoundEffects: !curr.playSoundEffects
+    }));
   };
 
   const clickedSpeak = () => {
-    props.updateRootState({
-      speakItems: !props.settingsObject.speakItems
-    });
+    setClientSettings(curr => ({
+      ...curr,
+      speakItems: !curr.speakItems
+    }));
   };
 
   const clickedFilter = () => {
-    props.updateRootState({
-      hideFilters: !props.hideFilters
-    });
+    setBigState(curr => ({
+      ...curr,
+      hideFilters: !curr.hideFilters
+    }));
   };
 
   const clickedCharts = () => {
-    props.updateRootState({
-      hideHistoryChart: !props.settingsObject.hideHistoryChart
-    });
+    setClientSettings(curr => ({
+      ...curr,
+      hideHistoryChart: !curr.hideHistoryChart
+    }));
   };
 
   const clickedAutomaticScroll = () => {
-    props.updateRootState({
-      automaticScroll: !props.settingsObject.automaticScroll
-    });
+    // props.updateRootState({
+    //   automaticScroll: !props.settingsObject.automaticScroll
+    // });
+    setClientSettings(curr => ({
+      ...curr,
+      automaticScroll: !curr.automaticScroll
+    }));
   };
 
   return (
-    <div className="TopPanel">
+    <div className="TopPanel top-panel-height">
 
         <div className="header-right-float">
 
         {/* automatic scroll icon */}
-        <div data-tip="Automatic Scroll" className={props.settingsObject.automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedAutomaticScroll}>
+        <div
+          data-tip="Automatic Scroll"
+          className={automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedAutomaticScroll}
+        >
           <FontAwesomeIcon icon={faSort} />
         </div>
 
         {/* filter icon */}
-        <div data-tip="Show/Hide Filters" className={props.hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedFilter}>
+        <div
+          data-tip="Show/Hide Filters"
+          className={hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedFilter}
+        >
           <FontAwesomeIcon icon={faFilter} />
         </div>
 
         {/* chart icon */}
-        <div data-tip="Show/Hide Charts" className={props.settingsObject.hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedCharts}>
+        <div
+          data-tip="Show/Hide Charts"
+          className={hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedCharts}
+        >
           <FontAwesomeIcon icon={faChartBar} />
         </div>
 
         {/* sound effects icon */}
-        <div data-tip="Sound Effects" className={props.settingsObject.playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSound}>
+        <div
+          data-tip="Sound Effects"
+          className={playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedSound}
+        >
           <FontAwesomeIcon icon={faVolumeUp}  />
         </div>
 
         {/* speak items icon */}
-        <div data-tip="Speak" className={props.settingsObject.speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'} onClick={clickedSpeak}>
+        <div
+          data-tip="Speak"
+          className={speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedSpeak}
+        >
           <FontAwesomeIcon icon={faBullhorn} />
         </div>
 
         {/* clock */}
         <Clock
-            locale={props.settingsObject.locale}
-            clockDateFormat={props.settingsObject.clockDateFormat}
-            clockTimeFormat={props.settingsObject.clockTimeFormat}
+            locale={clientSettings.locale}
+            clockDateFormat={clientSettings.clockDateFormat}
+            clockTimeFormat={clientSettings.clockTimeFormat}
         />
 
         {/* flynn */}
-        {props.settingsObject.flynnEnabled &&
+        {clientSettings.flynnEnabled &&
             <Flynn
               howManyDown={0}
-              flynnConcernedAt={props.settingsObject.flynnConcernedAt}
-              flynnAngryAt={props.settingsObject.flynnAngryAt}
-              flynnBloodyAt={props.settingsObject.flynnBloodyAt}
-              flynnCssScale={props.settingsObject.flynnCssScale}
+              flynnConcernedAt={clientSettings.flynnConcernedAt}
+              flynnAngryAt={clientSettings.flynnAngryAt}
+              flynnBloodyAt={clientSettings.flynnBloodyAt}
+              flynnCssScale={clientSettings.flynnCssScale}
             />
         }
         
         {/* custom logo */}
-        {props.settingsObject.customLogoEnabled &&
+        {clientSettings.customLogoEnabled &&
             <CustomLogo
-            settings={props.settingsObject}
+            settings={clientSettings}
             />
         }
         </div>
@@ -131,14 +181,14 @@ const TopPanel = (props) => {
         {/*<div className="header-left-spacer"></div>*/}
 
         {/* hamburger menu */}
-        {props.settingsObject.hideHamburgerMenu === false && <div className={props.isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
+        {clientSettings.hideHamburgerMenu === false && <div className={isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
             <div className="hamburger-menu-center">
               <FontAwesomeIcon icon={faBars} />
             </div>
         </div>}
 
         {/* title string */}
-        <div className="header-application-name">{props.settingsObject.titleString}</div>
+        <div className="header-application-name">{clientSettings.titleString}</div>
 
         {/* show the polling time */}
         {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}

@@ -1,6 +1,8 @@
 import React from 'react';
 import './ScrollToTop.css';
 
+const scrollAreaSelector = '.vertical-scroll-dash';
+
 class ScrollToTop extends React.Component {
 
   state = {
@@ -8,11 +10,13 @@ class ScrollToTop extends React.Component {
   };
 
   componentDidMount() {
-    window.addEventListener("scroll", this.handleScroll);
+    const scrollDiv = document.querySelector(scrollAreaSelector);
+    scrollDiv.addEventListener("scroll", this.handleScroll);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
+    const scrollDiv = document.querySelector(scrollAreaSelector);
+    scrollDiv.removeEventListener("scroll", this.handleScroll);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -23,12 +27,19 @@ class ScrollToTop extends React.Component {
   }
 
   handleScroll = () => {
+    const scrollDiv = document.querySelector(scrollAreaSelector);
+    const dashboardDiv = document.querySelector('.Dashboard');
     const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-    const body = document.body;
-    const html = document.documentElement;
-    const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
-    const windowBottom = windowHeight + window.pageYOffset;
-    const atBottom = windowBottom >= docHeight;
+    //const body = document.body;
+    //const html = document.documentElement;
+    //const docHeight = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight,  html.scrollHeight, html.offsetHeight);
+    const divHeight = Math.max(dashboardDiv.clientHeight, dashboardDiv.offsetHeight);
+    const windowBottom = windowHeight + scrollDiv.scrollTop;
+    // console.log('dashboardDiv.scrollTop', dashboardDiv.scrollTop);
+    // console.log('dashboardDiv height', dashboardDiv.clientHeight, dashboardDiv.offsetHeight);
+    // console.log('windowBottom', windowBottom);
+    // console.log('divHeight', divHeight);
+    const atBottom = windowBottom >= divHeight + 80;
 
     // Prevent state updates if the value is the same
     if (atBottom !== this.state.isAtBottom) {
@@ -45,7 +56,8 @@ class ScrollToTop extends React.Component {
   };
 
   scrollUp = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const scrollDiv = document.querySelector(scrollAreaSelector);
+    scrollDiv.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   render() {

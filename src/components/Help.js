@@ -17,19 +17,27 @@
  */
 
 import React from 'react';
+// React Router
+import { Link } from "react-router-dom";
 import './Help.css';
 
-const Help = (props) => {
+const Help = () => {
 
   return (
     <div className="Help">
       <h2>NagiosTV Info and Help</h2>
-      <br />
-      <div>Website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">https://nagiostv.com</a></div>
-      <br />
-      <div>GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">https://github.com/chriscareycode/nagiostv-react</a></div>
-      <br />
-      <div>Follow NagiosTV on Twitter for product updates: <a href="https://twitter.com/NagiosTV" target="_blank" rel="noopener noreferrer">https://twitter.com/NagiosTV</a></div>
+
+      <div style={{ position: 'absolute', top: 20, right: 20 }}>
+        <Link to="/"><button>Back to Dashboard</button></Link>
+      </div>
+
+      <div className="update-help-message">
+        <div>Our website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">nagiostv.com</a></div>
+        <br />
+        <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">github.com/chriscareycode/nagiostv-react</a></div>
+      </div>
+
+      {/* <div>Follow NagiosTV on Twitter for product updates: <a href="https://twitter.com/NagiosTV" target="_blank" rel="noopener noreferrer">https://twitter.com/NagiosTV</a></div> */}
       
       {/*
       <div className="help-bottom-area">

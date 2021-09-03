@@ -1,5 +1,5 @@
-.Help {
-    
+.Help a {
+    color: #6fbbf3;
 }
 
 .help-option {
@@ -18,3 +18,4 @@
     left: 50%;
     transform: translateX(-50%);
 }
+

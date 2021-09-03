@@ -19,36 +19,34 @@
 import React, { Component } from 'react';
 import './FilterCheckbox.css';
 
-class FilterCheckbox extends Component {
+const FilterCheckbox = ({
+  stateName,
+  filterName,
+  hideFilters,
+  defaultChecked,
+  howMany,
+  textClassName,
+  howManyText,
+  handleCheckboxChange,
+}) => {
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   //console.log('shouldComponentUpdate', nextProps, nextState);
-  //   if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  clicky = e => {
-    this.props.handleCheckboxChange(e, this.props.stateName, 'checkbox');
+  const clicky = e => {
+    handleCheckboxChange(e, stateName, 'checkbox');
   };
+  
+  let classN = 'Checkbox uppercase ' + filterName;
+  //if (howMany) { classN += ' dim'; }
+  if (hideFilters) { classN += ' checkbox-hidden'; }
 
-  render() {
-    
-    let classN = 'Checkbox uppercase ' + this.props.filterName;
-    //if (this.props.howMany) { classN += ' dim'; }
-    if (this.props.hideFilters) { classN += ' checkbox-hidden'; }
-
-    return (
-      <label className={classN} onClick={this.clicky}>
-        <span>
-          <input type="checkbox" defaultChecked={this.props.defaultChecked}  />
-          <span className={'checkbox-value'}>{this.props.howMany}</span> <span className={this.props.textClassName}>{this.props.howManyText}</span>
-        </span>
-      </label>
-    );
-  }
-}
+  return (
+    <label className={classN} onClick={clicky}>
+      <span>
+        <input type="checkbox" defaultChecked={defaultChecked}  />
+        <span className={'checkbox-value'}>{howMany}</span> <span className={textClassName}>{howManyText}</span>
+      </span>
+    </label>
+  );
+  
+};
 
 export default FilterCheckbox;

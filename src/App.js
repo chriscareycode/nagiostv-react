@@ -18,13 +18,19 @@
 
 import React from 'react';
 import './App.css';
-import Base from './components/Base.jsx';
+import Base from './components/Base';
+import { RecoilRoot } from 'recoil';
+import { AppContextProvider } from "./components/AppContext";
 
 const App = () => {
 
   return (
     <div className="App">
-      <Base />
+      <AppContextProvider>
+        <RecoilRoot>
+          <Base />
+        </RecoilRoot>
+      </AppContextProvider>
     </div>
   );
   

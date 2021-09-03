@@ -32,11 +32,12 @@
 
 .settings-header {
     position: sticky;
-    top: 40px; /* TODO: needs to match with main header spacing, bad design */
+    top: 0px;
     left: 0px;
     right: 0px;
     background-color: #2f2f2f;
     border: 0px solid orange;
+    z-index: 2;
 }
 
 .settings-header-heading {
@@ -147,8 +148,8 @@
 }
 
 table.SettingsTable {
-    border: 1px solid #555;
-    background-color: #444;
+    border: 1px solid rgb(60, 60, 60);
+    background-color: rgb(38, 38, 38);
     width: 100%;
     margin-bottom: 10px;
     margin-top: 15px;

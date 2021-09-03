@@ -16,162 +16,221 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { hostIsFetchingAtom, hostAtom, hostHowManyAtom } from '../../atoms/hostAtom';
+
+import Cookie from 'js-cookie';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox.jsx';
 
-class HostFilters extends Component {
+const HostFilters = () => {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
-    const propsToCauseRender = [
-      'hideFilters',
-      'hostSortOrder',
-      'howManyHosts',
-      'howManyHostDown',
-      'howManyHostUnreachable',
-      'howManyHostPending',
-      'howManyHostAcked',
-      'howManyHostScheduled',
-      'howManyHostFlapping',
-      'howManyHostSoft',
-      'howManyHostNotificationsDisabled'
-    ];
-    for(let i=0;i<propsToCauseRender.length;i++) {
-      if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-        return true;
-      }
+  const hostHowManyState = useRecoilValue(hostHowManyAtom);
+
+  const bigState = useRecoilValue(bigStateAtom);
+  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+
+  // Chop the bigState into vars
+  const {
+    hideFilters,
+  } = bigState;
+
+  // Chop the clientSettings into vars
+  const {
+    hostSortOrder,
+    language,
+  } = clientSettings;
+
+  const saveCookie = (obj) => {
+    //const cookieObject = {};
+    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
+    Cookie.set('settings', obj);
+    console.log('Saved cookie', obj);
+  };
+
+  const handleSelectChange = (e) => {
+    console.log('handleSelectChange', e.target);
+    // console.log('event.target.value', event.target.value);
+    const propName = e.target.getAttribute('varname');
+    //console.log(propName);
+    // setClientSettings(settings => ({
+    //   ...settings,
+    //   [propName]: e.target.value
+    // }));
+    setClientSettings(settings => {
+      saveCookie({
+        ...settings,
+        [propName]: e.target.value
+        });
+      return ({
+        ...settings,
+        [propName]: e.target.value
+      });
+    });
+  };
+
+  const handleCheckboxChange = (e, propName, dataType) => {
+    //console.log('handleCheckboxChange', e.target, propName, dataType);
+    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
+    if (typeof e.target.checked === 'undefined') { return; }
+ 
+    let val = '';
+    if (dataType === 'checkbox') {
+      val = (!e.target.checked);
+    } else {
+      val = e.target.value;
     }
-    return false;
-  }
 
-  render() {
+    // Save to Cookie and to Recoil state
+    setClientSettings(settings => {
+      saveCookie({
+        ...settings,
+        [propName]: val
+        });
+      return ({
+        ...settings,
+        [propName]: val
+      });
+    });
     
-    const language = this.props.language;
-    
-    const howManyHostUp = this.props.howManyHosts - this.props.howManyHostDown - this.props.howManyHostUnreachable;
+  };
+  
+  const {
+    //howManyHosts,
+    howManyHostUp,
+    howManyHostDown,
+    howManyHostUnreachable,
+    howManyHostPending,
+    howManyHostAcked,
+    howManyHostScheduled,
+    howManyHostFlapping,
+    howManyHostSoft,
+    howManyHostNotificationsDisabled,
+  } = hostHowManyState;
 
-    return (
-      <>
+  return (
+    <>
 
-        {!this.props.hideFilters && <select value={this.props.hostSortOrder} varname={'hostSortOrder'} onChange={this.props.handleSelectChange}>
-          <option value="newest">{translate('newest first', language)}</option>
-          <option value="oldest">{translate('oldest first', language)}</option>
-        </select>}
+      {!hideFilters && <select value={hostSortOrder} varname={'hostSortOrder'} onChange={handleSelectChange}>
+        <option value="newest">{translate('newest first', language)}</option>
+        <option value="oldest">{translate('oldest first', language)}</option>
+      </select>}
 
-        {(this.props.howManyHostDown !== 9) && <span>
-          &nbsp;
-          <span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
-        </span>}
+      {(howManyHostDown !== 9) && <span>
+        &nbsp;
+        <span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostDown !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="down"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostDown'}
-            defaultChecked={!this.props.settingsObject.hideHostDown}
-            howMany={this.props.howManyHostDown}
-            howManyText={translate('down', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostDown !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="down"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostDown'}
+          defaultChecked={!clientSettings.hideHostDown}
+          howMany={howManyHostDown}
+          howManyText={translate('down', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostUnreachable !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="unreachable"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostUnreachable'}
-            defaultChecked={!this.props.settingsObject.hideHostUnreachable}
-            howMany={this.props.howManyHostUnreachable}
-            howManyText={translate('unreachable', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostUnreachable !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="unreachable"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostUnreachable'}
+          defaultChecked={!clientSettings.hideHostUnreachable}
+          howMany={howManyHostUnreachable}
+          howManyText={translate('unreachable', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostPending !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="pending"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostPending'}
-            defaultChecked={!this.props.settingsObject.hideHostPending}
-            howMany={this.props.howManyHostPending}
-            howManyText={translate('pending', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostPending !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="pending"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostPending'}
+          defaultChecked={!clientSettings.hideHostPending}
+          howMany={howManyHostPending}
+          howManyText={translate('pending', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostAcked !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="acked"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostAcked'}
-            defaultChecked={!this.props.settingsObject.hideHostAcked}
-            howMany={this.props.howManyHostAcked}
-            howManyText={translate('acked', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostAcked !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="acked"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostAcked'}
+          defaultChecked={!clientSettings.hideHostAcked}
+          howMany={howManyHostAcked}
+          howManyText={translate('acked', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostScheduled !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="scheduled"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostScheduled'}
-            defaultChecked={!this.props.settingsObject.hideHostScheduled}
-            howMany={this.props.howManyHostScheduled}
-            howManyText={translate('scheduled', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostScheduled !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="scheduled"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostScheduled'}
+          defaultChecked={!clientSettings.hideHostScheduled}
+          howMany={howManyHostScheduled}
+          howManyText={translate('scheduled', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostFlapping !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="flapping"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostFlapping'}
-            defaultChecked={!this.props.settingsObject.hideHostFlapping}
-            howMany={this.props.howManyHostFlapping}
-            howManyText={translate('flapping', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostFlapping !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="flapping"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostFlapping'}
+          defaultChecked={!clientSettings.hideHostFlapping}
+          howMany={howManyHostFlapping}
+          howManyText={translate('flapping', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostSoft !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="soft"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostSoft'}
-            defaultChecked={!this.props.settingsObject.hideHostSoft}
-            howMany={this.props.howManyHostSoft}
-            howManyText={translate('soft', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostSoft !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="soft"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostSoft'}
+          defaultChecked={!clientSettings.hideHostSoft}
+          howMany={howManyHostSoft}
+          howManyText={translate('soft', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyHostNotificationsDisabled !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="notifications_disabled"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideHostNotificationsDisabled'}
-            defaultChecked={!this.props.settingsObject.hideHostNotificationsDisabled}
-            howMany={this.props.howManyHostNotificationsDisabled}
-            howManyText={translate('notifications disabled', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyHostNotificationsDisabled !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="notifications_disabled"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideHostNotificationsDisabled'}
+          defaultChecked={!clientSettings.hideHostNotificationsDisabled}
+          howMany={howManyHostNotificationsDisabled}
+          howManyText={translate('notifications disabled', language)}
+        />
+      </span>}
 
-      </>
-    );
-  }
+    </>
+  );
 }
 
 export default HostFilters;

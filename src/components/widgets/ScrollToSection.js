@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
 
 const debug = false;
-const waitTime = 5 * 1000; // TODO: user adjustable
-const topBuffer = 68; // height of the menu bar
+const waitTime = 10 * 1000; // would be nice to be user adjustable
+const topBuffer = 0; // height of the menu bar
+const sectionBufferSubtract = 15;
+const scrollAreaSelector = '.vertical-scroll-dash';
 
-const ScrollToSection = ({ settingsObject }) => {
+const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 	const scrollToNextSection = (currentSection, animateSpeed) => {
 
@@ -23,50 +25,50 @@ const ScrollToSection = ({ settingsObject }) => {
 			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl', yPos, window.innerHeight);
 			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl2', AboveAlertScrollEl.offsetTop, AboveAlertScrollEl.scrollTop, AboveAlertScrollEl.clientTop);
 			if (yPos < window.innerHeight) {
-				if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. aborting scroll.', yPos, window.innerHeight, document.querySelector('html').scrollTop);
+				if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. aborting scroll.', yPos, window.innerHeight, document.querySelector(scrollAreaSelector).scrollTop);
 				// Though we cant just abort if the alerts is on screen. I think this could cause a bug where if items resolve
 				// when we are down on the page, then we will be stuck scrolled down.
 				// I think in this case we should scroll to the top of the page.
 
 				// If we are already not at the top, then move to the top
-				if (document.querySelector('html').scrollTop > 0) {
-					if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. scrolling to top', document.querySelector('html').scrollTop);
-					$('html, body').animate({ scrollTop: 0 }, animateSpeed);
+				if (document.querySelector(scrollAreaSelector).scrollTop > 0) {
+					if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. scrolling to top', document.querySelector(scrollAreaSelector).scrollTop);
+					$(scrollAreaSelector).animate({ scrollTop: 0 }, animateSpeed);
 				}
 				return;
 			}
 		}
 
 		if (currentSection === 'top') {
-			$("html, body").animate({ scrollTop: 0 }, animateSpeed);
+			$(scrollAreaSelector).animate({ scrollTop: 0 }, animateSpeed);
 		}
 
 		if (currentSection === 'host') {
 			const sectionEl = document.querySelector('.HostSection');
 			//if (debug) console.log('sectionEl', sectionEl);
 			if (sectionEl) {
-				$("html, body").animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'service') {
 			const sectionEl = document.querySelector('.ServiceSection');
 			if (sectionEl) {
-				$("html, body").animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'above-alert') {
 			const sectionEl = document.querySelector('.AboveAlertScroll');
 			if (sectionEl) {
-				$("html, body").animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - sectionEl.innerHeight + topBuffer }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'alert') {
 			const sectionEl = document.querySelector('.AlertSection');
 			if (sectionEl) {
-				$("html, body").animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - sectionBufferSubtract }, animateSpeed);
 			}
 		}
 
@@ -75,14 +77,14 @@ const ScrollToSection = ({ settingsObject }) => {
 			if (sectionEl) {
 				// When we are scrolling to the bottom, we need to subtract the height of the page from the calculation
 				// Since it's scrollTop not scrollBottom
-				$("html, body").animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
 			}
 		}
 	};
 
 	const stopAllAnimation = () => {
 		if (debug) console.log('ScrollToSection() stopAllAnimation');
-		$("html, body").stop(true);
+		$(scrollAreaSelector).stop(true);
 	};
 
 	const [currentIndex, setCurrentIndex] = useState(1);
@@ -99,10 +101,10 @@ const ScrollToSection = ({ settingsObject }) => {
 
 		// Detect which sections we have
 		const sections = [];
-		//sections.push('top');
-		if (settingsObject.hideHostSection === false) { sections.push('host'); }
-		if (settingsObject.hideServiceSection === false) { sections.push('service'); }
-		if (settingsObject.hideServiceSection === false) { sections.push('above-alert'); }
+		sections.push('top');
+		//if (settingsObject.hideHostSection === false) { sections.push('host'); }
+		//if (settingsObject.hideServiceSection === false) { sections.push('service'); }
+		//if (settingsObject.hideServiceSection === false) { sections.push('above-alert'); }
 		if (settingsObject.hideHistory === false) { sections.push('alert'); }
 		if (sections.length === 0) {
 			// Abort if no sections are found
@@ -132,9 +134,12 @@ const ScrollToSection = ({ settingsObject }) => {
 		if (debug) console.log('ScrollToSection() how many', howManyHostDown, howManyServiceDown);
 
 		let animateSpeed = 1 * 1000; // default to 1s
-		let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
-		const animateMultiplier = 1.5;
+		//let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
 		
+		
+		if (myCurrentSection === 'top') {
+			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
+		}
 		// for each host and service, start with 1s per item
 		if (myCurrentSection === 'host') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
@@ -147,13 +152,13 @@ const ScrollToSection = ({ settingsObject }) => {
 			delayBeforeNextAnimation = animateSpeed + (2 * 1000); // a shorter delay after this one, 2s instead of 5s
 		}
 		if (myCurrentSection === 'alert') {
-			animateSpeed = 8 * 1000;
+			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
 		}
 		if (animateSpeed < 1000) {
 			animateSpeed = 1 * 1000; // fallback and safety net to 1s if we have a value too small
 		} else {
 			// add a multiplier to change the overall speed
-			animateSpeed *= animateMultiplier;
+			animateSpeed *= automaticScrollTimeMultiplier;
 		}
 
 		// scroll to the next section		

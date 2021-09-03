@@ -1,10 +1,10 @@
 /* filters */
 
-.service-summary select {
+.vertical-scroll-dash select {
   background-color: #353535;
-  border: 1px solid #666;
+  border: 1px solid #404040;
   color: white;
-  font-size: 0.9em;
+  font-size: 1em;
   white-space: nowrap;
   opacity: 0.8;
   margin-right: 6px;

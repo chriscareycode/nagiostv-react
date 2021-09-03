@@ -103,14 +103,27 @@ and (max-width: 1768px) {
   
 }
 
+.vertical-scroll {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: scroll;
+  padding: 0px 20px 20px 20px
+}
 .main-content {
   margin-left: 0px;
   transition: margin-left 250ms linear;
-  position: relative;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .main-content.left-panel-open {
-  margin-left: 50px;
+  margin-left: 32px;
 }
 
 .SettingsButtonDiv {
@@ -192,8 +205,7 @@ and (max-width: 1768px) {
   opacity: 1;
 }
 .some-down-hidden-text {
-  font-size: 0.8em;
-  color: #aaa;
+  font-size: 0.6em;
 }
 
 
@@ -227,20 +239,4 @@ button {
 }
 .align-right {
   text-align: right;
-}
-
-
-
-.loading-spinner {
-  color: rgb(138, 138, 45);
-  margin-left: 15px;
-  margin-right: 4px;
-  position: absolute;
-  right: 0px;
-  font-size: 0.8em;
-}
-
-.loading-spinner.loading-spinner-fadeout {
-  color: #444;
-  transition: color 1000ms ease-in;
 }

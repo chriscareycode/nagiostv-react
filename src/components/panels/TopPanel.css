@@ -1,14 +1,17 @@
 /* TopPanel.css */
 
+.top-panel-height {
+    height: 40px;
+}
+
 .TopPanel {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 40px;
     z-index: 10;
-    background-color: #222;
-    border-bottom: 0px solid #333;
+    background-color: #181b1f;
+    border-bottom: 1px solid rgba(204,204,220,.07);
 }
   
 .TopPanel > .header-right-float {
@@ -28,6 +31,7 @@
     margin-right: 10px;
     display: inline-block;
     color: #ddd;
+    user-select: none;
 }
   
 .TopPanel .sound-icon {

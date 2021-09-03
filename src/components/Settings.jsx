@@ -18,11 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+ import React, { useEffect, useState } from 'react';
+ // Recoil
+ import { useRecoilState } from 'recoil';
+ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
-import {
-  Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 // CSS
 import './Settings.css';
 import Cookie from 'js-cookie';
@@ -36,101 +37,69 @@ import * as clipboard from "clipboard-polyfill/text";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 
-class Settings extends Component {
+const Settings = () => {
 
-  state = {
-    isDirty: false,
-    saveMessage: ''
+  // Recoil state
+  const [bigState, setBigState] = useRecoilState(bigStateAtom);
+  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+
+  // Component state
+  const [clientSettingsTemp, setClientSettingsTemp] = useState(null);
+  const [isDirty, setIsDirty] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
+  let isComponentMounted = false;
+  const hostlistError = false;
+
+  // Hooks
+  useEffect(() => {
+    loadLocalTempState();
+    isComponentMounted = true;
+    return () => {
+      isComponentMounted = false;
+    };
+  }, []);
+
+  // takes a copy of the clientSettings and saves it into local state (for editing)
+  const loadLocalTempState = () => {
+    //console.log('loadLocalTempState()', clientSettings);
+    setClientSettingsTemp({
+      ...clientSettings
+    })
   };
 
-  constructor(props) {
-    super(props);
-
-    // bind functions
-    this.saveCookie = this.saveCookie.bind(this);
-    this.deleteCookie = this.deleteCookie.bind(this);
-    this.saveSettingsToServer = this.saveSettingsToServer.bind(this);
-
-    this.playCritical = this.playCritical.bind(this);
-    this.playWarning = this.playWarning.bind(this);
-    this.playOk = this.playOk.bind(this);
-    this.playVoice = this.playVoice.bind(this);
-
-    // load the settingsFields into state
-    this.props.settingsFields.forEach(field => this.state[field] = this.props.settings[field]);
-  }
-
-  componentDidMount() {
-    //
-    this.loadLocalStateFromProps();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (!this.props.isCookieLoaded && prevProps.isCookieLoaded) {
-      this.loadLocalStateFromProps();
-      console.log('settings - Loading Local State from Props');
-      return true;
-    }
-    return false;
-  }
-
-  timerHandle = null;
-
-  componentWillUnmount() {
-    if (this.timerHandle) {
-      clearTimeout(this.timerHandle);
-    }
-  }
-
-  loadLocalStateFromProps() {
-    //console.log('loadLocalStateFromProps()', this.props.settings);
-
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.props.settings[field]);
-    this.setState({
-      ...settingsObject
-    });
-  }
-
-  saveCookie() {
-    const cookieObject = {};
-    this.props.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', cookieObject);
+  const saveCookie = () => {
+ 
+    Cookie.set('settings', clientSettingsTemp);
     
-    //console.log('Saved cookie', cookieObject);
-    this.props.updateRootState(cookieObject);
+    setIsDirty(false);
+    setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
+    setSaveMessage('Settings saved');
 
-    this.setState({
-      isDirty: false,
-      saveMessage: 'Settings saved'
-    });
-
-    this.timerHandle = setTimeout(() => {
-      this.timerHandle = null;
-      this.setState({ saveMessage: '' });
+    setTimeout(() => {
+      if (isComponentMounted) {
+        setSaveMessage('');
+      }
     }, 5000);
-  }
+  };
 
-  deleteCookie() {
+  const deleteCookie = () => {
     Cookie.remove('settings');
 
     // show a message then clear the message
-    this.setState({ saveMessage: 'Cookie deleted. Refresh your browser.' });
-    //setTimeout(() => {
-      //this.setState({ saveMessage: '' });
-    //}, 5000);
-
+    setSaveMessage('Cookie deleted. Refresh your browser.');
+    
     // flip the isCookieDetected boolean
-    // TODO: this doesn't work for some reason
-    this.props.updateRootState({
+    setBigState(curr => ({
+      ...curr,
       isCookieDetected: false
-    });
+    }));
 
     console.log('Cookie deleted.');
-  }
+  };
 
   // handle state changes for all the widgets on this page
-  handleChange = (propName, dataType) => (event) => {
+  const handleChange = (propName, dataType) => (event) => {
     // console.log('handleChange new');
     // console.log(propName, dataType);
     // console.log(event.target.value);
@@ -143,101 +112,92 @@ class Settings extends Component {
       val = event.target.value;
     }
     
-    this.setState({
-      [propName]: val,
-      isDirty: true
-    });
-  }
+    setClientSettingsTemp(curr => ({
+      ...curr,
+      [propName]: val
+    }));
+    setIsDirty(true);
 
-  saveSettingsToServer() {
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
+  };
 
-    // convert the settingsObject into a string, where we also pretty-print the json with carriage returns and spaces
-    const settingsString = JSON.stringify(settingsObject, null, 2);
+  const saveSettingsToServer = () => {
+
+    // convert the clientSettingsTemp into a string, where we also pretty-print the json with carriage returns and spaces
+    const settingsString = JSON.stringify(clientSettingsTemp, null, 2);
 
     axios.post('save-client-settings.php', settingsString).then(response => {
       //console.log('saved to server', response);
       
       if (typeof response.data === 'object') {
-        this.setState({ saveMessage: 'Saved to Server' });
+        setSaveMessage('Saved to Server');
       } else {
-        this.setState({ saveMessage: response.data });
+        setSaveMessage(response.data);
       }
       
     }).catch(error => {
       //console.log('error saving to server', error);
       // show a message then clear the message
-      this.setState({ saveMessage: 'Error saving to server' });
+      setSaveMessage('Error saving to server');
     });
     
     setTimeout(() => {
-        this.setState({ saveMessage: '' });
+      if (isComponentMounted) {
+        setSaveMessage('');
+      }
     }, 3000);
-  }
-
-  copySettingsToClipboard = () => {
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-    clipboard.writeText(JSON.stringify(settingsObject, null, 2));
   };
 
-  playCritical() {
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-    playSoundEffectDebounced('service', 'critical', settingsObject);
+  const copySettingsToClipboard = () => {
+    clipboard.writeText(JSON.stringify(clientSettingsTemp, null, 2));
+  };
+
+  const playCritical = () => {
+    playSoundEffectDebounced('service', 'critical', clientSettingsTemp);
   }
-  playWarning() {
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-    playSoundEffectDebounced('service', 'warning', settingsObject);
+  const playWarning = () => {
+    playSoundEffectDebounced('service', 'warning', clientSettingsTemp);
   }
-  playOk() {
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-    playSoundEffectDebounced('service', 'ok', settingsObject);
+  const playOk = () => {
+    playSoundEffectDebounced('service', 'ok', clientSettingsTemp);
   }
-  playVoice() {
-    const voice = this.state.speakItemsVoice;
+  const playVoice = () => {
+    const voice = clientSettingsTemp.speakItemsVoice;
     speakAudio('Naagios TV is cool', voice);
   }
 
   
 
-  render() {
+  // voices
+  const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
 
-    const settingsObject = {};
-    this.props.settingsFields.forEach(field => settingsObject[field] = this.state[field]);
-
-    // voices
-    const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-
-    const voiceOptions = voices.map((voice, i) => {
-      return (
-        <option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
-      );
-    });
-    voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
-    
-    // languages
-    const languageOptions = languages.map((language, i) => {
-      return (
-        <option key={'language-' + i} value={language.name}>{language.name} ({language.code})</option>
-      );
-    });
-
-    // languages
-    const locales = listLocales();
-    const localeOptions = locales.map((locale, i) => {
-      return (
-        <option key={'locale-' + i} value={locale}>{locale}</option>
-      );
-    });
-
-
+  const voiceOptions = voices.map((voice, i) => {
     return (
-      <div className={`Settings`}>
+      <option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
+    );
+  });
+  voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
+  
+  // languages
+  const languageOptions = languages.map((language, i) => {
+    return (
+      <option key={'language-' + i} value={language.name}>{language.name} ({language.code})</option>
+    );
+  });
 
+  // languages
+  const locales = listLocales();
+  const localeOptions = locales.map((locale, i) => {
+    return (
+      <option key={'locale-' + i} value={locale}>{locale}</option>
+    );
+  });
+
+
+  return (
+    <div className={`Settings`}>
+
+      {clientSettingsTemp && <div>
+        
         <div className="settings-header">
 
           <div className="settings-header-heading">
@@ -246,12 +206,12 @@ class Settings extends Component {
           </div>
 
           <div className="SettingsCenterDiv">
-            {this.state.saveMessage && <span className="SettingSaveMessage color-green">{this.state.saveMessage}</span>}
-            {this.state.isDirty && <span className="settings-unsaved-changes-text"><FontAwesomeIcon icon={faExclamationTriangle} /> This page has unsaved changes</span>}
+            {saveMessage && <span className="SettingSaveMessage color-green">{saveMessage}</span>}
+            {isDirty && <span className="settings-unsaved-changes-text"><FontAwesomeIcon icon={faExclamationTriangle} /> This page has unsaved changes</span>}
           </div>
 
           <div className="settings-header-buttons">
-            <button className="SettingsSaveButton" onClick={this.saveCookie}>Save Settings</button>
+            <button className="SettingsSaveButton" onClick={saveCookie}>Save Settings</button>
             <Link to="/"><button className="SettingsCloseButton">Close Settings</button></Link>
           </div>
 
@@ -262,11 +222,11 @@ class Settings extends Component {
           {/*<div className="settings-top-space-for-header"></div>*/}
 
           {/* server settings */}
-          {this.props.isRemoteSettingsLoaded && <table className="SettingsTable">
+          {bigState.isRemoteSettingsLoaded && <table className="SettingsTable">
             <thead>
               <tr>
                 <td className="SettingsTableHeader">
-                <span className="color-orange">Server settings detected</span>
+                <span className="color-primary">Server settings detected</span>
                 &nbsp;
                 - A client-settings.json file was successfully loaded from the server
                 </td>
@@ -275,11 +235,11 @@ class Settings extends Component {
           </table>}
 
           {/* cookie settings */}
-          {this.props.isCookieLoaded && <table className="SettingsTable">
+          {bigState.isCookieLoaded && <table className="SettingsTable">
             <thead>
               <tr>
                 <td className="SettingsTableHeader">
-                <span><span role="img" aria-label="cookie">🍪</span> <span className="color-orange">Cookie detected</span> - This browser has custom NagiosTV settings saved to a cookie</span>
+                <span><span role="img" aria-label="cookie">🍪</span> <span className="color-primary">Cookie detected</span> - This browser has local custom settings saved to a cookie</span>
                 &nbsp;
                 </td>
               </tr>
@@ -287,10 +247,10 @@ class Settings extends Component {
             <tbody>
               <tr>
                 <td className="">
-                  {this.props.isRemoteSettingsLoaded && <div>A server settings file client-settings.json was detected, and this browser also has local settings saved to a cookie.<br />The local cookie settings are overriding the server settings.<br />If you choose to delete the cookie, you will go back to the default settings configured on the server.<br />After you click the button, make sure to refresh the page.</div>}
-                  {this.props.isRemoteSettingsLoaded === false && <div>If you choose to delete the cookie, you will go back to NagiosTV defaults since a client-settings.json file was not found on the server.<br />After you click the button, make sure to refresh the page.</div>}
+                  {bigState.isRemoteSettingsLoaded && <div>A server settings file client-settings.json was detected, and this browser also has local settings saved to a cookie.<br />The local cookie settings are overriding the server settings.<br /><br />If you choose to delete the cookie, you will go back to the default settings configured on the server.<br />After you click the button, make sure to refresh the page.</div>}
+                  {bigState.isRemoteSettingsLoaded === false && <div>If you choose to delete the cookie, you will go back to NagiosTV defaults since a client-settings.json file was not found on the server.<br />After you click the button, make sure to refresh the page.</div>}
                   <div>
-                    <button className="SettingsDeleteCookieButton" onClick={this.deleteCookie}>Delete Cookie</button>
+                    <button className="SettingsDeleteCookieButton" onClick={deleteCookie}>Delete Cookie</button>
                   </div>
                 </td>
               </tr>
@@ -301,7 +261,7 @@ class Settings extends Component {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Main Settings</td>
+                <td colSpan="2" className="SettingsTableHeader">Data Source Settings</td>
               </tr>
             </thead>
             <tbody>
@@ -310,32 +270,28 @@ class Settings extends Component {
                 <td style={{ padding: '0px', height: '3px' }}></td>
               </tr>
               <tr>
-                <th>Page title:</th>
-                <td><input type="text" value={this.state.titleString} onChange={this.handleChange('titleString', 'string')} /></td>
-              </tr>
-              <tr>
                 <th>
-                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  {hostlistError && <span role="img" aria-label="error">⚠️ </span>}
                   Fetch data from
                 </th>
                 <td>
-                  <select value={this.state.dataSource} onChange={this.handleChange('dataSource', 'string')}>
+                  <select value={clientSettingsTemp.dataSource} onChange={handleChange('dataSource', 'string')}>
                       <option value={'cgi'}>Nagios cgi-bin</option>
                       <option value={'livestatus'}>MK Livestatus</option>
                   </select>
                 </td>
               </tr>
-              {this.state.dataSource === 'livestatus' && <tr>
+              {clientSettingsTemp.dataSource === 'livestatus' && <tr>
                 <th>
-                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                  livestatus.php path URL:
+                  {hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  livestatus.php path:
                 </th>
                 <td>
                   <input
                     type="text"
-                    className={this.props.hostlistError ? 'input-error' : ''}
-                    value={this.state.livestatusPath}
-                    onChange={this.handleChange('livestatusPath', 'string')}
+                    className={hostlistError ? 'input-error' : ''}
+                    value={clientSettingsTemp.livestatusPath}
+                    onChange={handleChange('livestatusPath', 'string')}
                   />
                   <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
                     This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
@@ -346,15 +302,15 @@ class Settings extends Component {
               </tr>}
               <tr>
                 <th>
-                  {this.props.hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-                  Nagios cgi-bin path URL:
+                  {hostlistError && <span role="img" aria-label="error">⚠️ </span>}
+                  Nagios cgi-bin path:
                 </th>
                 <td>
                   <input
                     type="text"
-                    className={this.props.hostlistError ? 'input-error' : ''}
-                    value={this.state.baseUrl}
-                    onChange={this.handleChange('baseUrl', 'string')}
+                    className={hostlistError ? 'input-error' : ''}
+                    value={clientSettingsTemp.baseUrl}
+                    onChange={handleChange('baseUrl', 'string')}
                   />
                   <div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
                     This path needs to point to where the cgi files are being served by the Nagios web user interface.<br />
@@ -374,11 +330,49 @@ class Settings extends Component {
                   </div>
                 </td>
               </tr>
+
+              <tr>
+                <th>Fetch hosts every:</th>
+                <td>
+                  <select value={clientSettingsTemp.fetchHostFrequency} onChange={handleChange('fetchHostFrequency', 'number')}>
+                      <option value={15}>15s</option>
+                      <option value={30}>30s</option>
+                      <option value={60}>1m</option>
+                      <option value={300}>5m</option>
+                      <option value={600}>10m</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Fetch services every:</th>
+                <td>
+                  <select value={clientSettingsTemp.fetchServiceFrequency} onChange={handleChange('fetchServiceFrequency', 'number')}>
+                      <option value={15}>15s</option>
+                      <option value={30}>30s</option>
+                      <option value={60}>1m</option>
+                      <option value={300}>5m</option>
+                      <option value={600}>10m</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Fetch alerts every:</th>
+                <td>
+                  <select value={clientSettingsTemp.fetchAlertFrequency} onChange={handleChange('fetchAlertFrequency', 'number')}>
+                      <option value={15}>15s</option>
+                      <option value={30}>30s</option>
+                      <option value={60}>1m</option>
+                      <option value={300}>5m</option>
+                      <option value={600}>10m</option>
+                  </select>
+                </td>
+              </tr>
+
               <tr>
                 <th>Check for new version:</th>
                 <td>
-                  <select value={this.state.versionCheckDays} onChange={this.handleChange('versionCheckDays', 'number')}>
-                      <option value={0}>Never</option>
+                  <select value={clientSettingsTemp.versionCheckDays} onChange={handleChange('versionCheckDays', 'number')}>
+                      <option value={0}>Off</option>
                       <option value={1}>1 day</option>
                       <option value={7}>1 week</option>
                       <option value={30}>1 month</option>
@@ -393,14 +387,14 @@ class Settings extends Component {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Regional Settings</td>
+                <td colSpan="2" className="SettingsTableHeader">Date and Region Settings</td>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th>Language:</th>
                 <td>
-                  <select value={this.state.language} onChange={this.handleChange('language', 'string')}>
+                  <select value={clientSettingsTemp.language} onChange={handleChange('language', 'string')}>
                       {languageOptions}
                   </select>
                 </td>
@@ -408,7 +402,7 @@ class Settings extends Component {
               <tr>
                 <th>Date Locale:</th>
                 <td>
-                  <select value={this.state.locale} onChange={this.handleChange('locale', 'string')}>
+                  <select value={clientSettingsTemp.locale} onChange={handleChange('locale', 'string')}>
                       {localeOptions}
                   </select>
                 </td>
@@ -416,7 +410,7 @@ class Settings extends Component {
               <tr>
                 <th>Date Format:</th>
                 <td>
-                <input type="text" value={this.state.dateFormat} onChange={this.handleChange('dateFormat', 'string')} />
+                <input type="text" value={clientSettingsTemp.dateFormat} onChange={handleChange('dateFormat', 'string')} />
                   <div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a> under "Localized formats"</div>
                 </td>
               </tr>
@@ -434,7 +428,7 @@ class Settings extends Component {
               <tr>
                 <th>Hosts:</th>
                 <td>
-                  <select value={this.state.hideHostSection} onChange={this.handleChange('hideHostSection', 'boolean')}>
+                  <select value={clientSettingsTemp.hideHostSection} onChange={handleChange('hideHostSection', 'boolean')}>
                       <option value={true}>Hide</option>
                       <option value={false}>Show</option>
                   </select>
@@ -456,7 +450,7 @@ class Settings extends Component {
               <tr>
                 <th>Services:</th>
                 <td>
-                  <select value={this.state.hideServiceSection} onChange={this.handleChange('hideServiceSection', 'boolean')}>
+                  <select value={clientSettingsTemp.hideServiceSection} onChange={handleChange('hideServiceSection', 'boolean')}>
                       <option value={true}>Hide</option>
                       <option value={false}>Show</option>
                   </select>
@@ -478,7 +472,7 @@ class Settings extends Component {
               <tr>
                 <th>Alert History:</th>
                 <td>
-                  <select value={this.state.hideHistory} onChange={this.handleChange('hideHistory', 'boolean')}>
+                  <select value={clientSettingsTemp.hideHistory} onChange={handleChange('hideHistory', 'boolean')}>
                       <option value={true}>Hide</option>
                       <option value={false}>Show</option>
                   </select>
@@ -489,7 +483,7 @@ class Settings extends Component {
               <tr>
                 <th>Alert History Chart:</th>
                 <td>
-                  <select value={this.state.hideHistoryChart} onChange={this.handleChange('hideHistoryChart', 'boolean')}>
+                  <select value={clientSettingsTemp.hideHistoryChart} onChange={handleChange('hideHistoryChart', 'boolean')}>
                       <option value={true}>Hide</option>
                       <option value={false}>Show</option>
                   </select>
@@ -498,7 +492,7 @@ class Settings extends Component {
               <tr>
                 <th>Alert History Titles:</th>
                 <td>
-                  <select value={this.state.hideHistoryTitle} onChange={this.handleChange('hideHistoryTitle', 'boolean')}>
+                  <select value={clientSettingsTemp.hideHistoryTitle} onChange={handleChange('hideHistoryTitle', 'boolean')}>
                       <option value={true}>Hide</option>
                       <option value={false}>Show</option>
                   </select>
@@ -506,11 +500,11 @@ class Settings extends Component {
               </tr>
               <tr>
                 <th>Alert History Days Back:</th>
-                <td><input type="number" min="1" max="100" value={this.state.alertDaysBack} onChange={this.handleChange('alertDaysBack', 'number')} /></td>
+                <td><input type="number" min="1" max="100" value={clientSettingsTemp.alertDaysBack} onChange={handleChange('alertDaysBack', 'number')} /></td>
               </tr>
               <tr>
                 <th>Alert History max # items:</th>
-                <td><input type="number" min="1" max="10000" value={this.state.alertMaxItems} onChange={this.handleChange('alertMaxItems', 'number')} /></td>
+                <td><input type="number" min="1" max="10000" value={clientSettingsTemp.alertMaxItems} onChange={handleChange('alertMaxItems', 'number')} /></td>
               </tr>
             </tbody>
           </table>
@@ -523,13 +517,12 @@ class Settings extends Component {
               </tr>
             </thead>
             <tbody>
-              
               <tr>
                 <th>
                   Font Size
                 </th>
                 <td>
-                  <select value={this.state.fontSizeEm} onChange={this.handleChange('fontSizeEm', 'string')}>
+                  <select value={clientSettingsTemp.fontSizeEm} onChange={handleChange('fontSizeEm', 'string')}>
                       <option value={'0.8em'}>0.8em</option>
                       <option value={'0.9em'}>0.9em</option>
                       <option value={'1em'}>1em</option>
@@ -546,34 +539,34 @@ class Settings extends Component {
               <tr>
                 <th>Sound Effects:</th>
                 <td>
-                  <select value={this.state.playSoundEffects} onChange={this.handleChange('playSoundEffects', 'boolean')}>
+                  <select value={clientSettingsTemp.playSoundEffects} onChange={handleChange('playSoundEffects', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
                 </td>
               </tr>
-              {this.state.playSoundEffects && <tr>
+              {clientSettingsTemp.playSoundEffects && <tr>
                 <th>CRITICAL sound:</th>
                 <td>
-                  <input type="text" value={this.state.soundEffectCritical} onChange={this.handleChange('soundEffectCritical', 'string')} />
-                  <button className="SettingsTestButton" onClick={this.playCritical}>Test</button>
+                  <input type="text" value={clientSettingsTemp.soundEffectCritical} onChange={handleChange('soundEffectCritical', 'string')} />
+                  <button className="SettingsTestButton" onClick={playCritical}>Test</button>
                 </td>
               </tr>}
-              {this.state.playSoundEffects && <tr>
+              {clientSettingsTemp.playSoundEffects && <tr>
                 <th>WARNING sound:</th>
                 <td>
-                  <input type="text" value={this.state.soundEffectWarning} onChange={this.handleChange('soundEffectWarning', 'string')} />
-                  <button className="SettingsTestButton" onClick={this.playWarning}>Test</button>
+                  <input type="text" value={clientSettingsTemp.soundEffectWarning} onChange={handleChange('soundEffectWarning', 'string')} />
+                  <button className="SettingsTestButton" onClick={playWarning}>Test</button>
                 </td>
               </tr>}
-              {this.state.playSoundEffects && <tr>
+              {clientSettingsTemp.playSoundEffects && <tr>
                 <th>OK sound:</th>
                 <td>
-                  <input type="text" value={this.state.soundEffectOk} onChange={this.handleChange('soundEffectOk', 'string')} />
-                  <button className="SettingsTestButton" onClick={this.playOk}>Test</button>
+                  <input type="text" value={clientSettingsTemp.soundEffectOk} onChange={handleChange('soundEffectOk', 'string')} />
+                  <button className="SettingsTestButton" onClick={playOk}>Test</button>
                 </td>
               </tr>}
-              {this.state.playSoundEffects && <tr>
+              {clientSettingsTemp.playSoundEffects && <tr>
                 <th></th>
                 <td>
                   <div style={{ margin: '5px 0', fontSize: '0.8em' }}>* You can have multiple sound files for each state, and it will randomly choose one from the list. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
@@ -582,25 +575,25 @@ class Settings extends Component {
               <tr>
                 <th>Speak Items:</th>
                 <td>
-                  <select value={this.state.speakItems} onChange={this.handleChange('speakItems', 'boolean')}>
+                  <select value={clientSettingsTemp.speakItems} onChange={handleChange('speakItems', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
                 </td>
               </tr>
-              {this.state.speakItems && <tr>
+              {clientSettingsTemp.speakItems && <tr>
                 <th>Choose Voice:</th>
                 <td>
-                  <select value={this.state.speakItemsVoice} onChange={this.handleChange('speakItemsVoice', 'string')}>
+                  <select value={clientSettingsTemp.speakItemsVoice} onChange={handleChange('speakItemsVoice', 'string')}>
                     {voiceOptions}
                   </select>
-                  <button className="SettingsTestButton" onClick={this.playVoice}>Test</button>
+                  <button className="SettingsTestButton" onClick={playVoice}>Test</button>
                 </td>
               </tr>}
               <tr>
                 <th>Progress bar for "Next Check In":</th>
                 <td>
-                  <select value={this.state.showNextCheckInProgressBar} onChange={this.handleChange('showNextCheckInProgressBar', 'boolean')}>
+                  <select value={clientSettingsTemp.showNextCheckInProgressBar} onChange={handleChange('showNextCheckInProgressBar', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
@@ -608,19 +601,19 @@ class Settings extends Component {
                   Uses more CPU in the browser
                 </td>
               </tr>
-              <tr>
+              {/* <tr>
                 <th>Emojis:</th>
                 <td>
-                  <select value={this.state.showEmoji} onChange={this.handleChange('showEmoji', 'boolean')}>
+                  <select value={clientSettingsTemp.showEmoji} onChange={handleChange('showEmoji', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
                 </td>
-              </tr>
+              </tr> */}
               <tr>
                 <th>Automatic Scroll:</th>
                 <td>
-                  <select value={this.state.automaticScroll} onChange={this.handleChange('automaticScroll', 'boolean')}>
+                  <select value={clientSettingsTemp.automaticScroll} onChange={handleChange('automaticScroll', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
@@ -628,10 +621,18 @@ class Settings extends Component {
                   When there are many down hosts or services this will scroll the screen through all the items
                 </td>
               </tr>
+              {clientSettingsTemp.automaticScroll && <tr>
+                <th>Automatic Scroll Time Multiplier:</th>
+                <td>
+                  <input type="number" min="0.1" max="10" value={clientSettingsTemp.automaticScrollTimeMultiplier} onChange={handleChange('automaticScrollTimeMultiplier', 'number')} />
+                  &nbsp;
+                  Slow down the scroll routine by multiplying the animation time 2 = 2x, 2.5 = 2.5x, 3 = 3x. Higher is slower.
+                </td>
+              </tr>}
             </tbody>
           </table>
 
-          {/* fun */}
+          {/* top and bottom menu */}
           <table className="SettingsTable">
             <thead>
               <tr>
@@ -643,30 +644,33 @@ class Settings extends Component {
                 <th style={{ padding: '0px', height: '3px' }}></th>
                 <td style={{ padding: '0px', height: '3px' }}></td>
               </tr>
-              
+              <tr>
+                <th>Title:</th>
+                <td><input type="text" value={clientSettingsTemp.titleString} onChange={handleChange('titleString', 'string')} /></td>
+              </tr>
               <tr>
                 <th>Custom Logo:</th>
                 <td>
-                  <select value={this.state.customLogoEnabled} onChange={this.handleChange('customLogoEnabled', 'boolean')}>
+                  <select value={clientSettingsTemp.customLogoEnabled} onChange={handleChange('customLogoEnabled', 'boolean')}>
                       <option value={true}>On</option>
                       <option value={false}>Off</option>
                   </select>
                 </td>
               </tr>
-              {this.state.customLogoEnabled && <tr>
+              {clientSettingsTemp.customLogoEnabled && <tr>
                 <th>Custom Logo URL:</th>
                 <td>
-                  <input type="text" value={this.state.customLogoUrl} onChange={this.handleChange('customLogoUrl', 'string')} />
+                  <input type="text" value={clientSettingsTemp.customLogoUrl} onChange={handleChange('customLogoUrl', 'string')} />
                 </td>
               </tr>}
               <tr>
                 <th>Doom Guy (Flynn):</th>
                 <td>
-                  <select value={this.state.flynnEnabled} onChange={this.handleChange('flynnEnabled', 'boolean')}>
+                  <select value={clientSettingsTemp.flynnEnabled} onChange={handleChange('flynnEnabled', 'boolean')}>
                       <option value={true}>On</option>
                       <option value={false}>Off</option>
                   </select>
-                  <span style={{ color: 'orange' }}> This feature is temporarily broken while I refactor some code. He won't get angry or bloody.</span>
+                  <span> &nbsp; The character from the game Doom</span>
                 </td>
               </tr>
 
@@ -676,19 +680,19 @@ class Settings extends Component {
                   <div style={{ paddingLeft: '40px' }}>
                     <table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
                       <tbody>
-                        {this.state.flynnEnabled && <tr>
+                        {clientSettingsTemp.flynnEnabled && <tr>
                           <th>Doom Guy angry at</th>
-                          <td><input type="number" min="0" max="100" value={this.state.flynnAngryAt} onChange={this.handleChange('flynnAngryAt', 'number')} /> services down</td>
+                          <td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnAngryAt} onChange={handleChange('flynnAngryAt', 'number')} /> services down</td>
                         </tr>}
-                        {this.state.flynnEnabled && <tr>
+                        {clientSettingsTemp.flynnEnabled && <tr>
                           <th>Doom Guy bloody at</th>
-                          <td><input type="number" min="0" max="100" value={this.state.flynnBloodyAt} onChange={this.handleChange('flynnBloodyAt', 'number')} /> services down</td>
+                          <td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnBloodyAt} onChange={handleChange('flynnBloodyAt', 'number')} /> services down</td>
                         </tr>}
-                        {this.state.flynnEnabled && <tr>
+                        {clientSettingsTemp.flynnEnabled && <tr>
                           <th>Doom Guy CSS scale</th>
                           <td>
-                            <input type="number" min="0" max="4" value={this.state.flynnCssScale} onChange={this.handleChange('flynnCssScale', 'string')} />
-                            <span style={{ marginLeft: '8px' }}>{this.state.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
+                            <input type="number" min="0" max="4" value={clientSettingsTemp.flynnCssScale} onChange={handleChange('flynnCssScale', 'string')} />
+                            <span style={{ marginLeft: '8px' }}>{clientSettingsTemp.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
                           </td>
                         </tr>}
                       </tbody>
@@ -701,7 +705,7 @@ class Settings extends Component {
               <tr>
                 <th>Hamburger Menu:</th>
                 <td>
-                  <select value={this.state.hideHamburgerMenu} onChange={this.handleChange('hideHamburgerMenu', 'boolean')}>
+                  <select value={clientSettingsTemp.hideHamburgerMenu} onChange={handleChange('hideHamburgerMenu', 'boolean')}>
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                   </select>
@@ -710,7 +714,7 @@ class Settings extends Component {
               <tr>
                 <th>Bottom Menu:</th>
                 <td>
-                  <select value={this.state.hideBottomMenu} onChange={this.handleChange('hideBottomMenu', 'boolean')}>
+                  <select value={clientSettingsTemp.hideBottomMenu} onChange={handleChange('hideBottomMenu', 'boolean')}>
                     <option value={true}>Hide</option>
                     <option value={false}>Show</option>
                   </select>
@@ -757,7 +761,7 @@ class Settings extends Component {
                       </pre>
 
                       After those steps, you can try this button:
-                      <button className="SettingsSaveToServerButton" onClick={this.saveSettingsToServer}>Save settings to server</button><br />
+                      <button className="SettingsSaveToServerButton" onClick={saveSettingsToServer}>Save settings to server</button><br />
                       <br />
 
                     </div>
@@ -768,9 +772,9 @@ class Settings extends Component {
                     <div style={{ marginLeft: '30px' }}>
                       Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
 
-                      <button className="SettingsSaveToServerButton" onClick={this.copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
+                      <button className="SettingsSaveToServerButton" onClick={copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
 
-                      <div className="raw-json-settings">{JSON.stringify(settingsObject, null, 2)}</div>
+                      <div className="raw-json-settings">{JSON.stringify(clientSettingsTemp, null, 2)}</div>
                     </div>
                   </div>
                 </td>
@@ -778,11 +782,13 @@ class Settings extends Component {
             </tbody>
           </table>
         </div>
+      </div>}
 
 
-      </div>
-    );
-  }
-}
+
+    </div>
+  );
+  
+};
 
 export default Settings;

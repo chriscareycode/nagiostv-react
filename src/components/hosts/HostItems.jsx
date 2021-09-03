@@ -16,7 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
+
+// Recoil
+import { useRecoilValue } from 'recoil';
+import {
+  //hostIsFetchingAtom,
+  //hostAtom,
+  hostHowManyAtom 
+} from '../../atoms/hostAtom';
+import { commentlistAtom } from '../../atoms/commentlistAtom';
+
 import { translate } from '../../helpers/language';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import HostItem from './HostItem';
@@ -28,93 +38,118 @@ import HostItem from './HostItem';
 // css
 import './HostItems.css';
 
-class HostItems extends Component {
+const HostItems = ({
+  hostProblemsArray,
+  settings,
+  //isDemoMode,
+  //hostlistError,
+}) => {
 
-  render() {
+  const commentlistState = useRecoilValue(commentlistAtom);
+  const commentlist = commentlistState.response;
+  
+  const hostHowManyState = useRecoilValue(hostHowManyAtom);
 
-    //console.log('this.props.hostProblemsArray is', this.props.hostProblemsArray);
-    //console.log(Object.keys(this.props.hostProblemsArray));
+  const {
+    howManyHosts,
+    // howManyHostPending,
+    // howManyHostUp,
+    // howManyHostDown,
+    // howManyHostUnreachable,
+    // howManyHostAcked,
+    // howManyHostScheduled,
+    // howManyHostFlapping,
+    // howManyHostSoft,
+    // howManyHostNotificationsDisabled,
+  } = hostHowManyState;
 
-    const filteredHostProblemsArray = this.props.hostProblemsArray.filter(item => {
-      if (this.props.settings.hideHostPending) {
-        if (item.status === 1) { return false; }
-      }
-      if (this.props.settings.hideHostDown) {
-        if (item.status === 4) { return false; }
-      }
-      if (this.props.settings.hideHostUnreachable) {
-        if (item.status === 8) { return false; }
-      }
-      if (this.props.settings.hideHostAcked) {
-        if (item.problem_has_been_acknowledged) { return false; }
-      }
-      if (this.props.settings.hideHostScheduled) {
-        if (item.scheduled_downtime_depth > 0) { return false; }
-      }
-      if (this.props.settings.hideHostFlapping) {
-        if (item.is_flapping) { return false; }
-      }
-      if (this.props.settings.hideHostSoft) {
-        if (item.state_type === 0) { return false; }
-      }
-      if (this.props.settings.hideHostNotificationsDisabled) {
-        if (item.notifications_enabled === false) { return false; }
-      }
-      return true;
-    });
+  
 
-    const howManyHidden = this.props.hostProblemsArray.length - filteredHostProblemsArray.length;
-    const showSomeDownItems = this.props.hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
-    const { language } = this.props.settings;
+  //console.log('hostProblemsArray is', hostProblemsArray);
+  //console.log(Object.keys(hostProblemsArray));
 
-    return (
-      <div className="HostItems ServiceItems">
+  const filteredHostProblemsArray = hostProblemsArray.filter(item => {
+    if (settings.hideHostPending) {
+      if (item.status === 1) { return false; }
+    }
+    if (settings.hideHostDown) {
+      if (item.status === 4) { return false; }
+    }
+    if (settings.hideHostUnreachable) {
+      if (item.status === 8) { return false; }
+    }
+    if (settings.hideHostAcked) {
+      if (item.problem_has_been_acknowledged) { return false; }
+    }
+    if (settings.hideHostScheduled) {
+      if (item.scheduled_downtime_depth > 0) { return false; }
+    }
+    if (settings.hideHostFlapping) {
+      if (item.is_flapping) { return false; }
+    }
+    if (settings.hideHostSoft) {
+      if (item.state_type === 0) { return false; }
+    }
+    if (settings.hideHostNotificationsDisabled) {
+      if (item.notifications_enabled === false) { return false; }
+    }
+    return true;
+  });
 
-        <div className={`all-ok-item ${this.props.hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {this.props.howManyHosts} {translate('hosts are UP', language)}</span>{' '}
+  const howManyHidden = hostProblemsArray.length - filteredHostProblemsArray.length;
+  const showSomeDownItems = hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
+  const { language } = settings;
+
+  return (
+    <div className="HostItems ServiceItems">
+
+      <div className={`all-ok-item ${hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
+        <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
+      </div>
+
+      <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
+        <div>
+          <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyHosts - hostProblemsArray.length} of {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
+          <span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
         </div>
-
-        <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-          <div>
-            <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{this.props.howManyHosts - this.props.hostProblemsArray.length} of {this.props.howManyHosts} {translate('hosts are UP', language)}</span>{' '}
-            <span className="some-down-hidden-text">({howManyHidden} hidden)</span>
-          </div>
-        </div>
+      </div>
 
         <TransitionGroup className="host-items-wrap">
           {filteredHostProblemsArray.map((e, i) => {
             //console.log('HostItem item');
             //console.log(e, i);
 
-            // find comment for this hostitem
-            const commentlist = this.props.commentlist;
-            const comments = [];
+          // find comment for this hostitem
+          //const commentlist = commentlist;
+          const comments = [];
+          if (commentlist) {
             Object.keys(commentlist).forEach((id) => {
               if (commentlist[id].comment_type === 1 && e.name === commentlist[id].host_name) {
                 comments.push(commentlist[id]);
               }
             });
+          }
 
-            return (
-              <CSSTransition
-                key={`host-${e.name}`}
-                classNames="example"
-                timeout={{ enter: 500, exit: 500 }}
-                unmountOnExit
-              >
-                <HostItem
-                  settings={this.props.settings}
-                  hostItem={e}
-                  comments={comments}
-                />
-              </CSSTransition>
-            );
-            
-          })}
-        </TransitionGroup>
-      </div>
-    );
-  }
-}
+          return (
+            <CSSTransition
+              key={`host-${e.name}`}
+              classNames="example"
+              timeout={{ enter: 500, exit: 500 }}
+              unmountOnExit
+            >
+              <HostItem
+                settings={settings}
+                hostItem={e}
+                comments={comments}
+              />
+            </CSSTransition>
+          );
+          
+        })}
+      </TransitionGroup>
+    </div>
+  );
+  
+};
 
 export default HostItems;

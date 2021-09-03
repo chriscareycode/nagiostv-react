@@ -16,51 +16,112 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
-import './AlertFilters.css';
+import React from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+// Helpers
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox.jsx';
+// External Deps
+import Cookie from 'js-cookie';
+// CSS
+import './AlertFilters.css';
 
-class AlertFilters extends Component {
+const AlertFilters = ({
+  //hideFilters,
+  //hideAlertSoft,
+  //howManyAlerts,
+  howManyAlertSoft,
+}) => {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const propsToCauseRender = [
-      'hideFilters',
-      'hideAlertSoft',
-      'howManyAlertSoft'
-    ];
-    for(let i=0;i<propsToCauseRender.length;i++) {
-      if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-        return true;
-      }
+  const bigState = useRecoilValue(bigStateAtom);
+  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+
+  // Chop the bigState into vars
+  const {
+    hideFilters,
+  } = bigState;
+
+  // Chop the clientSettings into vars
+  const {
+    hideAlertSoft,
+    hostSortOrder,
+    hostgroupFilter,
+    hideHistory,
+    hideHostDown,
+    hideHostSection,
+    serviceSortOrder,
+    language,
+  } = clientSettings;
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const propsToCauseRender = [
+  //     'hideFilters',
+  //     'hideAlertSoft',
+  //     'howManyAlertSoft'
+  //   ];
+  //   for(let i=0;i<propsToCauseRender.length;i++) {
+  //     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
+
+  const saveCookie = () => {
+    //const cookieObject = {};
+    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
+    Cookie.set('settings', clientSettings);
+    console.log('Saved cookie', clientSettings);
+  };
+
+  const handleCheckboxChange = (e, propName, dataType) => {
+    console.log('handleCheckboxChange', e);
+    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
+    if (typeof e.target.checked === 'undefined') { return; }
+ 
+    let val = '';
+    if (dataType === 'checkbox') {
+      val = (!e.target.checked);
+    } else {
+      val = e.target.value;
     }
-    return false;
-  }
-
-  render() {
+    // Save to state
+    //console.log('setting state ' + propName + ' to ', val);
+    setClientSettings(settings => ({
+      ...settings,
+      [propName]: val
+    }));
     
-    const language = this.props.language;
+    // Save to cookie AFTER state is set
+    setTimeout(() => {
+      saveCookie();
+    }, 1000);
+  };
+    
+  
 
-    return (
-      <>
+  return (
+    <>
 
-        {/*<span className="filter-ok-label filter-ok-label-gray"><strong>{this.props.howManyAlerts}</strong> Alerts</span>*/}
+      {/*<span className="filter-ok-label filter-ok-label-gray"><strong>{howManyAlerts}</strong> Alerts</span>*/}
 
-        {(!this.props.hideFilters || this.props.howManyAlertSoft !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="soft"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideAlertSoft'}
-            defaultChecked={!this.props.hideAlertSoft}
-            howMany={this.props.howManyAlertSoft}
-            howManyText={translate('soft', language)}
-          />
-        </span>}
-      </>
-    );
-  }
-}
+      {(!hideFilters || howManyAlertSoft !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="soft"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideAlertSoft'}
+          defaultChecked={!hideAlertSoft}
+          howMany={howManyAlertSoft}
+          howManyText={translate('soft', language)}
+        />
+      </span>}
+    </>
+  );
+  
+};
 
 export default AlertFilters;

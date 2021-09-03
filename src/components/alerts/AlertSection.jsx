@@ -16,166 +16,86 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
+
 import { translate } from '../../helpers/language';
+
+import PollingSpinner from '../widgets/PollingSpinner';
 import AlertItems from './AlertItems.jsx';
 import AlertFilters from './AlertFilters.jsx';
 import HistoryChart from '../widgets/HistoryChart.jsx';
 import './AlertSection.css';
 import $ from 'jquery';
 
-// icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+let isComponentMounted = false;
 
-class AlertSection extends Component {
+const AlertSection = () => {
 
-  state = {
-    isFetching: false,
-    alertlistError: false,
-    alertlistErrorCount: 0,
-    alertlistErrorMessage: '',
-    alertlistLastUpdate: 0,
-    alertlist: [],
-    alertlistCount: 0
-  };
+  //console.log('AlertSection run');
 
-  timeoutHandle = null;
-  intervalHandle = null;
-  isComponentMounted = false;
+  // Recoil state (this section)
+  const [alertIsFetching, setAlertIsFetching] = useRecoilState(alertIsFetchingAtom);
+  const [alertState, setAlertState] = useRecoilState(alertAtom);
+  const [alertHowManyState, setAlertHowManyState] = useRecoilState(alertHowManyAtom);
+  // Recoil state (main)
+  const bigState = useRecoilValue(bigStateAtom);
+  const clientSettings = useRecoilValue(clientSettingsAtom);
+  
+  const {
+    isDemoMode,
+    useFakeSampleData,
+  } = bigState;
 
-  componentDidMount() {
+  const {
+    fetchAlertFrequency,
+    alertMaxItems,
+    alertHoursBack,
+    hideHistoryChart,
+    hideHistoryTitle,
+    hideAlertSoft,
+    language,
+    showEmoji,
+    alertDaysBack,
+    hostgroupFilter,
+  } = clientSettings;
 
-    this.timeoutHandle = setTimeout(() => {
-      this.fetchAlertData();
-    }, 1000);
-
-    if (this.props.isDemoMode === false) {
-      this.intervalHandle = setInterval(() => {
-        this.fetchAlertData();
-      }, this.props.fetchAlertFrequency * 1000);
-    }
-
-    this.isComponentMounted = true;
-  }
-
-  componentWillUnmount() {
-    if (this.timeoutHandle) {
-      clearTimeout(this.timeoutHandle);
-    }
-    if (this.intervalHandle) {
-      clearInterval(this.intervalHandle);
-    }
-    this.isComponentMounted = false;
-  }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const propsToCauseRender = [
-  //     'alertDaysBack',
-  //     'alertHoursBack',
-  //     'alertMaxItems',
-  //     'showEmoji'
-  //   ];
-  //   for(let i=0;i<propsToCauseRender.length;i++) {
-  //     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-  //       return true;
-  //     }
-  //   }
-  //   const stateToCauseRender = [
-  //     'alertlistError',
-  //     'alertlistErrorMessage',
-  //     'alertlistLastUpdate'
-  //   ];
-  //   for(let i=0;i<stateToCauseRender.length;i++) {
-  //     if (nextState[stateToCauseRender[i]] !== this.state[stateToCauseRender[i]]) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
-
-  fetchAlertData() {
-    const starttime = this.props.alertDaysBack * 60 * 60 * 24;
+  useEffect(() => {
+    let timeoutHandle = null;
+    let intervalHandle = null;
     
-    let url;
-    if (this.props.useFakeSampleData) {
-      url = './sample-data/alertlist.json';
-    } else if (this.props.settingsObject.dataSource === 'livestatus') {
-      url = this.props.settingsObject.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
-    } else {
-      url = `${this.props.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
-      if (this.props.hostgroupFilter) { url += `&hostgroup=${this.props.hostgroupFilter}`; }
+
+    timeoutHandle = setTimeout(() => {
+      fetchAlertData();
+    }, 1000);
+    if (isDemoMode === false) {
+      intervalHandle = setInterval(() => {
+        fetchAlertData();
+      }, fetchAlertFrequency * 1000);
     }
+    isComponentMounted = true;
 
-    this.setState({ isFetching: true });
+    return () => {
 
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (this.props.fetchAlertFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
-
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        
-        if (this.isComponentMounted) {
-          this.setState({
-            isFetching: false,
-            alertlistError: true,
-            alertlistErrorCount: this.state.alertlistErrorCount + 1,
-            alertlistErrorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-          });
-        }
-
-        return;
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
       }
-
-      // Make an array from the object
-      const alertlist = _.get(myJson.data, 'alertlist', []).reverse();
-
-      // store the actual count of alert list items before we trim
-      const alertlistCount = alertlist.length;
-
-      // trim
-      if (alertlist.length > this.props.alertMaxItems) {
-        alertlist.length = this.props.alertMaxItems;
+      if (intervalHandle) {
+        clearInterval(intervalHandle);
       }
+      isComponentMounted = false;
+    };
+  }, []); 
 
-      if (this.isComponentMounted) {
-        this.setState({
-          isFetching: false,
-          alertlistError: false,
-          alertlistErrorCount: 0,
-          alertlistErrorMessage: '',
-          alertlistLastUpdate: new Date().getTime(),
-          alertlist, // it's already an array
-          alertlistCount
-        });
-      }
-
-    }).fail((jqXHR, textStatus, errorThrown) => {
-
-      this.setState({
-        isFetching: false,
-        alertlistError: true,
-        alertlistErrorCount: this.state.alertlistErrorCount + 1,
-        alertlistErrorMessage: 'ERROR: CONNECTION REFUSED to ' + url
-      });
-
-    });
-  }
-
-  render() {
-
-    const { language, settingsObject } = this.props;
+  const howManyCounter = useCallback((alertlist) => {
 
     // count how many soft history items
     let howManyAlertSoft = 0;
-    if (this.state.alertlist) {
-      this.state.alertlist.forEach(alert => {
+    if (alertlist) {
+      alertlist.forEach(alert => {
         //console.log(alert);
         if (alert.state_type === 2) {
           howManyAlertSoft++;
@@ -183,113 +103,212 @@ class AlertSection extends Component {
       });
     }
 
-    // filter the list of alert items
-    const alertlist = this.state.alertlist.filter(alert => {
-      if (this.props.hideAlertSoft) {
-        if (alert.state_type === 2) {
-          return false;
-        }
-      }
-      return true;
+    setAlertHowManyState({
+      howManyAlerts: alertlist.length,
+      howManyAlertSoft,
     });
 
-    // get the alertlist for the past n hours
-    const alertlistHours = alertlist.filter(a => new Date().getTime() - a.timestamp < this.props.alertHoursBack * 3600 * 1000);
-    const alertlistHoursCount = alertlistHours.length;
-    const alertlistCount = alertlist.length;
+  }, [alertState]);
 
-    return (
-      <div className={`AlertSection`}>
+  const fetchAlertData = () => {
+    const starttime = alertDaysBack * 60 * 60 * 24;
+    
+    let url;
+    if (useFakeSampleData) {
+      url = './sample-data/alertlist.json';
+    } else if (clientSettings.dataSource === 'livestatus') {
+      url = clientSettings.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+    } else {
+      url = `${clientSettings.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+    }
 
-        <div className="history-summary">
-          {!this.props.hideHistoryTitle && <span className="service-summary-title">
-            <strong>{alertlistCount}</strong> alerts{' '}
-            {settingsObject.hostgroupFilter && <span>({settingsObject.hostgroupFilter})</span>}
-          </span>}
+    setAlertIsFetching(true);
 
-          {/* alert history filters */}
-          <AlertFilters
-            hideFilters={this.props.hideFilters}
-            handleSelectChange={this.props.handleSelectChange}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            hideAlertSoft={this.props.hideAlertSoft}
-            howManyAlerts={this.state.alertlist.length}
-            howManyAlertSoft={howManyAlertSoft}
-            language={this.props.language}
-          />
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: (fetchAlertFrequency - 2) * 1000
+    }).done((myJson, textStatus, jqXHR) => {
 
-          {/* loading spinner */}
-          <span className={this.state.isFetching ? 'loading-spinner' : 'loading-spinner loading-spinner-fadeout'}>
-            {(!this.props.isDemoMode && this.state.alertlistError) && <span style={{ color: 'yellow'}}>{this.state.alertlistErrorCount} x <FontAwesomeIcon icon={faExclamationTriangle} /> &nbsp; </span>}
-            <FontAwesomeIcon icon={faSync} /> {this.props.fetchAlertFrequency}s
-          </span>
-
-        </div>
-
-
-        {/* hourly alert chart */}
-
-        {alertlist.length > 0 && <div>
-
-          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-chart-title margin-top-10">
-            <span className="">
-              <strong>{alertlistHoursCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertHoursBack}</strong> {translate('hours', language)}
-              {/*this.state.alertlistCount > this.state.alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.state.alertMaxItems})</span>*/}
-            </span>
-          </div>}
-
-          {(alertlist.length > 0 && !this.props.hideHistoryChart) && <HistoryChart
-            alertlist={alertlistHours}
-            alertlistLastUpdate={this.state.alertlistLastUpdate}
-            groupBy="hour"
-            alertHoursBack={24} 
-            alertDaysBack={1}
-            hideAlertSoft={this.props.hideAlertSoft}
-          />}
-
-        </div>}
-
-        {/* full alert chart */}
-
-        {alertlist.length > 0 && <div>
-
-          {(!this.props.hideHistoryTitle && !this.props.hideHistoryChart) && <div className="history-chart-title margin-top-10">
-            <span className="">
-              <strong>{alertlistCount}</strong> {this.props.hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{this.props.alertDaysBack}</strong> {translate('days', language)}
-              {this.state.alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {this.props.alertMaxItems})</span>}
-            </span>
-          </div>}
-
-          {/* history chart */}
-          {!this.props.hideHistoryChart && <HistoryChart
-            alertlist={alertlist}
-            alertlistLastUpdate={this.state.alertlistLastUpdate}
-            groupBy="day"
-            alertDaysBack={this.props.alertDaysBack} 
-            hideAlertSoft={this.props.hideAlertSoft}
-          />}
-
-        </div>}
-
-        {/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
-        {(!this.props.isDemoMode && this.state.alertlistError && this.state.alertlistErrorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {this.state.alertlistErrorMessage}</div>}
-
-        {/* No alerts */}
-        {!this.state.alertlistError && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
-          <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">No alerts</span>
-        </div>}
-
-        {/* alert items */}
-
-        <AlertItems
-          items={alertlist}
-          showEmoji={this.props.showEmoji}
-          settings={settingsObject}
-        />
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
         
+        // We check this since the ajax could take a while to respond and the page may have unmounted
+        if (isComponentMounted) {
+          // Save settings
+          setAlertIsFetching(false);
+          setAlertState(curr => ({
+            ...curr,
+            error: true,
+            errorCount: curr.errorCount + 1,
+            errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+          }));
+        }
+        return;
+      }
+
+      // Success
+
+      // Make an array from the object
+      const myAlertlist = _.get(myJson.data, 'alertlist', []).reverse();
+
+      // store the actual count of alert list items before we trim
+      //const myAlertlistCount = myAlertlist.length;
+
+      // trim
+      if (myAlertlist.length > alertMaxItems) {
+        myAlertlist.length = alertMaxItems;
+      }
+
+      // We check this since the ajax could take a while to respond and the page may have unmounted
+      if (isComponentMounted) {
+        // Save settings
+        setAlertIsFetching(false);
+
+        setAlertState(curr => ({
+          error: false,
+          errorCount: 0,
+          errorMessage: '',
+          lastUpdate: new Date().getTime(),
+          response: myJson.data,
+          responseArray: myAlertlist
+        }));
+
+        howManyCounter(myAlertlist);
+      }
+
+      
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+
+      if (isComponentMounted) {
+      
+        setAlertIsFetching(false);
+
+        setAlertState(curr => ({
+          ...curr,
+          error: true,
+          errorCount: curr.errorCount + 1,
+          errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+        }));
+      }
+
+    });
+  };
+
+  //const { language, clientSettings } = this.props;
+
+  const alertlist = alertState.responseArray;
+
+  // filter the list of alert items
+  // This is also creating a new array so we do not modify the Recoil state directly
+  const alertlistFiltered = alertlist.filter(alert => {
+    if (hideAlertSoft) {
+      if (alert.state_type === 2) {
+        return false;
+      }
+    }
+    return true;
+  });
+
+  // get the alertlist for the past n hours
+  const alertlistHours = alertlistFiltered.filter(a => new Date().getTime() - a.timestamp < alertHoursBack * 3600 * 1000);
+  const alertlistHoursCount = alertlistHours.length;
+  const alertlistFilteredCount = alertlistFiltered.length;
+
+  return (
+    <div className={`AlertSection`}>
+
+      <div className="history-summary">
+        {!hideHistoryTitle && <span className="service-summary-title">
+          <strong>{alertlistFilteredCount}</strong> alerts{' '}
+          {clientSettings.hostgroupFilter && <span>({clientSettings.hostgroupFilter})</span>}
+        </span>}
+
+        {/* alert history filters */}
+        <AlertFilters
+          howManyAlertSoft={alertHowManyState.howManyAlertSoft}
+        />
+
+        {/* loading spinner */}
+        <PollingSpinner
+          isFetching={alertIsFetching}
+          isDemoMode={isDemoMode}
+          error={alertState.error}
+          errorCount={alertState.errorCount}
+          //fetchFrequency={fetchAlertFrequency}
+          fetchVariableName={'fetchAlertFrequency'}
+        />
+
       </div>
-    );
-  }
-}
+
+      {/* hourly alert chart */}
+
+      {(alertlist.length > 0 && !hideHistoryChart) && <div className="history-chart-wrap">
+
+        {(!hideHistoryTitle && !hideHistoryChart) && <div className="history-chart-title margin-top-10">
+          <span className="">
+            <strong>{alertlistHoursCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertHoursBack}</strong> {translate('hours', language)}
+            {/*alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>*/}
+          </span>
+        </div>}
+
+        {(alertlist.length > 0 && !hideHistoryChart) && <HistoryChart
+          alertlist={alertlistHours}
+          alertlistLastUpdate={alertState.lastUpdate}
+          groupBy="hour"
+          alertHoursBack={alertHoursBack} 
+          alertDaysBack={1}
+          hideAlertSoft={hideAlertSoft}
+        />}
+
+      </div>}
+
+      {/* full alert chart */}
+
+      {(alertlist.length > 0 && !hideHistoryChart) && <div className="history-chart-wrap">
+
+        {(!hideHistoryTitle && !hideHistoryChart) && <div className="history-chart-title margin-top-10">
+          <span className="">
+            <strong>{alertlistFilteredCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertDaysBack}</strong> {translate('days', language)}
+            {alertlistFilteredCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>}
+          </span>
+        </div>}
+
+        {/* history chart */}
+        {!hideHistoryChart && <HistoryChart
+          alertlist={alertlist}
+          alertlistLastUpdate={alertState.lastUpdate}
+          groupBy="day"
+          alertDaysBack={alertDaysBack} 
+          hideAlertSoft={hideAlertSoft}
+        />}
+
+      </div>}
+
+      {/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
+      {(!isDemoMode && alertState.error && alertState.errorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {alertState.errorMessage}</div>}
+
+      {/* No alerts */}
+      {!alertState.error && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>
+        <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">No alerts</span>
+      </div>}
+
+      {/* alert items */}
+
+      <AlertItems
+        items={alertlist}
+        showEmoji={showEmoji}
+        settings={clientSettings}
+      />
+      
+    </div>
+  );
+  
+};
 
 export default AlertSection;

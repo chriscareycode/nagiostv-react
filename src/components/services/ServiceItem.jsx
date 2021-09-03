@@ -102,6 +102,7 @@ class ServiceItem extends Component {
     // check_type === 1
     // checks_enabled === false
     const isPassive = e.check_type === 1;
+    const isDown = e.status !== 2;
 
     return (
       
@@ -128,7 +129,8 @@ class ServiceItem extends Component {
             {e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
-            <div className="last-ok"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>
+            {/** only show last-ok if the item is actually down. We show things like scheduled which can be OK */}
+            {isDown && <div className="last-ok"><span>{translate('Last OK', language)}</span> {formatDateTimeAgoColor(e.last_time_ok)} {translate('ago', language)}</div>}
           </div>
 
           <div>
@@ -144,8 +146,12 @@ class ServiceItem extends Component {
             {/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
             
             {/* active checks get "Next check in 5m 22s" */}
-            {(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>{translate('Next check in', language)} <span className="color-peach"> {formatDateTime(e.next_check)}</span></span>}
-            {(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now"><FontAwesomeIcon icon={faCircleNotch} spin /> Checking now...</span>}
+            {(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>
+              {translate('Next check in', language)} <span className="color-peach"> {formatDateTime(e.next_check)}</span>
+            </span>}
+            {(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now">
+              {/*<FontAwesomeIcon icon={faCircleNotch} spin /> */}Checking now...
+            </span>}
 
             {/* passive checks get "Last check 5m ago" */}
             {isPassive && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}

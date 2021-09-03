@@ -16,176 +16,239 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { serviceHowManyAtom } from '../../atoms/serviceAtom';
+
+import Cookie from 'js-cookie';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox.jsx';
 
-class ServiceFilters extends Component {
+const ServiceFilters = () => {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
-    const propsToCauseRender = [
-      'hideFilters',
-      'serviceSortOrder',
-      'howManyServices',
-      'howManyServiceWarning',
-      'howManyServicePending',
-      'howManyServiceUnknown',
-      'howManyServiceCritical',
-      'howManyServiceAcked',
-      'howManyServiceScheduled',
-      'howManyServiceFlapping',
-      'howManyServiceSoft',
-      'howManyServiceNotificationsDisabled'
-    ];
-    for(let i=0;i<propsToCauseRender.length;i++) {
-      if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-        return true;
-      }
+  const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+
+  const bigState = useRecoilValue(bigStateAtom);
+  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+  const settingsObject = clientSettings; // TODO rename
+
+  // Chop the bigState into vars
+  const {
+    hideFilters,
+  } = bigState;
+
+  // Chop the clientSettings into vars
+  const {
+    serviceSortOrder,
+    language,
+  } = clientSettings;
+  
+  const saveCookie = () => {
+    //const cookieObject = {};
+    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
+    Cookie.set('settings', clientSettings);
+    console.log('Saved cookie', clientSettings);
+  };
+  
+  const handleSelectChange = (e) => {
+    //console.log('handleSelectChange', e.target);
+    // console.log(event);
+    // console.log(event.target.getAttribute('varname'));
+    // console.log('event.target.value', event.target.value);
+    const propName = e.target.getAttribute('varname');
+    // setClientSettings(settings => ({
+    //   ...settings,
+    //   [propName]: e.target.value
+    // }));
+    setClientSettings(settings => {
+      saveCookie({
+        ...settings,
+        [propName]: e.target.value
+        });
+      return ({
+        ...settings,
+        [propName]: e.target.value
+      });
+    });
+     
+  };
+
+  const handleCheckboxChange = (e, propName, dataType) => {
+    //console.log('handleCheckboxChange', e.target, propName, dataType);
+    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
+    if (typeof e.target.checked === 'undefined') { return; }
+ 
+    let val = '';
+    if (dataType === 'checkbox') {
+      val = (!e.target.checked);
+    } else {
+      val = e.target.value;
     }
-    return false;
-  }
 
-  render() {
-    
-    const language = this.props.language;
+    // Save to Cookie and to Recoil state
+    setClientSettings(settings => {
+      saveCookie({
+        ...settings,
+        [propName]: val
+        });
+      return ({
+        ...settings,
+        [propName]: val
+      });
+    });
 
-    const howManyServiceOk = this.props.howManyServices - this.props.howManyServiceWarning - this.props.howManyServiceCritical - this.props.howManyServiceUnknown;
+  };
 
-    return (
-      <>
+  const {
+    //howManyServices,
+    howManyServiceOk,
+    howManyServiceWarning,
+    howManyServiceUnknown,
+    howManyServiceCritical,
+    howManyServicePending,
+    howManyServiceAcked,
+    howManyServiceScheduled,
+    howManyServiceFlapping,
+    howManyServiceSoft,
+    howManyServiceNotificationsDisabled,
+  } = serviceHowManyState;
 
-        {!this.props.hideFilters && <select value={this.props.serviceSortOrder} varname={'serviceSortOrder'} onChange={this.props.handleSelectChange}>
-          <option value="newest">{translate('newest first', language)}</option>
-          <option value="oldest">{translate('oldest first', language)}</option>
-        </select>}
+  return (
+    <>
 
-        {(this.props.howManyServiceWarning !== 9 || this.props.howManyServiceCritical !== 0) && <span>
-          &nbsp;
-          <span className="filter-ok-label filter-ok-label-green"><strong>{howManyServiceOk}</strong> OK</span>
-        </span>}
-        
-        {(!this.props.hideFilters || this.props.howManyServiceCritical !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="critical"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceCritical'}
-            defaultChecked={!this.props.settingsObject.hideServiceCritical}
-            howMany={this.props.howManyServiceCritical}
-            howManyText={translate('critical', language)}
-          />
-        </span>}
+      {!hideFilters && <select value={serviceSortOrder} varname={'serviceSortOrder'} onChange={handleSelectChange}>
+        <option value="newest">{translate('newest first', language)}</option>
+        <option value="oldest">{translate('oldest first', language)}</option>
+      </select>}
 
-        {(!this.props.hideFilters || this.props.howManyServiceWarning !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="warning"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceWarning'}
-            defaultChecked={!this.props.settingsObject.hideServiceWarning}
-            howMany={this.props.howManyServiceWarning}
-            howManyText={translate('warning', language)}
-          />
-        </span>}
-        
-        {(!this.props.hideFilters || this.props.howManyServiceUnknown !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="unknown"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceUnknown'}
-            defaultChecked={!this.props.settingsObject.hideServiceUnknown}
-            howMany={this.props.howManyServiceUnknown}
-            howManyText={translate('unknown', language)}
-          />
-        </span>}
+      {(howManyServiceWarning !== 9 || howManyServiceCritical !== 0) && <span>
+        &nbsp;
+        <span className="filter-ok-label filter-ok-label-green"><strong>{howManyServiceOk}</strong> OK</span>
+      </span>}
+      
+      {(!hideFilters || howManyServiceCritical !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="critical"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceCritical'}
+          defaultChecked={!settingsObject.hideServiceCritical}
+          howMany={howManyServiceCritical}
+          howManyText={translate('critical', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyServicePending !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="pending"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServicePending'}
-            defaultChecked={!this.props.settingsObject.hideServicePending}
-            howMany={this.props.howManyServicePending}
-            howManyText={translate('pending', language)}
-          />
-        </span>}
-        
-        {(!this.props.hideFilters || this.props.howManyServiceAcked !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="acked"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceAcked'}
-            defaultChecked={!this.props.settingsObject.hideServiceAcked}
-            howMany={this.props.howManyServiceAcked}
-            howManyText={translate('acked', language)}
-          />
-        </span>}
-        
-        {(!this.props.hideFilters || this.props.howManyServiceScheduled !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="scheduled"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceScheduled'}
-            defaultChecked={!this.props.settingsObject.hideServiceScheduled}
-            howMany={this.props.howManyServiceScheduled}
-            howManyText={translate('scheduled', language)}
-          />
-        </span>}
-        
-        {(!this.props.hideFilters || this.props.howManyServiceFlapping !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="flapping"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceFlapping'}
-            defaultChecked={!this.props.settingsObject.hideServiceFlapping}
-            howMany={this.props.howManyServiceFlapping}
-            howManyText={translate('flapping', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyServiceWarning !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="warning"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceWarning'}
+          defaultChecked={!settingsObject.hideServiceWarning}
+          howMany={howManyServiceWarning}
+          howManyText={translate('warning', language)}
+        />
+      </span>}
+      
+      {(!hideFilters || howManyServiceUnknown !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="unknown"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceUnknown'}
+          defaultChecked={!settingsObject.hideServiceUnknown}
+          howMany={howManyServiceUnknown}
+          howManyText={translate('unknown', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyServiceSoft !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="soft"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceSoft'}
-            defaultChecked={!this.props.settingsObject.hideServiceSoft}
-            howMany={this.props.howManyServiceSoft}
-            howManyText={translate('soft', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyServicePending !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="pending"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServicePending'}
+          defaultChecked={!settingsObject.hideServicePending}
+          howMany={howManyServicePending}
+          howManyText={translate('pending', language)}
+        />
+      </span>}
+      
+      {(!hideFilters || howManyServiceAcked !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="acked"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceAcked'}
+          defaultChecked={!settingsObject.hideServiceAcked}
+          howMany={howManyServiceAcked}
+          howManyText={translate('acked', language)}
+        />
+      </span>}
+      
+      {(!hideFilters || howManyServiceScheduled !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="scheduled"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceScheduled'}
+          defaultChecked={!settingsObject.hideServiceScheduled}
+          howMany={howManyServiceScheduled}
+          howManyText={translate('scheduled', language)}
+        />
+      </span>}
+      
+      {(!hideFilters || howManyServiceFlapping !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="flapping"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceFlapping'}
+          defaultChecked={!settingsObject.hideServiceFlapping}
+          howMany={howManyServiceFlapping}
+          howManyText={translate('flapping', language)}
+        />
+      </span>}
 
-        {(!this.props.hideFilters || this.props.howManyServiceNotificationsDisabled !== 0) && <span>
-          &nbsp;
-          <Checkbox
-            filterName="notifications_disabled"
-            hideFilters={this.props.hideFilters}
-            handleCheckboxChange={this.props.handleCheckboxChange}
-            stateName={'hideServiceNotificationsDisabled'}
-            defaultChecked={!this.props.settingsObject.hideServiceNotificationsDisabled}
-            howMany={this.props.howManyServiceNotificationsDisabled}
-            howManyText={translate('notifications disabled', language)}
-          />
-        </span>}
+      {(!hideFilters || howManyServiceSoft !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="soft"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceSoft'}
+          defaultChecked={!settingsObject.hideServiceSoft}
+          howMany={howManyServiceSoft}
+          howManyText={translate('soft', language)}
+        />
+      </span>}
 
-      </>
-    );
-  }
-}
+      {(!hideFilters || howManyServiceNotificationsDisabled !== 0) && <span>
+        &nbsp;
+        <Checkbox
+          filterName="notifications_disabled"
+          hideFilters={hideFilters}
+          handleCheckboxChange={handleCheckboxChange}
+          stateName={'hideServiceNotificationsDisabled'}
+          defaultChecked={!settingsObject.hideServiceNotificationsDisabled}
+          howMany={howManyServiceNotificationsDisabled}
+          howManyText={translate('notifications disabled', language)}
+        />
+      </span>}
+
+    </>
+  );
+  
+};
 
 export default ServiceFilters;
