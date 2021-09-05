@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 // Recoil
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { hostgroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
@@ -19,6 +19,11 @@ const DashboardFetch = () => {
     isDemoMode,
     useFakeSampleData,
   } = bigState;
+
+  const {
+    fetchCommentFrequency,
+    fetchHostGroupFrequency,
+  } = clientSettings;
 
   // Functions
   
@@ -148,13 +153,19 @@ const DashboardFetch = () => {
       fetchCommentData();
     }, 1000);
 
+    // safetly net in case the interval value is bad
+    const fetchCommentFrequencySafe = (typeof fetchCommentFrequency === 'number' && fetchCommentFrequency >= 5) ? fetchCommentFrequency : clientSettingsInitial.fetchCommentFrequency;
+
     let intervalHandleComment = setInterval(() => {
       fetchCommentData();
-    }, clientSettings.fetchCommentFrequency * 1000);
+    }, fetchCommentFrequencySafe * 1000);
+
+    // safetly net in case the interval value is bad
+    const fetchHostGroupFrequencySafe = (typeof fetchHostGroupFrequency === 'number' && fetchHostGroupFrequency >= 5) ? fetchHostGroupFrequency : clientSettingsInitial.fetchHostGroupFrequency;
 
     let intervalHandleHostGroup = setInterval(() => {
        fetchHostGroupData();
-     }, clientSettings.fetchHostGroupFrequency * 1000);
+     }, fetchHostGroupFrequencySafe * 1000);
 
     //let intervalHandleVersionCheck = null;
 
@@ -165,7 +176,7 @@ const DashboardFetch = () => {
       //if (intervalHandleVersionCheck) { clearInterval(intervalHandleVersionCheck); }
     };
 
-  }, []);
+  }, [clientSettings.fetchCommentFrequency, clientSettings.fetchHostGroupFrequency]);
 
   //console.log('DashboardFetch render()');
 

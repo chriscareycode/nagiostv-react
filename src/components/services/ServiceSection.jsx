@@ -19,7 +19,7 @@
 import React, { useCallback, useEffect } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { serviceIsFetchingAtom, serviceAtom, serviceHowManyAtom, serviceIsFakeDataSetAtom } from '../../atoms/serviceAtom';
 
 import { translate } from '../../helpers/language';
@@ -73,10 +73,12 @@ const ServiceSection = () => {
     let intervalHandle = null;
 
     if (isDemoMode === false && useFakeSampleData == false) {
+      // safetly net in case the interval value is bad
+      const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
       // we fetch alerts on a slower frequency interval
       intervalHandle = setInterval(() => {
         fetchServiceData();
-      }, fetchServiceFrequency * 1000);
+      }, fetchServiceFrequencySafe * 1000);
     }
 
     return () => {
@@ -88,7 +90,7 @@ const ServiceSection = () => {
       }
       isComponentMounted = false;
     };
-  }, []);
+  }, [clientSettings.fetchServiceFrequency]);
   
   const howManyCounter = useCallback((servicelist) => {
     //console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');

@@ -19,7 +19,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { hostIsFetchingAtom, hostAtom, hostHowManyAtom, hostIsFakeDataSetAtom } from '../../atoms/hostAtom';
 
 import PollingSpinner from '../widgets/PollingSpinner';
@@ -59,7 +59,6 @@ const HostSection = () => {
     //isDoneLoading,
     //hostgroup,
     //settingsLoaded,
-    //fetchHostFrequency,
     //hideFilters,
   } = bigState;
 
@@ -84,10 +83,12 @@ const HostSection = () => {
     let intervalHandle = null;
 
     if (isDemoMode === false && useFakeSampleData === false) {
+      // safetly net in case the interval value is bad
+      const fetchHostFrequencySafe = (typeof fetchHostFrequency === 'number' && fetchHostFrequency >= 5) ? fetchHostFrequency : clientSettingsInitial.fetchHostFrequency;
       // we fetch alerts on a slower frequency interval
       intervalHandle = setInterval(() => {
         fetchHostData();
-      }, fetchHostFrequency * 1000);
+      }, fetchHostFrequencySafe * 1000);
     }
 
     return () => {
@@ -99,7 +100,7 @@ const HostSection = () => {
       }
       isComponentMounted = false;
     };
-  }, []);
+  }, [clientSettings.fetchHostFrequency]);
   
   const howManyCounter = useCallback((hostlist) => {
     //console.log('HostSection howManyCounter() useCallback() hostState.response changed');

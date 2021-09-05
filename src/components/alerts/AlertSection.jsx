@@ -19,7 +19,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
 
 import { translate } from '../../helpers/language';
@@ -74,9 +74,12 @@ const AlertSection = () => {
 
     // Start interval
     if (isDemoMode === false && useFakeSampleData === false) {
+      // safetly net in case the interval value is bad
+      const fetchAlertFrequencySafe = (typeof fetchAlertFrequency === 'number' && fetchAlertFrequency >= 5) ? fetchAlertFrequency : clientSettingsInitial.fetchAlertFrequency;
+
       intervalHandle = setInterval(() => {
         fetchAlertData();
-      }, fetchAlertFrequency * 1000);
+      }, fetchAlertFrequencySafe * 1000);
     }
 
     isComponentMounted = true;
@@ -91,7 +94,7 @@ const AlertSection = () => {
       }
       isComponentMounted = false;
     };
-  }, []); 
+  }, [clientSettings.fetchAlertFrequency]); 
 
   const howManyCounter = useCallback((alertlist) => {
 

@@ -53,7 +53,7 @@ const bigStateInitial = {
   isLeftPanelOpen: false,
 };
 
-const clientSettingsInitial = {
+export const clientSettingsInitial = {
   // audio and visual settings
   
   titleString: 'NagiosTV',
