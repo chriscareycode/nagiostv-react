@@ -4,24 +4,19 @@ import 'url-search-params-polyfill';
 
 // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
 // demo mode uses fake data and rotates through a couple of alerts as an example
-// const urlParams = new URLSearchParams(window.location.search);
-// const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
-// this.state.isDemoMode = isDemoMode;
-// if (isDemoMode) {
-//   this.useFakeSampleData = true;
-// }
-
-// // turn on debug mode if ?debug=true
-// const isDebugMode = urlParams.get('debug') === 'true';
-// this.state.isDebugMode = isDebugMode;
-
-// // use fake data (dev) if ?fakedata=true
-// if (urlParams.get('fakedata') === 'true') {
-//   this.useFakeSampleData = true;
-// }
-
 const urlParams = new URLSearchParams(window.location.search);
 const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
+//console.log('isDemoMode is ', isDemoMode);
+
+const isStressTestMode = urlParams.get('stresstest') === 'true';
+
+// turn on debug mode if ?debug=true
+const isDebugMode = urlParams.get('debug') === 'true';
+
+// use fake data (dev) if ?fakedata=true
+const useFakeSampleData = urlParams.get('fakedata') === 'true' || isDemoMode;
+//console.log('useFakeSampleData is ', useFakeSampleData);
+
 
 const bigStateInitial = {
  
@@ -36,8 +31,9 @@ const bigStateInitial = {
   lastVersionCheckTime: 0,
 
   isDemoMode,
-  isDebugMode: urlParams.get('debug') === 'true',
-  useFakeSampleData: isDemoMode || urlParams.get('fakedata') === 'true',
+  isDebugMode,
+  isStressTestMode,
+  useFakeSampleData,
 
   isRemoteSettingsLoaded: false,
   isCookieLoaded: false, // I have this to render things only after cookie is loaded

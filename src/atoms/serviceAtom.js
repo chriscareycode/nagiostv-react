@@ -5,6 +5,11 @@ export const serviceIsFetchingAtom = atom({
   default: false,
 });
 
+export const serviceIsFakeDataSetAtom = atom({
+  key: 'serviceIsFakeDataSetAtom',
+  default: false,
+});
+
 const initialState = {
   error: false,
   errorCount: 0,

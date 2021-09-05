@@ -20,7 +20,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
-import { hostIsFetchingAtom, hostAtom, hostHowManyAtom } from '../../atoms/hostAtom';
+import { hostIsFetchingAtom, hostAtom, hostHowManyAtom, hostIsFakeDataSetAtom } from '../../atoms/hostAtom';
 
 import PollingSpinner from '../widgets/PollingSpinner';
 import { translate } from '../../helpers/language';
@@ -29,7 +29,6 @@ import { convertHostObjectToArray } from '../../helpers/nagiostv';
 
 import HostItems from './HostItems';
 import HostFilters from './HostFilters';
-import Demo from '../Demo';
 
 // 3rd party addons
 import moment from 'moment';
@@ -45,6 +44,7 @@ const HostSection = () => {
 
   // Recoil state (this section)
   const [hostIsFetching, setHostIsFetching] = useRecoilState(hostIsFetchingAtom);
+  const setHostIsFakeDataSet = useSetRecoilState(hostIsFakeDataSetAtom);
   const [hostState, setHostState] = useRecoilState(hostAtom);
   const setHostHowManyState = useSetRecoilState(hostHowManyAtom);
   // Recoil state (main)
@@ -83,7 +83,7 @@ const HostSection = () => {
     }, 1000);
     let intervalHandle = null;
 
-    if (isDemoMode === false) {
+    if (isDemoMode === false && useFakeSampleData === false) {
       // we fetch alerts on a slower frequency interval
       intervalHandle = setInterval(() => {
         fetchHostData();
@@ -214,22 +214,27 @@ const HostSection = () => {
       let my_list = _.get(myJson.data, 'hostlist', {});
 
       // If we are in demo mode then clean the fake data
+      // The fake data has a bunch of dates of hosts and services being down.
+      // This routine will set all the fake data to UP/OK
       if (isDemoMode) {
         my_list = cleanDemoDataHostlist(my_list);
       }
 
-      // convert the host object into an array (and sort it)
+
+      // convert the host object into an array
       const myArray = convertHostObjectToArray(my_list);
 
       // check for old data (nagios down?)
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (!isDemoMode && hours >= 1) {
+      if (isDemoMode === false && useFakeSampleData === false && hours >= 1) {
+        // Data is stale
         if (isComponentMounted) {
           setHostIsFetching(false);
 
           setHostState(curr => ({
+            ...curr,
             error: true,
             errorCount: curr.errorCount + 1,
             errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
@@ -239,11 +244,12 @@ const HostSection = () => {
           }));
         }
       } else {
-        
+        // Data is not stale, good
         if (isComponentMounted) {
           setHostIsFetching(false);
 
           setHostState(curr => ({
+            ...curr,
             error: false,
             errorCount: 0,
             errorMessage: '',
@@ -251,6 +257,9 @@ const HostSection = () => {
             response: my_list,
             problemsArray: myArray
           }));
+
+          setHostIsFakeDataSet(useFakeSampleData);
+
 
           howManyCounter(my_list);
         }

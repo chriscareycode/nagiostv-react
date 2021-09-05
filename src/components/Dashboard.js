@@ -9,6 +9,9 @@ import HostGroupFilter from './hosts/HostGroupFilter.jsx';
 import HostSection from './hosts/HostSection.jsx';
 import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
+// Demo mode
+import Demo from './Demo';
+
 // CSS
 import './Dashboard.css';
 
@@ -19,6 +22,7 @@ const Dashboard = () => {
 
   // Chop the bigState into vars
   const {
+    isDemoMode,
     isDoneLoading,
     hideFilters,
   } = bigState;
@@ -52,6 +56,9 @@ const Dashboard = () => {
                     
         {/* Alert History Section */}
         {!hideHistory && <AlertSection />}
+
+        {/* Demo mode */}
+        {isDemoMode && <Demo />}
       
       </div>}
 

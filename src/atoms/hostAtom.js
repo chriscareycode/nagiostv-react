@@ -5,6 +5,11 @@ export const hostIsFetchingAtom = atom({
   default: false,
 });
 
+export const hostIsFakeDataSetAtom = atom({
+  key: 'hostIsFakeDataSetAtom',
+  default: false,
+});
+
 const initialState = {
   error: false,
   errorCount: 0,

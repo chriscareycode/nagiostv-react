@@ -16,8 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue } from 'recoil';
+//import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
+import { hostAtom, hostIsFakeDataSetAtom } from '../atoms/hostAtom';
+import { serviceAtom, serviceIsFakeDataSetAtom } from '../atoms/serviceAtom';
+// Helpers
 import { convertHostObjectToArray, convertServiceObjectToArray } from '../helpers/nagiostv';
+import { clone, cloneDeep } from 'lodash';
 
 import './Demo.css';
 
@@ -31,95 +38,35 @@ import './Demo.css';
  * storage global state that works better I'll refactor this again.
  */
 
-class Demo extends Component {
+const Demo = () => {
 
-  state = {
-    isVisible: false
-  };
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.automate();
-    }, 2000);
-  }
-
-  automate() {
-    console.log('Demo.jsx automate');
-
-    if (this.props.type === 'host') {
-
-      this.addHostDown();
-      this.addHostDown();
-      this.addHostDown();
-
-      setTimeout(() => {
-        this.removeHostDown();
-      }, 10000);
-
-      setTimeout(() => {
-        this.removeHostDown();
-      }, 25000);
   
-  
-      setTimeout(() => {
-        this.removeHostDown();
 
-        
+  const [isVisible, setIsVisible] = useState(false);
 
-      }, 40000);
+  // Recoil state (this section)
+  const [hostState, setHostState] = useRecoilState(hostAtom);
+  const [serviceState, setServiceState] = useRecoilState(serviceAtom);
 
-    }
+  const isHostFakeDataSet = useRecoilValue(hostIsFakeDataSetAtom);
+  const isServiceFakeDataSet = useRecoilValue(serviceIsFakeDataSetAtom);
 
-    if (this.props.type === 'service') {
+  const hostlistRef = useRef({});
+  const servicelistRef = useRef({});
 
-      this.addServiceWarning();
-      this.addServiceWarning();
-      this.addServiceCritical();
-      this.addServiceCritical();
+  //console.log('Demo render hostState.response is ', hostState.response);
+  //console.log('Demo render serviceState.response is ', serviceState.response);
 
-      setTimeout(() => {
-        this.removeServiceWarning();
-      }, 6000);
-
-      setTimeout(() => {
-        this.addServiceWarning();
-      }, 12000);
-  
-      setTimeout(() => {
-        this.removeServiceCritical();
-      }, 15000);
-  
-      setTimeout(() => {
-        this.removeServiceWarning();
-      }, 20000);
-
-      setTimeout(() => {
-        this.removeServiceCritical();
-      }, 30000);
-  
-      setTimeout(() => {
-        this.removeServiceWarning();
-
-        // now at the end of the longest part of this automation, we set isVisible to true
-        // so that the interactive controls will display. We do not want people messing with them during the
-        // automatic demo.
-        
-        // though for right now since this is broken I'm going to hide the controls completely.
-        // TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
-        this.setState({ isVisible: true });
-
-      }, 35000);
-
-
+  const addHostDown = () => {
+    // clone the ref object (it's read only)
+    const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
+    const hostlist = cloned;
+    
+    if (Object.keys(hostlist).length === 0) {
+      return;
     }
     
-  }
-
-  addHostDown = () => {
     // loop through hostProblemsArray, set one to down, and set state
-    const hostlist = {...this.props.hostlist};
-    //console.log('hostlist', hostlist);
-
     Object.keys(hostlist).some(key => {
       // "UP" and "not SOFT"
       if (hostlist[key].status === 2) {
@@ -131,19 +78,31 @@ class Demo extends Component {
       return false;
     });
 
+    // set back into ref
+    hostlistRef.current = hostlist;
+
     // convert object to array
-    const hostProblemsArray = convertHostObjectToArray(hostlist, this.props.hostSortOrder);
+    const hostProblemsArray = convertHostObjectToArray(hostlist);
 
     // set state
-    this.props.updateParentState({
-      hostProblemsArray
-    });
-  }
+    setHostState(curr => ({
+      ...curr,
+      response: hostlist,
+      problemsArray: hostProblemsArray
+    }));
 
-  removeHostDown = () => {
+  };
+
+  const removeHostDown = () => {
+    // clone the ref object (it's read only)
+    const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
+    const hostlist = cloned;
+    
+    if (Object.keys(hostlist).length === 0) {
+      return;
+    }
+    
     // loop through hostProblemsArray, set one to down, and set state
-    const hostlist = {...this.props.hostlist};
-
     Object.keys(hostlist).some(key => {
       // If status is "DOWN"
       if (hostlist[key].status === 4) {
@@ -155,35 +114,48 @@ class Demo extends Component {
       return false;
     });
 
+    // set back into ref
+    hostlistRef.current = hostlist;
+
     // convert object to array
-    const hostProblemsArray = convertHostObjectToArray(hostlist, this.props.hostSortOrder);
+    const hostProblemsArray = convertHostObjectToArray(hostlist);
 
     // set state
-    this.props.updateParentState({
-      hostProblemsArray
-    });
-  }
+    setHostState(curr => ({
+      ...curr,
+      response: hostlist,
+      problemsArray: hostProblemsArray
+    }));
+  };
 
-  addServiceWarning = () => {
-    this.addServiceStatus(4);
-  }
+  const addServiceWarning = () => {
+    addServiceStatus(4);
+  };
 
-  addServiceCritical = () => {
-    this.addServiceStatus(16);
-  }
+  const addServiceCritical = () => {
+    addServiceStatus(16);
+  };
 
-  removeServiceWarning = () => {
-    this.removeServiceStatus(4);
-  }
+  const removeServiceWarning = () => {
+    removeServiceStatus(4);
+  };
 
-  removeServiceCritical = () => {
-    this.removeServiceStatus(16);
-  }
+  const removeServiceCritical = () => {
+    removeServiceStatus(16);
+  };
 
-  addServiceStatus = (status) => {
+  const addServiceStatus = (status) => {
+    // clone the ref object (it's read only)
+    const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
+    const servicelist = cloned;
+    
+    //console.log('Demo addServiceStatus() serviceState', serviceState);
+    
+    if (Object.keys(servicelist).length === 0) {
+      return;
+    }
+    
     // loop through serviceProblemsArray, set one to down, and set state
-    const servicelist = {...this.props.servicelist};
-
     let done = false;
     Object.keys(servicelist).some(hostkey => {
       Object.keys(servicelist[hostkey]).some(key => {
@@ -199,18 +171,29 @@ class Demo extends Component {
       return false;
     });
 
-    const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.props.serviceSortOrder);
+    // set back into ref
+    servicelistRef.current = servicelist;
+
+    const serviceProblemsArray = convertServiceObjectToArray(servicelist);    
 
     // set state
-    this.props.updateParentState({
-      serviceProblemsArray
-    });
-  }
+    setServiceState(curr => ({
+      ...curr,
+      response: servicelist,
+      problemsArray: serviceProblemsArray
+    }));
+  };
 
-  removeServiceStatus = (status) => {
+  const removeServiceStatus = (status) => {
+    // clone the ref object (it's read only)
+    const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
+    const servicelist = cloned;
+    
+    if (Object.keys(servicelist).length === 0) {
+      return;
+    }
+    
     // loop through serviceProblemsArray, set one to down, and set state
-    const servicelist = {...this.props.servicelist};
-
     let done = false;
     Object.keys(servicelist).some(hostkey => {
       Object.keys(servicelist[hostkey]).some(key => {
@@ -226,53 +209,138 @@ class Demo extends Component {
       return false;
     });
 
-    const serviceProblemsArray = convertServiceObjectToArray(servicelist, this.props.serviceSortOrder);
+    // set back into ref
+    servicelistRef.current = servicelist;
+
+    const serviceProblemsArray = convertServiceObjectToArray(servicelist);
 
     // set state
-    this.props.updateParentState({
-      serviceProblemsArray
-    });
-  }
+    setServiceState(curr => ({
+      ...curr,
+      response: servicelist,
+      problemsArray: serviceProblemsArray
+    }));
+  };
 
-  render() {
+  useEffect(() => {
+    //console.log('Demo isHostFakeDataSet changed');
 
-    // only show the demo controls once.
-    /**
-     * Only show the demo controls once.
-     * Since we are including the demo component twice, lets hide it for the other one.
-     */
-    if (this.props.type === 'host') {
-      return <div className="display-none"></div>;
+    if (isHostFakeDataSet) {
+
+      //const cloned = JSON.parse(JSON.stringify(hostState.response));
+      const cloned = cloneDeep(hostState.response);
+      hostlistRef.current = cloned;
+
+      addHostDown();
+      addHostDown();
+      addHostDown();
+      
+      setTimeout(() => {
+        removeHostDown();
+      }, 10000);
+
+      setTimeout(() => {
+        removeHostDown();
+      }, 25000);
+
+      setTimeout(() => {
+        removeHostDown();
+      }, 40000);
+
+      setTimeout(() => {
+        removeHostDown();
+  
+        // now at the end of the longest part of this automation, we set isVisible to true
+        // so that the interactive controls will display. We do not want people messing with them during the
+        // automatic demo.
+        
+        // though for right now since this is broken I'm going to hide the controls completely.
+        // TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
+        setIsVisible(true);
+  
+      }, 35000);
+      
     }
 
-    return (
+  }, [isHostFakeDataSet]);
+
+  useEffect(() => {
+    //console.log('Demo isServiceFakeDataSet changed');
+
+    if (isServiceFakeDataSet) {
+
+      //const cloned = JSON.parse(JSON.stringify(hostState.response));
+      const cloned = cloneDeep(serviceState.response);
+      servicelistRef.current = cloned;
+
+      addServiceWarning();
+      addServiceWarning();
+      addServiceCritical();
+      addServiceCritical();
+
+      setTimeout(() => {
+        removeServiceWarning();
+      }, 6000);
+
+      setTimeout(() => {
+        addServiceWarning();
+      }, 12000);
+
+      setTimeout(() => {
+        removeServiceCritical();
+      }, 15000);
+
+      setTimeout(() => {
+        removeServiceWarning();
+      }, 20000);
+
+      setTimeout(() => {
+        removeServiceCritical();
+      }, 30000);
+
+      setTimeout(() => {
+        removeServiceWarning();
+        removeServiceWarning();  
+      }, 35000);
       
-      <div className={this.state.isVisible ? 'Demo' : 'Demo display-none'}>
-        <div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
-        <table>
-          <tbody>
-            <tr>
-              {/*<td>
-                <div className="summary-label summary-label-red">Host DOWN</div>
-                <button onClick={this.addHostDown}>Add</button>
-                <button onClick={this.removeHostDown}>Remove</button>
-              </td>*/}
-              <td>
-                <div className="summary-label summary-label-yellow">Service WARNING</div>
-                <button onClick={this.addServiceWarning}>Add</button>
-                <button onClick={this.removeServiceWarning}>Remove</button>
-              </td>
-              <td>
-                <div className="summary-label summary-label-red">Service CRITICAL</div>
-                <button onClick={this.addServiceCritical}>Add</button>
-                <button onClick={this.removeServiceCritical}>Remove</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
+    }
+
+  }, [isServiceFakeDataSet]);
+
+  
+
+  // only show the demo controls once.
+  
+  
+
+  return (
+    
+    <div className={isVisible ? 'Demo' : 'Demo display-none'}>
+      <div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
+      <table>
+        <tbody>
+          <tr>
+            {/*<td>
+              <div className="summary-label summary-label-red">Host DOWN</div>
+              <button onClick={addHostDown}>Add</button>
+              <button onClick={removeHostDown}>Remove</button>
+            </td>*/}
+            <td>
+              <div className="summary-label summary-label-yellow">Service WARNING</div>
+              <button onClick={addServiceWarning}>Add</button>
+              <button onClick={removeServiceWarning}>Remove</button>
+            </td>
+            <td>
+              <div className="summary-label summary-label-red">Service CRITICAL</div>
+              <button onClick={addServiceCritical}>Add</button>
+              <button onClick={removeServiceCritical}>Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+  
+};
 
 export default Demo;

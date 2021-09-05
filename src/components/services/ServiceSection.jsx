@@ -20,7 +20,7 @@ import React, { useCallback, useEffect } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
-import { serviceIsFetchingAtom, serviceAtom, serviceHowManyAtom } from '../../atoms/serviceAtom';
+import { serviceIsFetchingAtom, serviceAtom, serviceHowManyAtom, serviceIsFakeDataSetAtom } from '../../atoms/serviceAtom';
 
 import { translate } from '../../helpers/language';
 import { cleanDemoDataServicelist } from '../../helpers/nagiostv';
@@ -42,6 +42,7 @@ const ServiceSection = () => {
 
   // Recoil state (this section)
   const [serviceIsFetching, setServiceIsFetching] = useRecoilState(serviceIsFetchingAtom);
+  const setServiceIsFakeDataSet = useSetRecoilState(serviceIsFakeDataSetAtom);
   const [serviceState, setServiceState] = useRecoilState(serviceAtom);
   const setServiceHowManyState = useSetRecoilState(serviceHowManyAtom);
   // Recoil state (main)
@@ -71,7 +72,7 @@ const ServiceSection = () => {
     }, 1000);
     let intervalHandle = null;
 
-    if (isDemoMode === false) {
+    if (isDemoMode === false && useFakeSampleData == false) {
       // we fetch alerts on a slower frequency interval
       intervalHandle = setInterval(() => {
         fetchServiceData();
@@ -221,10 +222,11 @@ const ServiceSection = () => {
       const hours = duration.asHours().toFixed(1);
 
       // we disable the stale check if in demo mode since the demo data is always stale
-      if (!isDemoMode && hours >= 1) {
+      if (isDemoMode === false && useFakeSampleData == false && hours >= 1) {
         if (isComponentMounted) {
           setServiceIsFetching(false);
           setServiceState(curr => ({
+            ...curr,
             error: true,
             errorCount: curr.errorCount + 1,
             errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
@@ -238,6 +240,7 @@ const ServiceSection = () => {
         if (isComponentMounted) {
           setServiceIsFetching(false);
           setServiceState(curr => ({
+            ...curr,
             error: false,
             errorCount: 0,
             errorMessage: '',
@@ -245,6 +248,8 @@ const ServiceSection = () => {
             response: my_list,
             problemsArray: myArray
           }));
+
+          setServiceIsFakeDataSet(useFakeSampleData);
 
           howManyCounter(my_list);
         }

@@ -71,11 +71,14 @@ const AlertSection = () => {
     timeoutHandle = setTimeout(() => {
       fetchAlertData();
     }, 1000);
-    if (isDemoMode === false) {
+
+    // Start interval
+    if (isDemoMode === false && useFakeSampleData === false) {
       intervalHandle = setInterval(() => {
         fetchAlertData();
       }, fetchAlertFrequency * 1000);
     }
+
     isComponentMounted = true;
 
     return () => {
