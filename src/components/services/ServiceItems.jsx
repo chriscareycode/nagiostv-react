@@ -151,6 +151,7 @@ const ServiceItems = ({
                 settings={settings}
                 serviceItem={e}
                 comments={comments}
+                howManyDown={filteredServiceProblemsArray.length}
               />
             </CSSTransition>
             

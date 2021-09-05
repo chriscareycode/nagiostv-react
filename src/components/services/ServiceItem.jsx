@@ -103,6 +103,8 @@ class ServiceItem extends Component {
     // checks_enabled === false
     const isPassive = e.check_type === 1;
     const isDown = e.status !== 2;
+    
+    const howManyDown = this.props.howManyDown;
 
     return (
       
@@ -166,7 +168,7 @@ class ServiceItem extends Component {
             ))}
           </div>}
 
-          {(!isPassive && this.props.settings.showNextCheckInProgressBar) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
+          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 10) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
         
         </div>
 

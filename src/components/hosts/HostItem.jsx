@@ -94,6 +94,7 @@ class HostItem extends Component {
     const { language } = this.props.settings;
     const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     const nowTime = new Date().getTime();
+    const howManyDown = this.props.howManyDown;
 
     // When passive freshold check is done, this is reported as an active check (check_type=0)
     // So we need another reliable way to determine if this is a stale passive alert.
@@ -163,7 +164,7 @@ class HostItem extends Component {
             ))}
           </div>}
 
-          {(!isPassive && this.props.settings.showNextCheckInProgressBar) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
+          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 10) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
 
         </div>
       </div>

@@ -141,6 +141,7 @@ const HostItems = ({
                 settings={settings}
                 hostItem={e}
                 comments={comments}
+                howManyDown={filteredHostProblemsArray.length}
               />
             </CSSTransition>
           );
