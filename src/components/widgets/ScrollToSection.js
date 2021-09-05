@@ -133,7 +133,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 		if (debug) console.log('ScrollToSection() how many', howManyHostDown, howManyServiceDown);
 
-		let animateSpeed = 1 * 1000; // default to 1s
+		let animateSpeed = 1 * 1000; // default to 1s (before multiplier)
 		//let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
 		
 		
@@ -159,6 +159,12 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		} else {
 			// add a multiplier to change the overall speed
 			animateSpeed *= automaticScrollTimeMultiplier;
+		}
+
+		// safety net
+		if (animateSpeed <= 0) {
+			// Back to default
+			animateSpeed = 1 * 1000;
 		}
 
 		// scroll to the next section		
