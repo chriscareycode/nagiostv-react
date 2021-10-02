@@ -77,14 +77,54 @@ const DashboardFetch = () => {
 
       // Pluck out the commentlist result
       const commentlist = myJson.data.commentlist;
-      
+      // Massage the commentlist so we have one key per hostname
+      const commentlistObject = {
+        hosts: {},
+        services: {},
+      };
+
+      if (commentlist) {
+        
+        Object.keys(commentlist).forEach((id) => {
+          //service
+          if (commentlist[id].comment_type === 2) {
+            const service_key = `${commentlist[id].host_name}_${commentlist[id].service_description}`;
+            if (commentlistObject.services.hasOwnProperty(service_key)) {
+              commentlistObject.services[service_key].comments.push(commentlist[id]);
+            } else {
+              commentlistObject.services[service_key] = {
+                comments: []
+              };
+              commentlistObject.services[service_key].comments.push(commentlist[id]);
+            }
+          }
+          // host
+          const host_key = commentlist[id].host_name;
+          if (commentlistObject.hosts.hasOwnProperty(host_key)) {
+            commentlistObject.hosts[host_key].comments.push(commentlist[id]);
+          } else {
+            commentlistObject.hosts[host_key] = {
+              comments: []
+            };
+            commentlistObject.hosts[host_key].comments.push(commentlist[id]);
+          }          
+        });
+
+        // DEBUG the massaged commentlistObject
+        //console.log('commentlist', commentlist);
+        //console.log({commentlistObject});
+      }
+
+      // TODO: Optimization: only set this if it's different (which is rare)
       setCommentlist({
         error: false,
         errorCount: 0,
         errorMessage: '',
         lastUpdate: new Date().getTime(),
-        response: commentlist
+        response: commentlist, // this will always be a new ref each poll
+        commentlistObject,
       });
+
 
     }).fail((jqXHR, textStatus, errorThrown) => {
       handleFetchFail(setCommentlist, jqXHR, textStatus, errorThrown, url);

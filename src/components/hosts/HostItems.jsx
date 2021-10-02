@@ -46,7 +46,7 @@ const HostItems = ({
 }) => {
 
   const commentlistState = useRecoilValue(commentlistAtom);
-  const commentlist = commentlistState.response;
+  const commentlistObject = commentlistState.commentlistObject;
   
   const hostHowManyState = useRecoilValue(hostHowManyAtom);
 
@@ -119,17 +119,6 @@ const HostItems = ({
             //console.log('HostItem item');
             //console.log(e, i);
 
-          // find comment for this hostitem
-          //const commentlist = commentlist;
-          const comments = [];
-          if (commentlist) {
-            Object.keys(commentlist).forEach((id) => {
-              if (commentlist[id].comment_type === 1 && e.name === commentlist[id].host_name) {
-                comments.push(commentlist[id]);
-              }
-            });
-          }
-
           return (
             <CSSTransition
               key={`host-${e.name}`}
@@ -140,7 +129,7 @@ const HostItems = ({
               <HostItem
                 settings={settings}
                 hostItem={e}
-                comments={comments}
+                comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : null}
                 howManyDown={filteredHostProblemsArray.length}
               />
             </CSSTransition>

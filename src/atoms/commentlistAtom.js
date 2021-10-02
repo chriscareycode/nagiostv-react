@@ -5,7 +5,11 @@ const initialState = {
   errorCount: 0,
   errorMessage: '',
   lastUpdate: 0,
-  response: {}
+  response: {},
+  commentlistObject: {
+    hosts: {},
+    services: {}
+  },
 };
 
 export const commentlistAtom = atom({

@@ -50,7 +50,7 @@ const ServiceItems = ({
   //const nodeRef = React.useRef(null);
 
   const commentlistState = useRecoilValue(commentlistAtom);
-  const commentlist = commentlistState.response;
+  const commentlistObject = commentlistState.commentlistObject;
   
   const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
 
@@ -128,17 +128,6 @@ const ServiceItems = ({
           //console.log('ServiceItem item');
           //console.log(e, i);
 
-          // find comment for this serviceitem
-          const comments = [];
-          //const commentlist = commentlist;
-          if (commentlist) {
-            Object.keys(commentlist).forEach((id) => {
-              if (commentlist[id].comment_type === 2 && e.host_name === commentlist[id].host_name && e.description === commentlist[id].service_description) {
-                comments.push(commentlist[id]);
-              }
-            });
-          }
-
           return (
 
             <CSSTransition
@@ -150,7 +139,7 @@ const ServiceItems = ({
                 //ref={nodeRef}
                 settings={settings}
                 serviceItem={e}
-                comments={comments}
+                comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
                 howManyDown={filteredServiceProblemsArray.length}
               />
             </CSSTransition>
