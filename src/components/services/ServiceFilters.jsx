@@ -46,11 +46,11 @@ const ServiceFilters = () => {
     language,
   } = clientSettings;
   
-  const saveCookie = () => {
+  const saveCookie = (obj) => {
     //const cookieObject = {};
     //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', clientSettings);
-    console.log('Saved cookie', clientSettings);
+    Cookie.set('settings', obj);
+    console.log('Saved cookie', obj);
   };
   
   const handleSelectChange = (e) => {
