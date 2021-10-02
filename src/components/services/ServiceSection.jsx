@@ -70,8 +70,8 @@ const ServiceSection = () => {
     const timeoutHandle = setTimeout(() => {
       fetchServiceData();
     }, 1000);
-    let intervalHandle = null;
 
+    let intervalHandle = null;
     if (isDemoMode === false && useFakeSampleData == false) {
       // safetly net in case the interval value is bad
       const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
@@ -281,7 +281,10 @@ const ServiceSection = () => {
     serviceProblemsArray = [...serviceState.problemsArray];
   }
 
-  const howManyServices = Object.keys(servicelist).length;
+  let howManyServices = 0;
+  Object.keys(servicelist).forEach(host => {
+    howManyServices += Object.keys(host).length;
+  });
 
   let sort = 1;
   if (serviceSortOrder === 'oldest') { sort = -1; }
