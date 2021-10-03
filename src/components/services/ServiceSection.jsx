@@ -283,7 +283,7 @@ const ServiceSection = () => {
 
   let howManyServices = 0;
   Object.keys(servicelist).forEach(host => {
-    howManyServices += Object.keys(host).length;
+    howManyServices += Object.keys(servicelist[host]).length;
   });
 
   let sort = 1;
