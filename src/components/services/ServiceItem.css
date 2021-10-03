@@ -4,6 +4,7 @@
 	overflow: hidden;
 }
 .comment {
+	margin-top: 7px;
 	font-size: 0.8em;
 	/*
 	background-color: rgba(0, 0, 0, 0.3);

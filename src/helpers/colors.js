@@ -68,17 +68,20 @@ export function serviceBorderClass(status) {
   let classString = '';
 
   switch(status) {
+    case 1:
+      classString = 'border-gray'; // PENDING
+      break;
     case 2:
-      classString = 'border-green'; // ok
+      classString = 'border-green'; // OK
       break;
     case 4:
-      classString = 'border-yellow'; // warning
+      classString = 'border-yellow'; // WARNING
       break;
     case 8:
-      classString = 'border-orange'; // unknown
+      classString = 'border-orange'; // UNKNOWN
       break;
     case 16:
-      classString = 'border-red'; // critical
+      classString = 'border-red'; // CRITICAL
       break;
     default:
       classString = '';

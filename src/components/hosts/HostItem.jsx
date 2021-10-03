@@ -159,7 +159,8 @@ class HostItem extends Component {
           {this.props.comments && this.props.comments.length > 0 && <div>
             {this.props.comments.reverse().map((comment, i) => (
               <div className="comment" key={i}>
-              Comment: <span className="comment-color">({comment.author}): {formatDateTimeAgo(comment.entry_time)} {translate('ago', language)} - {comment.comment_data}</span>
+                {/* Comment: */}
+                <span className="comment-color">({comment.author}): {formatDateTimeAgo(comment.entry_time)} {translate('ago', language)} - {comment.comment_data}</span>
               </div>
             ))}
           </div>}

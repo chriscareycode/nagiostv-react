@@ -12,9 +12,9 @@
 }
 
 .ServiceItemBorder {
-  border: 1px solid gray;
-  font-size: 1.0em;
   padding: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
   border-radius: 5px;
   min-height: 33px;
 }
@@ -41,31 +41,36 @@
 }
 
 .border-green {
-  border: 1px solid lime;
+  border: 1px solid #005e00;
+  border-left: 3px solid lime;
   background-color: #082308;
 }
 
 .border-yellow {
-  border: 1px solid yellow;
+  border: 1px solid #545400;
+  border-left: 3px solid yellow;
   background-color: #252504;
 }
 
 .border-orange {
-  border: 1px solid orange;
+  border: 1px solid #7c5100;
+  border-left: 3px solid orange;
   background-color: #332600;
 }
 
 .border-red {
-  border: 1px solid red;
+  border: 1px solid #7c3838;
+  border-left: 3px solid #FD7272;
   background-color: #2c0909;
 }
 
 .border-gray {
-  border: 1px solid gray;
+  border: 1px solid #464646;
+  border-left: 3px solid gray;
 }
 
 .border-purple {
-  border: 1px solid purple;
+  border-left: 3px solid purple;
 }
 
 /* color */

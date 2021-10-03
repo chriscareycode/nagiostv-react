@@ -414,7 +414,7 @@ const Update = ({
           {currentVersion > latestVersion && (
             <div className="update-server-setup-instructions">
               You are running a version newer than the latest announced release.<br />
-              This is fine, and usually means we are testing out the version with a few new users before announcing the new version (which notifies all users of the update).
+              This is fine, and usually means we are testing out the version with a few users before announcing the new version (which notifies all users of the update).
               That being said, if you are seeing this and you notice any problems in this version, let me know in the GitHub issues! If you did notice issues which are preventing your dashboard from working, use the rollback feature to install a previous release.
             </div>
           )}

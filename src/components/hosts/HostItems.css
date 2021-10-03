@@ -11,11 +11,13 @@
 }
 
 .HostItemBorder {
-  /*border: 1px solid gray;*/
   padding: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
   border-radius: 5px;
   min-height: 33px;
 }
+
 .HostItemBorder:last-of-type {
   
 }

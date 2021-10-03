@@ -172,7 +172,7 @@ and (max-width: 1768px) {
   transition-delay: 0ms;
 }
 .all-ok-item.hidden {
-
+  opacity: 0;
 }
 .all-ok-item.visible {
   max-height: 120px;
@@ -184,7 +184,7 @@ and (max-width: 1768px) {
 /* probably should move to its own component */
 .some-down-items {
   position: relative;
-  border: 1px solid #004c00;
+  border-left: 3px solid #004c00;
   background-color: #001d00;
   font-size: 1.5em;
   border-radius: 5px;
@@ -198,7 +198,7 @@ and (max-width: 1768px) {
   margin: 8px;
 }
 .some-down-items.hidden {
-
+  opacity: 0;
 }
 .some-down-items.visible {
   max-height: 120px;
