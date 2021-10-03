@@ -283,9 +283,9 @@ const HostSection = () => {
 
   // Mutating state on hostState.problemsArray is not allowed (the sort below)
   // so we need to copy this to something
-  let hostProblemsArray = [];
+  let sortedHostProblemsArray = [];
   if (Array.isArray(hostState.problemsArray)) {
-    hostProblemsArray = [...hostState.problemsArray];
+    sortedHostProblemsArray = [...hostState.problemsArray];
   }
 
   const howManyHosts = Object.keys(hostlist).length;
@@ -293,12 +293,13 @@ const HostSection = () => {
   // Sort the data based on the hostSortOrder value
   let sort = 1;
   if (hostSortOrder === 'oldest') { sort = -1; }
-  //console.log('hostProblemsArray', hostProblemsArray);
-  hostProblemsArray.sort((a, b) => {
+  //console.log('sortedHostProblemsArray before', sortedHostProblemsArray);
+  sortedHostProblemsArray.sort((a, b) => {
     if (a.last_time_up < b.last_time_up) { return 1 * sort; }
     if (a.last_time_up > b.last_time_up) { return -1 * sort; }
     return 0;
   });
+  //console.log('sortedHostProblemsArray after', sortedHostProblemsArray);
 
   return (
     <div className="HostSection">
@@ -330,7 +331,7 @@ const HostSection = () => {
 
       {/* hostitems list */}
       <HostItems
-        hostProblemsArray={hostState.problemsArray}
+        hostProblemsArray={sortedHostProblemsArray}
         settings={clientSettings}
         hostlistError={hostState.error}
       />

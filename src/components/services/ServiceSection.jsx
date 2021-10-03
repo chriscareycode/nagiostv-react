@@ -274,11 +274,11 @@ const ServiceSection = () => {
 
   const servicelist = serviceState.response;
 
-  // Mutating state on hostState.problemsArray is not allowed (the sort below)
+  // Mutating state on serviceState.problemsArray is not allowed (the sort below)
   // so we need to copy this to something
-  let serviceProblemsArray = [];
+  let sortedServiceProblemsArray = [];
   if (Array.isArray(serviceState.problemsArray)) {
-    serviceProblemsArray = [...serviceState.problemsArray];
+    sortedServiceProblemsArray = [...serviceState.problemsArray];
   }
 
   let howManyServices = 0;
@@ -288,7 +288,7 @@ const ServiceSection = () => {
 
   let sort = 1;
   if (serviceSortOrder === 'oldest') { sort = -1; }
-  serviceProblemsArray.sort((a, b) => {
+  sortedServiceProblemsArray.sort((a, b) => {
     if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
     if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
     return 0;
@@ -332,7 +332,7 @@ const ServiceSection = () => {
       {(!isDemoMode && serviceState.error && serviceState.errorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
       <ServiceItems
-        serviceProblemsArray={serviceState.problemsArray}
+        serviceProblemsArray={sortedServiceProblemsArray}
         settings={clientSettings}
         servicelistError={serviceState.error}
       />
