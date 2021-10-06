@@ -78,3 +78,7 @@
 .TopPanel > .hamburger-menu.hamburger-menu-active {
   color: #fff;
 }
+
+.TopPanel > .hamburger-menu:hover {
+    color: orange;
+}
