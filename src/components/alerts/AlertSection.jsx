@@ -175,7 +175,10 @@ const AlertSection = () => {
         // Save settings
         setAlertIsFetching(false);
 
-        setAlertState(curr => ({
+        // TODO: see if the list of alert items has changed. if it has not, maybe we don't need to update
+
+        setAlertState( curr => ({
+          ...curr,
           error: false,
           errorCount: 0,
           errorMessage: '',
