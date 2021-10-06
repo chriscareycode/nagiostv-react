@@ -50,3 +50,11 @@ Development - Committing your changes to this project
 - Create a feature branch and do your changes there
 - Push your feature branch up to origin
 - Submit a Pull Request
+
+## Memory profiling
+
+More recently we are moving from React Classes to React Functional (with Hooks)
+and switching some state management to Recoil.
+As of the time of writing 2021-10-03, when in development mode, Recoil will leak memory
+into `window.$recoilDebugStates`. You can set window.$recoilDebugStates = [] before memory profiling to try to get around this
+https://github.com/facebookexperimental/Recoil/issues/471#issuecomment-685217406
