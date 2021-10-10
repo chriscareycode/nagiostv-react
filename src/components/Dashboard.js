@@ -6,6 +6,7 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import DashboardFetch from './DashboardFetch';
 // Import Hosts and Services
 import HostGroupFilter from './hosts/HostGroupFilter.jsx';
+import Summary from './summary/Summary';
 import HostSection from './hosts/HostSection.jsx';
 import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
@@ -45,6 +46,8 @@ const Dashboard = () => {
 
         {/* Hostgroup Filter Section */}
         {!hideFilters && <HostGroupFilter />}
+
+        <Summary />
 
         {/* Hosts Section */}
         {!hideHostSection && <HostSection />} 
