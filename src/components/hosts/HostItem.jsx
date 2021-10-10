@@ -17,7 +17,6 @@
  */
 
 import React, { Component } from 'react';
-import './HostItem.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
@@ -26,6 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import Progress from '../widgets/Progress';
+import './HostItem.css';
 
 class HostItem extends Component {
 
