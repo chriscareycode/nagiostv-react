@@ -97,7 +97,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 	}, []);
 
 	useEffect(() => {
-		if (debug) console.log('ScrollToSection() useEffect() trigger');
+		if (debug) console.log('ScrollToSection() useEffect() trigger. Multiplier', automaticScrollTimeMultiplier);
 
 		// Detect which sections we have
 		const sections = [];
@@ -133,9 +133,9 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 		if (debug) console.log('ScrollToSection() how many', howManyHostDown, howManyServiceDown);
 
-		let animateSpeed = 1 * 1000; // default to 1s (before multiplier)
+		const defaultAnimateSpeed = 4 * 1000; // default to 4s (before multiplier)
+		let animateSpeed = defaultAnimateSpeed;
 		//let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
-		
 		
 		if (myCurrentSection === 'top') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
@@ -154,17 +154,15 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		if (myCurrentSection === 'alert') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
 		}
-		if (animateSpeed < 1000) {
-			animateSpeed = 1 * 1000; // fallback and safety net to 1s if we have a value too small
+		if (animateSpeed <= defaultAnimateSpeed) {
+			animateSpeed = defaultAnimateSpeed * automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
 		} else {
 			// add a multiplier to change the overall speed
-			animateSpeed *= automaticScrollTimeMultiplier;
+			animateSpeed = animateSpeed * automaticScrollTimeMultiplier;
 		}
 
-		// safety net
 		if (animateSpeed <= 0) {
-			// Back to default
-			animateSpeed = 1 * 1000;
+			animateSpeed = defaultAnimateSpeed * automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
 		}
 
 		// scroll to the next section		
