@@ -95,6 +95,7 @@ class AlertItems extends Component {
               language={language}
               locale={locale}
               dateFormat={dateFormat}
+              settings={this.props.settings}
             />
           );
         })}

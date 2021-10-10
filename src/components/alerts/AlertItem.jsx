@@ -41,6 +41,36 @@ class AlertItem extends Component {
     return false;
   }
 
+  openNagiosHostPage = () => {
+    const { e } = this.props;
+    let hostName;
+    if (e.object_type === 1) {
+      hostName = e.name;
+    }
+    if (e.object_type === 2) {
+      hostName = e.host_name;
+    }
+    const baseUrl = this.props.settings.baseUrl;
+    const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${hostName}`);
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
+
+  openNagiosServicePage = () => {
+    const { e } = this.props;
+    let hostName;
+    if (e.object_type === 1) {
+      hostName = e.name;
+    }
+    if (e.object_type === 2) {
+      hostName = e.host_name;
+    }
+    const baseUrl = this.props.settings.baseUrl;
+    const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${hostName}&service=${e.description}`);
+    const win = window.open(url, '_blank');
+    win.focus();
+  }
+
   render() {
     
     const { language, locale, dateFormat } = this.props;
@@ -77,12 +107,12 @@ class AlertItem extends Component {
             
             <div style={{ marginTop: '2px' }}>
               {/* host */}
-              {e.object_type === 1 && <span className="alert-item-host-name">{e.name}</span>}
+              {e.object_type === 1 && <span className="alert-item-host-name" onClick={this.openNagiosHostPage} style={{ cursor: 'pointer' }}>{e.name}</span>}
               {/* service */}
-              {e.object_type === 2 && <span className="alert-item-host-name">{e.host_name}</span>}
+              {e.object_type === 2 && <span className="alert-item-host-name" onClick={this.openNagiosHostPage} style={{ cursor: 'pointer' }}>{e.host_name}</span>}
               {' '}
               <span className={alertTextClass(e.object_type, e.state)}>
-                {e.object_type === 2 && <span className="alert-item-description">{e.description}</span>}
+                {e.object_type === 2 && <span className="alert-item-description" onClick={this.openNagiosServicePage} style={{ cursor: 'pointer' }}>{e.description}</span>}
                 {e.plugin_output}
               </span>
             </div>
