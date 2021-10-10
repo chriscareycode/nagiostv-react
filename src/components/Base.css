@@ -161,7 +161,7 @@ and (max-width: 1768px) {
 
 .all-ok-item {
   position: relative;
-  border: 1px solid #004c00;
+  border: 1px solid #003400;
   border-left: 3px solid lime;
   background-color: #001d00;
   font-size: 1.5em;
