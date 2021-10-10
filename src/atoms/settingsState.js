@@ -71,6 +71,8 @@ export const clientSettingsInitial = {
   alertHoursBack: 24,
   alertMaxItems: 1000,
 
+  hideSummarySection: false,
+
   hideServiceSection: false,
   hideServicePending: false,
   hideServiceWarning: false,

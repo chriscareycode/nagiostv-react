@@ -417,6 +417,28 @@ const Settings = () => {
             </tbody>
           </table>
 
+          {/* summary */}
+          <table className="SettingsTable">
+            <thead>
+              <tr>
+                <td colSpan="2" className="SettingsTableHeader">Summary Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Summary:</th>
+                <td>
+                  <select value={clientSettingsTemp.hideSummarySection} onChange={handleChange('hideSummarySection', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                  &nbsp;
+                  You can also add ?hideSummarySection=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
           {/* hosts */}
           <table className="SettingsTable">
             <thead>

@@ -30,6 +30,7 @@ const Dashboard = () => {
 
   // Chop the clientSettings into vars
   const {
+    hideSummarySection,
     hideHistory,
     hideHostSection,
     hideServiceSection,
@@ -47,7 +48,7 @@ const Dashboard = () => {
         {/* Hostgroup Filter Section */}
         {!hideFilters && <HostGroupFilter />}
 
-        <Summary />
+        {!hideSummarySection && <Summary />}
 
         {/* Hosts Section */}
         {!hideHostSection && <HostSection />} 
