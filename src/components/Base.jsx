@@ -209,7 +209,8 @@ const Base = () => {
                       <div className="vertical-scroll vertical-scroll-dash">
                         <Dashboard />
 
-                        <ScrollToTop />
+                        {/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
+                        {automaticScroll === false && <ScrollToTop />}
 
                         {(isDoneLoading && automaticScroll) && <ScrollToSection
                           settingsObject={clientSettings}

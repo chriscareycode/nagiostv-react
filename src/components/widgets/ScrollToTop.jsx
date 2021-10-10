@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import './ScrollToTop.css';
 
 const scrollAreaSelector = '.vertical-scroll-dash';
@@ -9,14 +10,17 @@ class ScrollToTop extends React.Component {
       isAtBottom: false
   };
 
+  debouncedScroll = _.debounce(() => this.handleScroll(), 500);
+  
+
   componentDidMount() {
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    scrollDiv.addEventListener("scroll", this.handleScroll);
+    scrollDiv.addEventListener("scroll", this.debouncedScroll);
   }
 
   componentWillUnmount() {
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    scrollDiv.removeEventListener("scroll", this.handleScroll);
+    scrollDiv.removeEventListener("scroll", this.debouncedScroll);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -27,6 +31,7 @@ class ScrollToTop extends React.Component {
   }
 
   handleScroll = () => {
+    //console.log('handleScroll()');
     const scrollDiv = document.querySelector(scrollAreaSelector);
     const dashboardDiv = document.querySelector('.Dashboard');
     const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
@@ -54,6 +59,8 @@ class ScrollToTop extends React.Component {
       }
     }
   };
+
+  
 
   scrollUp = () => {
     const scrollDiv = document.querySelector(scrollAreaSelector);
