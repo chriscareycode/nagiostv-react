@@ -46,12 +46,12 @@ const AlertFilters = ({
   // Chop the clientSettings into vars
   const {
     hideAlertSoft,
-    hostSortOrder,
-    hostgroupFilter,
-    hideHistory,
-    hideHostDown,
-    hideHostSection,
-    serviceSortOrder,
+    //hostSortOrder,
+    //hostgroupFilter,
+    //hideHistory,
+    //hideHostDown,
+    //hideHostSection,
+    //serviceSortOrder,
     language,
   } = clientSettings;
 
