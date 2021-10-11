@@ -13,7 +13,8 @@ import { useEffect } from 'react';
 export default function Summary() {
 
   // Recoil state (this section)
-  
+  //const hostState = useRecoilValue(hostAtom); // we include these so we get a re render when they change (demo mode)
+  //const serviceState = useRecoilValue(serviceAtom); // we include these so we get a re render when they change (demo mode)
   const hostHowManyState = useRecoilValue(hostHowManyAtom);
   const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
   const alertState = useRecoilValue(alertAtom);
@@ -61,7 +62,7 @@ export default function Summary() {
             <span className="color-darkblue"> / </span> */}
             <span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
           </div>
-          <div className="font-size-0-6"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts down</span></div>
+          <div className="font-size-0-6"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts<br />down</span></div>
         </div>
 
         <div className="summary-box">
@@ -72,7 +73,7 @@ export default function Summary() {
             {/* <span className="color-darkblue"> / </span>
             <span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span> */}
           </div>
-          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services critical</span></div>
+          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services<br />critical</span></div>
         </div>
 
         <div className="summary-box">
@@ -83,7 +84,7 @@ export default function Summary() {
             <span className="color-darkblue"> / </span> */}
             <span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
           </div>
-          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services warning</span></div>
+          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
         </div>
 
         <div className="summary-box float-right" onClick={scrollDown} style={{ cursor: 'pointer' }}>
