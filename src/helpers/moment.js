@@ -227,6 +227,7 @@ export function formatDateTimeAgoColorQuietFor(date) {
   // only show minute or second if we are at less than 1 hour
   if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
   if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+  if (ret.length === 0) { ret = '0s'; }
 
   let wrapperClass = 'color-red';
   if (tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() > 10) { wrapperClass = 'color-orange'; }

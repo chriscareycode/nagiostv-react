@@ -170,6 +170,13 @@ const AlertSection = () => {
         myAlertlist.length = alertMaxItems;
       }
 
+      // If we are in demo mode then let's modify the latest timestamps
+      if (useFakeSampleData) {
+        //console.log('myAlertlist', myAlertlist);
+        myAlertlist[0].timestamp = new Date().getTime();
+        myAlertlist[1].timestamp = new Date().getTime() - 5000;
+      }
+
       // We check this since the ajax could take a while to respond and the page may have unmounted
       if (isComponentMounted) {
         // Save settings
