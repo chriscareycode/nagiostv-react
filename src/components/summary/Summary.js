@@ -67,6 +67,17 @@ export default function Summary() {
 
         <div className="summary-box">
           <div className="summary-box-big-number">
+            <span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
+          </div>
+          <div className="font-size-0-6"><span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-white' : 'color-white'}>hosts<br />unreachable</span></div>
+        </div>
+
+        <div className="summary-box summary-box-separator">
+          
+        </div>
+
+        <div className="summary-box">
+          <div className="summary-box-big-number">
             {/* <span className="color-green">{serviceHowManyState.howManyServiceOk}</span>
             <span className="color-darkblue"> / </span> */}
             <span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-red' : 'color-green'}>{serviceHowManyState.howManyServiceCritical}</span>
@@ -87,9 +98,16 @@ export default function Summary() {
           <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
         </div>
 
-        <div className="summary-box float-right" onClick={scrollDown} style={{ cursor: 'pointer' }}>
-          <div className="margin-top-5 font-size-0-6">Quiet For</div>
-          <div className="margin-top-5 color-peach">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
+        <div className="summary-box">
+          <div className="summary-box-big-number">
+            <span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
+          </div>
+          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
+        </div>
+
+        <div className="summary-box float-right overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
+          <div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
+          <div className="margin-top-5 color-peach no-wrap">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
         </div>
 
         {/* <div className="summary-box float-right">

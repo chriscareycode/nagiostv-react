@@ -15,9 +15,17 @@
     transition-delay: 0ms; */
     margin-top: 15px;
     /* padding-left: 5px; */
+    /* display: flex;
+    flex-wrap: nowrap; */
 }
 .font-size-small {
     font-size: 0.6em;
+}
+.no-wrap {
+    white-space: nowrap;
+}
+.overflow-hidden {
+    overflow: hidden;
 }
 .summary-box.float-right {
     float: right;
@@ -61,4 +69,12 @@
     border-radius: 6px;
     text-align: center;
     padding-top: 15px;
+}
+
+.summary-box.summary-box-separator {
+    background-color: #02496a;
+    height: 80px;
+    width: 2px;
+    padding: 0;
+    margin-top: 8px;
 }
