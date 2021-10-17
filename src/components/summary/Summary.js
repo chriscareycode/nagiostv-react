@@ -100,7 +100,7 @@ export default function Summary() {
 
         <div className="summary-box">
           <div className="summary-box-big-number">
-            <span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
+            <span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
           </div>
           <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
         </div>

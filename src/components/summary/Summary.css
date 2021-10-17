@@ -53,6 +53,7 @@
     margin-left: 5px;
     margin-top: 5px;
     margin-bottom: 5px;
+    font-size: 0.8em;
 }
 
 .summary-box-big-number {
@@ -73,8 +74,18 @@
 
 .summary-box.summary-box-separator {
     background-color: #02496a;
-    height: 80px;
+    height: 50px;
     width: 2px;
     padding: 0;
-    margin-top: 8px;
+    margin-top: 18px;
+}
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+    .summary-box.float-right {
+      display:none;
+    }
 }
