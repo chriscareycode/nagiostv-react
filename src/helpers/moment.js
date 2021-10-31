@@ -196,6 +196,7 @@ export function formatDateTimeAgo(date) {
   // only show minute or second if we are at less than 1 hour
   if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
   if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+  if (ret.length === 0) { ret = '0s'; }
 
   return ret;
 }
@@ -213,6 +214,7 @@ export function formatDateTimeAgoLong(date) {
   if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
   // only show second if we are at less than 1 hour
   if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+  if (ret.length === 0) { ret = '0s'; }
 
   return ret;
 }
@@ -257,6 +259,7 @@ export function formatDateTimeAgoColor(date) {
   // only show minute or second if we are at less than 1 hour
   if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
   if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+  if (ret.length === 0) { ret = '0s'; }
 
   let wrapperClass = 'color-green';
   if (tempTime.days() === 0 && tempTime.hours() >= 1) { wrapperClass = 'color-orange'; }

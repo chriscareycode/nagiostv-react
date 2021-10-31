@@ -53,6 +53,8 @@ const HostFilters = () => {
   };
 
   const handleSelectChange = (e) => {
+    // This will get called twice (see note below). The little hack there deals with it
+    // So we actually do not want e.preventDefault(); here
     console.log('handleSelectChange', e.target);
     // console.log('event.target.value', event.target.value);
     const propName = e.target.getAttribute('varname');

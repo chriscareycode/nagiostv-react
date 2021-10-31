@@ -69,18 +69,23 @@ const AlertFilters = ({
   //   return false;
   // }
 
-  const saveCookie = () => {
+  const saveCookie = (settings) => {
     //const cookieObject = {};
     //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', clientSettings);
-    console.log('Saved cookie', clientSettings);
+    Cookie.set('settings', settings);
+    console.log('Saved cookie', settings);
   };
 
   const handleCheckboxChange = (e, propName, dataType) => {
-    console.log('handleCheckboxChange', e);
+    // This will get called twice (see note below). The little hack there deals with it
+    // So we actually do not want e.preventDefault(); here
+    //console.log('handleCheckboxChange', e);
+
     // we put this to solve the bubble issue where the click goes through the label then to the checkbox
     if (typeof e.target.checked === 'undefined') { return; }
  
+    console.log('handleCheckboxChange going through');
+
     let val = '';
     if (dataType === 'checkbox') {
       val = (!e.target.checked);
@@ -88,16 +93,18 @@ const AlertFilters = ({
       val = e.target.value;
     }
     // Save to state
-    //console.log('setting state ' + propName + ' to ', val);
-    setClientSettings(settings => ({
-      ...settings,
-      [propName]: val
-    }));
+
+    setClientSettings(settings => {
+      saveCookie({
+        ...settings,
+        [propName]: val
+        });
+      return ({
+        ...settings,
+        [propName]: val
+      });
+    });
     
-    // Save to cookie AFTER state is set
-    setTimeout(() => {
-      saveCookie();
-    }, 1000);
   };
     
   

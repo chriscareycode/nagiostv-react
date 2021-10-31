@@ -77,6 +77,8 @@ const ServiceFilters = () => {
   };
 
   const handleCheckboxChange = (e, propName, dataType) => {
+    // This will get called twice (see note below). The little hack there deals with it
+    // So we actually do not want e.preventDefault(); here
     //console.log('handleCheckboxChange', e.target, propName, dataType);
     // we put this to solve the bubble issue where the click goes through the label then to the checkbox
     if (typeof e.target.checked === 'undefined') { return; }

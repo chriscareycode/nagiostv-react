@@ -70,4 +70,11 @@ const Dashboard = () => {
     
   );
 };
+
+// function isEqualMemo(prev, next) {
+//   //console.log('Dashboard memoFn', prev, next);
+//   return false; // update
+// }
+
+// We do not have
 export default React.memo(Dashboard);

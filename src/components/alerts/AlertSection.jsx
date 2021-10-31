@@ -159,7 +159,7 @@ const AlertSection = () => {
 
       // Success
 
-      // Make an array from the object
+      // Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
       const myAlertlist = _.get(myJson.data, 'alertlist', []).reverse();
 
       // store the actual count of alert list items before we trim
@@ -195,6 +195,8 @@ const AlertSection = () => {
         }));
 
         howManyCounter(myAlertlist);
+      } else {
+        console.log('AlertSection got data but component is not mounted');
       }
 
       
@@ -211,6 +213,8 @@ const AlertSection = () => {
           errorCount: curr.errorCount + 1,
           errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
         }));
+      } else {
+        console.log('AlertSection failed but component is not mounted');
       }
 
     });
