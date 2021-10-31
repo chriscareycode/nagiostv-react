@@ -166,6 +166,7 @@ const ServiceSection = () => {
   const fetchServiceData = () => {
 
     // if we are offline, let's just skip
+    // This is broken on Midori browser on Raspberry Pi and I assume others then. Disabling for now.
     // if (!navigator.onLine) {
     //   console.log('fetchServiceData() browser is offline');
     //   return;

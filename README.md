@@ -49,6 +49,8 @@ $ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.7.5
 $ tar xvfz nagiostv-0.7.5.tar.gz
 ```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html`.
+
+Below is an example command to move NagiosTV into place, but you need to change /usr/local/nagios/share/ to the correct path for your Linux install:
 ```console
 $ sudo mv nagiostv /usr/local/nagios/share/
 ```
@@ -84,7 +86,7 @@ Preparing NagiosTV for automatic update
 For automatic upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
 
 ```console
-$ sudo chown www-data:www-data /usr/local/nagios/share/nagiostv
+$ sudo chown -R www-data:www-data /usr/local/nagios/share/nagiostv
 ```
 Then inside the application, open Settings and find the Update NagiosTV button, or click the update notification NagiosTV version in the bottom bar, and read more instructions there.
 
@@ -114,7 +116,7 @@ FAQ - Bypassing Authentication
 -------------
 This is probably the most common question I get - "How do I disable or bypass authentication?"
 
-There are some circumstances where you may want to bypass authentication. For example, if you are running the display on a Television that would be difficult to deal with the login prompt. It is worth noting here that removing authentication for NagiosTV can decrease the security of your Nagios installation. If you do this, make sure your server is private and not connected to the Internet.
+There are some circumstances where you may want to bypass authentication. For example, if you are running the display on a Television that would be difficult to deal with the login prompt. It is worth noting here that removing authentication for NagiosTV can decrease the security of your NagiosTV installation. If you do this, make sure your server is private and not reachable from the public Internet without authentication.
 
 I have done a writeup on how to bypass authentication over on the NagiosTV.com website: https://nagiostv.com/bypassing-authentication
 
