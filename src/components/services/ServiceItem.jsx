@@ -169,7 +169,7 @@ class ServiceItem extends Component {
             ))}
           </div>}
 
-          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 10) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
+          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 20) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
         
         </div>
 
