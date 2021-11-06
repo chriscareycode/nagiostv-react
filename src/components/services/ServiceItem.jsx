@@ -160,7 +160,7 @@ class ServiceItem extends Component {
 
           </div>
 
-          {this.props.comments && this.props.comments.length > 0 && <div>
+          {(this.props.comments && this.props.comments.length > 0) && <div>
             {this.props.comments.reverse().map((comment, i) => (
               <div className="comment" key={i}>
                 {/* Comment: */}
