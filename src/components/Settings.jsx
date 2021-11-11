@@ -76,6 +76,9 @@ const Settings = () => {
     setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
     setSaveMessage('Settings saved');
 
+    // Now that we have saved settings, set the document.title from the title setting
+    if (clientSettingsTemp.titleString) { document.title = clientSettingsTemp.titleString; }
+
     setTimeout(() => {
       if (isComponentMounted) {
         setSaveMessage('');

@@ -115,7 +115,11 @@ const SettingsLoad = () => {
 
       loadSettingsFromUrl();
 
+      // Now that we have loaded cookie, set the document.title from the title setting
+      if (cookieObject.titleString) { document.title = cookieObject.titleString; }
     }
+
+    
   };
 
    const getRemoteSettings = () => {
@@ -150,6 +154,9 @@ const SettingsLoad = () => {
         ...curr,
         isRemoteSettingsLoaded: true
       }));
+
+      // Now that we have loaded cookie, set the document.title from the title setting
+      if (myJson.titleString) { document.title = myJson.titleString; }
 
       // Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
       // getCookie() is then going to call loadSettingsFromUrl()
