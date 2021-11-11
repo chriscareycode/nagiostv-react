@@ -323,13 +323,8 @@ const Settings = () => {
                     If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, as is the suggested installation method, then the default path
                     <span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication since you will already be logged in.<br />
                     <br />
-                    <span>There are a few ways to bypass authentication (I will do a writeup on these soon in more detail): 
-                      <ul>
-                        <li>You can enter a proxy URL here which performs authentication for you and serves the Nagios cgi files. A Node.js based proxy example is included with this project.</li>
-                        <li>You can remove auth to cgi files statusjson.cgi and archivejson.cgi, and set default_user_name= in cgi.cfg</li>
-                        <li>You can use the MK Livestatus connector which connects on a socket and does not require authentication</li>
-                      </ul>
-                    </span>
+                    <div>You can read more about how to bypass auth here at <a target="_blank" rel="noopener noreferer" href="https://nagiostv.com/bypassing-authentication">https://nagiostv.com/bypassing-authentication</a>.</div>
+                    
                   </div>
                 </td>
               </tr>
@@ -344,6 +339,8 @@ const Settings = () => {
                       <option value={300}>5m</option>
                       <option value={600}>10m</option>
                   </select>
+                  &nbsp;
+                  Affects server CPU. Slower interval = less CPU
                 </td>
               </tr>
               <tr>
@@ -356,6 +353,8 @@ const Settings = () => {
                       <option value={300}>5m</option>
                       <option value={600}>10m</option>
                   </select>
+                  &nbsp;
+                  Affects server CPU. Slower interval = less CPU
                 </td>
               </tr>
               <tr>
@@ -368,6 +367,8 @@ const Settings = () => {
                       <option value={300}>5m</option>
                       <option value={600}>10m</option>
                   </select>
+                  &nbsp;
+                  Affects server CPU. Slower interval = less CPU
                 </td>
               </tr>
 
@@ -525,11 +526,19 @@ const Settings = () => {
               </tr>
               <tr>
                 <th>Alert History Days Back:</th>
-                <td><input type="number" min="1" max="100" value={clientSettingsTemp.alertDaysBack} onChange={handleChange('alertDaysBack', 'number')} /></td>
+                <td>
+                  <input type="number" min="1" max="100" value={clientSettingsTemp.alertDaysBack} onChange={handleChange('alertDaysBack', 'number')} />
+                  &nbsp;
+                  Affects server CPU. Lower number of days = less CPU
+                </td>
               </tr>
               <tr>
                 <th>Alert History max # items:</th>
-                <td><input type="number" min="1" max="10000" value={clientSettingsTemp.alertMaxItems} onChange={handleChange('alertMaxItems', 'number')} /></td>
+                <td>
+                  <input type="number" min="1" max="10000" value={clientSettingsTemp.alertMaxItems} onChange={handleChange('alertMaxItems', 'number')} />
+                  &nbsp;
+                  This will trim the results (in the browser) to limit how many can be shown. Does not affect the server.
+                </td>
               </tr>
             </tbody>
           </table>
@@ -623,7 +632,7 @@ const Settings = () => {
                     <option value={false}>Off</option>
                   </select>
                   &nbsp;
-                  Uses more CPU in the browser
+                  Uses much more CPU in the browser
                 </td>
               </tr>
               {/* <tr>
