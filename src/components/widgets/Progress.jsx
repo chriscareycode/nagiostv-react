@@ -85,10 +85,10 @@ class Progress extends Component {
 
   render() {
 
-    //const progressStyle = { width: Math.floor(this.state.progressValue / this.state.progressMax * 100) + '%' };
+    //console.log('Progress render');
+    
     const progressStyle = {
-      width: this.state.started ? '100%' : '0%',
-      transition: this.state.started ? `width ${this.props.seconds}s linear` : 'width 0s linear'
+      animation: this.state.started ? `progress-keyframes ${this.props.seconds}s` : 'none'
     };
 
     return (
