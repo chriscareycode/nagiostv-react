@@ -492,16 +492,16 @@ const Update = ({
         <h3>Skip this version</h3>
         <div style={{ marginTop: 10 }} className="update-help-message">
 
-          {bigState.latestVersionString && <div>
-            <button disabled={skipVersionCookie.version_string} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
+          {bigState.latestVersionString && <div style={{ marginBottom: '10px' }}>
+            <button disabled={skipVersionCookie.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
           </div>}
 
-          {!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div>
+          {!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div style={{ marginBottom: '10px' }}>
             Need to "Check for Updates" first to know which version to skip
           </div>}
 
           {skipVersionCookie.version_string && <div style={{ color: 'yellow' }}>
-            You are set to skip version {skipVersionCookie.version_string}. We will not notify you about this version again, but will notify you when the next version comes out.
+            You have chosen to skip version {skipVersionCookie.version_string}. This will hide the update message until the next version is released.
             &nbsp;
             <button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersionCookie.version_string}</button>
           </div>}
