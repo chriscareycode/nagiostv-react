@@ -18,6 +18,10 @@
 
 import React, { useEffect, useState } from 'react';
 
+// Recoil
+import { useRecoilState } from 'recoil';
+import { skipVersionAtom } from '../../atoms/skipVersionAtom';
+
 // React Router
 import {
   HashRouter as Router,
@@ -42,47 +46,7 @@ const BottomPanel = ({
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const [skipVersionCookieVersion, setSkipVersionCookieVersion] = useState(0);
-  const [skipVersionCookieVersionString, setSkipVersionCookieVersionString] = useState('');
-
-  
-
-  // state = {
-  //   isVisible: false,
-  //   skipVersionCookieVersion: 0,
-  //   skipVersionCookieVersionString: '',
-  // };
-
-  // componentDidMount() {
-  //   this.loadSkipVersionCookie();
-  // }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   //console.log('shouldComponentUpdate', nextProps, nextState);
-  //   if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  
-
-  /*
-  clickedCharts = () => {
-    this.props.updateRootState({
-      hideHistoryChart: !this.props.hideHistoryChart
-    });
-  };
-
-  clickedFilter = () => {
-    this.props.updateRootState({
-      hideFilters: !this.props.hideFilters
-    });
-  };
-  */
-
-  
+  const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);  
 
   const navigateTo = (e, pathname) => {
     e.preventDefault();
@@ -95,9 +59,6 @@ const BottomPanel = ({
     // Close menu
     setTimeout(() => {
       setIsVisible(visible => !visible);
-      // this.setState({
-      //   isVisible: !this.state.isVisible
-      // });
     }, 800);
   };
 
@@ -120,14 +81,11 @@ const BottomPanel = ({
   const clickedNagiosTv = (e) => {
     e.preventDefault();
     setIsVisible(visible => !visible);
-    // this.setState({
-    //   isVisible: !this.state.isVisible
-    // });
   };
 
   const clickedUpdateAvailable = (e) => {
     e.preventDefault();
-    this.clickedUpdate(e);
+    clickedUpdate(e);
   };
 
   const loadSkipVersionCookie = () => {
@@ -137,12 +95,10 @@ const BottomPanel = ({
         const skipVersionObj = JSON.parse(cookieString);
         if (skipVersionObj) {
           //console.log('Loaded skipVersion cookie', skipVersionObj);
-          setSkipVersionCookieVersion(skipVersionObj.version);
-          setSkipVersionCookieVersionString(skipVersionObj.version_string);
-          // this.setState({
-          //   skipVersionCookieVersion: skipVersionObj.version,
-          //   skipVersionCookieVersionString: skipVersionObj.version_string
-          // });
+          setSkipVersionCookie({
+            version: skipVersionObj.version,
+            version_string: skipVersionObj.version_string,
+          });
         }
       } catch (e) {
         console.log('Could not parse the skipVersion cookie');
@@ -157,12 +113,10 @@ const BottomPanel = ({
       version_string: latestVersionString
     };
     Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-    setSkipVersionCookieVersion(latestVersion);
-    setSkipVersionCookieVersionString(latestVersionString);
-    // this.setState({
-    //   skipVersionCookieVersion: latestVersion,
-    //   skipVersionCookieVersionString: latestVersionString
-    // });
+    setSkipVersionCookie({
+      version: latestVersion,
+      version_string: latestVersionString,
+    });
   };
 
   useEffect(() => {
@@ -188,7 +142,7 @@ const BottomPanel = ({
             >NagiosTV <span className="">v{currentVersionString}</span></span>
 
             {/* update available */}
-            {(isUpdateAvailable && skipVersionCookieVersion !== latestVersion) && (
+            {(isUpdateAvailable && skipVersionCookie.version !== latestVersion) && (
             <span>
               <span className="update-available">
                 <a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>

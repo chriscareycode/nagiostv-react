@@ -17,6 +17,10 @@
  */
 
 import React, { useState } from 'react';
+// Recoil
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
+import { skipVersionAtom } from '../atoms/skipVersionAtom';
 // React Router
 import { Link } from "react-router-dom";
 import Cookie from 'js-cookie';
@@ -32,47 +36,12 @@ const Update = ({
   currentVersionString,
 }) => {
 
-  // state = {
-
-  //   clickedCheckForUpdates: false,
-  //   skipVersionCookieVersion: 0,
-  //   skipVersionCookieVersionString: '',
-
-  //   testphpLoading: false,
-  //   testphpError: false,
-  //   testphpErrorMessage: '',
-  //   testphpResult: {},
-
-  //   latestVersionLoading: false,
-  //   latestVersionError: false,
-  //   latestVersionErrorMessage: '',
-  //   latestVersion: '',
-
-  //   githubLoading: false,
-  //   githubError: false,
-  //   githubErrorMessage: '',
-  //   githubFetchReleases: [],
-    
-  //   updateLoading: false,
-  //   updateError: false,
-  //   updateErrorMessage: '',
-  //   updateResult: '',
-
-  //   downgradeLoading: false,
-  //   downgradeError: false,
-  //   downgradeErrorMessage: '',
-  //   downgradeResult: '',
-
-  //   selected: ''
-  // };
-
+  const [bigState, setBigState] = useRecoilState(bigStateAtom);
 
   const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState('');
 
-  const [skipVersionCookie, setSkipVersionCookie] = useState({
-    version: 0,
-    version_string: '',
-  });
+  const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
+
   const [testPhpState, setTestPhpState] = useState({
     loading: false,
     error: false,
@@ -106,7 +75,6 @@ const Update = ({
   const [selected, setSelected] = useState('');
 
   const checkForUpdates = () => {
-    loadSkipVersionCookie();
     testPhp();
     fetchLatestVersion();
     fetchReleasesFromGithub();
@@ -168,12 +136,21 @@ const Update = ({
     }).done((myJson, textStatus, jqXHR) => {
       // Got data
       //console.log('latestVersion result', myJson);
+      // set version into local state
       setLatestVersionState({
         loading: false,
         error: false,
         errorMessage: '',
         result: myJson
       });
+      // set version into bigState
+      setBigState(curr => ({
+        ...curr,
+        latestVersion: myJson.version,
+        latestVersionString: myJson.version_string,
+        lastVersionCheckTime: new Date().getTime(),
+      }));
+
     }).catch((err) => {
       // Error
       setLatestVersionState({
@@ -225,12 +202,15 @@ const Update = ({
 
   const beginUpdate = () => {
     //console.log('beginUpdate');
+
+    const latestVersionString = bigState.latestVersionString;
+
     setUpdateState(curr => ({
       ...curr,
       loading: true,
     }));
 
-    const url = `auto-version-switch.php?version=v${latestVersionState.result.version_string}`;
+    const url = `auto-version-switch.php?version=v${latestVersionString}`;
     $.ajax({
       method: "GET",
       url,
@@ -290,27 +270,9 @@ const Update = ({
     
   };
 
-  const loadSkipVersionCookie = () => {
-    const cookieString = Cookie.get('skipVersion');
-    if (cookieString) {
-      try {
-        const skipVersionObj = JSON.parse(cookieString);
-        if (skipVersionObj) {
-          //console.log('Loaded skipVersion cookie', skipVersionObj);
-          setSkipVersionCookie({
-            version: skipVersionObj.version,
-            version_string: skipVersionObj.version_string,
-          });
-        }
-      } catch (e) {
-        console.log('Could not parse the skipVersion cookie');
-      }
-    }
-  };
-
   const clickedSkipVersion = () => {
-    const latestVersion = latestVersionState.result.version;
-    const latestVersionString = latestVersionState.result.version_string;
+    const latestVersion = bigState.latestVersion;
+    const latestVersionString = bigState.latestVersionString;
     const skipVersionObj = {
       version: latestVersion,
       version_string: latestVersionString
@@ -334,8 +296,8 @@ const Update = ({
     return <option key={i} value={r.tag_name}>{r.tag_name} {r.name}</option>
   });
 
-  const latestVersion = latestVersionState.result.version;
-  const latestVersionString = latestVersionState.result.version_string;
+  const latestVersion = bigState.latestVersion;
+  const latestVersionString = bigState.latestVersionString;
 
   return (
     <div className="Update">
@@ -378,10 +340,7 @@ const Update = ({
         {latestVersionState.error && <span>
           <span style={{ color: 'red' }}> Error loading latest version. Try again.</span>
         </span>}
-      </div>
-
-
-      
+      </div>      
 
       {(clickedCheckForUpdates && latestVersionString) && <div>
 
@@ -418,8 +377,6 @@ const Update = ({
               That being said, if you are seeing this and you notice any problems in this version, let me know in the GitHub issues! If you did notice issues which are preventing your dashboard from working, use the rollback feature to install a previous release.
             </div>
           )}
-
-          
 
           {/* php test */}
           <h3></h3>
@@ -531,19 +488,27 @@ const Update = ({
 
 
       {/* skip this version */}
-      {latestVersionString && <div>
+      <div>
         <h3>Skip this version</h3>
-        {latestVersionString && <div style={{ marginTop: 10 }} className="update-help-message">
-          <button disabled={skipVersionCookie.version_string} onClick={clickedSkipVersion}>Skip version {latestVersionString} - Stop notifying me about it</button>
+        <div style={{ marginTop: 10 }} className="update-help-message">
+
+          {bigState.latestVersionString && <div>
+            <button disabled={skipVersionCookie.version_string} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
+          </div>}
+
+          {!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div>
+            Need to "Check for Updates" first to know which version to skip
+          </div>}
+
           {skipVersionCookie.version_string && <div style={{ color: 'yellow' }}>
             You are set to skip version {skipVersionCookie.version_string}. We will not notify you about this version again, but will notify you when the next version comes out.
             &nbsp;
             <button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersionCookie.version_string}</button>
           </div>}
-        </div>}
-      </div>}
 
-      
+        </div>
+
+      </div>
 
     </div>
   );

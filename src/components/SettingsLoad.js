@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
+import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
 import $ from 'jquery';
 import Cookie from 'js-cookie';
@@ -13,20 +14,20 @@ const SettingsLoad = () => {
 
   const [bigState, setBigState] = useRecoilState(bigStateAtom);
   const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-  
+  const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
 
   const {
     isDemoMode,
-    isDoneLoading,
-    isLeftPanelOpen,
-    settingsLoaded,
+    //isDoneLoading,
+    //isLeftPanelOpen,
+    //settingsLoaded,
   } = bigState;
 
-  const {
-    fontSizeEm,
-    hideFilters,
-    hideHistoryChart,
-  } = clientSettings;
+  // const {
+  //   fontSizeEm,
+  //   hideFilters,
+  //   hideHistoryChart,
+  // } = clientSettings;
 
   /* ************************************************************************************ */
    /* settings related functions such as fetching settings from server, and loading cookie
@@ -39,7 +40,7 @@ const SettingsLoad = () => {
    cookie button to help clear any local settings once server side settings become established. */
    /* ************************************************************************************ */
  
-   const loadSettingsFromUrl = () => {
+  const loadSettingsFromUrl = () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const urlObject = {};
@@ -71,7 +72,7 @@ const SettingsLoad = () => {
     }));
   };
 
-   const getCookie = () => {
+  const getCookie = () => {
     // do not load the cookie in demo mode
     if (isDemoMode) {
       setBigState(curr => ({
@@ -117,12 +118,28 @@ const SettingsLoad = () => {
 
       // Now that we have loaded cookie, set the document.title from the title setting
       if (cookieObject.titleString) { document.title = cookieObject.titleString; }
-    }
-
-    
+    }    
   };
 
-   const getRemoteSettings = () => {
+  const loadSkipVersionCookie = () => {
+    const cookieString = Cookie.get('skipVersion');
+    if (cookieString) {
+      try {
+        const skipVersionObj = JSON.parse(cookieString);
+        if (skipVersionObj) {
+          //console.log('Loaded skipVersion cookie', skipVersionObj);
+          setSkipVersionCookie({
+            version: skipVersionObj.version,
+            version_string: skipVersionObj.version_string,
+          });
+        }
+      } catch (e) {
+        console.log('Could not parse the skipVersion cookie');
+      }
+    }
+  };
+
+  const getRemoteSettings = () => {
     const url = 'client-settings.json?v=' + new Date().getTime();
 
     $.ajax({
@@ -167,15 +184,125 @@ const SettingsLoad = () => {
       console.log('Skipping server settings.');
       getCookie();
     });
-  }; 
+  };
+
+  const lastVersionCheckTimeRef = useRef(0);
+
+  // Version check
+  const versionCheck = () => {
+    
+    const lastVersionCheckTime = lastVersionCheckTimeRef.current;
+    const nowTime = new Date().getTime();
+    const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
+    
+    // PREVENT extra last version check time with cookie
+    // if the last version check was recent then do not check again
+    // this prevents version checks if you refresh the UI over and over
+    // as is common on TV rotation
+    const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
+
+    if (lastVersionCheckTimeCookie !== 0) {
+      const diff = nowTime - lastVersionCheckTimeCookie;
+      if (diff < twentyThreeHoursInSeconds) {
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago (Cookie check)');
+        return;
+      }
+    }
+
+    // PREVENT extra last version check time with local variable
+    // If for some reason the cookie check doesn't work
+    if (lastVersionCheckTime !== 0) {
+      const diff = nowTime - lastVersionCheckTime;
+      if (diff < twentyThreeHoursInSeconds) {
+        console.log('Not performing version check since it was done ' + (diff/1000).toFixed(0) + ' seconds ago (local var check)');
+        return;
+      }
+    }
+
+    console.log('Running version check...');
+
+    // Set the last version check time in local variable
+    // I'm setting this one here not in the callback to prevent the rapid fire
+    lastVersionCheckTimeRef.current = nowTime;
+    // Set the last version check in the cookie (for page refresh)
+    Cookie.set('lastVersionCheckTime', nowTime);
+
+    const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 5 * 1000
+    })
+    .done(myJson => {
+      console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
+
+      setBigState(curr => ({
+        ...curr,
+        latestVersion: myJson.version,
+        latestVersionString: myJson.version_string,
+        lastVersionCheckTime: nowTime,
+      }));
+
+    })
+    .fail(err => {
+      console.log('There was some error with the version check', err);
+    });
+  };
+
+
 
   useEffect(() => {
     //console.log('SettingsLoad useEffect()');
 
     getRemoteSettings();
 
+    loadSkipVersionCookie();
+
+    // If a Cookie is set then run version check after 30s.
+    // If no Cookie is set then run version check after 30m.
+    // Cookie helps us prevent version check too often if NagiosTV is on a rotation
+    // where the page is loading over and over every few minutes.
+
+    let versionCheckTimeout = 30 * 1000; // 30s
+    if (!navigator.cookieEnabled) {
+      console.log('Cookie not enabled so delaying first version check by 30m');
+      versionCheckTimeout = 1800 * 1000; // 30m
+    }
+
+    let intervalHandleVersionCheck = null;
+    const cookieTimeoutHandle = setTimeout(() => {
+      const versionCheckDays = clientSettings.versionCheckDays;
+      // if someone turns off the version check, it should never check
+      if (versionCheckDays && versionCheckDays > 0) {
+        // version check - run once on app boot
+        versionCheck();
+        // version check - run every n days
+        const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
+        // console.log('Checking on intervalTime', intervalTime);
+        // safety check that interval > 1hr
+        if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
+          intervalHandleVersionCheck = setInterval(() => {
+            // inside the interval we check again if the user disabled the check
+            if (clientSettings.versionCheckDays > 0) {
+              versionCheck();
+            }
+          }, intervalTime);
+        } else {
+          console.log('intervalTime not yet an hour, not re-running check.', intervalTime);
+        }
+      } else {
+        console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
+      }
+    }, versionCheckTimeout);
+
     return () => {
       //console.log('SettingsLoad useEffect() teardown');
+      clearTimeout(cookieTimeoutHandle);
+      if (intervalHandleVersionCheck) {
+        clearInterval(intervalHandleVersionCheck);
+      }
     };
   }, []);
 
