@@ -24,8 +24,8 @@ const bigStateInitial = {
   // state which is used internally by NagiosTV
   //**************************************************************************** */
 
-  currentVersion: 70, // This gets incremented with each new release (manually)
-  currentVersionString: '0.8.0', // This gets incremented with each new release (manually)
+  currentVersion: 71, // This gets incremented with each new release (manually)
+  currentVersionString: '0.8.1', // This gets incremented with each new release (manually)
   latestVersion: 0,
   latestVersionString: '',
   lastVersionCheckTime: 0,
