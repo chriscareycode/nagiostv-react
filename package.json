@@ -27,7 +27,7 @@
     "url-search-params-polyfill": "^8.1.0"
   },
   "scripts": {
-    "start": "BROWSER=none PORT=3016 react-scripts start",
+    "start": "BROWSER=none PORT=3015 react-scripts start",
     "build": "react-scripts build",
     "build:dev": "react-scripts build --profile",
     "test": "react-scripts test --env=jsdom",
