@@ -31,7 +31,7 @@
 	background-color: gray;
 	width: 100%;
 	opacity: 0.5;
-	animation-timing-function: ease;
+	animation-timing-function: linear;
 	transform-origin: left;
 }
 
