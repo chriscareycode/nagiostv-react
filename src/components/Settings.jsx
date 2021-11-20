@@ -625,14 +625,14 @@ const Settings = () => {
                 </td>
               </tr>}
               <tr>
-                <th>Progress bar for "Next Check In":</th>
+                <th>Animated progress bar for "Next Check In":</th>
                 <td>
                   <select value={clientSettingsTemp.showNextCheckInProgressBar} onChange={handleChange('showNextCheckInProgressBar', 'boolean')}>
                     <option value={true}>On</option>
                     <option value={false}>Off</option>
                   </select>
                   &nbsp;
-                  Uses much more CPU in the browser
+                  Uses more CPU in the browser (with recent GPU acceleration)
                 </td>
               </tr>
               {/* <tr>
