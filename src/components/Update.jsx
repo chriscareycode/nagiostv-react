@@ -492,11 +492,11 @@ const Update = ({
         <h3>Skip this version</h3>
         <div style={{ marginTop: 10 }} className="update-help-message">
 
-          {bigState.latestVersionString && <div style={{ marginBottom: '10px' }}>
+          {bigState.latestVersionString && <div>
             <button disabled={skipVersionCookie.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
           </div>}
 
-          {!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div style={{ marginBottom: '10px' }}>
+          {!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div>
             Need to "Check for Updates" first to know which version to skip
           </div>}
 
