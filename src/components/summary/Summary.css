@@ -1,12 +1,12 @@
 .summary-item {
     position: relative;
 
-    border: 1px solid #003f5c;
+    /* border: 1px solid #003f5c; */
     border: 1px solid #002232;
     border-left: 3px solid #00adff;
-    background-color: #001a26;
-    background-color: #00151e;
-
+    /* background-color: #001a26;
+    background-color: #00151e; */
+    background-color: #051218;
     font-size: 1.5em;
     border-radius: 5px;
     /* color: rgba(237, 237, 237, 0.88) */
@@ -58,6 +58,10 @@
 
 .summary-box-big-number {
     font-size: 1.6em;
+}
+
+.summary-box-text {
+    font-size: 0.6em;
 }
 
 .summary-box-right {
