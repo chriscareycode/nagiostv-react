@@ -62,14 +62,14 @@ export default function Summary() {
             <span className="color-darkblue"> / </span> */}
             <span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
           </div>
-          <div className="font-size-0-6"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts<br />down</span></div>
+          <div className="summary-box-text"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts<br />down</span></div>
         </div>
 
         <div className="summary-box">
           <div className="summary-box-big-number">
             <span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
           </div>
-          <div className="font-size-0-6"><span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-white' : 'color-white'}>hosts<br />unreachable</span></div>
+          <div className="summary-box-text"><span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-white' : 'color-white'}>hosts<br />unreachable</span></div>
         </div>
 
         <div className="summary-box summary-box-separator">
@@ -84,7 +84,7 @@ export default function Summary() {
             {/* <span className="color-darkblue"> / </span>
             <span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span> */}
           </div>
-          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services<br />critical</span></div>
+          <div className="summary-box-text"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services<br />critical</span></div>
         </div>
 
         <div className="summary-box">
@@ -95,14 +95,14 @@ export default function Summary() {
             <span className="color-darkblue"> / </span> */}
             <span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
           </div>
-          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
+          <div className="summary-box-text"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
         </div>
 
         <div className="summary-box">
           <div className="summary-box-big-number">
             <span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
           </div>
-          <div className="font-size-0-6"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
+          <div className="summary-box-text"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
         </div>
 
         <div className="summary-box float-right overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
