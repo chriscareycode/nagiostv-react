@@ -88,7 +88,7 @@ class Progress extends Component {
     //console.log('Progress render');
     
     const progressStyle = {
-      animation: this.state.started ? `progress-keyframes ${this.props.seconds}s` : 'none'
+      animation: this.state.started ? `progress-keyframes ${this.props.seconds}s linear` : 'none'
     };
 
     return (
