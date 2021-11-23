@@ -54,8 +54,12 @@ Below is an example command to move NagiosTV into place, but you need to change 
 ```console
 $ sudo mv nagiostv /usr/local/nagios/share/
 ```
+
+Install is all done!
+
 - Load the app in your web browser! If your built-in Nagios web ui is at `http://my-server/nagios/` then NagiosTV should be available at `http://my-server/nagios/nagiostv/`
-- Since nagiostv/ is a subfolder in your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
+- Since nagiostv/ is located in a subfolder under your Nagios web ui, it will share the same authentication as the built-in Nagios web ui.
+
 
 Preparing the client settings file (optional)
 ------------
