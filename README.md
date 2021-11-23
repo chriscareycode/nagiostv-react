@@ -71,24 +71,22 @@ $ sudo touch client-settings.json
 $ sudo chmod 777 client-settings.json 
 ```
 
-Upgrading Automatically
+One click updates
 ------------
-As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. *We call this automatic, but it does not update on it's own*. We have a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
+As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. There is a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
 
 * download the release
 * unarchive the release into temp/ folder
 * copying the release over the old NagiosTV
 
-Find the update page at the bottom of the Settings page, or by clicking any update notification in the bottom bar. More instructions are displayed on the update page.
-
-Preparing NagiosTV for automatic update
+Preparing NagiosTV for one click update
 ------------
-For automatic upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
+For one click upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
 
 ```console
 $ sudo chown -R www-data:www-data /usr/local/nagios/share/nagiostv
 ```
-Then inside the application, open Settings and find the Update NagiosTV button, or click the update notification NagiosTV version in the bottom bar, and read more instructions there.
+Then inside the application, navigate to the Update page, and read more instructions there.
 
 Upgrading Manually
 ------------
@@ -106,7 +104,7 @@ $ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 Update CLI script
 -------------
 This command line autoupdate script can be used to upgrade or downgrade to any version easily. 
-This has been superceded by the AutoUpdate within the NagiosTV UI. (see above)
+This has been superceded by the one click within the NagiosTV UI. (see above)
 To update this way, go into your nagiostv/ folder and run this command for more instructions:
 ```
 $ sh autoupdate.sh
