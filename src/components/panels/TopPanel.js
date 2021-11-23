@@ -92,9 +92,6 @@ const TopPanel = (props) => {
   };
 
   const clickedAutomaticScroll = () => {
-    // props.updateRootState({
-    //   automaticScroll: !props.settingsObject.automaticScroll
-    // });
     setClientSettings(curr => ({
       ...curr,
       automaticScroll: !curr.automaticScroll
@@ -106,15 +103,6 @@ const TopPanel = (props) => {
 
         <div className="header-right-float">
 
-        {/* automatic scroll icon */}
-        <div
-          data-tip="Automatic Scroll"
-          className={automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
-          onClick={clickedAutomaticScroll}
-        >
-          <FontAwesomeIcon icon={faSort} />
-        </div>
-
         {/* filter icon */}
         <div
           data-tip="Show/Hide Filters"
@@ -122,6 +110,15 @@ const TopPanel = (props) => {
           onClick={clickedFilter}
         >
           <FontAwesomeIcon icon={faFilter} />
+        </div>
+
+        {/* automatic scroll icon */}
+        <div
+          data-tip="Automatic Scroll"
+          className={automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedAutomaticScroll}
+        >
+          <FontAwesomeIcon icon={faSort} />
         </div>
 
         {/* chart icon */}
