@@ -3,6 +3,9 @@
   "version": "0.8.1",
   "private": true,
   "homepage": "./",
+  "devDependencies": {
+    "react-scripts": "^4.0.3"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.15",
     "@fortawesome/free-solid-svg-icons": "^5.7.2",
@@ -19,7 +22,6 @@
     "react-app-polyfill": "^2.0.0",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
     "react-tooltip": "^4.2.11",
     "react-transition-group": "^4.4.1",
     "recoil": "^0.4.0",
