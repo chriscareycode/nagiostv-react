@@ -106,6 +106,8 @@ class ServiceItem extends Component {
     
     const howManyDown = this.props.howManyDown;
 
+    const maxNumberToHideProgress = 40;
+
     return (
       
       <div className={`ServiceItem`} onClick={this.mouseClick}>
@@ -169,7 +171,7 @@ class ServiceItem extends Component {
             ))}
           </div>}
 
-          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 20) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
+          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress seconds={secondsToNextCheck} color={serviceTextClass(e.status)}></Progress>}
         
         </div>
 

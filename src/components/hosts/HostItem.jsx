@@ -104,6 +104,8 @@ class HostItem extends Component {
     const isPassive = e.check_type === 1;
     const isDown = e.status !== 2;
 
+    const maxNumberToHideProgress = 40;
+
     return (
       <div className={`HostItem`} onClick={this.mouseClick}>
         <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
@@ -165,7 +167,7 @@ class HostItem extends Component {
             ))}
           </div>}
 
-          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < 20) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
+          {(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
 
         </div>
       </div>
