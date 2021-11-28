@@ -36,7 +36,7 @@ const Help = () => {
         <br />
         <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">github.com/chriscareycode/nagiostv-react</a></div>
         <br />
-        <div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">http://chriscarey.com</a></div>
+        <div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">https://chriscarey.com</a></div>
       </div>
 
 
