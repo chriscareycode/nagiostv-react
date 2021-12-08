@@ -6,7 +6,6 @@ import 'url-search-params-polyfill';
 // demo mode uses fake data and rotates through a couple of alerts as an example
 const urlParams = new URLSearchParams(window.location.search);
 const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
-//console.log('isDemoMode is ', isDemoMode);
 
 const isStressTestMode = urlParams.get('stresstest') === 'true';
 
@@ -15,14 +14,12 @@ const isDebugMode = urlParams.get('debug') === 'true';
 
 // use fake data (dev) if ?fakedata=true
 const useFakeSampleData = urlParams.get('fakedata') === 'true' || isDemoMode;
-//console.log('useFakeSampleData is ', useFakeSampleData);
 
+//**************************************************************************** */
+// state which is used internally by NagiosTV
+//**************************************************************************** */
 
-const bigStateInitial = {
- 
-  //**************************************************************************** */
-  // state which is used internally by NagiosTV
-  //**************************************************************************** */
+const bigStateInitial = { 
 
   currentVersion: 71, // This gets incremented with each new release (manually)
   currentVersionString: '0.8.1', // This gets incremented with each new release (manually)
@@ -53,8 +50,10 @@ const bigStateInitial = {
   isLeftPanelOpen: false,
 };
 
+//**************************************************************************** */
+// state which is loaded and saved into client cookie / server settings
+//**************************************************************************** */
 export const clientSettingsInitial = {
-  // audio and visual settings
   
   titleString: 'NagiosTV',
   dataSource: 'cgi',
@@ -112,7 +111,7 @@ export const clientSettingsInitial = {
   clockDateFormat: 'll',
   clockTimeFormat: 'LTS',
 
-  // // audio and visual
+  // audio and visual
   fontSizeEm: '1em',
   customLogoEnabled: false,
   customLogoUrl: './sample-image/resedit.png',
