@@ -37,7 +37,11 @@ NagiosTV also has some fun addons:
 Technology
 ------------
 NagiosTV is a JavaScript single page application.
-The frontend is using the React JavaScript framework.
+- The frontend is using the React JavaScript framework
+- recoil for state management
+- react-transition-group for item animations
+- @steveeeie/react-page-transition for the page transitions
+- highcharts for the graphs
 
 Installing NagiosTV
 -------------
