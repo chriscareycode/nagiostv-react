@@ -737,7 +737,7 @@ const Settings = () => {
               {/** end special colspan=2 section for doom guy settings */}
 
               <tr>
-                <th>Hamburger Menu:</th>
+                <th>Hamburger (Top) Menu:</th>
                 <td>
                   <select value={clientSettingsTemp.hideHamburgerMenu} onChange={handleChange('hideHamburgerMenu', 'boolean')}>
                     <option value={true}>Hide</option>
