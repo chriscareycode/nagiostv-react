@@ -102,12 +102,12 @@ class HistoryChart extends Component {
     let returnArray = [];
 
     // trying to fix highcharts bug by adding first and last hour on the hourly chart
-    // if (this.props.groupBy === 'hour') {
-    //   // only if there is not already an entry for the last hour group
-    //   if (!groupByData.hasOwnProperty(max)) {
-    //     returnArray.push({ x: max, y: 0, xNice: new Date(max) });
-    //   }
-    // }
+    if (this.props.groupBy === 'hour') {
+      // only if there is not already an entry for the last hour group
+      if (!groupByData.hasOwnProperty(max)) {
+        returnArray.push({ x: max, y: 0, xNice: new Date(max) });
+      }
+    }
 
     Object.keys(groupByData).forEach(group => {
       returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
