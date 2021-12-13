@@ -344,6 +344,11 @@ class HistoryChart extends Component {
   render() {
     
     const debugMode = document.location.search.indexOf('debug=true') !== -1;
+
+    if (debugMode) {
+      console.log('HistoryChart.jsx debug mode - chartConfig is', this.chartConfig);
+      console.log('this.props.alertlist is', this.props.alertlist);
+    }
     const alertlistDebug = this.props.alertlist.map((al, i) => {
       //if (this.props.groupBy === 'hour') { console.log(al); }
       return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale('en').format('llll')} - {al.description} - {al.plugin_output}</div>);
