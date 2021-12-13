@@ -101,7 +101,7 @@ class HistoryChart extends Component {
 
     let returnArray = [];
 
-    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    // HACK to fix highcharts bug by adding first and last hour on the hourly chart (there are two of these)
     if (this.props.groupBy === 'hour') {
       // only if there is not already an entry for the last hour group
       if (!groupByData.hasOwnProperty(max)) {
@@ -113,7 +113,7 @@ class HistoryChart extends Component {
       returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
     });
 
-    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    // HACK to fix highcharts bug by adding first and last hour on the hourly chart (there are two of these
     if (this.props.groupBy === 'hour') {
       // only if there is not already an entry for the last hour group
       if (!groupByData.hasOwnProperty(min)) {
@@ -166,7 +166,7 @@ class HistoryChart extends Component {
 
     // calculate min and max for hourly chart
     const min = d.getTime() - (86400 * 1000) + (3600 * 1000);
-    const max = d.getTime() + (0 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
+    const max = d.getTime() + (3600 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
     //console.log('min max', min, max);
 
     // HighCharts setData
