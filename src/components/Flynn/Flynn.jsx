@@ -82,9 +82,10 @@ const Flynn = () => {
   // If clicked then force smile
   const clickedFlynn = () => {
     setClicked(true);
+    // TODO this could trigger a setState on unmounted component
     setTimeout(() => {
       setClicked(false);
-    }, 1000);
+    }, 2000);
   };
   
   return (
