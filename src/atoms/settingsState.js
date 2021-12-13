@@ -48,6 +48,8 @@ const bigStateInitial = {
   
   hideFilters: true,
   isLeftPanelOpen: false,
+
+  selectedItem: {},
 };
 
 //**************************************************************************** */

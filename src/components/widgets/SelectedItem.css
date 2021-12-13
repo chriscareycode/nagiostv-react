@@ -1,0 +1,8 @@
+.SelectedItem {
+    border: 2px solid orange;
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    height: 100px;
+    width: 100px;
+}

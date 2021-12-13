@@ -10,6 +10,7 @@ import Summary from './summary/Summary';
 import HostSection from './hosts/HostSection.jsx';
 import ServiceSection from './services/ServiceSection.jsx';
 import AlertSection from './alerts/AlertSection.jsx';
+import SelectedItem from './widgets/SelectedItem';
 // Demo mode
 import Demo from './Demo';
 
@@ -36,6 +37,8 @@ const Dashboard = () => {
     hideServiceSection,
   } = clientSettings;
 
+  const isSelectedItem = bigState.selectedItem && bigState.selectedItem.name;
+
   //console.log('Dashboard render()');
 
   return (
@@ -60,6 +63,9 @@ const Dashboard = () => {
                     
         {/* Alert History Section */}
         {!hideHistory && <AlertSection />}
+
+        {/* Selected Item */}
+        {isSelectedItem && <SelectedItem />}
 
         {/* Demo mode */}
         {isDemoMode && <Demo />}
