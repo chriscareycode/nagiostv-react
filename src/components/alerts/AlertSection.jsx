@@ -173,8 +173,15 @@ const AlertSection = () => {
       // If we are in demo mode then let's modify the latest timestamps
       if (useFakeSampleData) {
         //console.log('myAlertlist', myAlertlist);
-        myAlertlist[0].timestamp = new Date().getTime();
-        myAlertlist[1].timestamp = new Date().getTime() - 5000;
+        //myAlertlist[0].timestamp = new Date().getTime();
+        //myAlertlist[1].timestamp = new Date().getTime() - 5000;
+        
+        // Find out how far in the past the newest alert data item is
+        const howMuchToScoochBy = new Date().getTime() - myAlertlist[0].timestamp;
+        
+        // Loop through every item and scooch it forward just the right amount
+        myAlertlist.forEach(a => a.timestamp += howMuchToScoochBy);
+        
       }
 
       // We check this since the ajax could take a while to respond and the page may have unmounted
