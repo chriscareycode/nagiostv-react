@@ -21,8 +21,8 @@ const useFakeSampleData = urlParams.get('fakedata') === 'true' || isDemoMode;
 
 const bigStateInitial = { 
 
-  currentVersion: 72, // This gets incremented with each new release (manually)
-  currentVersionString: '0.8.2', // This gets incremented with each new release (manually)
+  currentVersion: 73, // This gets incremented with each new release (manually)
+  currentVersionString: '0.8.3', // This gets incremented with each new release (manually)
   latestVersion: 0,
   latestVersionString: '',
   lastVersionCheckTime: 0,
