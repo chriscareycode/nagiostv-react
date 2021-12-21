@@ -165,8 +165,8 @@ class HistoryChart extends Component {
     d.setMilliseconds(0);
 
     // calculate min and max for hourly chart
-    const min = d.getTime() - (86400 * 1000) + (3600 * 1000);
-    const max = d.getTime() + (3600 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
+    const min = d.getTime() - (86400 * 1000) + (0 * 1000);
+    const max = d.getTime() + (0 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
     //console.log('min max', min, max);
 
     // HighCharts setData
