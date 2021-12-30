@@ -425,10 +425,21 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Summary Settings</td>
+                <td colSpan="2" className="SettingsTableHeader">Show or Hide sections</td>
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <th>Host and Service side by side:</th>
+                <td>
+                  <select value={clientSettingsTemp.hostAndServiceSideBySide} onChange={handleChange('hostAndServiceSideBySide', 'boolean')}>
+                      <option value={true}>Yes</option>
+                      <option value={false}>No, use stacked layout</option>
+                  </select>
+                  &nbsp;
+                  Column layout for Hosts and Services (when not on mobile)
+                </td>
+              </tr>
               <tr>
                 <th>Summary:</th>
                 <td>
@@ -440,17 +451,6 @@ const Settings = () => {
                   You can also add ?hideSummarySection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
-            </tbody>
-          </table>
-
-          {/* hosts */}
-          <table className="SettingsTable">
-            <thead>
-              <tr>
-                <td colSpan="2" className="SettingsTableHeader">Hosts Settings</td>
-              </tr>
-            </thead>
-            <tbody>
               <tr>
                 <th>Hosts:</th>
                 <td>
@@ -462,17 +462,6 @@ const Settings = () => {
                   You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
-            </tbody>
-          </table>
-
-          {/* services */}
-          <table className="SettingsTable">
-            <thead>
-              <tr>
-                <td colSpan="2" className="SettingsTableHeader">Services Settings</td>
-              </tr>
-            </thead>
-            <tbody>
               <tr>
                 <th>Services:</th>
                 <td>
@@ -484,17 +473,6 @@ const Settings = () => {
                   You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
-            </tbody>
-          </table>
-
-          {/* history */}
-          <table className="SettingsTable">
-            <thead>
-              <tr>
-                <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
-              </tr>
-            </thead>
-            <tbody>
               <tr>
                 <th>Alert History:</th>
                 <td>
@@ -506,8 +484,33 @@ const Settings = () => {
                   You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
+
+
+            </tbody>
+          </table>
+
+          
+
+          {/* history */}
+          <table className="SettingsTable">
+            <thead>
               <tr>
-                <th>Alert History Chart:</th>
+                <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
+              </tr>
+            </thead>
+            <tbody>
+              
+              <tr>
+                <th>Alert History (24h) Chart:</th>
+                <td>
+                  <select value={clientSettingsTemp.hideHistory24hChart} onChange={handleChange('hideHistory24hChart', 'boolean')}>
+                      <option value={true}>Hide</option>
+                      <option value={false}>Show</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <th>Alert History ({clientSettingsTemp.alertDaysBack}d) Chart:</th>
                 <td>
                   <select value={clientSettingsTemp.hideHistoryChart} onChange={handleChange('hideHistoryChart', 'boolean')}>
                       <option value={true}>Hide</option>
@@ -553,7 +556,7 @@ const Settings = () => {
             <tbody>
               <tr>
                 <th>
-                  Font Size
+                  Dashboard Font Size
                 </th>
                 <td>
                   <select value={clientSettingsTemp.fontSizeEm} onChange={handleChange('fontSizeEm', 'string')}>

@@ -30,16 +30,20 @@ const Dashboard = () => {
 
   // Chop the clientSettings into vars
   const {
+    fontSizeEm,
     hideSummarySection,
     hideHistory,
     hideHostSection,
     hideServiceSection,
+    hostAndServiceSideBySide,
   } = clientSettings;
 
   //console.log('Dashboard render()');
 
+  
+
   return (
-    <div className="Dashboard">
+    <div className="Dashboard" style={{ fontSize: fontSizeEm}}>
 
       {isDoneLoading && <div>
       
@@ -48,15 +52,41 @@ const Dashboard = () => {
         {/* Hostgroup Filter Section */}
         {!hideFilters && <HostGroupFilter />}
 
+        {/* Summary Section */}
         {!hideSummarySection && <Summary />}
 
-        {/* Hosts Section */}
-        {!hideHostSection && <HostSection />} 
+        {/* Hosts and Services Side by Side Enabled */}
+        {hostAndServiceSideBySide && (
+          <div className="two-column-container">
+            <div className="two-column-column-1 two-column-box">
+              <div className="two-column-column-margin">
+                {/* Hosts Section */}
+                {!hideHostSection && <HostSection />}
+              </div>
+            </div>
+            <div className="two-column-column-2 two-column-box">
+              <div className="two-column-column-margin">
+                {/* Services Section */}
+                {!hideServiceSection && <ServiceSection  
+                  commentlist={[]}
+                />}
+              </div>
+            </div>
+          </div>
+        )}
 
-        {/* Services Section */}
-        {!hideServiceSection && <ServiceSection  
-          commentlist={[]}
-        />}
+        {/* Hosts and Services Side by Side Disabled (Default stacked) */}
+        {!hostAndServiceSideBySide && (
+          <div>
+            {/* Hosts Section */}
+            {!hideHostSection && <HostSection />}
+
+            {/* Services Section */}
+            {!hideServiceSection && <ServiceSection  
+              commentlist={[]}
+            />}
+          </div>
+        )}
                     
         {/* Alert History Section */}
         {!hideHistory && <AlertSection />}

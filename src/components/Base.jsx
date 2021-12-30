@@ -78,7 +78,6 @@ const Base = () => {
   } = bigState;
 
   const {
-    fontSizeEm,
     automaticScroll,
     automaticScrollTimeMultiplier,
   } = clientSettings;
@@ -97,7 +96,7 @@ const Base = () => {
   //console.log('Base preset', preset);
 
   return (
-    <div className="Base" style={{ fontSize: fontSizeEm}}>
+    <div className="Base">
 
       <SettingsLoad />
 
@@ -108,14 +107,10 @@ const Base = () => {
         <LeftPanel
           settingsObject={clientSettings}
           isLeftPanelOpen={bigState.isLeftPanelOpen}
-          hideFilters={bigState.hideFilters}
-          hideHistoryChart={clientSettings.hideHistoryChart}
         />
 
         <BottomPanel
           settingsObject={clientSettings}
-          hideFilters={bigState.hideFilters}
-          hideHistoryChart={clientSettings.hideHistoryChart}
           currentVersion={bigState.currentVersion}
           currentVersionString={bigState.currentVersionString}
           latestVersion={bigState.latestVersion}

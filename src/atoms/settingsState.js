@@ -68,10 +68,10 @@ export const clientSettingsInitial = {
 
   alertDaysBack: 30,
   alertHoursBack: 24,
-  alertMaxItems: 1000,
+  alertMaxItems: 5000,
 
-  hideSummarySection: false,
-
+  hostAndServiceSideBySide: false,
+  hideSummarySection: true,
   hideServiceSection: false,
   hideServicePending: false,
   hideServiceWarning: false,
@@ -97,6 +97,7 @@ export const clientSettingsInitial = {
 
   hideHistory: false,
   hideHistoryTitle: false,
+  hideHistory24hChart: false,
   hideHistoryChart: false,
 
   hideAlertSoft: false,

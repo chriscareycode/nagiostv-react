@@ -128,7 +128,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostDown !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="down"
           hideFilters={hideFilters}
@@ -141,7 +141,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostUnreachable !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="unreachable"
           hideFilters={hideFilters}
@@ -154,7 +154,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostPending !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="pending"
           hideFilters={hideFilters}
@@ -167,7 +167,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostAcked !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="acked"
           hideFilters={hideFilters}
@@ -180,7 +180,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostScheduled !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="scheduled"
           hideFilters={hideFilters}
@@ -193,7 +193,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostFlapping !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="flapping"
           hideFilters={hideFilters}
@@ -206,7 +206,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostSoft !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="soft"
           hideFilters={hideFilters}
@@ -219,7 +219,7 @@ const HostFilters = () => {
       </span>}
 
       {(!hideFilters || howManyHostNotificationsDisabled !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="notifications_disabled"
           hideFilters={hideFilters}

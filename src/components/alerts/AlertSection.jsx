@@ -54,6 +54,7 @@ const AlertSection = () => {
     fetchAlertFrequency,
     alertMaxItems,
     alertHoursBack,
+    hideHistory24hChart,
     hideHistoryChart,
     hideHistoryTitle,
     hideAlertSoft,
@@ -275,16 +276,16 @@ const AlertSection = () => {
 
       {/* hourly alert chart */}
 
-      {(alertlist.length > 0 && !hideHistoryChart) && <div className="history-chart-wrap">
+      {(alertlist.length > 0 && !hideHistory24hChart) && <div className="history-chart-wrap">
 
-        {(!hideHistoryTitle && !hideHistoryChart) && <div className="history-chart-title margin-top-10">
+        {(!hideHistoryTitle && !hideHistory24hChart) && <div className="history-chart-title margin-top-10">
           <span className="">
             <strong>{alertlistHoursCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertHoursBack}</strong> {translate('hours', language)}
             {/*alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>*/}
           </span>
         </div>}
 
-        {(alertlist.length > 0 && !hideHistoryChart) && <HistoryChart
+        {(alertlist.length > 0 && !hideHistory24hChart) && <HistoryChart
           alertlist={alertlistHours}
           alertlistLastUpdate={alertState.lastUpdate}
           groupBy="hour"

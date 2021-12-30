@@ -49,6 +49,7 @@ const TopPanel = (props) => {
   } = bigState;
 
   const {
+    hideHistory24hChart,
     hideHistoryChart,
     //fontSizeEm,
     playSoundEffects,
@@ -91,6 +92,13 @@ const TopPanel = (props) => {
     }));
   };
 
+  const clickedCharts24h = () => {
+    setClientSettings(curr => ({
+      ...curr,
+      hideHistory24hChart: !curr.hideHistory24hChart
+    }));
+  };
+
   const clickedAutomaticScroll = () => {
     setClientSettings(curr => ({
       ...curr,
@@ -123,7 +131,16 @@ const TopPanel = (props) => {
 
         {/* chart icon */}
         <div
-          data-tip="Show/Hide Charts"
+          data-tip="Show/Hide 24h Charts"
+          className={hideHistory24hChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          onClick={clickedCharts24h}
+        >
+          <FontAwesomeIcon icon={faChartBar} />
+        </div>
+
+        {/* chart icon */}
+        <div
+          data-tip="Show/Hide Long Charts"
           className={hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
           onClick={clickedCharts}
         >

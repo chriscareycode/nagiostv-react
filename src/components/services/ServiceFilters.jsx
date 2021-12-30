@@ -132,7 +132,7 @@ const ServiceFilters = () => {
       </span>}
       
       {(!hideFilters || howManyServiceCritical !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="critical"
           hideFilters={hideFilters}
@@ -145,7 +145,7 @@ const ServiceFilters = () => {
       </span>}
 
       {(!hideFilters || howManyServiceWarning !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="warning"
           hideFilters={hideFilters}
@@ -158,7 +158,7 @@ const ServiceFilters = () => {
       </span>}
       
       {(!hideFilters || howManyServiceUnknown !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="unknown"
           hideFilters={hideFilters}
@@ -171,7 +171,7 @@ const ServiceFilters = () => {
       </span>}
 
       {(!hideFilters || howManyServicePending !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="pending"
           hideFilters={hideFilters}
@@ -184,7 +184,7 @@ const ServiceFilters = () => {
       </span>}
       
       {(!hideFilters || howManyServiceAcked !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="acked"
           hideFilters={hideFilters}
@@ -197,7 +197,7 @@ const ServiceFilters = () => {
       </span>}
       
       {(!hideFilters || howManyServiceScheduled !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="scheduled"
           hideFilters={hideFilters}
@@ -210,7 +210,7 @@ const ServiceFilters = () => {
       </span>}
       
       {(!hideFilters || howManyServiceFlapping !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="flapping"
           hideFilters={hideFilters}
@@ -223,7 +223,7 @@ const ServiceFilters = () => {
       </span>}
 
       {(!hideFilters || howManyServiceSoft !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="soft"
           hideFilters={hideFilters}
@@ -236,7 +236,7 @@ const ServiceFilters = () => {
       </span>}
 
       {(!hideFilters || howManyServiceNotificationsDisabled !== 0) && <span>
-        &nbsp;
+        {' '}
         <Checkbox
           filterName="notifications_disabled"
           hideFilters={hideFilters}
