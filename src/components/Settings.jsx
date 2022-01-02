@@ -430,17 +430,6 @@ const Settings = () => {
             </thead>
             <tbody>
               <tr>
-                <th>Host and Service side by side:</th>
-                <td>
-                  <select value={clientSettingsTemp.hostAndServiceSideBySide} onChange={handleChange('hostAndServiceSideBySide', 'boolean')}>
-                      <option value={true}>Yes</option>
-                      <option value={false}>No, use stacked layout</option>
-                  </select>
-                  &nbsp;
-                  Column layout for Hosts and Services (when not on mobile)
-                </td>
-              </tr>
-              <tr>
                 <th>Summary:</th>
                 <td>
                   <select value={clientSettingsTemp.hideSummarySection} onChange={handleChange('hideSummarySection', 'boolean')}>
@@ -449,6 +438,17 @@ const Settings = () => {
                   </select>
                   &nbsp;
                   You can also add ?hideSummarySection=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+              <tr>
+                <th>Hosts and Services layout:</th>
+                <td>
+                  <select value={clientSettingsTemp.hostsAndServicesSideBySide} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
+                      <option value={true}>Column</option>
+                      <option value={false}>Stacked</option>
+                  </select>
+                  &nbsp;
+                  Column layout reverts to stacked on smaller screens
                 </td>
               </tr>
               <tr>

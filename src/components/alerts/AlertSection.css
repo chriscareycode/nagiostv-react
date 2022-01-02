@@ -5,6 +5,7 @@
 /* history */
 
 .history-summary {
+  position: relative;
   margin-top: 15px;
   clear: both;
 }

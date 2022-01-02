@@ -70,7 +70,7 @@ export const clientSettingsInitial = {
   alertHoursBack: 24,
   alertMaxItems: 5000,
 
-  hostAndServiceSideBySide: false,
+  hostsAndServicesSideBySide: false,
   hideSummarySection: true,
   hideServiceSection: false,
   hideServicePending: false,

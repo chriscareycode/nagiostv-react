@@ -143,6 +143,7 @@ and (max-width: 1768px) {
 /* service summary (17 hosts (0 problems)) */
 
 .service-summary {
+  position: relative;
   margin-top: 13px;
   margin-bottom: 7px;
   clear: both;

@@ -35,7 +35,7 @@ const Dashboard = () => {
     hideHistory,
     hideHostSection,
     hideServiceSection,
-    hostAndServiceSideBySide,
+    hostsAndServicesSideBySide,
   } = clientSettings;
 
   //console.log('Dashboard render()');
@@ -56,7 +56,7 @@ const Dashboard = () => {
         {!hideSummarySection && <Summary />}
 
         {/* Hosts and Services Side by Side Enabled */}
-        {hostAndServiceSideBySide && (
+        {hostsAndServicesSideBySide && (
           <div className="two-column-container">
             <div className="two-column-column-1 two-column-box">
               <div className="two-column-column-margin">
@@ -76,7 +76,7 @@ const Dashboard = () => {
         )}
 
         {/* Hosts and Services Side by Side Disabled (Default stacked) */}
-        {!hostAndServiceSideBySide && (
+        {!hostsAndServicesSideBySide && (
           <div>
             {/* Hosts Section */}
             {!hideHostSection && <HostSection />}
