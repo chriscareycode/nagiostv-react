@@ -101,25 +101,27 @@ class HistoryChart extends Component {
 
     let returnArray = [];
 
-    // HACK to fix highcharts bug by adding first and last hour on the hourly chart (there are two of these)
-    if (this.props.groupBy === 'hour') {
-      // only if there is not already an entry for the last hour group
-      if (!groupByData.hasOwnProperty(max)) {
-        returnArray.push({ x: max, y: 0, xNice: new Date(max) });
-      }
-    }
+    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    // nice try but when it helps in one case it makes it worse in other cases
+    // if (this.props.groupBy === 'hour') {
+    //   // only if there is not already an entry for the last hour group
+    //   if (!groupByData.hasOwnProperty(max)) {
+    //     returnArray.push({ x: max, y: 0, xNice: new Date(max) });
+    //   }
+    // }
 
     Object.keys(groupByData).forEach(group => {
       returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
     });
 
-    // HACK to fix highcharts bug by adding first and last hour on the hourly chart (there are two of these
-    if (this.props.groupBy === 'hour') {
-      // only if there is not already an entry for the last hour group
-      if (!groupByData.hasOwnProperty(min)) {
-        returnArray.push({ x: min, y: 0, xNice: new Date(min) });
-      }
-    }
+    // trying to fix highcharts bug by adding first and last hour on the hourly chart
+    // nice try but when it helps in one case it makes it worse in other cases
+    // if (this.props.groupBy === 'hour') {
+    //   // only if there is not already an entry for the last hour group
+    //   if (!groupByData.hasOwnProperty(min)) {
+    //     returnArray.push({ x: min, y: 0, xNice: new Date(min) });
+    //   }
+    // }
 
     return returnArray;
   }
@@ -164,9 +166,13 @@ class HistoryChart extends Component {
     d.setSeconds(0);
     d.setMilliseconds(0);
 
-    // calculate min and max for hourly chart
-    const min = d.getTime() - (86400 * 1000) + (0 * 1000);
-    const max = d.getTime() + (0 * 1000); // This 3600 * 1000 is an attempt to fix the spacing on the hourly chart. Without this we only saw 1/2 of the last hour.. ?
+    // calculate min and max for hourly chart XAxis configuration
+    const aDay = 86400 * 1000;
+    const aHour = 3600 * 1000;
+    const min = d.getTime() - aDay;
+    const max = d.getTime();
+    //const min = d.getTime() - (86400 * 1000) + (3600 * 1000);
+    //const max = d.getTime() + (900 * 1000);
     //console.log('min max', min, max);
 
     // HighCharts setData
@@ -213,6 +219,7 @@ class HistoryChart extends Component {
 
       chart.update({
         xAxis: {
+          type: 'datetime',
           tickInterval: 3600 * 1000,
           min: min,
           max: max
@@ -229,7 +236,8 @@ class HistoryChart extends Component {
       });
 
       // update pointWidth based on howManyItems
-      const barWidth = (((window.innerWidth + 100) / 2) / this.props.alertHoursBack).toFixed(0);
+      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertHoursBack).toFixed(0);
+      if (barWidth > 35) { barWidth = 35; } // set a max width to 35
 
       chart.update({
         plotOptions: {
@@ -245,7 +253,8 @@ class HistoryChart extends Component {
     if (this.props.groupBy === 'day') {
 
       // update pointWidth based on howManyItems
-      const barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack).toFixed(0);
+      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack).toFixed(0);
+      if (barWidth > 35) { barWidth = 35; } // set a max width to 35
 
       chart.update({
         plotOptions: {
@@ -344,11 +353,6 @@ class HistoryChart extends Component {
   render() {
     
     const debugMode = document.location.search.indexOf('debug=true') !== -1;
-
-    if (debugMode) {
-      console.log('HistoryChart.jsx debug mode - chartConfig is', this.chartConfig);
-      console.log('this.props.alertlist is', this.props.alertlist);
-    }
     const alertlistDebug = this.props.alertlist.map((al, i) => {
       //if (this.props.groupBy === 'hour') { console.log(al); }
       return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale('en').format('llll')} - {al.description} - {al.plugin_output}</div>);
