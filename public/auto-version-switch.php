@@ -103,7 +103,9 @@
     shell_exec("cp -r $cwd/$temp_dir/nagiostv/* $cwd/");
     echo "Done copying.\n";
 
-    echo "All done! Refresh the page to load the new code.\n";
+    echo "All done!\n";
+    echo "\n";
+    echo "REFRESH THE PAGE NOW to load the new code.\n";
 
 
   } else {
