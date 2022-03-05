@@ -336,6 +336,7 @@ const ServiceSection = () => {
         serviceProblemsArray={sortedServiceProblemsArray}
         settings={clientSettings}
         servicelistError={serviceState.error}
+        isDemoMode={isDemoMode}
       />
 
     </div>

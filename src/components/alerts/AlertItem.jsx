@@ -42,6 +42,11 @@ class AlertItem extends Component {
   }
 
   openNagiosHostPage = () => {
+    const isDemoMode = this.props.isDemoMode;
+    if (isDemoMode) {
+      return;
+    }
+
     const { e } = this.props;
     let hostName;
     if (e.object_type === 1) {
@@ -57,6 +62,11 @@ class AlertItem extends Component {
   }
 
   openNagiosServicePage = () => {
+    const isDemoMode = this.props.isDemoMode;
+    if (isDemoMode) {
+      return;
+    }
+    
     const { e } = this.props;
     let hostName;
     if (e.object_type === 1) {

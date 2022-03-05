@@ -41,7 +41,7 @@ import './HostItems.css';
 const HostItems = ({
   hostProblemsArray,
   settings,
-  //isDemoMode,
+  isDemoMode,
   //hostlistError,
 }) => {
 
@@ -131,6 +131,7 @@ const HostItems = ({
                 hostItem={e}
                 comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : null}
                 howManyDown={filteredHostProblemsArray.length}
+                isDemoMode={isDemoMode}
               />
             </CSSTransition>
           );

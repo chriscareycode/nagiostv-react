@@ -42,6 +42,7 @@ import './ServiceItems.css';
 const ServiceItems = ({
   serviceProblemsArray,
   settings,
+  isDemoMode,
   //servicelistError,
   //howManyServices,
   //commentlist
@@ -141,6 +142,7 @@ const ServiceItems = ({
                 serviceItem={e}
                 comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
                 howManyDown={filteredServiceProblemsArray.length}
+                isDemoMode={isDemoMode}
               />
             </CSSTransition>
             

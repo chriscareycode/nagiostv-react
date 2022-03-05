@@ -335,6 +335,7 @@ const HostSection = () => {
         hostProblemsArray={sortedHostProblemsArray}
         settings={clientSettings}
         hostlistError={hostState.error}
+        isDemoMode={isDemoMode}
       />
 
     </div>

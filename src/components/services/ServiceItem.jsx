@@ -81,6 +81,10 @@ class ServiceItem extends Component {
   }
 
   mouseClick = () => {
+    const isDemoMode = this.props.isDemoMode;
+    if (isDemoMode) {
+      return;
+    }
     const e = this.props.serviceItem
     const baseUrl = this.props.settings.baseUrl;
     const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);

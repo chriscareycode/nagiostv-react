@@ -80,6 +80,10 @@ class HostItem extends Component {
   }
 
   mouseClick = () => {
+    const isDemoMode = this.props.isDemoMode;
+    if (isDemoMode) {
+      return;
+    }
     const e = this.props.hostItem
     const baseUrl = this.props.settings.baseUrl;
     const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${e.name}`);

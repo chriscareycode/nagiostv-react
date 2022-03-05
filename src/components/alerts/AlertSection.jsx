@@ -332,6 +332,7 @@ const AlertSection = () => {
         items={alertlist}
         showEmoji={showEmoji}
         settings={clientSettings}
+        isDemoMode={isDemoMode}
       />
       
     </div>
