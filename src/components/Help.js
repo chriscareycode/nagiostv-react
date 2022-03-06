@@ -32,9 +32,9 @@ const Help = () => {
       </div>
 
       <div className="update-help-message">
-        <div>NagiosTV website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">nagiostv.com</a></div>
+        <div>NagiosTV website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">https://nagiostv.com</a></div>
         <br />
-        <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">github.com/chriscareycode/nagiostv-react</a></div>
+        <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">https://github.com/chriscareycode/nagiostv-react</a></div>
         <br />
         <div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">https://chriscarey.com</a></div>
       </div>
