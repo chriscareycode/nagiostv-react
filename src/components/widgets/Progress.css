@@ -30,7 +30,7 @@
 	left: 0;
 	background-color: gray;
 	width: 100%;
-	opacity: 0.5;
+	opacity: 0.3;
 	animation-timing-function: linear;
 	transform-origin: left;
 }
