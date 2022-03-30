@@ -21,6 +21,8 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 
+import Cookie from 'js-cookie';
+
 // Import external libraries
 import ReactTooltip from 'react-tooltip';
 
@@ -57,6 +59,10 @@ const TopPanel = (props) => {
     automaticScroll,
   } = clientSettings;
 
+  const saveCookie = (settings) => {
+    Cookie.set('settings', settings);
+  };
+
   const clickedHamburgerMenu = () => {
     setBigState(curr => ({
       ...curr,
@@ -64,46 +70,39 @@ const TopPanel = (props) => {
     }));
   };
 
+  const toggleAndSaveCookie = (settingName) => {
+    setClientSettings(curr => {
+      const s = {
+        ...curr,
+        [settingName]: !curr[settingName]
+      };
+      saveCookie(s);
+      return s;
+    });
+  };
+
   const clickedSound = () => {
-    setClientSettings(curr => ({
-      ...curr,
-      playSoundEffects: !curr.playSoundEffects
-    }));
+    toggleAndSaveCookie('playSoundEffects');
   };
 
   const clickedSpeak = () => {
-    setClientSettings(curr => ({
-      ...curr,
-      speakItems: !curr.speakItems
-    }));
+    toggleAndSaveCookie('speakItems');
   };
 
   const clickedFilter = () => {
-    setBigState(curr => ({
-      ...curr,
-      hideFilters: !curr.hideFilters
-    }));
+    toggleAndSaveCookie('hideFilters');
   };
 
   const clickedCharts = () => {
-    setClientSettings(curr => ({
-      ...curr,
-      hideHistoryChart: !curr.hideHistoryChart
-    }));
+    toggleAndSaveCookie('hideHistoryChart');
   };
 
   const clickedCharts24h = () => {
-    setClientSettings(curr => ({
-      ...curr,
-      hideHistory24hChart: !curr.hideHistory24hChart
-    }));
+    toggleAndSaveCookie('hideHistory24hChart');
   };
 
   const clickedAutomaticScroll = () => {
-    setClientSettings(curr => ({
-      ...curr,
-      automaticScroll: !curr.automaticScroll
-    }));
+    toggleAndSaveCookie('automaticScroll');
   };
 
   return (
