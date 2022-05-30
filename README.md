@@ -132,7 +132,7 @@ History
 ------------
 NagiosTV was started around 2008. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
 
-Originally it was written in PHP for Nagios 3 and used the "ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
+Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
 This ended up being a very painful install for many, requires a database server, and the database size continuously grew and needed maintenance and trimming.
 
 Later I released JavaScript versions which used "MK livestatus", and experimented with another another version using "status-json". These seemed a lot better since they got rid of the database requirement, but still required installation that many users were not willing or able to do.
@@ -148,5 +148,5 @@ Check out README-development.md for instructions to build and run in development
 Created by
 ------------
 NagiosTV https://nagiostv.com
-Copyright (C) 2008-2021 Chris Carey https://chriscarey.com
+Copyright (C) 2008-2022 Chris Carey https://chriscarey.com
 
