@@ -328,7 +328,7 @@ const HostSection = () => {
       </div>
 
       {/** Show Error Message - If we are not in demo mode and there is a hostlist error (ajax fetching) then show the error message here */}
-      {(!isDemoMode && hostState.error && hostState.errorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {hostState.errorMessage}</div>}
+      {(!isDemoMode && hostState.error && (hostState.errorCount > 2 || howManyHosts === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {hostState.errorMessage}</div>}
 
       {/* hostitems list */}
       <HostItems

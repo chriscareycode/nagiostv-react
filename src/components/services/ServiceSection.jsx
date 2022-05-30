@@ -330,7 +330,7 @@ const ServiceSection = () => {
       </div>
       
       {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
-      {(!isDemoMode && serviceState.error && serviceState.errorCount > 2) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
+      {(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
       <ServiceItems
         serviceProblemsArray={sortedServiceProblemsArray}
