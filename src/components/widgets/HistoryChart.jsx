@@ -111,8 +111,17 @@ class HistoryChart extends Component {
     // }
 
     Object.keys(groupByData).forEach(group => {
-      returnArray.push({ x: parseInt(group), y: groupByData[group].length, xNice: new Date(parseInt(group)) });
+      returnArray.push({
+        x: parseInt(group),
+        y: groupByData[group].length,
+        xNice: new Date(parseInt(group)) // extra data for debugging
+      });
     });
+
+    // Sort the array in descending order by the x value
+    // (WTF.. this causes a Highchart 15 bug but fixes the Highcharts margin bug that has been plaguing me for ages)
+    // www.highcharts.com/errors/15/ 
+    returnArray.sort((a, b) => b.x - a.x);
 
     // trying to fix highcharts bug by adding first and last hour on the hourly chart
     // nice try but when it helps in one case it makes it worse in other cases
@@ -168,12 +177,8 @@ class HistoryChart extends Component {
 
     // calculate min and max for hourly chart XAxis configuration
     const aDay = 86400 * 1000;
-    const aHour = 3600 * 1000;
-    const min = d.getTime() - aDay;
-    const max = d.getTime();
-    //const min = d.getTime() - (86400 * 1000) + (3600 * 1000);
-    //const max = d.getTime() + (900 * 1000);
-    //console.log('min max', min, max);
+    const min = d.getTime() - aDay - (15 * 60 * 1000);
+    const max = d.getTime() + (15 * 60 * 1000);
 
     // HighCharts setData
     // https://api.highcharts.com/class-reference/Highcharts.Series.html#setData
@@ -181,8 +186,10 @@ class HistoryChart extends Component {
     // OK
     if (Object.keys(groupedOks).length > 0) {
       let okData = this.massageGroupByDataIntoHighchartsData(groupedOks, min, max);
-      //console.log('Setting 0 okData', groupBy, okData);
-      chart.series[0].setData(okData.reverse(), true);
+      if (debug) {
+        console.log('Setting 0 okData', groupBy, JSON.stringify(okData));
+      }
+      chart.series[0].setData(okData, true);
     } else {
       chart.series[0].setData([], true);
     }
@@ -190,9 +197,11 @@ class HistoryChart extends Component {
     // WARNING
     if (Object.keys(groupedWarnings).length > 0) {
       let warningData = this.massageGroupByDataIntoHighchartsData(groupedWarnings, min, max);
-      // console.log('Setting 1', warningData);
-      // console.log('chart.series', chart.series);
-      chart.series[1].setData(warningData.reverse(), true);
+      if (debug) {
+        console.log('Setting 1 warningData', warningData);
+        console.log('chart.series', chart.series);
+      }
+      chart.series[1].setData(warningData, true);
     } else {
       chart.series[1].setData([], true);
     }
@@ -200,8 +209,10 @@ class HistoryChart extends Component {
     // UNKNOWN
     if (Object.keys(groupedUnknowns).length > 0) {
       let unknownData = this.massageGroupByDataIntoHighchartsData(groupedUnknowns, min, max);
-      //console.log('Setting 1', warningData);
-      chart.series[2].setData(unknownData.reverse(), true);
+      if (debug) {
+        console.log('Setting 2 unknownData', JSON.stringify(unknownData));
+      }
+      chart.series[2].setData(unknownData, true);
     } else {
       chart.series[2].setData([], true);
     }
@@ -209,8 +220,10 @@ class HistoryChart extends Component {
     // CRITICAL
     if (Object.keys(groupedCriticals).length > 0) {
       let criticalData = this.massageGroupByDataIntoHighchartsData(groupedCriticals, min, max);
-      //console.log('Setting 2', criticalData);
-      chart.series[3].setData(criticalData.reverse(), true);
+      if (debug) {
+        console.log('Setting 3 criticalData', JSON.stringify(criticalData));
+      }
+      chart.series[3].setData(criticalData, true);
     } else {
       chart.series[3].setData([], true);
     }
@@ -285,7 +298,8 @@ class HistoryChart extends Component {
     credits: false,
     chart: {
       backgroundColor:'transparent',
-      height: '170px'
+      height: '170px',
+      type: 'column'
     },
 
     time: {
@@ -327,28 +341,24 @@ class HistoryChart extends Component {
     },
 
     series: [
-    {
-      type: 'column',
-      name: 'UP/OK',
-      color: 'lime'
-    },
-    {
-      type: 'column',
-      name: 'WARNING',
-      color: 'yellow'
-    },
-    {
-      type: 'column',
-      name: 'UNKNOWN',
-      color: 'orange'
-    },
-    {
-      type: 'column',
-      name: 'CRITICAL',
-      color: '#FD7272'
-    }]
+      {
+        name: 'UP/OK',
+        color: 'lime'
+      },
+      {
+        name: 'WARNING',
+        color: 'yellow'
+      },
+      {
+        name: 'UNKNOWN',
+        color: 'orange'
+      },
+      {
+        name: 'CRITICAL',
+        color: '#FD7272'
+      }
+    ]
   };
-
   
   render() {
     
@@ -365,9 +375,7 @@ class HistoryChart extends Component {
           options={this.chartConfig}
           callback={ this.afterChartCreated }
         />
-
         {(debugMode && this.props.groupBy === 'hour') && <div style={{ marginBottom: '30px' }}>{alertlistDebug}</div>}
-        
       </div>
     );
   }
