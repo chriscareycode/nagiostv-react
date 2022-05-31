@@ -23,6 +23,8 @@ import HighchartsReact from 'highcharts-react-official';
 import _ from 'lodash';
 import moment from 'moment';
 
+const debug = false;
+
 class HistoryChart extends Component {
 
   state = {
@@ -37,9 +39,10 @@ class HistoryChart extends Component {
   componentDidMount() {
     this.updateSeriesFromProps();
 
+    // trigger an update every 5m (to get the hourly chart to update columns for each hour)
     const intervalHandle = setInterval(() => {
       this.updateSeriesFromPropsDelay();
-    }, 3600 * 1000);
+    }, 5 * 60 * 1000);
 
     this.setState({
       intervalHandle
@@ -170,6 +173,18 @@ class HistoryChart extends Component {
     const alertCriticals = this.props.alertlist.filter(alert => alert.state === 2 || alert.state === 32);
     const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
+    if (debug) {
+      console.log('alertOks', alertOks);
+      console.log('alertWarnings', alertWarnings);
+      console.log('alertUnknowns', alertUnknowns);
+      console.log('alertCriticals', alertCriticals);
+
+      console.log('groupedOks', groupedOks);
+      console.log('groupedWarnings', groupedWarnings);
+      console.log('groupedUnknowns', groupedUnknowns);
+      console.log('groupedCriticals', groupedCriticals);
+    }
+
     var d = new Date();
     d.setMinutes(0);
     d.setSeconds(0);
@@ -177,8 +192,11 @@ class HistoryChart extends Component {
 
     // calculate min and max for hourly chart XAxis configuration
     const aDay = 86400 * 1000;
-    const min = d.getTime() - aDay - (15 * 60 * 1000);
-    const max = d.getTime() + (15 * 60 * 1000);
+    const min = d.getTime() - aDay - (15 * 60 * 1000); // 15m
+    const max = d.getTime() + (15 * 60 * 1000); // 15m
+    if (debug) {
+      console.log('min max', min, max, new Date(max));
+    }
 
     // HighCharts setData
     // https://api.highcharts.com/class-reference/Highcharts.Series.html#setData
