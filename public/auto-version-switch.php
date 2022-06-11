@@ -100,6 +100,17 @@
     echo "Done extracting. Copying files from temp directory over top of the old build..\n";
     echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/\n";
 
+    // 
+    /**
+     * TODO: clean up the old files - this is risky since if something 
+     * up above did not work cleanly, then we could blow out their only good files before copy
+     * 
+     * static/css/
+     * static/js
+     * 
+     */
+
+    // copy the files over top ofo the old version
     shell_exec("cp -r $cwd/$temp_dir/nagiostv/* $cwd/");
     echo "Done copying.\n";
 
