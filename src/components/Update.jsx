@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -292,6 +292,21 @@ const Update = ({
     });
   };
 
+  /**
+   * React Hooks
+   */
+
+  useEffect(() => {
+    // If the user does not have Check Updates disabled, then fetch now
+    if (clientSettingsAtom && clientSettingsAtom.versionCheckDays !== 0) {
+      checkForUpdates();
+    }
+  }, ['clientSettingsAtom.versionCheckDays']);
+
+  /**
+   * Start Render
+   */
+
   const options = githubState.result.map((r, i) => {
     return <option key={i} value={r.tag_name}>{r.tag_name} {r.name}</option>
   });
@@ -311,12 +326,22 @@ const Update = ({
         There are a number of ways to update NagiosTV.<br />
         <span style={{ color: '#6fbbf3' }}>You only need to pick one of these:</span>
         <ul>
-          <li>One-click update to latest (easiest) - You can use the one-click update routines inside app here to update to the latest version. This uses a PHP script to download, extract, and overwrite the old version.</li>
+          <li>One-click update to latest</li>
           <ul>
-            <li>Rollback to an older version - You can switch to a previous version if you are having problems with a newer version. This uses a PHP script to download, extract, and overwrite the old version.</li>
+            <li>You can use the one-click update routines inside app here to update to the latest version. This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
           </ul>
-          <li>Command-line (CLI) - You can run the autoupdate.sh file in the NagiosTV directory to upgrade or downgrade versions.</li>
-          <li>Manual Update - You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
+          <li>Rollback to an older version</li>
+          <ul>
+            <li>You can switch to a previous version if you are having problems with a newer version.  This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
+          </ul>
+          <li>Command-line (CLI)</li>
+          <ul>
+            <li>You can run the autoupdate.sh file in the NagiosTV directory to upgrade or downgrade versions.</li>
+          </ul>
+          <li>Manual Update</li>
+          <ul>
+            <li>You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
+          </ul>
         </ul>
         Your custom settings in <strong>client-settings.json</strong> and/or cookie files will not be overwritten
       </div>
@@ -324,23 +349,7 @@ const Update = ({
       {/* Manual Update */}
       <h3>Manual Update</h3>
 
-      <div className="update-help-message">Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
-
-      {/* Check for Updates button */}
-      <h3>Check for Updates</h3>
-      <div className="update-help-message">
-        <button onClick={checkForUpdates}>Check for Updates</button>
-      
-        {/* Check for updates loading */}
-        {latestVersionState.loading && <span>
-          <span style={{ color: 'lime' }}> Loading...</span>
-        </span>}
-
-        {/* Check for updates error */}
-        {latestVersionState.error && <span>
-          <span style={{ color: 'red' }}> Error loading latest version. Try again.</span>
-        </span>}
-      </div>      
+      <div className="update-help-message">Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>   
 
       {(clickedCheckForUpdates && latestVersionString) && <div>
 
@@ -379,7 +388,6 @@ const Update = ({
           )}
 
           {/* php test */}
-          <h3></h3>
           {testPhpState.loading && <div>Testing your server compatibility...</div>}
           {testPhpState.error && <div className="auto-update-error" style={{ marginTop: '20px' }}>
             <FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. One-click update disabled.  Use the manual update
@@ -486,6 +494,21 @@ const Update = ({
         </div>*/}
       </div>}
 
+      {/* Check for Updates button */}
+      <h3>Check for Updates</h3>
+      <div className="update-help-message">
+        <button onClick={checkForUpdates}>Check for Updates</button>
+      
+        {/* Check for updates loading */}
+        {latestVersionState.loading && <span>
+          <span style={{ color: 'lime' }}> Loading...</span>
+        </span>}
+
+        {/* Check for updates error */}
+        {latestVersionState.error && <span>
+          <span style={{ color: 'red' }}> Error loading latest version. Try again.</span>
+        </span>}
+      </div> 
 
       {/* skip this version */}
       <div>
