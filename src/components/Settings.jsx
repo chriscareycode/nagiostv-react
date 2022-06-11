@@ -51,6 +51,10 @@ const Settings = () => {
   let isComponentMounted = false;
   const hostlistError = false;
 
+  const {
+    isDemoMode,
+  } = bigState;
+
   // Hooks
   useEffect(() => {
     loadLocalTempState();
@@ -798,7 +802,7 @@ const Settings = () => {
                       </pre>
 
                       After those steps, you can try this button:
-                      <button className="SettingsSaveToServerButton" onClick={saveSettingsToServer}>Save settings to server</button><br />
+                      <button disabled={isDemoMode} className="SettingsSaveToServerButton" onClick={saveSettingsToServer}>Save settings to server</button><br />
                       <br />
 
                     </div>
