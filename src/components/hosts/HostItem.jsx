@@ -22,7 +22,7 @@ import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import Progress from '../widgets/Progress';
 import './HostItem.css';
@@ -115,7 +115,7 @@ class HostItem extends Component {
         <div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
           <div style={{ float: 'right', textAlign: 'right' }}>
             {/* soft spinner */}
-            {isSoft && <span className={`softIcon ${hostTextClass(e.status)}`}><FontAwesomeIcon icon={faCircleNotch} spin /></span>}
+            {isSoft && <span className={`softIcon ${hostTextClass(e.status)}`}><FontAwesomeIcon icon={faCloudRain} /></span>}
             {/* notifications disabled */}
             {e.notifications_enabled === false && <span className="item-notifications-disabled">Notifications Disabled - </span>}
             {/* for debug turn this on to know what state_type this item is */}
