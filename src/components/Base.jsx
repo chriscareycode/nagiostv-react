@@ -64,8 +64,6 @@ import { PageTransition } from "@steveeeie/react-page-transition";
 // Import Polyfills
 import 'url-search-params-polyfill';
 
-//let previousLocationIndex = 0;
-
 const Base = () => {
 
   //lets move as much state as possible up and out of this component
