@@ -324,6 +324,13 @@ class HistoryChart extends Component {
       timezoneOffset: new Date().getTimezoneOffset()
     },
 
+    tooltip: {
+      backgroundColor: '#222222',
+      style: {
+        color: 'white'
+      }
+    },
+
     legend:{
       enabled: true
     },
