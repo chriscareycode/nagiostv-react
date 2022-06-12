@@ -59,6 +59,7 @@ const AlertSection = () => {
     hideHistoryTitle,
     hideAlertSoft,
     language,
+    locale,
     showEmoji,
     alertDaysBack,
     hostgroupFilter,
@@ -292,6 +293,7 @@ const AlertSection = () => {
           alertHoursBack={alertHoursBack} 
           alertDaysBack={1}
           hideAlertSoft={hideAlertSoft}
+          locale={locale}
         />}
 
       </div>}
@@ -314,6 +316,7 @@ const AlertSection = () => {
           groupBy="day"
           alertDaysBack={alertDaysBack} 
           hideAlertSoft={hideAlertSoft}
+          locale={locale}
         />}
 
       </div>}

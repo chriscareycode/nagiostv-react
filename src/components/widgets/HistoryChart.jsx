@@ -140,6 +140,8 @@ class HistoryChart extends Component {
 
   // multiple stacked charts for OK, WARNING and CRITICAL
   updateSeriesFromProps() {
+
+    const {locale} = this.props;
     
     // chart stuff
     const chart = this.internalChart;
@@ -263,6 +265,12 @@ class HistoryChart extends Component {
           //     return Math.floor(hoursAgo) + 'h ago';
           //   }
           // }
+        },
+        tooltip: {
+          formatter: function() {
+            return moment(this.x).locale(locale).format('llll') + `<br />` +
+              `<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${this.y}</b>`;
+          }
         }
       });
 
@@ -384,13 +392,15 @@ class HistoryChart extends Component {
       }
     ]
   };
+
   
   render() {
     
+    const {locale} = this.props;
     const debugMode = document.location.search.indexOf('debug=true') !== -1;
     const alertlistDebug = this.props.alertlist.map((al, i) => {
       //if (this.props.groupBy === 'hour') { console.log(al); }
-      return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale('en').format('llll')} - {al.description} - {al.plugin_output}</div>);
+      return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale(locale).format('llll')} - {al.description} - {al.plugin_output}</div>);
     });
 
     return (
