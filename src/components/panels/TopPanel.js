@@ -90,7 +90,10 @@ const TopPanel = (props) => {
   };
 
   const clickedFilter = () => {
-    toggleAndSaveCookie('hideFilters');
+    setBigState(curr => ({
+      ...curr,
+      hideFilters: !curr.hideFilters
+    }));
   };
 
   const clickedCharts = () => {
