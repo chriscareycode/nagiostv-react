@@ -20,8 +20,7 @@
 import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 //import registerServiceWorker from './registerServiceWorker';
@@ -44,6 +43,12 @@ import App from './App';
 //   console.log('Had a problem clearing the serviceWorker cache.');
 // }
 
+// React 17
+// ReactDOM.render(<App />, document.getElementById('root'));
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// React 18
+const container = document.getElementById('app');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<App tab="home" />);
+
 //registerServiceWorker();
