@@ -133,7 +133,11 @@ class HostItem extends Component {
             {e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
             {e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
             {/** only show last-ok if the item is actually down. We show things like scheduled which can be UP */}
-            {isDown && <div className="last-ok"><span>{translate('Last UP', language)}</span> {formatDateTimeAgoColor(e.last_time_up)} {translate('ago', language)}</div>}
+            {isDown && <div className="last-ok">
+              <span>{translate('Last UP', language)}</span>&nbsp;
+              {(e.last_time_up === 0) && <span className="color-orange">Never</span>}
+              {(e.last_time_up !== 0) && <span>{formatDateTimeAgoColor(e.last_time_up)} {translate('ago', language)}</span>}
+            </div>}
           </div>
 
           <div>
