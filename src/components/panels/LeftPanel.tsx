@@ -34,9 +34,13 @@ import './LeftPanel.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
+interface LeftPanelProps {
+  isLeftPanelOpen: boolean;
+}
+
 const LeftPanel = ({
   isLeftPanelOpen
-}) => {
+}: LeftPanelProps) => {
   return (
     <div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
       <Router>

@@ -87,8 +87,8 @@ const Base = () => {
 
   // const {
   //   preset,
-  //   //enterAnimation,
-  //   //exitAnimation
+  //   enterAnimation,
+  //   exitAnimation
   // } = useContext(AppContext);
 
   //console.log('Base preset', preset);
@@ -103,7 +103,6 @@ const Base = () => {
         <TopPanel />
 
         <LeftPanel
-          settingsObject={clientSettings}
           isLeftPanelOpen={bigState.isLeftPanelOpen}
         />
 
@@ -166,13 +165,15 @@ const Base = () => {
               //   previousLocationIndex = 3;
               // }
               //console.log('location', location);
+              const enterAnimation = '';
+              const exitAnimation = '';
 
               return (
                 <PageTransition
                   preset={animation}
                   transitionKey={location.pathname}
-                  //enterAnimation={enterAnimation}
-                  //exitAnimation={exitAnimation}
+                  enterAnimation={enterAnimation}
+                  exitAnimation={exitAnimation}
                 >
                   <Switch location={location}>
                     
