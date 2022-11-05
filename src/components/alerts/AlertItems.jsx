@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { translate } from '../../helpers/language';
 
-import AlertItem from './AlertItem.jsx';
-import QuietFor from './QuietFor.jsx';
+import AlertItem from './AlertItem';
+import QuietFor from './QuietFor';
 // css
 import '../animation.css';
 import '../services/ServiceItems.css';

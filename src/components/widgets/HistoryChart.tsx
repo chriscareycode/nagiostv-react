@@ -16,18 +16,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import './HistoryChart.css';
-import Highcharts from 'highcharts';
+import Highcharts, { PlotOptions } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import _ from 'lodash';
 import moment from 'moment';
+// Types
+import { Alert } from 'types/hostAndServiceTypes';
 
 const debug = false;
 
-class HistoryChart extends Component {
+interface HistoryChartProps {
+  alertlistLastUpdate: number;
+  alertlist: Alert[];
+  hideAlertSoft: boolean;
+  locale: string;
+  groupBy: moment.unitOfTime.Base;
+  alertHoursBack: number;
+  alertDaysBack: number;
+}
+interface HistoryChartState {
+  intervalHandle: NodeJS.Timeout | null;
+}
+interface HighChartsSeriesData {
+  x: number;
+  y: number;
+  xNice: string;
+}
 
-  state = {
+class HistoryChart extends Component<HistoryChartProps> {
+
+  internalChart: Highcharts.Chart | null = null;
+
+  state: HistoryChartState = {
     intervalHandle: null
   };
 
@@ -50,7 +72,9 @@ class HistoryChart extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalHandle);
+    if (this.state.intervalHandle) {
+      clearInterval(this.state.intervalHandle);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -102,7 +126,7 @@ class HistoryChart extends Component {
 
   massageGroupByDataIntoHighchartsData(groupByData, min, max) {
 
-    let returnArray = [];
+    let returnArray: HighChartsSeriesData[] = [];
 
     // trying to fix highcharts bug by adding first and last hour on the hourly chart
     // nice try but when it helps in one case it makes it worse in other cases
@@ -117,7 +141,7 @@ class HistoryChart extends Component {
       returnArray.push({
         x: parseInt(group),
         y: groupByData[group].length,
-        xNice: new Date(parseInt(group)) // extra data for debugging
+        xNice: new Date(parseInt(group)).toString() // extra data for debugging
       });
     });
 
@@ -141,12 +165,14 @@ class HistoryChart extends Component {
   // multiple stacked charts for OK, WARNING and CRITICAL
   updateSeriesFromProps() {
 
-    const {locale} = this.props;
+    const { locale } = this.props;
     
     // chart stuff
     const chart = this.internalChart;
     //console.log('updateSeriesFromProps', chart);
-    if (Object.keys(chart).length === 0) {
+
+    //if (Object.keys(chart).length === 0) {
+    if (!chart) {
       console.log('No chart found. Maybe hidden.');
       return;
     }
@@ -248,8 +274,7 @@ class HistoryChart extends Component {
       chart.series[3].setData([], true);
     }
     
-    if (this.props.groupBy === 'hour' && chart.update) {
-
+    if (this.props.groupBy === 'hour') {
       chart.update({
         xAxis: {
           type: 'datetime',
@@ -275,34 +300,33 @@ class HistoryChart extends Component {
       });
 
       // update pointWidth based on howManyItems
-      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertHoursBack).toFixed(0);
+      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertHoursBack);
       if (barWidth > 35) { barWidth = 35; } // set a max width to 35
 
-      chart.update({
+      const plotOptionsColumn: Highcharts.Options = {
         plotOptions: {
-          series: {
-            pointWidth: barWidth
-          }
-        }
-      });
-
+          column: {
+            pointWidth: barWidth,
+          },
+        },
+      };
+      chart.update(plotOptionsColumn);
       chart.redraw(false);
     }
 
     if (this.props.groupBy === 'day') {
-
       // update pointWidth based on howManyItems
-      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack).toFixed(0);
+      let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack);
       if (barWidth > 35) { barWidth = 35; } // set a max width to 35
 
-      chart.update({
+      const plotOptionsColumn: Highcharts.Options = {
         plotOptions: {
-          series: {
-            pointWidth: barWidth
-          }
-        }
-      });
-
+          column: {
+            pointWidth: barWidth,
+          },
+        },
+      };
+      chart.update(plotOptionsColumn);
       chart.redraw(false);
 
       // turn off the UP/OK filter on the day chart
@@ -310,7 +334,6 @@ class HistoryChart extends Component {
       // chart.series[0].update({
       //   visible: false
       // });
-
     }
 
     //chart.series[0].redraw();
@@ -319,9 +342,17 @@ class HistoryChart extends Component {
     //chart.series[3].redraw();
   }
 
-  chartConfig = {
-    title: '',
-    credits: false,
+  seriesConfig: HighChartsSeriesData[] = [];
+
+  //const cc: Highcharts.CreditsOptions = false;
+
+  chartConfig: Highcharts.Options = {
+    title: {
+      text: ''
+    },
+    credits: {
+      enabled: false,
+    },
     chart: {
       backgroundColor:'transparent',
       height: '170px',
@@ -360,7 +391,7 @@ class HistoryChart extends Component {
 
     plotOptions: {
       series: {
-        pointPadding: 0.00
+        //pointPadding: 0.00
         //pointWidth: 21, // this is changed dynamically with a function above
         //pointPlacement: 'on'
       },
@@ -375,18 +406,22 @@ class HistoryChart extends Component {
 
     series: [
       {
+        type: 'column',
         name: 'UP/OK',
         color: 'lime'
       },
       {
+        type: 'column',
         name: 'WARNING',
         color: 'yellow'
       },
       {
+        type: 'column',
         name: 'UNKNOWN',
         color: 'orange'
       },
       {
+        type: 'column',
         name: 'CRITICAL',
         color: '#FD7272'
       }

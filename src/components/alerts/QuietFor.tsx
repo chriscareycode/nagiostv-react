@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { translate } from '../../helpers/language';
 import moment from 'moment';
 // icons
@@ -25,7 +25,13 @@ import { faClock, faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from 
 
 import './QuietFor.css';
 
-class QuietFor extends Component {
+interface QuietForProps {
+  nowtime: number;
+  prevtime: number;
+  language: string;
+}
+
+class QuietFor extends Component<QuietForProps> {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);

@@ -12,15 +12,18 @@ class ScrollToTop extends React.Component {
 
   debouncedScroll = _.debounce(() => this.handleScroll(), 500);
   
-
   componentDidMount() {
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    scrollDiv.addEventListener("scroll", this.debouncedScroll);
+    if (scrollDiv) {
+      scrollDiv.addEventListener("scroll", this.debouncedScroll);
+    }
   }
 
   componentWillUnmount() {
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    scrollDiv.removeEventListener("scroll", this.debouncedScroll);
+    if (scrollDiv) {
+      scrollDiv.removeEventListener("scroll", this.debouncedScroll);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -32,8 +35,13 @@ class ScrollToTop extends React.Component {
 
   handleScroll = () => {
     //console.log('handleScroll()');
-    const scrollDiv = document.querySelector(scrollAreaSelector);
-    const dashboardDiv = document.querySelector('.Dashboard');
+    const scrollDiv = document.querySelector(scrollAreaSelector) as HTMLElement;
+    const dashboardDiv = document.querySelector('.Dashboard') as HTMLElement;
+
+    if (!scrollDiv || !dashboardDiv) {
+      return;
+    }
+
     const windowHeight = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
     //const body = document.body;
     //const html = document.documentElement;
@@ -60,11 +68,11 @@ class ScrollToTop extends React.Component {
     }
   };
 
-  
-
   scrollUp = () => {
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    scrollDiv.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollDiv) {
+      scrollDiv.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   render() {

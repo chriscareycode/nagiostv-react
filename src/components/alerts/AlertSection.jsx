@@ -25,11 +25,13 @@ import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/al
 import { translate } from '../../helpers/language';
 
 import PollingSpinner from '../widgets/PollingSpinner';
-import AlertItems from './AlertItems.jsx';
-import AlertFilters from './AlertFilters.jsx';
-import HistoryChart from '../widgets/HistoryChart.jsx';
-import './AlertSection.css';
+import AlertItems from './AlertItems';
+import AlertFilters from './AlertFilters';
+import HistoryChart from '../widgets/HistoryChart';
+
 import $ from 'jquery';
+
+import './AlertSection.css';
 
 let isComponentMounted = false;
 

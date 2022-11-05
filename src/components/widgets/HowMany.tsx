@@ -16,10 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import './HowMany.css';
 
-class HowMany extends Component {
+interface HowManyProps {
+  howMany: number;
+  howManyDown: number;
+}
+
+class HowMany extends Component<HowManyProps> {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -44,9 +49,9 @@ class HowMany extends Component {
     });
 
     return (
-      <React.Fragment>
+      <>
         {res}
-      </React.Fragment>
+      </>
     );
   }
 }

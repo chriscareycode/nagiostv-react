@@ -16,10 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import './Progress.css';
 
-class Progress extends Component {
+interface ProgressProps {
+  seconds: number;
+  color: string;
+}
+
+class Progress extends Component<ProgressProps> {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);
@@ -53,7 +58,7 @@ class Progress extends Component {
     started: false
   };
 
-  timeoutHandle = null;
+  timeoutHandle: NodeJS.Timeout | null = null;
 
   componentDidMount() {
     // setInterval(() => {

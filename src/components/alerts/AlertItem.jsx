@@ -22,7 +22,7 @@ import { momentFormatDateTime } from '../../helpers/moment.js';
 import { ifQuietFor } from '../../helpers/date-math.js';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
-import QuietFor from './QuietFor.jsx';
+import QuietFor from './QuietFor';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdjust } from '@fortawesome/free-solid-svg-icons';
 

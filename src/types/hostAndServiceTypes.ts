@@ -39,7 +39,10 @@ export interface ServiceWrap {
 }
 
 export interface Alert {
-	
+	timestamp: number;
+	state: number;
+	description: string;
+	plugin_output: string;
 }
 export interface AlertWrap {
 	error: boolean;
