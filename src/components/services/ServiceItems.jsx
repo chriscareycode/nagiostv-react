@@ -46,6 +46,7 @@ const ServiceItems = ({
   //servicelistError,
   //howManyServices,
   //commentlist
+  fetchServiceData,
 }) => {
 
   //const nodeRef = React.useRef(null);
@@ -143,6 +144,7 @@ const ServiceItems = ({
                 comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
                 howManyDown={filteredServiceProblemsArray.length}
                 isDemoMode={isDemoMode}
+                fetchServiceData={fetchServiceData}
               />
             </CSSTransition>
             

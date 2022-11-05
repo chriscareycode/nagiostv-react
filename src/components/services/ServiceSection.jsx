@@ -337,6 +337,7 @@ const ServiceSection = () => {
         settings={clientSettings}
         servicelistError={serviceState.error}
         isDemoMode={isDemoMode}
+        fetchServiceData={fetchServiceData}
       />
 
     </div>

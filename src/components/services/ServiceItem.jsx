@@ -26,8 +26,13 @@ import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../widgets/Progress';
+import CheckNowButton from './CheckNowButton';
 
 class ServiceItem extends Component {
+
+  state = {
+    isChecking: false
+  };
 
   componentDidMount() {
     if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
@@ -92,12 +97,25 @@ class ServiceItem extends Component {
     win.focus();
   }
 
+  forceCheckNow = () => {
+    // this.setState({ isChecking: true });
+    // setTimeout(() => {
+    //   this.setState({ isChecking: false });
+    // }, 5000);
+    setTimeout(() => {
+      this.props.fetchServiceData();
+    }, 3000);
+    setTimeout(() => {
+      this.props.fetchServiceData();
+    }, 6000);
+  }
+
   render() {
 
     const e = this.props.serviceItem; // clean this up
     const isSoft = e.state_type === 0;
     const { language } = this.props.settings;
-    const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
+    let secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
     const nowTime = new Date().getTime();
 
     // When passive freshold check is done, this is reported as an active check (check_type=0)
@@ -111,6 +129,11 @@ class ServiceItem extends Component {
     const howManyDown = this.props.howManyDown;
 
     const maxNumberToHideProgress = 40;
+
+    const isChecking = this.state.isChecking;
+    if (isChecking) {
+      secondsToNextCheck = -1;
+    }
 
     return (
       
@@ -161,6 +184,8 @@ class ServiceItem extends Component {
             {(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>
               {translate('Next check in', language)} <span className="color-peach"> {formatDateTime(e.next_check)}</span>
             </span>}
+
+            {/* checking now */}
             {(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now">
               {/*<FontAwesomeIcon icon={faCircleNotch} spin /> */}Checking now...
             </span>}
@@ -168,6 +193,13 @@ class ServiceItem extends Component {
             {/* passive checks get "Last check 5m ago" */}
             {isPassive && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
 
+            {/* check now button */}
+            <CheckNowButton
+              host={e.host_name}
+              service={e.description}
+              forceCheckNow={this.forceCheckNow}
+              nextCheck={e.next_check}
+            />
           </div>
 
           {(this.props.comments && this.props.comments.length > 0) && <div>

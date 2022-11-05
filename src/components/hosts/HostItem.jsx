@@ -157,6 +157,7 @@ class HostItem extends Component {
             {(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>
               {translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span>
             </span>}
+            <button>Check now</button>
             {(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now">
               {/*<FontAwesomeIcon icon={faCircleNotch} spin /> */}Checking now...
             </span>}
