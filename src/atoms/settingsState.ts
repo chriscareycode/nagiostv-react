@@ -1,4 +1,6 @@
 import { atom } from 'recoil';
+// Types
+import { BigState, ClientSettings } from 'types/settings';
 // Import Polyfills
 import 'url-search-params-polyfill';
 
@@ -19,7 +21,7 @@ const useFakeSampleData = urlParams.get('fakedata') === 'true' || isDemoMode;
 // state which is used internally by NagiosTV
 //**************************************************************************** */
 
-const bigStateInitial = { 
+const bigStateInitial: BigState = { 
 
   currentVersion: 75, // This gets incremented with each new release (manually)
   currentVersionString: '0.8.5', // This gets incremented with each new release (manually)
@@ -53,7 +55,7 @@ const bigStateInitial = {
 //**************************************************************************** */
 // state which is loaded and saved into client cookie / server settings
 //**************************************************************************** */
-export const clientSettingsInitial = {
+export const clientSettingsInitial: ClientSettings = {
   
   titleString: 'NagiosTV',
   dataSource: 'cgi',

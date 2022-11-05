@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- import React, { useEffect, useState } from 'react';
+ import { useEffect, useState } from 'react';
  // Recoil
  import { useRecoilState } from 'recoil';
  import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -36,6 +36,7 @@ import * as clipboard from "clipboard-polyfill/text";
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
+import { ClientSettings } from 'types/settings';
 
 const Settings = () => {
 
@@ -44,7 +45,7 @@ const Settings = () => {
   const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
   // Component state
-  const [clientSettingsTemp, setClientSettingsTemp] = useState(null);
+  const [clientSettingsTemp, setClientSettingsTemp] = useState<ClientSettings>(clientSettings);
   const [isDirty, setIsDirty] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
 
@@ -57,7 +58,7 @@ const Settings = () => {
 
   // Hooks
   useEffect(() => {
-    loadLocalTempState();
+    //loadLocalTempState();
     isComponentMounted = true;
     return () => {
       isComponentMounted = false;
@@ -65,29 +66,32 @@ const Settings = () => {
   }, []);
 
   // takes a copy of the clientSettings and saves it into local state (for editing)
-  const loadLocalTempState = () => {
-    //console.log('loadLocalTempState()', clientSettings);
-    setClientSettingsTemp({
-      ...clientSettings
-    })
-  };
+  // const loadLocalTempState = () => {
+  //   //console.log('loadLocalTempState()', clientSettings);
+  //   setClientSettingsTemp({
+  //     ...clientSettings
+  //   })
+  // };
 
   const saveCookie = () => {
  
-    Cookie.set('settings', clientSettingsTemp);
-    
-    setIsDirty(false);
-    setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
-    setSaveMessage('Settings saved');
-
-    // Now that we have saved settings, set the document.title from the title setting
-    if (clientSettingsTemp.titleString) { document.title = clientSettingsTemp.titleString; }
-
-    setTimeout(() => {
-      if (isComponentMounted) {
-        setSaveMessage('');
-      }
-    }, 5000);
+    if (clientSettingsTemp) {
+      Cookie.set('settings', JSON.stringify(clientSettingsTemp));
+      console.log('TEST saved cookie', document.cookie);
+      
+      setIsDirty(false);
+      setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
+      setSaveMessage('Settings saved');
+  
+      // Now that we have saved settings, set the document.title from the title setting
+      if (clientSettingsTemp.titleString) { document.title = clientSettingsTemp.titleString; }
+  
+      setTimeout(() => {
+        if (isComponentMounted) {
+          setSaveMessage('');
+        }
+      }, 5000);
+    }
   };
 
   const deleteCookie = () => {
@@ -111,7 +115,7 @@ const Settings = () => {
     // console.log(propName, dataType);
     // console.log(event.target.value);
 
-    let val = '';
+    let val: boolean | number | string | null = '';
     if (dataType === 'boolean') { val = (event.target.value === 'true'); }
     else if (dataType === 'number') {
       val = parseInt(event.target.value, 10);
@@ -168,11 +172,11 @@ const Settings = () => {
     playSoundEffectDebounced('service', 'ok', clientSettingsTemp);
   }
   const playVoice = () => {
-    const voice = clientSettingsTemp.speakItemsVoice;
-    speakAudio('Naagios TV is cool', voice);
-  }
-
-  
+    const voice = clientSettingsTemp?.speakItemsVoice;
+    if (voice) {
+      speakAudio('Naagios TV is cool', voice);
+    }
+  } 
 
   // voices
   const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
@@ -268,7 +272,7 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Data Source Settings</td>
+                <td colSpan={2} className="SettingsTableHeader">Data Source Settings</td>
               </tr>
             </thead>
             <tbody>
@@ -395,7 +399,7 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Date and Region Settings</td>
+                <td colSpan={2} className="SettingsTableHeader">Date and Region Settings</td>
               </tr>
             </thead>
             <tbody>
@@ -429,16 +433,16 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Show or Hide sections</td>
+                <td colSpan={2} className="SettingsTableHeader">Show or Hide sections</td>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th>Summary:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideSummarySection} onChange={handleChange('hideSummarySection', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideSummarySection.toString()} onChange={handleChange('hideSummarySection', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
                   You can also add ?hideSummarySection=true/false to the URL bar to accomplish the same thing
@@ -447,9 +451,9 @@ const Settings = () => {
               <tr>
                 <th>Hosts and Services layout:</th>
                 <td>
-                  <select value={clientSettingsTemp.hostsAndServicesSideBySide} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
-                      <option value={true}>Column</option>
-                      <option value={false}>Stacked</option>
+                  <select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
+                      <option value={'true'}>Column</option>
+                      <option value={'false'}>Stacked</option>
                   </select>
                   &nbsp;
                   Column layout reverts to stacked on smaller screens
@@ -458,9 +462,9 @@ const Settings = () => {
               <tr>
                 <th>Hosts:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHostSection} onChange={handleChange('hideHostSection', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHostSection.toString()} onChange={handleChange('hideHostSection', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
                   You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
@@ -469,9 +473,9 @@ const Settings = () => {
               <tr>
                 <th>Services:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideServiceSection} onChange={handleChange('hideServiceSection', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideServiceSection.toString()} onChange={handleChange('hideServiceSection', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
                   You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
@@ -480,9 +484,9 @@ const Settings = () => {
               <tr>
                 <th>Alert History:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHistory} onChange={handleChange('hideHistory', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHistory.toString()} onChange={handleChange('hideHistory', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
                   You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
@@ -499,7 +503,7 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Alert History Settings</td>
+                <td colSpan={2} className="SettingsTableHeader">Alert History Settings</td>
               </tr>
             </thead>
             <tbody>
@@ -507,27 +511,27 @@ const Settings = () => {
               <tr>
                 <th>Alert History (24h) Chart:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHistory24hChart} onChange={handleChange('hideHistory24hChart', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHistory24hChart.toString()} onChange={handleChange('hideHistory24hChart', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                 </td>
               </tr>
               <tr>
                 <th>Alert History ({clientSettingsTemp.alertDaysBack}d) Chart:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHistoryChart} onChange={handleChange('hideHistoryChart', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHistoryChart.toString()} onChange={handleChange('hideHistoryChart', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                 </td>
               </tr>
               <tr>
                 <th>Alert History Titles:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHistoryTitle} onChange={handleChange('hideHistoryTitle', 'boolean')}>
-                      <option value={true}>Hide</option>
-                      <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHistoryTitle.toString()} onChange={handleChange('hideHistoryTitle', 'boolean')}>
+                      <option value={'true'}>Hide</option>
+                      <option value={'false'}>Show</option>
                   </select>
                 </td>
               </tr>
@@ -554,7 +558,7 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Audio and Visual</td>
+                <td colSpan={2} className="SettingsTableHeader">Audio and Visual</td>
               </tr>
             </thead>
             <tbody>
@@ -580,9 +584,9 @@ const Settings = () => {
               <tr>
                 <th>Sound Effects:</th>
                 <td>
-                  <select value={clientSettingsTemp.playSoundEffects} onChange={handleChange('playSoundEffects', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.playSoundEffects.toString()} onChange={handleChange('playSoundEffects', 'boolean')}>
+                    <option value={'true'}>On</option>
+                    <option value={'false'}>Off</option>
                   </select>
                 </td>
               </tr>
@@ -616,9 +620,9 @@ const Settings = () => {
               <tr>
                 <th>Speak Items:</th>
                 <td>
-                  <select value={clientSettingsTemp.speakItems} onChange={handleChange('speakItems', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.speakItems.toString()} onChange={handleChange('speakItems', 'boolean')}>
+                    <option value={'true'}>On</option>
+                    <option value={'false'}>Off</option>
                   </select>
                 </td>
               </tr>
@@ -634,9 +638,9 @@ const Settings = () => {
               <tr>
                 <th>Animated progress bar for "Next Check In":</th>
                 <td>
-                  <select value={clientSettingsTemp.showNextCheckInProgressBar} onChange={handleChange('showNextCheckInProgressBar', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.showNextCheckInProgressBar.toString()} onChange={handleChange('showNextCheckInProgressBar', 'boolean')}>
+                    <option value={'true'}>On</option>
+                    <option value={'false'}>Off</option>
                   </select>
                   &nbsp;
                   Uses more CPU in the browser (with recent GPU acceleration)
@@ -654,9 +658,9 @@ const Settings = () => {
               <tr>
                 <th>Automatic Scroll:</th>
                 <td>
-                  <select value={clientSettingsTemp.automaticScroll} onChange={handleChange('automaticScroll', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.automaticScroll.toString()} onChange={handleChange('automaticScroll', 'boolean')}>
+                    <option value={'true'}>On</option>
+                    <option value={'false'}>Off</option>
                   </select>
                   &nbsp;
                   When there are many down hosts or services this will scroll the screen through all the items
@@ -677,7 +681,7 @@ const Settings = () => {
           <table className="SettingsTable">
             <thead>
               <tr>
-                <td colSpan="2" className="SettingsTableHeader">Top and Bottom Menu</td>
+                <td colSpan={2} className="SettingsTableHeader">Top and Bottom Menu</td>
               </tr>
             </thead>
             <tbody>
@@ -692,9 +696,9 @@ const Settings = () => {
               <tr>
                 <th>Custom Logo:</th>
                 <td>
-                  <select value={clientSettingsTemp.customLogoEnabled} onChange={handleChange('customLogoEnabled', 'boolean')}>
-                      <option value={true}>On</option>
-                      <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.customLogoEnabled.toString()} onChange={handleChange('customLogoEnabled', 'boolean')}>
+                      <option value={'true'}>On</option>
+                      <option value={'false'}>Off</option>
                   </select>
                 </td>
               </tr>
@@ -707,9 +711,9 @@ const Settings = () => {
               <tr>
                 <th>Doom Guy (Flynn):</th>
                 <td>
-                  <select value={clientSettingsTemp.flynnEnabled} onChange={handleChange('flynnEnabled', 'boolean')}>
-                      <option value={true}>On</option>
-                      <option value={false}>Off</option>
+                  <select value={clientSettingsTemp.flynnEnabled.toString()} onChange={handleChange('flynnEnabled', 'boolean')}>
+                      <option value={'true'}>On</option>
+                      <option value={'false'}>Off</option>
                   </select>
                   <span> &nbsp; The character from the game Doom</span>
                 </td>
@@ -717,7 +721,7 @@ const Settings = () => {
 
               {/** special colspan=2 section for doom guy settings */}
               <tr>
-                <td colSpan="2">
+                <td colSpan={2}>
                   <div style={{ paddingLeft: '40px' }}>
                     <table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
                       <tbody>
@@ -746,18 +750,18 @@ const Settings = () => {
               <tr>
                 <th>Hamburger (Top) Menu:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideHamburgerMenu} onChange={handleChange('hideHamburgerMenu', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideHamburgerMenu.toString()} onChange={handleChange('hideHamburgerMenu', 'boolean')}>
+                    <option value={'true'}>Hide</option>
+                    <option value={'false'}>Show</option>
                   </select>
                 </td>
               </tr>
               <tr>
                 <th>Bottom Menu:</th>
                 <td>
-                  <select value={clientSettingsTemp.hideBottomMenu} onChange={handleChange('hideBottomMenu', 'boolean')}>
-                    <option value={true}>Hide</option>
-                    <option value={false}>Show</option>
+                  <select value={clientSettingsTemp.hideBottomMenu.toString()} onChange={handleChange('hideBottomMenu', 'boolean')}>
+                    <option value={'true'}>Hide</option>
+                    <option value={'false'}>Show</option>
                   </select>
                 </td>
               </tr>

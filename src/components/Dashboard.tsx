@@ -67,9 +67,7 @@ const Dashboard = () => {
             <div className="two-column-column-2 two-column-box">
               <div className="two-column-column-margin">
                 {/* Services Section */}
-                {!hideServiceSection && <ServiceSection  
-                  commentlist={[]}
-                />}
+                {!hideServiceSection && <ServiceSection />}
               </div>
             </div>
           </div>
@@ -82,9 +80,7 @@ const Dashboard = () => {
             {!hideHostSection && <HostSection />}
 
             {/* Services Section */}
-            {!hideServiceSection && <ServiceSection  
-              commentlist={[]}
-            />}
+            {!hideServiceSection && <ServiceSection />}
           </div>
         )}
                     
