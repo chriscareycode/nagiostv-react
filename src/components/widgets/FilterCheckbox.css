@@ -97,3 +97,6 @@
   opacity: 0;
   display: none;
 }
+.Checkbox.checkbox-hidden.checkbox-unchecked {
+  opacity: 0.5;
+}

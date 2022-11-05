@@ -37,6 +37,7 @@ const FilterCheckbox = ({
   let classN = 'Checkbox uppercase ' + filterName;
   //if (howMany) { classN += ' dim'; }
   if (hideFilters) { classN += ' checkbox-hidden'; }
+  if (!defaultChecked) { classN += ' checkbox-unchecked'; }
 
   return (
     <label className={classN} onClick={clicky}>
