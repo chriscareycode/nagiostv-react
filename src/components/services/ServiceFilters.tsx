@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
@@ -56,9 +55,9 @@ const ServiceFilters = () => {
   const handleSelectChange = (e) => {
     //console.log('handleSelectChange', e.target);
     // console.log(event);
-    // console.log(event.target.getAttribute('varname'));
+    // console.log(event.target.getAttribute('data-varname'));
     // console.log('event.target.value', event.target.value);
-    const propName = e.target.getAttribute('varname');
+    const propName = e.target.getAttribute('data-varname');
     // setClientSettings(settings => ({
     //   ...settings,
     //   [propName]: e.target.value
@@ -83,7 +82,7 @@ const ServiceFilters = () => {
     // we put this to solve the bubble issue where the click goes through the label then to the checkbox
     if (typeof e.target.checked === 'undefined') { return; }
  
-    let val = '';
+    let val = true;
     if (dataType === 'checkbox') {
       val = (!e.target.checked);
     } else {
@@ -121,7 +120,7 @@ const ServiceFilters = () => {
   return (
     <>
 
-      {!hideFilters && <select value={serviceSortOrder} varname={'serviceSortOrder'} onChange={handleSelectChange}>
+      {!hideFilters && <select value={serviceSortOrder} data-varname={'serviceSortOrder'} onChange={handleSelectChange}>
         <option value="newest">{translate('newest first', language)}</option>
         <option value="oldest">{translate('oldest first', language)}</option>
       </select>}

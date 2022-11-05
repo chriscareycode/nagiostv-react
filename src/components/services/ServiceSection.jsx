@@ -27,8 +27,8 @@ import { cleanDemoDataServicelist } from '../../helpers/nagiostv';
 import { convertServiceObjectToArray } from '../../helpers/nagiostv';
 
 import PollingSpinner from '../widgets/PollingSpinner';
-import ServiceItems from './ServiceItems.jsx';
-import ServiceFilters from './ServiceFilters.jsx';
+import ServiceItems from './ServiceItems';
+import ServiceFilters from './ServiceFilters';
 
 // 3rd party addons
 import moment from 'moment';

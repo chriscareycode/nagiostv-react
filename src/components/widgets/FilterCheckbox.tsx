@@ -24,7 +24,6 @@ const FilterCheckbox = ({
   hideFilters,
   defaultChecked,
   howMany,
-  textClassName,
   howManyText,
   handleCheckboxChange,
 }) => {
@@ -42,7 +41,7 @@ const FilterCheckbox = ({
     <label className={classN} onClick={clicky}>
       <span>
         <input type="checkbox" defaultChecked={defaultChecked}  />
-        <span className={'checkbox-value'}>{howMany}</span> <span className={textClassName}>{howManyText}</span>
+        <span className={'checkbox-value'}>{howMany}</span> <span>{howManyText}</span>
       </span>
     </label>
   );
