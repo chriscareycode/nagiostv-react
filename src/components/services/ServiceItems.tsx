@@ -36,8 +36,18 @@ import ServiceItem from './ServiceItem';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faSun } from '@fortawesome/free-solid-svg-icons';
 
+// Types
+import { Service } from 'types/hostAndServiceTypes';
+import { ClientSettings } from 'types/settings';
+
 // css
 import './ServiceItems.css';
+
+interface ServiceItemsProps {
+  serviceProblemsArray: Service[];
+  settings: ClientSettings;
+  isDemoMode: boolean;
+}
 
 const ServiceItems = ({
   serviceProblemsArray,
@@ -46,7 +56,7 @@ const ServiceItems = ({
   //servicelistError,
   //howManyServices,
   //commentlist
-}) => {
+}: ServiceItemsProps) => {
 
   //const nodeRef = React.useRef(null);
 
