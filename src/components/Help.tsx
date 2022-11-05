@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
 // React Router
 import { Link } from "react-router-dom";
 import './Help.css';
@@ -37,21 +36,7 @@ const Help = () => {
         <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">https://github.com/chriscareycode/nagiostv-react</a></div>
         <br />
         <div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">https://chriscarey.com</a></div>
-      </div>
-
-
-      {/* <div>Follow NagiosTV on Twitter for product updates: <a href="https://twitter.com/NagiosTV" target="_blank" rel="noopener noreferrer">https://twitter.com/NagiosTV</a></div> */}
-      
-      {/*
-      <div className="help-bottom-area">
-        <div className="help-option" onClick={clickedHotDogMenu}>Toggle the menu</div>
-        <br />
-        <div className="help-option" onClick={clickedDashboard}>Go to Dashboard</div>
-        <div className="help-option" onClick={clickedSettings}>Go to Settings</div>
-        <div className="help-option" onClick={clickedUpdate}>Go to Updates</div>
-      </div>
-      */}
-      
+      </div>      
     </div>
   );
   

@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { ServiceWrap } from 'types/hostAndServiceTypes';
 
 export const serviceIsFetchingAtom = atom({
   key: 'serviceIsFetchingAtom',
@@ -10,7 +11,7 @@ export const serviceIsFakeDataSetAtom = atom({
   default: false,
 });
 
-const initialState = {
+const initialState: ServiceWrap = {
   error: false,
   errorCount: 0,
   errorMessage: '',

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { momentFormatDateTime } from '../../helpers/moment.js';
 import './Clock.css';
 
@@ -30,7 +30,7 @@ const Clock = ({
   clockTimeFormat,
 }) => {
 
-  const dateRef = useRef(null);
+  const dateRef = useRef<HTMLDivElement>(null);
 
   useEffect(
     () => {

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue } from 'recoil';
 //import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -39,8 +39,6 @@ import './Demo.css';
  */
 
 const Demo = () => {
-
-  
 
   const [isVisible, setIsVisible] = useState(false);
 

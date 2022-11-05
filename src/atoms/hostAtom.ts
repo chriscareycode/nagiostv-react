@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { HostWrap } from '../types/hostAndServiceTypes';
 
 export const hostIsFetchingAtom = atom({
   key: 'hostIsFetchingAtom',
@@ -10,7 +11,7 @@ export const hostIsFakeDataSetAtom = atom({
   default: false,
 });
 
-const initialState = {
+const initialState: HostWrap = {
   error: false,
   errorCount: 0,
   errorMessage: '',

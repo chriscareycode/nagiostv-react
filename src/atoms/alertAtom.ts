@@ -1,11 +1,12 @@
 import { atom } from 'recoil';
+import { AlertWrap } from 'types/hostAndServiceTypes';
 
 export const alertIsFetchingAtom = atom({
   key: 'alertIsFetchingAtom',
   default: false,
 });
 
-const initialState = {
+const initialState: AlertWrap = {
   error: false,
   errorCount: 0,
   errorMessage: '',

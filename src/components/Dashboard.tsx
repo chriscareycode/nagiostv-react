@@ -5,11 +5,11 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // Dashboard Fetch (For HostGroup and Comment)
 import DashboardFetch from './DashboardFetch';
 // Import Hosts and Services
-import HostGroupFilter from './hosts/HostGroupFilter.jsx';
+import HostGroupFilter from './hosts/HostGroupFilter';
 import Summary from './summary/Summary';
-import HostSection from './hosts/HostSection.jsx';
-import ServiceSection from './services/ServiceSection.jsx';
-import AlertSection from './alerts/AlertSection.jsx';
+import HostSection from './hosts/HostSection';
+import ServiceSection from './services/ServiceSection';
+import AlertSection from './alerts/AlertSection';
 // Demo mode
 import Demo from './Demo';
 

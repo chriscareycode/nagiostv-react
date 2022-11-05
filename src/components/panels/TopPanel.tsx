@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
 import { useRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 
@@ -27,9 +25,9 @@ import Cookie from 'js-cookie';
 import ReactTooltip from 'react-tooltip';
 
 // Import Widgets
-import Flynn from '../Flynn/Flynn.jsx';
-import Clock from '../widgets/Clock.jsx';
-import CustomLogo from '../widgets/CustomLogo.jsx';
+import Flynn from '../Flynn/Flynn';
+import Clock from '../widgets/Clock';
+import CustomLogo from '../widgets/CustomLogo';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -176,13 +174,7 @@ const TopPanel = (props) => {
 
         {/* flynn */}
         {clientSettings.flynnEnabled &&
-            <Flynn
-              howManyDown={0}
-              flynnConcernedAt={clientSettings.flynnConcernedAt}
-              flynnAngryAt={clientSettings.flynnAngryAt}
-              flynnBloodyAt={clientSettings.flynnBloodyAt}
-              flynnCssScale={clientSettings.flynnCssScale}
-            />
+            <Flynn />
         }
         
         {/* custom logo */}

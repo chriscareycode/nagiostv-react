@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -33,6 +33,10 @@ import ServiceFilters from './ServiceFilters';
 // 3rd party addons
 import moment from 'moment';
 import $ from 'jquery';
+import _ from 'lodash';
+
+// Types
+import { Service } from '../../types/hostAndServiceTypes';
 
 let isComponentMounted = false;
 
@@ -71,7 +75,7 @@ const ServiceSection = () => {
       fetchServiceData();
     }, 1000);
 
-    let intervalHandle = null;
+    let intervalHandle: NodeJS.Timeout | null = null;
     if (isDemoMode === false && useFakeSampleData == false) {
       // safetly net in case the interval value is bad
       const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
@@ -225,7 +229,7 @@ const ServiceSection = () => {
       const hours = duration.asHours().toFixed(1);
 
       // we disable the stale check if in demo mode since the demo data is always stale
-      if (isDemoMode === false && useFakeSampleData == false && hours >= 1) {
+      if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {
         if (isComponentMounted) {
           setServiceIsFetching(false);
           setServiceState(curr => ({
@@ -277,7 +281,7 @@ const ServiceSection = () => {
 
   // Mutating state on serviceState.problemsArray is not allowed (the sort below)
   // so we need to copy this to something
-  let sortedServiceProblemsArray = [];
+  let sortedServiceProblemsArray: Service[] = [];
   if (Array.isArray(serviceState.problemsArray)) {
     sortedServiceProblemsArray = [...serviceState.problemsArray];
   }
@@ -335,7 +339,7 @@ const ServiceSection = () => {
       <ServiceItems
         serviceProblemsArray={sortedServiceProblemsArray}
         settings={clientSettings}
-        servicelistError={serviceState.error}
+        //servicelistError={serviceState.error}
         isDemoMode={isDemoMode}
       />
 

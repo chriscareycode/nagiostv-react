@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 // Recoil
 import { useRecoilValue } from 'recoil';
@@ -25,6 +25,7 @@ import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 
 import './Flynn.css';
+// @ts-ignore-next-line
 import flynnImage from './flynn.png';
 /*
  Flynn will be happy at 0 services down
@@ -52,7 +53,7 @@ const Flynn = () => {
     serviceHowManyState.howManyServiceCritical;
 
   let flynnClass = 'flynn';
-  let classes = [];
+  let classes: any[] = [];
   if (howManyDown === -1) {
     classes = smileClasses;
   } else if (howManyDown === 0) {
