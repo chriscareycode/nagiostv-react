@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -30,6 +30,22 @@ import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
+interface GithubState {
+  loading: boolean;
+  error: boolean;
+  errorMessage: string;
+  result: any;
+}
+
+interface TestPhpState {
+  loading: boolean;
+  error: boolean;
+  errorMessage: string;
+  result: {
+    whoami: string | null;
+    script: string | null;
+  }
+}
 
 const Update = ({
   currentVersion,
@@ -37,16 +53,17 @@ const Update = ({
 }) => {
 
   const [bigState, setBigState] = useRecoilState(bigStateAtom);
-
-  const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState('');
-
+  const clientSettings = useRecoilValue(clientSettingsAtom);
+  const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
   const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
-
-  const [testPhpState, setTestPhpState] = useState({
+  const [testPhpState, setTestPhpState] = useState<TestPhpState>({
     loading: false,
     error: false,
     errorMessage: '',
-    result: {}
+    result: {
+      whoami: null,
+      script: null,
+    }
   });
   const [latestVersionState, setLatestVersionState] = useState({
     loading: false,
@@ -54,7 +71,7 @@ const Update = ({
     errorMessage: '',
     result: {}
   });
-  const [githubState, setGithubState] = useState({
+  const [githubState, setGithubState] = useState<GithubState>({
     loading: false,
     error: false,
     errorMessage: '',
@@ -113,7 +130,10 @@ const Update = ({
         loading: false,
         error: true,
         errorMessage: 'Error testing PHP',
-        result: {}
+        result: {
+          whoami: null,
+          script: null,
+        }
       });
     });
   };
@@ -190,7 +210,7 @@ const Update = ({
         loading: false,
         error: true,
         errorMessage: 'Error fetching from github',
-        result: myJson
+        result: {}
       });
     });
   };
@@ -298,10 +318,10 @@ const Update = ({
 
   useEffect(() => {
     // If the user does not have Check Updates disabled, then fetch now
-    if (clientSettingsAtom && clientSettingsAtom.versionCheckDays !== 0) {
+    if (clientSettings && clientSettings.versionCheckDays !== 0) {
       checkForUpdates();
     }
-  }, ['clientSettingsAtom.versionCheckDays']);
+  }, ['clientSettings.versionCheckDays']);
 
   /**
    * Start Render

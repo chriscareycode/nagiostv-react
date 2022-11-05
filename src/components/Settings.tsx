@@ -45,6 +45,7 @@ const Settings = () => {
   const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
   // Component state
+  // takes a copy of the clientSettings and saves it into local state (for editing)
   const [clientSettingsTemp, setClientSettingsTemp] = useState<ClientSettings>(clientSettings);
   const [isDirty, setIsDirty] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
@@ -58,20 +59,11 @@ const Settings = () => {
 
   // Hooks
   useEffect(() => {
-    //loadLocalTempState();
     isComponentMounted = true;
     return () => {
       isComponentMounted = false;
     };
   }, []);
-
-  // takes a copy of the clientSettings and saves it into local state (for editing)
-  // const loadLocalTempState = () => {
-  //   //console.log('loadLocalTempState()', clientSettings);
-  //   setClientSettingsTemp({
-  //     ...clientSettings
-  //   })
-  // };
 
   const saveCookie = () => {
  

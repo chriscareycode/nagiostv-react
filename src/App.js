@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
 import './App.css';
 import Base from './components/Base';
 import { RecoilRoot } from 'recoil';

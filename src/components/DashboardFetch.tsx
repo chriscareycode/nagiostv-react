@@ -6,6 +6,7 @@ import { hostgroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
 import $ from 'jquery';
+import _ from 'lodash';
 
 const DashboardFetch = () => {
 
@@ -220,7 +221,7 @@ const DashboardFetch = () => {
 
   //console.log('DashboardFetch render()');
 
-  return <div />;
+  return (<div />);
 };
 
 export default DashboardFetch;
