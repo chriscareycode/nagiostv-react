@@ -25,7 +25,7 @@ import { hostIsFetchingAtom, hostAtom, hostHowManyAtom } from '../../atoms/hostA
 import Cookie from 'js-cookie';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/FilterCheckbox.jsx';
+import Checkbox from '../widgets/FilterCheckbox';
 
 const HostFilters = () => {
 

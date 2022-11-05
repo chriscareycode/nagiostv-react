@@ -25,7 +25,7 @@ import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import Cookie from 'js-cookie';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/FilterCheckbox.jsx';
+import FilterCheckbox from '../widgets/FilterCheckbox';
 
 const ServiceFilters = () => {
 
@@ -133,7 +133,7 @@ const ServiceFilters = () => {
       
       {(!hideFilters || howManyServiceCritical !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="critical"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -146,7 +146,7 @@ const ServiceFilters = () => {
 
       {(!hideFilters || howManyServiceWarning !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="warning"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -159,7 +159,7 @@ const ServiceFilters = () => {
       
       {(!hideFilters || howManyServiceUnknown !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="unknown"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -172,7 +172,7 @@ const ServiceFilters = () => {
 
       {(!hideFilters || howManyServicePending !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="pending"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -185,7 +185,7 @@ const ServiceFilters = () => {
       
       {(!hideFilters || howManyServiceAcked !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="acked"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -198,7 +198,7 @@ const ServiceFilters = () => {
       
       {(!hideFilters || howManyServiceScheduled !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="scheduled"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -211,7 +211,7 @@ const ServiceFilters = () => {
       
       {(!hideFilters || howManyServiceFlapping !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="flapping"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -224,7 +224,7 @@ const ServiceFilters = () => {
 
       {(!hideFilters || howManyServiceSoft !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="soft"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -237,7 +237,7 @@ const ServiceFilters = () => {
 
       {(!hideFilters || howManyServiceNotificationsDisabled !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="notifications_disabled"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}

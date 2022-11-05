@@ -22,7 +22,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 // Helpers
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/FilterCheckbox.jsx';
+import Checkbox from '../widgets/FilterCheckbox';
 // External Deps
 import Cookie from 'js-cookie';
 // CSS
