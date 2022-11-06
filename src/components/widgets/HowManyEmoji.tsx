@@ -16,18 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import './HowManyEmoji.css';
 
-class HowManyEmoji extends Component {
+interface HowManyEmojiProps {
+  howMany: number;
+  howManyWarning: number;
+  howManyCritical: number;
+}
+
+interface HowManyEmojiState {
+  redEmoji: string;
+  yellowEmoji: string;
+  greenEmoji: string;
+}
+
+class HowManyEmoji extends Component<HowManyEmojiProps, HowManyEmojiState> {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('HowManyEmoji shouldComponentUpdate', nextProps, nextState);
-    if (nextProps.howMany !== this.props.howMany ||
+    if (
+      nextProps.howMany !== this.props.howMany ||
       nextProps.howManyWarning !== this.props.howManyWarning ||
       nextProps.howManyCritical !== this.props.howManyCritical ||
-      nextState.sadEmoji !== this.state.sadEmoji ||
-      nextState.happyEmoji !== this.state.happyEmoji) {
+      nextState.redEmoji !== this.state.redEmoji ||
+      nextState.yellowEmoji !== this.state.yellowEmoji ||
+      nextState.greenEmoji !== this.state.greenEmoji
+      ) {
       return true;
     } else {
       return false;
@@ -37,13 +52,14 @@ class HowManyEmoji extends Component {
   redEmojis = ['😡', '🌺', '💋', '🐙', '🌹', '🍉', '🍓', '🍟', '🎟', '🚒', '🥵', '🤬', '👹', '👺', '💄', '👠', '🐞', '🦑', '🦐', '🦞', '🦀'];
   yellowEmojis = ['😳', '😲', '🤯', '🥑', '💰', '🧽', '🔑', '⚠️', '🚸', '🔆', '🎗', '☹️', '😢', '🤮'];
   greenEmojis = ['🍀', '💚', '🥦', '🍏', '♻️', '🐢', '🐸', '🔋', '📗', '🌲', '🌴', '🥒', '🎾'];
-  intervalHandle = null;
 
   state = {
     redEmoji: '',
     yellowEmoji: '',
     greenEmoji: ''
   };
+
+  intervalHandle: NodeJS.Timeout | null = null;
 
   componentDidMount() {
     
@@ -60,7 +76,9 @@ class HowManyEmoji extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.intervalHandle);
+    if (this.intervalHandle) {
+      clearInterval(this.intervalHandle);
+    }
   }
 
   selectEmojis() {

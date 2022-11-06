@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
@@ -25,7 +24,7 @@ import { hostIsFetchingAtom, hostAtom, hostHowManyAtom } from '../../atoms/hostA
 import Cookie from 'js-cookie';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
-import Checkbox from '../widgets/FilterCheckbox';
+import FilterCheckbox from '../widgets/FilterCheckbox';
 
 const HostFilters = () => {
 
@@ -57,7 +56,7 @@ const HostFilters = () => {
     // So we actually do not want e.preventDefault(); here
     console.log('handleSelectChange', e.target);
     // console.log('event.target.value', event.target.value);
-    const propName = e.target.getAttribute('varname');
+    const propName = e.target.getAttribute('data-varname');
     //console.log(propName);
     // setClientSettings(settings => ({
     //   ...settings,
@@ -80,7 +79,7 @@ const HostFilters = () => {
     // we put this to solve the bubble issue where the click goes through the label then to the checkbox
     if (typeof e.target.checked === 'undefined') { return; }
  
-    let val = '';
+    let val = true;
     if (dataType === 'checkbox') {
       val = (!e.target.checked);
     } else {
@@ -117,7 +116,7 @@ const HostFilters = () => {
   return (
     <>
 
-      {!hideFilters && <select value={hostSortOrder} varname={'hostSortOrder'} onChange={handleSelectChange}>
+      {!hideFilters && <select value={hostSortOrder} data-varname={'hostSortOrder'} onChange={handleSelectChange}>
         <option value="newest">{translate('newest first', language)}</option>
         <option value="oldest">{translate('oldest first', language)}</option>
       </select>}
@@ -129,7 +128,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostDown !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="down"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -142,7 +141,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostUnreachable !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="unreachable"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -155,7 +154,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostPending !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="pending"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -168,7 +167,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostAcked !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="acked"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -181,7 +180,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostScheduled !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="scheduled"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -194,7 +193,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostFlapping !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="flapping"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -207,7 +206,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostSoft !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="soft"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}
@@ -220,7 +219,7 @@ const HostFilters = () => {
 
       {(!hideFilters || howManyHostNotificationsDisabled !== 0) && <span>
         {' '}
-        <Checkbox
+        <FilterCheckbox
           filterName="notifications_disabled"
           hideFilters={hideFilters}
           handleCheckboxChange={handleCheckboxChange}

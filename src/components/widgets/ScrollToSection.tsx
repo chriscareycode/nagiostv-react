@@ -9,30 +9,32 @@ const scrollAreaSelector = '.vertical-scroll-dash';
 
 const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
+	const scrollAreaElement = document.querySelector<HTMLElement>(scrollAreaSelector);
+
 	const scrollToNextSection = (currentSection, animateSpeed) => {
 
 		if (debug) console.log('ScrollToSection() scrollToNextSection() moving to', currentSection, animateSpeed);
-
 		/**
 		 * If AboveAlertScroll is visible in the viewport then there is no reason to scroll
 		 * (everything is currently visible on screen). So abort here.
 		 * It might be nice to actually disable the interval timer in this case but we will go this route for now.
 		 */
-		const AboveAlertScrollEl = document.querySelector('.AboveAlertScroll');
+		const AboveAlertScrollEl = document.querySelector('.AboveAlertScroll') as HTMLElement;
 		if (AboveAlertScrollEl) {
 			//const yPos = AboveAlertScrollEl.offsetTop - AboveAlertScrollEl.scrollTop + AboveAlertScrollEl.clientTop;
 			const yPos = AboveAlertScrollEl.offsetTop + AboveAlertScrollEl.clientTop + topBuffer;
 			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl', yPos, window.innerHeight);
 			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl2', AboveAlertScrollEl.offsetTop, AboveAlertScrollEl.scrollTop, AboveAlertScrollEl.clientTop);
 			if (yPos < window.innerHeight) {
-				if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. aborting scroll.', yPos, window.innerHeight, document.querySelector(scrollAreaSelector).scrollTop);
+				if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. aborting scroll.', yPos, window.innerHeight, scrollAreaElement?.scrollTop);
 				// Though we cant just abort if the alerts is on screen. I think this could cause a bug where if items resolve
 				// when we are down on the page, then we will be stuck scrolled down.
 				// I think in this case we should scroll to the top of the page.
 
 				// If we are already not at the top, then move to the top
-				if (document.querySelector(scrollAreaSelector).scrollTop > 0) {
-					if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. scrolling to top', document.querySelector(scrollAreaSelector).scrollTop);
+
+				if (scrollAreaElement && scrollAreaElement.scrollTop > 0) {
+					if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. scrolling to top', scrollAreaElement.scrollTop);
 					$(scrollAreaSelector).animate({ scrollTop: 0 }, animateSpeed);
 				}
 				return;
@@ -40,11 +42,11 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		}
 
 		if (currentSection === 'top') {
-			$(scrollAreaSelector).animate({ scrollTop: 0 }, animateSpeed);
+			$(scrollAreaSelector)?.animate({ scrollTop: 0 }, animateSpeed);
 		}
 
 		if (currentSection === 'host') {
-			const sectionEl = document.querySelector('.HostSection');
+			const sectionEl = document.querySelector<HTMLElement>('.HostSection');
 			//if (debug) console.log('sectionEl', sectionEl);
 			if (sectionEl) {
 				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
@@ -52,28 +54,28 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		}
 
 		if (currentSection === 'service') {
-			const sectionEl = document.querySelector('.ServiceSection');
+			const sectionEl = document.querySelector<HTMLElement>('.ServiceSection');
 			if (sectionEl) {
 				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'above-alert') {
-			const sectionEl = document.querySelector('.AboveAlertScroll');
+			const sectionEl = document.querySelector<HTMLElement>('.AboveAlertScroll');
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - sectionEl.innerHeight + topBuffer }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'alert') {
-			const sectionEl = document.querySelector('.AlertSection');
+			const sectionEl = document.querySelector<HTMLElement>('.AlertSection');
 			if (sectionEl) {
 				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - sectionBufferSubtract }, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'bottom') {
-			const sectionEl = document.querySelector('.BottomScroll');
+			const sectionEl = document.querySelector<HTMLElement>('.BottomScroll');
 			if (sectionEl) {
 				// When we are scrolling to the bottom, we need to subtract the height of the page from the calculation
 				// Since it's scrollTop not scrollBottom
@@ -84,7 +86,9 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 	const stopAllAnimation = () => {
 		if (debug) console.log('ScrollToSection() stopAllAnimation');
-		$(scrollAreaSelector).stop(true);
+		if (scrollAreaElement) {
+			$(scrollAreaSelector).stop(true);
+		}
 	};
 
 	const [currentIndex, setCurrentIndex] = useState(1);
@@ -100,7 +104,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		if (debug) console.log('ScrollToSection() useEffect() trigger. Multiplier', automaticScrollTimeMultiplier);
 
 		// Detect which sections we have
-		const sections = [];
+		const sections: string[] = [];
 		sections.push('top');
 		//if (settingsObject.hideHostSection === false) { sections.push('host'); }
 		//if (settingsObject.hideServiceSection === false) { sections.push('service'); }
@@ -135,7 +139,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 		const defaultAnimateSpeed = 4 * 1000; // default to 4s (before multiplier)
 		let animateSpeed = defaultAnimateSpeed;
-		//let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
+		let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
 		
 		if (myCurrentSection === 'top') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;

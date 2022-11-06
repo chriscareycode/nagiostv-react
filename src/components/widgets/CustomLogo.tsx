@@ -16,10 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
+import { ClientSettings } from 'types/settings';
 import './CustomLogo.css';
 
-class CustomLogo extends Component {
+interface CustomLogoProps {
+  settings: ClientSettings;
+}
+
+class CustomLogo extends Component<CustomLogoProps> {
 
   shouldComponentUpdate(nextProps, nextState) {
     //console.log('shouldComponentUpdate', nextProps, nextState);

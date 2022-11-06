@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
 // Recoil
 import { useRecoilValue } from 'recoil';
 import {
@@ -42,7 +40,6 @@ const HostItems = ({
   hostProblemsArray,
   settings,
   isDemoMode,
-  //hostlistError,
 }) => {
 
   const commentlistState = useRecoilValue(commentlistAtom);

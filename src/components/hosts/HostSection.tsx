@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -33,6 +33,8 @@ import HostFilters from './HostFilters';
 // 3rd party addons
 import moment from 'moment';
 import $ from 'jquery';
+import _ from 'lodash';
+import { Host } from 'types/hostAndServiceTypes';
 
 //import './HostSection.css';
 
@@ -80,7 +82,8 @@ const HostSection = () => {
     const timeoutHandle = setTimeout(() => {
       fetchHostData();
     }, 1000);
-    let intervalHandle = null;
+
+    let intervalHandle: NodeJS.Timeout | null = null;
 
     if (isDemoMode === false && useFakeSampleData === false) {
       // safetly net in case the interval value is bad
@@ -230,7 +233,7 @@ const HostSection = () => {
       const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
       const hours = duration.asHours().toFixed(1);
 
-      if (isDemoMode === false && useFakeSampleData === false && hours >= 1) {
+      if (isDemoMode === false && useFakeSampleData === false && parseFloat(hours) >= 1) {
         // Data is stale
         if (isComponentMounted) {
           setHostIsFetching(false);
@@ -284,7 +287,7 @@ const HostSection = () => {
 
   // Mutating state on hostState.problemsArray is not allowed (the sort below)
   // so we need to copy this to something
-  let sortedHostProblemsArray = [];
+  let sortedHostProblemsArray: Host[] = [];
   if (Array.isArray(hostState.problemsArray)) {
     sortedHostProblemsArray = [...hostState.problemsArray];
   }
@@ -334,7 +337,6 @@ const HostSection = () => {
       <HostItems
         hostProblemsArray={sortedHostProblemsArray}
         settings={clientSettings}
-        hostlistError={hostState.error}
         isDemoMode={isDemoMode}
       />
 
