@@ -214,7 +214,7 @@ const ServiceSection = () => {
       // Success
 
       // Make an array from the object
-      let my_list = _.get(myJson.data, 'servicelist', {});
+      let my_list: Record<string, Record<string, Service>> = _.get(myJson.data, 'servicelist', {});
 
       // If we are in demo mode then clean the fake data
       if (isDemoMode) {

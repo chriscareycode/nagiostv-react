@@ -216,7 +216,7 @@ const HostSection = () => {
       // Success
 
       // Make an array from the object
-      let my_list = _.get(myJson.data, 'hostlist', {});
+      let my_list: Record<string, Host> = _.get(myJson.data, 'hostlist', {});
 
       // If we are in demo mode then clean the fake data
       // The fake data has a bunch of dates of hosts and services being down.
@@ -224,7 +224,6 @@ const HostSection = () => {
       if (isDemoMode) {
         my_list = cleanDemoDataHostlist(my_list);
       }
-
 
       // convert the host object into an array
       const myArray = convertHostObjectToArray(my_list);

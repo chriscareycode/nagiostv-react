@@ -7,6 +7,7 @@ import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
 import $ from 'jquery';
 import Cookie from 'js-cookie';
+import { ClientSettings } from 'types/settings';
 
 const SettingsLoad = () => {
   
@@ -94,7 +95,7 @@ const SettingsLoad = () => {
       return;
     }
 
-    let cookieObject = {};
+    let cookieObject: ClientSettings | null = null;
     try {
       cookieObject = JSON.parse(cookie);
       //console.log('Got coookie', cookieObject);
@@ -271,7 +272,7 @@ const SettingsLoad = () => {
       versionCheckTimeout = 1800 * 1000; // 30m
     }
 
-    let intervalHandleVersionCheck = null;
+    let intervalHandleVersionCheck: NodeJS.Timeout | null = null;
     const cookieTimeoutHandle = setTimeout(() => {
       const versionCheckDays = clientSettings.versionCheckDays;
       // if someone turns off the version check, it should never check

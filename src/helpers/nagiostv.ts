@@ -49,7 +49,7 @@ export function cleanDemoDataServicelist(servicelist) {
   return servicelist;
 }
 
-export function convertHostObjectToArray(hostlist) {
+export function convertHostObjectToArray(hostlist: Record<string, Host>) {
   let hostProblemsArray: Host[] = [];
 
   if (hostlist) {
@@ -67,7 +67,7 @@ export function convertHostObjectToArray(hostlist) {
   return hostProblemsArray;
 }
 
-export function convertServiceObjectToArray(servicelist) {
+export function convertServiceObjectToArray(servicelist: Record<string, Record<string, Service>>) {
   let serviceProblemsArray: Service[] = [];
 
   if (servicelist) {

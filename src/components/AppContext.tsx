@@ -1,6 +1,6 @@
-import React, { createContext, useState } from "react";
+import { createContext, useState } from "react";
 
-export const AppContext = createContext();
+export const AppContext = createContext({});
 
 export function AppContextProvider({ children }) {
   const [preset, setPreset] = useState("moveToLeftFromRight");
