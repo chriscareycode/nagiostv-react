@@ -56,10 +56,14 @@ export interface ServiceWrap {
 }
 
 export interface Alert {
+	name: string;
+	host_name: string;
 	timestamp: number;
 	state: number;
+	state_type: number;
 	description: string;
 	plugin_output: string;
+	object_type: number;
 }
 export interface AlertWrap {
 	error: boolean;

@@ -18,9 +18,9 @@
 
 import { Component } from 'react';
 import './ServiceItem.css';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
-import { serviceBorderClass, serviceTextClass } from '../../helpers/colors.js';
-import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios.js';
+import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment';
+import { serviceBorderClass, serviceTextClass } from '../../helpers/colors';
+import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -30,6 +30,7 @@ import AlertFilters from './AlertFilters';
 import HistoryChart from '../widgets/HistoryChart';
 
 import $ from 'jquery';
+import _ from 'lodash';
 
 import './AlertSection.css';
 
@@ -68,10 +69,9 @@ const AlertSection = () => {
   } = clientSettings;
 
   useEffect(() => {
-    let timeoutHandle = null;
-    let intervalHandle = null;
+    let timeoutHandle: NodeJS.Timeout | null = null;
+    let intervalHandle: NodeJS.Timeout | null = null;
     
-
     timeoutHandle = setTimeout(() => {
       fetchAlertData();
     }, 1000);
@@ -335,7 +335,6 @@ const AlertSection = () => {
 
       <AlertItems
         items={alertlist}
-        showEmoji={showEmoji}
         settings={clientSettings}
         isDemoMode={isDemoMode}
       />

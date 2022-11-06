@@ -25,8 +25,16 @@ import QuietFor from './QuietFor';
 import '../animation.css';
 import '../services/ServiceItems.css';
 import './AlertItems.css';
+import { Alert } from 'types/hostAndServiceTypes';
+import { ClientSettings } from 'types/settings';
 
-class AlertItems extends Component {
+interface AlertItemsProps {
+  items: Alert[];
+  settings: ClientSettings;
+  isDemoMode: boolean;
+}
+
+class AlertItems extends Component<AlertItemsProps> {
 
   constructor(props) {
     super(props);
@@ -73,10 +81,9 @@ class AlertItems extends Component {
         {/* always show one quiet for (if we have at least 1 item) */}
         {this.props.items.length > 1 &&
           <QuietFor
-            first
             nowtime={new Date().getTime()}
             prevtime={this.props.items[0].timestamp}
-            showEmoji={this.props.settings.showEmoji}
+            //showEmoji={this.props.settings.showEmoji}
             language={language}
           />
         }
@@ -91,7 +98,7 @@ class AlertItems extends Component {
               e={e}
               i={i}
               prevtime={prevtime}
-              showEmoji={this.props.showEmoji}
+              //showEmoji={this.props.showEmoji}
               language={language}
               locale={locale}
               dateFormat={dateFormat}

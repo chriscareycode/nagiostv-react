@@ -33,8 +33,8 @@ interface HistoryChartProps {
   hideAlertSoft: boolean;
   locale: string;
   groupBy: moment.unitOfTime.Base;
-  alertHoursBack: number;
-  alertDaysBack: number;
+  alertHoursBack?: number;
+  alertDaysBack?: number;
 }
 interface HistoryChartState {
   intervalHandle: NodeJS.Timeout | null;
@@ -274,7 +274,7 @@ class HistoryChart extends Component<HistoryChartProps> {
       chart.series[3].setData([], true);
     }
     
-    if (this.props.groupBy === 'hour') {
+    if (this.props.groupBy === 'hour' && this.props.alertHoursBack) {
       chart.update({
         xAxis: {
           type: 'datetime',
@@ -314,7 +314,7 @@ class HistoryChart extends Component<HistoryChartProps> {
       chart.redraw(false);
     }
 
-    if (this.props.groupBy === 'day') {
+    if (this.props.groupBy === 'day' && this.props.alertDaysBack) {
       // update pointWidth based on howManyItems
       let barWidth = (((window.innerWidth + 100) / 2) / this.props.alertDaysBack);
       if (barWidth > 35) { barWidth = 35; } // set a max width to 35

@@ -17,9 +17,9 @@
  */
 
 import { Component } from 'react';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment.js';
-import { hostBorderClass, hostTextClass } from '../../helpers/colors.js';
-import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios.js';
+import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment';
+import { hostBorderClass, hostTextClass } from '../../helpers/colors';
+import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudRain } from '@fortawesome/free-solid-svg-icons';

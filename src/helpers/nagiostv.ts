@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Host, Service } from "types/hostAndServiceTypes";
+
 export function cleanDemoDataHostlist(hostlist) {
   //console.log(hostlist);
   Object.keys(hostlist).forEach(key => {
@@ -48,7 +50,7 @@ export function cleanDemoDataServicelist(servicelist) {
 }
 
 export function convertHostObjectToArray(hostlist) {
-  let hostProblemsArray = [];
+  let hostProblemsArray: Host[] = [];
 
   if (hostlist) {
     Object.keys(hostlist).forEach((k) => {
@@ -66,7 +68,7 @@ export function convertHostObjectToArray(hostlist) {
 }
 
 export function convertServiceObjectToArray(servicelist) {
-  let serviceProblemsArray = [];
+  let serviceProblemsArray: Service[] = [];
 
   if (servicelist) {
     Object.keys(servicelist).forEach((k) => {

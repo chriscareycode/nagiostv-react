@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { momentFormatDateTime } from '../../helpers/moment.js';
+import { momentFormatDateTime } from '../../helpers/moment';
 import './Clock.css';
 
 // icons

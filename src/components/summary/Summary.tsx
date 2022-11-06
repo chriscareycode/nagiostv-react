@@ -1,28 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // Recoil
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-//import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
+import { useRecoilValue } from 'recoil';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import { alertAtom } from '../../atoms/alertAtom';
-import { formatDateTime, formatDateTimeAgoLong, formatDateTimeAgoColor, formatDateTimeAgoColorQuietFor } from '../../helpers/moment.js';
-
+// Helpers
+import { formatDateTimeAgoColorQuietFor } from '../../helpers/moment';
+// CSS
 import './Summary.css';
-import { useEffect } from 'react';
+
 
 export default function Summary() {
 
   // Recoil state (this section)
-  //const hostState = useRecoilValue(hostAtom); // we include these so we get a re render when they change (demo mode)
-  //const serviceState = useRecoilValue(serviceAtom); // we include these so we get a re render when they change (demo mode)
   const hostHowManyState = useRecoilValue(hostHowManyAtom);
   const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
   const alertState = useRecoilValue(alertAtom);
-  // console.log('hostHowManyState', hostHowManyState);
-  // console.log('serviceHowManyState', serviceHowManyState);
-  // console.log('alertState', alertState);
 
-  let quietForMs = '';
+  let quietForMs: number | null = null;
   if (alertState && alertState.responseArray && alertState.responseArray.length > 0) {
     quietForMs = alertState.responseArray[0].timestamp;
   }
@@ -30,8 +25,10 @@ export default function Summary() {
   const scrollDown = () => {
     const scrollAreaSelector = '.vertical-scroll-dash';
     const scrollDiv = document.querySelector(scrollAreaSelector);
-    const alertDiv = document.querySelector('.AlertSection');
-    scrollDiv.scrollTo({ top: alertDiv.offsetTop - 15, behavior: 'smooth' });
+    const alertDiv = document.querySelector<HTMLDivElement>('.AlertSection');
+    if (scrollDiv && alertDiv) {
+      scrollDiv.scrollTo({ top: alertDiv.offsetTop - 15, behavior: 'smooth' });
+    }
   };
 
   // Trigger a re-render every minute to get the Quiet For value to show the correct minute

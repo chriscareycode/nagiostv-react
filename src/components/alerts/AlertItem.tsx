@@ -16,20 +16,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { translate } from '../../helpers/language';
-import { momentFormatDateTime } from '../../helpers/moment.js';
-import { ifQuietFor } from '../../helpers/date-math.js';
-import { alertTextClass, alertBorderClass } from '../../helpers/colors.js';
-import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios.js';
+import { momentFormatDateTime } from '../../helpers/moment';
+import { ifQuietFor } from '../../helpers/date-math';
+import { alertTextClass, alertBorderClass } from '../../helpers/colors';
+import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios';
 import QuietFor from './QuietFor';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAdjust } from '@fortawesome/free-solid-svg-icons';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faAdjust } from '@fortawesome/free-solid-svg-icons';
 
 // css
 import './AlertItem.css';
+import { Alert } from 'types/hostAndServiceTypes';
+import { ClientSettings } from 'types/settings';
 
-class AlertItem extends Component {
+interface AlertItemProps {
+  isDemoMode: boolean;
+  settings: ClientSettings;
+  e: Alert;
+  i: number;
+  language: string;
+  locale: string;
+  dateFormat: string;
+  prevtime: number;
+}
+
+class AlertItem extends Component<AlertItemProps> {
 
   shouldComponentUpdate(nextProps, nextState) {
     // console.log('shouldComponentUpdate', nextProps, nextState);
@@ -58,7 +71,7 @@ class AlertItem extends Component {
     const baseUrl = this.props.settings.baseUrl;
     const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${hostName}`);
     const win = window.open(url, '_blank');
-    win.focus();
+    win?.focus();
   }
 
   openNagiosServicePage = () => {
@@ -78,7 +91,7 @@ class AlertItem extends Component {
     const baseUrl = this.props.settings.baseUrl;
     const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${hostName}&service=${e.description}`);
     const win = window.open(url, '_blank');
-    win.focus();
+    win?.focus();
   }
 
   render() {
@@ -95,7 +108,7 @@ class AlertItem extends Component {
           <QuietFor
           	nowtime={e.timestamp}
           	prevtime={this.props.prevtime}
-          	showEmoji={this.props.showEmoji}
+          	//showEmoji={this.props.showEmoji}
           	language={this.props.language}
           />
         }
@@ -103,11 +116,11 @@ class AlertItem extends Component {
         <div className={`AlertItem ${alertBorderClass(e.object_type, e.state)}`}>
           <div className={'AlertItemRight'}>
             {/*isSoft && <span className="softIcon color-white"><FontAwesomeIcon icon={faAdjust} /></span>*/}
-            {1 === 2 && <span>({e.state_type})</span>}
+            {/* {1 === 2 && <span>({e.state_type})</span>} */}
             <span className={`uppercase alert-item-state-type-${e.state_type}`}>{translate(nagiosAlertStateType(e.state_type), language)}</span>
             {' '}
-            {1 === 2 && <span>({e.state})</span>}
-            {1 === 2 && <span>({e.object_type})</span>}
+            {/* {1 === 2 && <span>({e.state})</span>} */}
+            {/* {1 === 2 && <span>({e.object_type})</span>} */}
             <span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
             
             <div className="alert-item-right-date align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
