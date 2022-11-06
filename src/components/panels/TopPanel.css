@@ -33,8 +33,8 @@
     color: #ddd;
     user-select: none;
 }
-  
-.TopPanel .sound-icon {
+
+.TopPanel .generic-icon {
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -45,8 +45,15 @@
     cursor: pointer;
 }
 
-.TopPanel .sound-icon.sound-icon-disabled {
+.TopPanel .generic-icon.generic-icon-disabled {
     color: #666;
+}
+
+.TopPanel .generic-icon.filter-icon {  
+    color: rgb(211, 151, 22);
+}
+.TopPanel .generic-icon.filter-icon.generic-icon-disabled {  
+    color: rgb(139, 118, 71);;
 }
 
 /* if we have the hamburger menu then we do not need the extra left margin */

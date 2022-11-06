@@ -35,6 +35,7 @@ import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter, faSort } from '@f
 
 // Import CSS
 import './TopPanel.css';
+import { ClientSettings } from 'types/settings';
 
 const TopPanel = (props) => {
 
@@ -57,8 +58,8 @@ const TopPanel = (props) => {
     automaticScroll,
   } = clientSettings;
 
-  const saveCookie = (settings) => {
-    Cookie.set('settings', settings);
+  const saveCookie = (settings: ClientSettings) => {
+    Cookie.set('settings', JSON.stringify(settings));
   };
 
   const clickedHamburgerMenu = () => {
@@ -114,7 +115,7 @@ const TopPanel = (props) => {
         {/* filter icon */}
         <div
           data-tip="Show/Hide Filters"
-          className={hideFilters === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
           onClick={clickedFilter}
         >
           <FontAwesomeIcon icon={faFilter} />
@@ -123,7 +124,7 @@ const TopPanel = (props) => {
         {/* automatic scroll icon */}
         <div
           data-tip="Automatic Scroll"
-          className={automaticScroll ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedAutomaticScroll}
         >
           <FontAwesomeIcon icon={faSort} />
@@ -132,7 +133,7 @@ const TopPanel = (props) => {
         {/* chart icon */}
         <div
           data-tip="Show/Hide 24h Charts"
-          className={hideHistory24hChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedCharts24h}
         >
           <FontAwesomeIcon icon={faChartBar} />
@@ -141,7 +142,7 @@ const TopPanel = (props) => {
         {/* chart icon */}
         <div
           data-tip="Show/Hide Long Charts"
-          className={hideHistoryChart === false ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedCharts}
         >
           <FontAwesomeIcon icon={faChartBar} />
@@ -150,7 +151,7 @@ const TopPanel = (props) => {
         {/* sound effects icon */}
         <div
           data-tip="Sound Effects"
-          className={playSoundEffects ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedSound}
         >
           <FontAwesomeIcon icon={faVolumeUp}  />
@@ -159,7 +160,7 @@ const TopPanel = (props) => {
         {/* speak items icon */}
         <div
           data-tip="Speak"
-          className={speakItems ? 'sound-icon' : 'sound-icon sound-icon-disabled'}
+          className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedSpeak}
         >
           <FontAwesomeIcon icon={faBullhorn} />

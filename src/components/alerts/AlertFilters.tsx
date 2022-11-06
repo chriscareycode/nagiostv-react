@@ -27,6 +27,7 @@ import Checkbox from '../widgets/FilterCheckbox';
 import Cookie from 'js-cookie';
 // CSS
 import './AlertFilters.css';
+import { ClientSettings } from 'types/settings';
 
 const AlertFilters = ({
   //hideFilters,
@@ -69,10 +70,10 @@ const AlertFilters = ({
   //   return false;
   // }
 
-  const saveCookie = (settings) => {
+  const saveCookie = (settings: ClientSettings) => {
     //const cookieObject = {};
     //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', settings);
+    Cookie.set('settings', JSON.stringify(settings));
     console.log('Saved cookie', settings);
   };
 
@@ -86,7 +87,7 @@ const AlertFilters = ({
  
     console.log('handleCheckboxChange going through');
 
-    let val = '';
+    let val = true;
     if (dataType === 'checkbox') {
       val = (!e.target.checked);
     } else {

@@ -1,6 +1,22 @@
 export interface Host {
-	
+	// TODO: sort these
+	name: string;
+	last_time_up: number;
+	status: number;
+	is_flapping: boolean;
+	problem_has_been_acknowledged: boolean;
+	scheduled_downtime_depth: number;
+	state_type: number;
+	next_check: number;
+	last_check: number;
+	check_type: number; // Active/Passive
+	notifications_enabled: boolean;
+	current_attempt: number;
+	max_attempts: number;
+	plugin_output: string;
+	checks_enabled: boolean;
 }
+
 export interface HostWrap {
 	error: boolean;
 	errorCount: number;
@@ -29,6 +45,7 @@ export interface Service {
 	plugin_output: string;
 	checks_enabled: boolean;
 }
+
 export interface ServiceWrap {
 	error: boolean;
 	errorCount: number;

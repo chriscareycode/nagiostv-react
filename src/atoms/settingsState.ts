@@ -15,7 +15,7 @@ const isStressTestMode = urlParams.get('stresstest') === 'true';
 const isDebugMode = urlParams.get('debug') === 'true';
 
 // use fake data (dev) if ?fakedata=true
-const useFakeSampleData = urlParams.get('fakedata') === 'true' || isDemoMode;
+const useFakeSampleData = urlParams.get('fakedata') === 'true' || urlParams.get('fakeData') === 'true' || isDemoMode;
 
 //**************************************************************************** */
 // state which is used internally by NagiosTV

@@ -33,9 +33,9 @@ const PollingSpinner = ({
         [fetchVariableName]: parseInt(e.target.value)
       };
 
-      //console.log('Save Cookie', newSettings);
+      console.log('Saving Cookie', newSettings);
 
-      Cookie.set('settings', newSettings); // Save Cookie
+      Cookie.set('settings', JSON.stringify(newSettings)); // Save Cookie
 
       return newSettings; // Save state
     });

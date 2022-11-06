@@ -25,6 +25,7 @@ import Cookie from 'js-cookie';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
+import { ClientSettings } from 'types/settings';
 
 const HostFilters = () => {
 
@@ -44,10 +45,10 @@ const HostFilters = () => {
     language,
   } = clientSettings;
 
-  const saveCookie = (obj) => {
+  const saveCookie = (obj: ClientSettings) => {
     //const cookieObject = {};
     //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', obj);
+    Cookie.set('settings', JSON.stringify(obj));
     console.log('Saved cookie', obj);
   };
 
