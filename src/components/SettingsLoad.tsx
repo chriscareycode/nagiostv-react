@@ -91,6 +91,9 @@ const SettingsLoad = () => {
         ...curr,
         isDoneLoading: true
       }));
+
+      loadSettingsFromUrl();
+
       //this.setState({ isDoneLoading: true });
       return;
     }
