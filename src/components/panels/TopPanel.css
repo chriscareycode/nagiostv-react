@@ -40,7 +40,7 @@
     position: relative;
     top: 50%;
     transform: translateY(-50%);
-    color: #aaa;
+    color: #ccc;
     margin-right: 15px;
     cursor: pointer;
 }
@@ -50,10 +50,10 @@
 }
 
 .TopPanel .generic-icon.filter-icon {  
-    color: rgb(211, 151, 22);
+    /* color: rgb(211, 151, 22); */
 }
 .TopPanel .generic-icon.filter-icon.generic-icon-disabled {  
-    color: rgb(139, 118, 71);;
+    /* color: rgb(139, 118, 71);; */
 }
 
 /* if we have the hamburger menu then we do not need the extra left margin */

@@ -21,8 +21,8 @@ a {
 }
 
 .Base {
-  text-align: left;
-  margin: 0 15px 45px 15px;
+  position: fixed;
+  inset: 0 0 0 0;
 }
 input[type=text] {
   width: 50%;
@@ -105,7 +105,7 @@ and (max-width: 1768px) {
 
 .vertical-scroll {
   position: absolute;
-  top: 40px;
+  top: 0px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -116,14 +116,19 @@ and (max-width: 1768px) {
   margin-left: 0px;
   transition: margin-left 250ms linear;
   position: absolute;
-  top: 0;
+  top: 42px;
   right: 0;
   bottom: 0;
   left: 0;
 }
 
+/* also must update LeftPanel.css */
 .main-content.left-panel-open {
-  margin-left: 42px;
+  margin-left: 42px; 
+}
+/* also must update RightPanel.css */
+.main-content.right-panel-open {
+  top: 0;
 }
 
 .SettingsButtonDiv {
@@ -249,4 +254,9 @@ button {
 }
 .align-right {
   text-align: right;
+}
+
+.spacer-top {
+  height: 55px;
+  position: relative;
 }

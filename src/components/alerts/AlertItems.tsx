@@ -44,8 +44,8 @@ class AlertItems extends Component<AlertItemsProps> {
   }
 
   state = {
-    howManyToRender: 20,
-    pageSize: 50
+    howManyToRender: 100, // This value is updated when user clicks showMore or showLess.
+    pageSize: 100 // This stays const
   };
 
   showMore() {

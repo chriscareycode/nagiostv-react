@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
-
 // React Router
 import {
   HashRouter as Router,
@@ -28,6 +26,7 @@ import {
 } from "react-router-dom";
 
 import './LeftPanel.css';
+
 //import ReactTooltip from 'react-tooltip';
 
 // icons

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 
 // Recoil
 import { useRecoilState } from 'recoil';
-import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
 import $ from 'jquery';
@@ -74,12 +74,17 @@ const SettingsLoad = () => {
   };
 
   const getCookie = () => {
-    // do not load the cookie in demo mode
+    // Do not load the cookie in demo mode
     if (isDemoMode) {
       setBigState(curr => ({
         ...curr,
         isDoneLoading: true
       }));
+
+      // Do not load settings from URL when in demo mode
+      // We exit here, so when in demo mode (as is the case on the nagiostv.com website)
+      // We do not loadSettingsFromUrl()
+
       //this.setState({ isDoneLoading: true });
       return;
     }
@@ -91,6 +96,9 @@ const SettingsLoad = () => {
         ...curr,
         isDoneLoading: true
       }));
+
+      loadSettingsFromUrl();
+
       //this.setState({ isDoneLoading: true });
       return;
     }
@@ -103,6 +111,14 @@ const SettingsLoad = () => {
       //console.log('No cookie');
     }
     if (cookieObject) {
+
+      /**
+       * Add settings if they do not exist
+       * This happens when I add new features but users already have an older client settings saved
+       * that does not have this new variable
+       */
+      cookieObject = addSettingsIfTheyDontExist(cookieObject);
+
       console.log('Found cookie. Loading settings:', cookieObject);
       
       setClientSettings(curr => ({
@@ -110,16 +126,18 @@ const SettingsLoad = () => {
         ...cookieObject
       }));
 
+      // Now that we have loaded cookie, set the document.title from the title setting
+      if (cookieObject.titleString) { document.title = cookieObject.titleString; }
+      
+      // Set isCookieLoaded: true
       setBigState(curr => ({
         ...curr,
         isCookieLoaded: true
       }));
 
       loadSettingsFromUrl();
+    }
 
-      // Now that we have loaded cookie, set the document.title from the title setting
-      if (cookieObject.titleString) { document.title = cookieObject.titleString; }
-    }    
   };
 
   const loadSkipVersionCookie = () => {
@@ -140,6 +158,17 @@ const SettingsLoad = () => {
     }
   };
 
+  const addSettingsIfTheyDontExist = (obj: ClientSettings) => {
+    const addByName = (name: string) => {
+      if (!obj[name]) {
+        obj[name] = clientSettingsInitial[name];
+      }
+    };
+    addByName('showMiniMap');
+    addByName('miniMapWidth');
+    return obj;
+  };
+
   const getRemoteSettings = () => {
     const url = 'client-settings.json?v=' + new Date().getTime();
 
@@ -158,6 +187,14 @@ const SettingsLoad = () => {
         return;
       }
 
+      /**
+       * Add settings if they do not exist
+       * This happens when I add new features but users already have an older client settings saved
+       * that does not have this new variable
+       * TODO: do we even need this? we take the result and merge it over base client settings (which should have these extra values)
+       */
+      myJson = addSettingsIfTheyDontExist(myJson);
+
       // Got good server settings
       console.log('Found server default settings client-settings.json - Loading default settings:', myJson);
 
@@ -173,12 +210,12 @@ const SettingsLoad = () => {
         isRemoteSettingsLoaded: true
       }));
 
-      // Now that we have loaded cookie, set the document.title from the title setting
+      // Now that we have loaded server settings, set the document.title from the title setting
       if (myJson.titleString) { document.title = myJson.titleString; }
 
       // Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
       // getCookie() is then going to call loadSettingsFromUrl()
-      getCookie();      
+      getCookie();
 
     }).catch((err) => {
       console.log('getRemoteSettings() ajax ERROR:', err);

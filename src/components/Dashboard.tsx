@@ -92,6 +92,9 @@ const Dashboard = () => {
       
       </div>}
 
+      {/* add space to the bottom of the dashboard */}
+      <div style={{ height: 40 }}></div>
+
     </div>
     
   );

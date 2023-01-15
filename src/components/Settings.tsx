@@ -65,6 +65,12 @@ const Settings = () => {
     };
   }, []);
 
+  // If clientSettings object changes, we need to update the state of clientSettingsTemp
+  useEffect(() => {
+    setClientSettingsTemp(clientSettings);
+  }, [clientSettings]);
+
+  // Save Cookie
   const saveCookie = () => {
  
     if (clientSettingsTemp) {
@@ -484,7 +490,34 @@ const Settings = () => {
                   You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
+              <tr>
+                <th>MiniMap:</th>
+                <td>
+                  <select value={clientSettingsTemp.showMiniMap.toString()} onChange={handleChange('showMiniMap', 'boolean')}>
+                      <option value={'false'}>Hide</option>
+                      <option value={'true'}>Show</option>
+                  </select>
+                  &nbsp;
+                  You can also add ?showMiniMap=true/false to the URL bar to accomplish the same thing
+                </td>
+              </tr>
+              <tr>
+                <th>MiniMap Width:</th>
+                <td>
+                  <input
+                    type="text"
+                    //className={hostlistError ? 'input-error' : ''}
+                    disabled={!clientSettingsTemp.showMiniMap}
+                    value={clientSettingsTemp.miniMapWidth}
+                    onChange={handleChange('miniMapWidth', 'number')}
+                  />
+                  &nbsp;
+                  
+                </td>
+              </tr>
 
+
+              
 
             </tbody>
           </table>

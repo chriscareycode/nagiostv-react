@@ -25,208 +25,182 @@
  * net::ERR_NETWORK_CHANGED
  * 
  */
-import React from 'react';
 
 // Recoil
 import { useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
-
+// React Router
+import {
+	HashRouter as Router,
+	Switch,
+	Route,
+} from "react-router-dom";
 // Import Various
 import SettingsLoad from './SettingsLoad';
 import Dashboard from './Dashboard';
 import Update from './Update';
 import Help from './Help';
 import Settings from './Settings';
-//import HowManyEmoji from './widgets/HowManyEmoji.jsx';
-
-// Import Panels
 import TopPanel from './panels/TopPanel';
 import LeftPanel from './panels/LeftPanel';
 import BottomPanel from './panels/BottomPanel';
-
 import ScrollToTop from './widgets/ScrollToTop';
 import ScrollToSection from './widgets/ScrollToSection';
+// 3rd party
 
-// Import css
-import './Base.css';
-import './animation.css';
-
-// React Router
-import {
-  HashRouter as Router,
-  Switch,
-  Route,
-} from "react-router-dom";
-
-//import { AppContext } from "./AppContext";
 import { PageTransition } from "@steveeeie/react-page-transition";
 
 // Import Polyfills
 import 'url-search-params-polyfill';
 
+// Import css
+import './Base.css';
+import './animation.css';
+
+import MiniMapWrap from './widgets/MiniMapWrap';
+
 const Base = () => {
 
-  //lets move as much state as possible up and out of this component
-  const bigState = useRecoilValue(bigStateAtom);
-  const clientSettings = useRecoilValue(clientSettingsAtom);
+	//lets move as much state as possible up and out of this component
+	const bigState = useRecoilValue(bigStateAtom);
+	const clientSettings = useRecoilValue(clientSettingsAtom);
 
-  const {
-    isDoneLoading,
-    isLeftPanelOpen,
-  } = bigState;
+	const {
+		isDoneLoading,
+		isLeftPanelOpen,
+	} = bigState;
 
-  const {
-    automaticScroll,
-    automaticScrollTimeMultiplier,
-  } = clientSettings;
+	const {
+		automaticScroll,
+		automaticScrollTimeMultiplier,
+		showMiniMap,
+	} = clientSettings;
 
-  /****************************************************************************
-   * JSX
-   ***************************************************************************/
-  //console.log('Base render()');
+	/****************************************************************************
+	 * JSX
+	 ***************************************************************************/
+	//console.log('Base render()');
 
-  // const {
-  //   preset,
-  //   enterAnimation,
-  //   exitAnimation
-  // } = useContext(AppContext);
+	// const {
+	//   preset,
+	//   enterAnimation,
+	//   exitAnimation
+	// } = useContext(AppContext);
 
-  //console.log('Base preset', preset);
+	//console.log('Base preset', preset);
 
-  return (
-    <div className="Base">
+	const mainContent = (
+		<>
+			{/* wrapper around the main content */}
+			<div className={`main-content ${isLeftPanelOpen ? ' left-panel-open' : ''} ${showMiniMap ? ' right-panel-open' : ''}`}>
 
-      <SettingsLoad />
+				{!isDoneLoading && <div>Settings are not loaded yet</div>}
 
-      <Router>
+				<Route
+					render={({ location }) => {
+						let animation = 'moveToBottomScaleUp';
+						const enterAnimation = '';
+						const exitAnimation = '';
 
-        <TopPanel />
+						return (
+							<PageTransition
+								preset={animation}
+								transitionKey={location.pathname}
+								enterAnimation={enterAnimation}
+								exitAnimation={exitAnimation}
+							>
+								<Switch location={location}>
 
-        <LeftPanel
-          isLeftPanelOpen={bigState.isLeftPanelOpen}
-        />
+									<Route path="/settings">
+										<div className="vertical-scroll">
+											<Settings />
+										</div>
+									</Route>
 
-        <BottomPanel
-          settingsObject={clientSettings}
-          currentVersion={bigState.currentVersion}
-          currentVersionString={bigState.currentVersionString}
-          latestVersion={bigState.latestVersion}
-          latestVersionString={bigState.latestVersionString}
-        />
+									<Route path="/update">
+										<div className="vertical-scroll">
+											<Update
+												//updateRootState={this.updateRootState}
+												currentVersion={bigState.currentVersion}
+												currentVersionString={bigState.currentVersionString}
+											/>
+										</div>
+									</Route>
 
-        {/*  Spacer to counteract the floating TopPanel header */}
-        <div className="top-panel-height" />
+									<Route path="/help">
+										<div className="vertical-scroll">
+											<Help />
+										</div>
+									</Route>
 
-        {/* wrapper around the main content */}
-        <div className={isLeftPanelOpen ? 'main-content left-panel-open' : 'main-content'}>
+									<Route exact path="/">
+										<div className="vertical-scroll vertical-scroll-dash">
 
-          {!isDoneLoading && <div>Settings are not loaded yet</div>}
+											{/* The main NagiosTV Dashboard */}
+											<Dashboard />
 
-          <Route
-            render={({ location }) => {
-              let animation = 'moveToBottomScaleUp';
+											{/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
+											{automaticScroll === false && <ScrollToTop />}
 
-              // Testing some fun stuff with the animations.
-              // I'd like to have the pages slide left and right but can't figure it out yet.
-              // So for now we will go with moveToBottomScaleUp for all page changes
+											{(isDoneLoading && automaticScroll) && <ScrollToSection
+												settingsObject={clientSettings}
+												automaticScrollTimeMultiplier={automaticScrollTimeMultiplier}
+											/>}
+										</div>
 
-              //let enterAnimation = '';
-              //let exitAnimation = 'moveToLeft';
+									</Route>
 
-              // if (location.pathname === '/') {
-              //   animation = 'moveToRightFromLeft';
-              //   enterAnimation = 'moveToRight';
-              //   exitAnimation = 'moveToLeft';
-              //   previousLocationIndex = 0;
-              // }
-              // if (location.pathname === '/settings') {
-              //   animation = 'moveToLeftFromRight';
-              //   exitAnimation = 'moveToLeft';
-              //   if (previousLocationIndex > 1) {
-              //     animation = 'moveToRightFromLeft';
-              //     enterAnimation = 'moveToRight';
-              //     exitAnimation = 'moveToRight';
-              //   }
-              //   previousLocationIndex = 1;
-              // }
-              // if (location.pathname === '/update') {
-              //   animation = 'moveToLeftFromRight';
-              //   if (previousLocationIndex > 2) {
-              //     animation = 'moveToRightFromLeft';
-              //     enterAnimation = 'moveToRight';
-              //     exitAnimation = 'moveToLeft';
-              //   }
-              //   previousLocationIndex = 2;
-              // }
-              // if (location.pathname === '/help') {
-              //   animation = 'moveToRightFromLeft';
-              //   enterAnimation = 'moveToRight';
-              //   exitAnimation = 'moveToLeft';
-              //   previousLocationIndex = 3;
-              // }
-              //console.log('location', location);
-              const enterAnimation = '';
-              const exitAnimation = '';
+								</Switch>
+							</PageTransition>
+						);
+					}}
+				/>
 
-              return (
-                <PageTransition
-                  preset={animation}
-                  transitionKey={location.pathname}
-                  enterAnimation={enterAnimation}
-                  exitAnimation={exitAnimation}
-                >
-                  <Switch location={location}>
-                    
-                    <Route path="/settings">
-                      <div className="vertical-scroll">
-                        <Settings />
-                      </div>
-                    </Route>
-                    
-                    <Route path="/update">
-                      <div className="vertical-scroll">
-                        <Update
-                          //updateRootState={this.updateRootState}
-                          currentVersion={bigState.currentVersion}
-                          currentVersionString={bigState.currentVersionString}
-                        />
-                      </div>
-                    </Route>
+			</div> {/* endwrapper around the main content */}
+		</>
+	);
 
-                    <Route path="/help">
-                      <div className="vertical-scroll">
-                        <Help />
-                      </div>
-                    </Route>
+	return (
+		<div id="Base" className="Base">
 
-                    <Route exact path="/">
-                      <div className="vertical-scroll vertical-scroll-dash">
-                        <Dashboard />
+			<SettingsLoad />
 
-                        {/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
-                        {automaticScroll === false && <ScrollToTop />}
+			<Router>
 
-                        {(isDoneLoading && automaticScroll) && <ScrollToSection
-                          settingsObject={clientSettings}
-                          automaticScrollTimeMultiplier={automaticScrollTimeMultiplier}
-                        />}
-                      </div>
+				<TopPanel />
 
-                    </Route>
+				<LeftPanel
+					isLeftPanelOpen={bigState.isLeftPanelOpen}
+				/>
 
-                  </Switch>
-                </PageTransition>
-              );
-            }}
-          />
+				<BottomPanel
+					settingsObject={clientSettings}
+					currentVersion={bigState.currentVersion}
+					currentVersionString={bigState.currentVersionString}
+					latestVersion={bigState.latestVersion}
+					latestVersionString={bigState.latestVersionString}
+				/>
 
-        </div> {/* endwrapper around the main content */}
+				{/*  Spacer to counteract the floating TopPanel header */}
+				<div className="top-panel-height" />
 
-      </Router>
-      
-    </div>
-  );
-  
+				{/* minimap enabled, mainContent gets wrapped */}
+				{clientSettings.showMiniMap && (
+				<MiniMapWrap>
+					{mainContent}
+				</MiniMapWrap>
+				)}
+
+				{/* minimap disabled */}
+				{!clientSettings.showMiniMap && (<>
+					<div className="spacer-top" />
+					{mainContent}
+				</>)}
+
+			</Router>
+		</div>
+	);
+
 };
 
 export default Base;

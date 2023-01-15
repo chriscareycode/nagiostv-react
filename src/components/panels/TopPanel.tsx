@@ -50,6 +50,7 @@ const TopPanel = (props) => {
   } = bigState;
 
   const {
+    alertDaysBack,
     hideHistory24hChart,
     hideHistoryChart,
     //fontSizeEm,
@@ -118,7 +119,7 @@ const TopPanel = (props) => {
           className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
           onClick={clickedFilter}
         >
-          <FontAwesomeIcon icon={faFilter} />
+          <FontAwesomeIcon icon={faFilter} /> Filters
         </div>
 
         {/* automatic scroll icon */}
@@ -136,7 +137,7 @@ const TopPanel = (props) => {
           className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedCharts24h}
         >
-          <FontAwesomeIcon icon={faChartBar} />
+          <FontAwesomeIcon icon={faChartBar} /> 24h
         </div>
 
         {/* chart icon */}
@@ -145,7 +146,7 @@ const TopPanel = (props) => {
           className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
           onClick={clickedCharts}
         >
-          <FontAwesomeIcon icon={faChartBar} />
+          <FontAwesomeIcon icon={faChartBar} /> {alertDaysBack}d
         </div>
 
         {/* sound effects icon */}

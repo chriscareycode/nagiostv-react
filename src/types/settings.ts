@@ -108,4 +108,6 @@ export interface ClientSettings {
 	hideBottomMenu: boolean;
 	automaticScroll: boolean;
 	automaticScrollTimeMultiplier: number;
+	showMiniMap: boolean;
+	miniMapWidth: number;
 }

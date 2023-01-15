@@ -135,6 +135,8 @@ export const clientSettingsInitial: ClientSettings = {
   hideBottomMenu: false,
   automaticScroll: false,
   automaticScrollTimeMultiplier: 4,
+  showMiniMap: false,
+  miniMapWidth: 120,
 };
 
 export const bigStateAtom = atom({
