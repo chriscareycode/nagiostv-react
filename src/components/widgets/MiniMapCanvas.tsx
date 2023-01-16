@@ -135,15 +135,19 @@ export default function MiniMapCanvas({
 	};
 
 	return (
-		<div id="MiniMapCanvas" className="MiniMapCanvas" onClick={clickedMiniMap}>
+		<div
+			id="MiniMapCanvas"
+			className="MiniMapCanvas"
+			onClick={clickedMiniMap}
+			draggable="true"
+			onDragStart={onDragStart}
+			onDrag={onDrag}
+			onDragEnd={onDragEnd}
+		>
 			{/* draggable border section */}
 			<div
 				id="mmborder"
 				className="mmborder"
-				draggable="true"
-				onDragStart={onDragStart}
-				onDrag={onDrag}
-				onDragEnd={onDragEnd}
 			/>
 			{/* the snapshotted image */}
 			<img id="mmimg" src="" />
