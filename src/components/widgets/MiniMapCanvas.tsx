@@ -106,9 +106,18 @@ export default function MiniMapCanvas({
 		// Watch scroll for scroll handler
 		vs.addEventListener('scroll', handleScroll, { passive: true });
 
+		// Also trigger on an interval to help resize the minimap box when browser size changes
+		const h = setInterval(() => {
+			handleScroll();
+		}, 15 * 1000);
+
 		return () => {
 			// Remove scroll handler on cleanup
 			vs.removeEventListener('scroll', handleScroll);
+			// Remove timer on cleanup
+			if (h) {
+				clearInterval(h);
+			}
 		};
 
 	}, [elementToSnapshot, miniMapWidth]);
