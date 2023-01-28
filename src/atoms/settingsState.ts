@@ -23,8 +23,8 @@ const useFakeSampleData = urlParams.get('fakedata') === 'true' || urlParams.get(
 
 const bigStateInitial: BigState = { 
 
-  currentVersion: 75, // This gets incremented with each new release (manually)
-  currentVersionString: '0.8.5', // This gets incremented with each new release (manually)
+  currentVersion: 76, // This gets incremented with each new release (manually)
+  currentVersionString: '0.8.6', // This gets incremented with each new release (manually)
   latestVersion: 0,
   latestVersionString: '',
   lastVersionCheckTime: 0,
