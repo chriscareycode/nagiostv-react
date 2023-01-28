@@ -94,7 +94,7 @@ const ServiceSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchServiceFrequency]);
+  }, [clientSettings.fetchServiceFrequency, hostgroupFilter]);
   
   const howManyCounter = useCallback((servicelist) => {
     //console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');

@@ -98,7 +98,7 @@ const AlertSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchAlertFrequency]); 
+  }, [clientSettings.fetchAlertFrequency, hostgroupFilter]); 
 
   const howManyCounter = useCallback((alertlist) => {
 

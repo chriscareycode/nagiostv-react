@@ -103,7 +103,7 @@ const HostSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchHostFrequency]);
+  }, [clientSettings.fetchHostFrequency, hostgroupFilter]);
   
   const howManyCounter = useCallback((hostlist) => {
     //console.log('HostSection howManyCounter() useCallback() hostState.response changed');
