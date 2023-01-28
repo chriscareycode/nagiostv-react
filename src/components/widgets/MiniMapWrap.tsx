@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { Allotment } from "allotment";
 import { debounce } from 'lodash';
-import Cookie from 'js-cookie';
-import { ClientSettings } from 'types/settings';
 import { useLocation } from "react-router-dom";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
 import { useRecoilState, useRecoilValue } from 'recoil';

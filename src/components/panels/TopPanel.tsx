@@ -19,8 +19,6 @@
 import { useRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 
-import Cookie from 'js-cookie';
-
 // Import external libraries
 import ReactTooltip from 'react-tooltip';
 

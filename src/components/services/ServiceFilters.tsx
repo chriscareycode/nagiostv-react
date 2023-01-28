@@ -21,11 +21,9 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 
-import Cookie from 'js-cookie';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
-import { ClientSettings } from 'types/settings';
 import { saveCookie } from 'helpers/nagiostv';
 
 const ServiceFilters = () => {
