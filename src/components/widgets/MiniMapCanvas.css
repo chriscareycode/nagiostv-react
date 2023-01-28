@@ -1,5 +1,6 @@
   .MiniMapCanvas {
     cursor: move;
+    user-select: none;
   }
 
   .MiniMapCanvas img {

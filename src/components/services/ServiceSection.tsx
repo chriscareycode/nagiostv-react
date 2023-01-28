@@ -274,9 +274,6 @@ const ServiceSection = () => {
     });
   }
 
-  // allows demo mode to access the state in this component
-  //updateParentState = state => this.setState(state);
-
   const servicelist = serviceState.response;
 
   // Mutating state on serviceState.problemsArray is not allowed (the sort below)
@@ -333,7 +330,8 @@ const ServiceSection = () => {
 
       </div>
       
-      {/** Show Error Message - If we are not in demo mode and there is a servicelist error (ajax fetching) then show the error message here */}
+      {/** Show Error Message - If there is a servicelist error (ajax fetching) then show the error message here */}
+			{/* Disabled in Demo mode */}
       {(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
       <ServiceItems

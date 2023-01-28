@@ -502,15 +502,16 @@ const Settings = () => {
                 </td>
               </tr>
               <tr>
-                <th>MiniMap Width:</th>
+                <th>MiniMap width:</th>
                 <td>
                   <input
                     type="text"
+                    style={{ maxWidth: 60 }}
                     //className={hostlistError ? 'input-error' : ''}
                     disabled={!clientSettingsTemp.showMiniMap}
                     value={clientSettingsTemp.miniMapWidth}
                     onChange={handleChange('miniMapWidth', 'number')}
-                  />
+                  />px
                   &nbsp;
                   
                 </td>

@@ -1,17 +1,26 @@
 import html2canvas from "html2canvas";
 import { useCallback, useEffect } from "react";
 import './MiniMapCanvas.css';
+import { hostAtom } from 'atoms/hostAtom';
+import { serviceAtom } from 'atoms/serviceAtom';
+import { useRecoilValue } from "recoil";
 
 interface MiniMapCanvasProps {
 	elementToSnapshot: string;
 	miniMapWidth: number;
 }
 
+const howOftenToRefreshSeconds = 7;
+
 export default function MiniMapCanvas({
 	elementToSnapshot,
 	miniMapWidth,
 }: MiniMapCanvasProps) {
 
+	const hostState = useRecoilValue(hostAtom);
+	const serviceState = useRecoilValue(serviceAtom);
+
+	// The function that uses html2canvas to take a snapshot of the area
 	const snap = () => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
 		if (myElement) {
@@ -29,9 +38,18 @@ export default function MiniMapCanvas({
 		}
 	};
 
+	// Trigger an update right after host or service updates are fetched
+	useEffect(() => {
+		const th = setTimeout(() => {
+			snap();
+		}, 500);
+		return () => {
+			clearTimeout(th);
+		};
+	}, [hostState.lastUpdate, serviceState.lastUpdate]);
+
 	// This useEffect handles setting up the intervals for taking snapshots
 	useEffect(() => {
-		const howOftenToRefreshSeconds = 15;
 
 		const th = setTimeout(() => {
 			snap();
@@ -107,7 +125,7 @@ export default function MiniMapCanvas({
 		const verticalScrollEl = document.querySelector('.vertical-scroll');
 		verticalScrollEl?.scrollTo({
 			top: scaleSmallToBigFn(Math.max(y - headerHeight - scaledScrollHeight / 2, 0)),
-			//behavior: dragging ? 'auto' : 'smooth',
+			behavior: dragging ? 'auto' : 'smooth',
 		});
 	};
 
