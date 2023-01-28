@@ -28,6 +28,7 @@ import Cookie from 'js-cookie';
 // CSS
 import './AlertFilters.css';
 import { ClientSettings } from 'types/settings';
+import { saveCookie } from 'helpers/nagiostv';
 
 const AlertFilters = ({
   //hideFilters,
@@ -69,13 +70,6 @@ const AlertFilters = ({
   //   }
   //   return false;
   // }
-
-  const saveCookie = (settings: ClientSettings) => {
-    //const cookieObject = {};
-    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', JSON.stringify(settings));
-    console.log('Saved cookie', settings);
-  };
 
   const handleCheckboxChange = (e, propName, dataType) => {
     // This will get called twice (see note below). The little hack there deals with it

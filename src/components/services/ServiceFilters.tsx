@@ -26,6 +26,7 @@ import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
 import { ClientSettings } from 'types/settings';
+import { saveCookie } from 'helpers/nagiostv';
 
 const ServiceFilters = () => {
 
@@ -45,14 +46,7 @@ const ServiceFilters = () => {
     serviceSortOrder,
     language,
   } = clientSettings;
-  
-  const saveCookie = (obj: ClientSettings) => {
-    //const cookieObject = {};
-    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', JSON.stringify(obj));
-    console.log('Saved cookie', obj);
-  };
-  
+
   const handleSelectChange = (e) => {
     //console.log('handleSelectChange', e.target);
     // console.log(event);

@@ -26,6 +26,7 @@ import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
 import { ClientSettings } from 'types/settings';
+import { saveCookie } from 'helpers/nagiostv';
 
 const HostFilters = () => {
 
@@ -45,13 +46,6 @@ const HostFilters = () => {
     language,
   } = clientSettings;
 
-  const saveCookie = (obj: ClientSettings) => {
-    //const cookieObject = {};
-    //this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-    Cookie.set('settings', JSON.stringify(obj));
-    console.log('Saved cookie', obj);
-  };
-
   const handleSelectChange = (e) => {
     // This will get called twice (see note below). The little hack there deals with it
     // So we actually do not want e.preventDefault(); here
@@ -67,7 +61,7 @@ const HostFilters = () => {
       saveCookie({
         ...settings,
         [propName]: e.target.value
-        });
+      });
       return ({
         ...settings,
         [propName]: e.target.value

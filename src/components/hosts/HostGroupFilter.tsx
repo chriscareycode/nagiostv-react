@@ -22,6 +22,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostgroupAtom } from '../../atoms/hostgroupAtom';
 import './HostGroupFilter.css';
+import { saveCookie } from 'helpers/nagiostv';
 
 // http://pi4.local/nagios/jsonquery.html
 // http://pi4.local/nagios/cgi-bin/objectjson.cgi?query=hostgrouplist&details=true
@@ -37,11 +38,16 @@ const HostGroupFilter = () => {
   
   const onChangeHostGroupFilter = (e) => {
     setClientSettings(curr => {
+      saveCookie({
+        ...curr,
+        hostgroupFilter: e.target.value
+      });
       return ({
         ...curr,
         hostgroupFilter: e.target.value
       });
     });
+
   };
 
   if (!hostgroup) {

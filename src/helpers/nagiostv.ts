@@ -17,6 +17,8 @@
  */
 
 import { Host, Service } from "types/hostAndServiceTypes";
+import { ClientSettings } from "types/settings";
+import Cookie from 'js-cookie';
 
 export function cleanDemoDataHostlist(hostlist) {
   //console.log(hostlist);
@@ -89,3 +91,10 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 
   return serviceProblemsArray;
 }
+
+export const saveCookie = (obj: ClientSettings) => {
+	//const cookieObject = {};
+	//this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
+	Cookie.set('settings', JSON.stringify(obj));
+	console.log('Saved cookie', obj);
+};

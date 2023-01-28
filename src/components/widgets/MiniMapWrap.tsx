@@ -8,6 +8,7 @@ import MiniMapCanvas from '../widgets/MiniMapCanvas';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 import "allotment/dist/style.css";
+import { saveCookie } from 'helpers/nagiostv';
 
 interface MiniMapWrapProps {
 	children?: JSX.Element;
@@ -17,11 +18,6 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 
 	const bigState = useRecoilValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-
-	const saveCookie = (settings: Partial<ClientSettings>) => {
-		Cookie.set('settings', JSON.stringify(settings));
-		//console.log('save cookie');
-	};
 
 	const debouncedSaveCookie = useMemo(() => {
 		return debounce((o) => saveCookie(o), 500);

@@ -36,6 +36,7 @@ import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter, faSort } from '@f
 // Import CSS
 import './TopPanel.css';
 import { ClientSettings } from 'types/settings';
+import { saveCookie } from 'helpers/nagiostv';
 
 const TopPanel = (props) => {
 
@@ -58,10 +59,6 @@ const TopPanel = (props) => {
     speakItems,
     automaticScroll,
   } = clientSettings;
-
-  const saveCookie = (settings: ClientSettings) => {
-    Cookie.set('settings', JSON.stringify(settings));
-  };
 
   const clickedHamburgerMenu = () => {
     setBigState(curr => ({
