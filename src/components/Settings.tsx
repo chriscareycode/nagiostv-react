@@ -443,18 +443,17 @@ const Settings = () => {
                       <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
-                  You can also add ?hideSummarySection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
               <tr>
                 <th>Hosts and Services layout:</th>
                 <td>
                   <select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
-                      <option value={'true'}>Column</option>
+                      <option value={'true'}>Side-by-side (Column)</option>
                       <option value={'false'}>Stacked</option>
                   </select>
                   &nbsp;
-                  Column layout reverts to stacked on smaller screens
+                  Side-by-side (Column) layout reverts to stacked on smaller screens
                 </td>
               </tr>
               <tr>
@@ -465,7 +464,6 @@ const Settings = () => {
                       <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
-                  You can also add ?hideHostSection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
               <tr>
@@ -476,7 +474,6 @@ const Settings = () => {
                       <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
-                  You can also add ?hideServiceSection=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
               <tr>
@@ -487,7 +484,6 @@ const Settings = () => {
                       <option value={'false'}>Show</option>
                   </select>
                   &nbsp;
-                  You can also add ?hideHistory=true/false to the URL bar to accomplish the same thing
                 </td>
               </tr>
               <tr>
@@ -498,7 +494,7 @@ const Settings = () => {
                       <option value={'true'}>Show</option>
                   </select>
                   &nbsp;
-                  You can also add ?showMiniMap=true/false to the URL bar to accomplish the same thing
+                  Show a "MiniMap" on the right side of the screen (testing this)
                 </td>
               </tr>
               <tr>
