@@ -42,7 +42,7 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 		return undefined;
 	};
 
-	const debouncedResizeMiniMap = debounce((e: number[]) => onResizeMiniMap(e), 500);
+	const debouncedResizeMiniMap = debounce((e: number[]) => onResizeMiniMap(e), 1000);
 
 	// React router location
 	const location = useLocation();
