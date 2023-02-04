@@ -31,15 +31,15 @@ const SettingsLoad = () => {
   // } = clientSettings;
 
   /* ************************************************************************************ */
-   /* settings related functions such as fetching settings from server, and loading cookie
-   /* ************************************************************************************ */
+  /* settings related functions such as fetching settings from server, and loading cookie
+  /* ************************************************************************************ */
  
-   /* ************************************************************************************
+  /* ************************************************************************************
    the approach I'm going to take with settings is to first load the settings from the server.
    either the settings load, or they fail. in either case I then check for cookie and apply 
    those over top. so cookie settings will override server settings. There will be a delete
    cookie button to help clear any local settings once server side settings become established. */
-   /* ************************************************************************************ */
+  /* ************************************************************************************ */
  
   const loadSettingsFromUrl = () => {
 
@@ -84,40 +84,40 @@ const SettingsLoad = () => {
       // Do not load settings from URL when in demo mode
       // We exit here, so when in demo mode (as is the case on the nagiostv.com website)
       // We do not loadSettingsFromUrl()
-
-      //this.setState({ isDoneLoading: true });
       return;
     }
 
     const cookie = Cookie.get('settings');
-    //console.log('settings Cookie is', cookie);
+    //console.log('Loaded Cookie string', cookie);
+
     if (!cookie) {
       setBigState(curr => ({
         ...curr,
         isDoneLoading: true
       }));
-
       loadSettingsFromUrl();
-
-      //this.setState({ isDoneLoading: true });
       return;
     }
 
     let cookieObject: ClientSettings | null = null;
     try {
       cookieObject = JSON.parse(cookie);
-      //console.log('Got coookie', cookieObject);
+      //console.log('Parsed cookie', cookieObject, typeof cookieObject);
     } catch (e) {
       //console.log('No cookie');
     }
-    if (cookieObject) {
 
-      /**
-       * Add settings if they do not exist
-       * This happens when I add new features but users already have an older client settings saved
-       * that does not have this new variable
-       */
-      cookieObject = addSettingsIfTheyDontExist(cookieObject);
+    // If cookie is invalid, not an object, then console error and clear it out
+    if (typeof cookieObject !== 'object') {
+      console.log('Cookie is not an object. Skipping it');
+      setBigState(curr => ({
+        ...curr,
+        isDoneLoading: true
+      }));
+      return;
+    }
+
+    if (cookieObject) {
 
       console.log('Found cookie. Loading settings:', cookieObject);
       
@@ -158,17 +158,6 @@ const SettingsLoad = () => {
     }
   };
 
-  const addSettingsIfTheyDontExist = (obj: ClientSettings) => {
-    const addByName = (name: string) => {
-      if (!obj[name]) {
-        obj[name] = clientSettingsInitial[name];
-      }
-    };
-    addByName('showMiniMap');
-    addByName('miniMapWidth');
-    return obj;
-  };
-
   const getRemoteSettings = () => {
     const url = 'client-settings.json?v=' + new Date().getTime();
 
@@ -186,14 +175,6 @@ const SettingsLoad = () => {
         getCookie();
         return;
       }
-
-      /**
-       * Add settings if they do not exist
-       * This happens when I add new features but users already have an older client settings saved
-       * that does not have this new variable
-       * TODO: do we even need this? we take the result and merge it over base client settings (which should have these extra values)
-       */
-      myJson = addSettingsIfTheyDontExist(myJson);
 
       // Got good server settings
       console.log('Found server default settings client-settings.json - Loading default settings:', myJson);

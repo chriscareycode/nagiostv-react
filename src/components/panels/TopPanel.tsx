@@ -71,7 +71,7 @@ const TopPanel = (props) => {
         ...curr,
         [settingName]: !curr[settingName]
       };
-      saveCookie(s);
+      saveCookie('TopPanel', s);
       return s;
     });
   };

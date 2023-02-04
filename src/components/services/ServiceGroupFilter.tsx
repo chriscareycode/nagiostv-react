@@ -38,7 +38,7 @@ const ServiceGroupFilter = () => {
   
   const onChangeServiceGroupFilter = (e) => {
     setClientSettings(curr => {
-      saveCookie({
+      saveCookie('Service Group Filter', {
         ...curr,
         servicegroupFilter: e.target.value
       });
@@ -55,11 +55,11 @@ const ServiceGroupFilter = () => {
   }
 
   const keys = Object.keys(servicegroup);
-  // add an option for each hostgroup returned by the server
+  // add an option for each servicegroup returned by the server
   const options = keys.map((key, i) => {
     return <option key={i} value={key}>{key}</option>;
   });
-  // if the saved hostgroupFilter setting is not in the list of hostgroups from the server, add it manually
+  // if the saved servicegroupFilter setting is not in the list of servicegroups from the server, add it manually
   if (servicegroupFilter && keys.indexOf(servicegroupFilter) === -1) {
     options.push(<option key={servicegroupFilter} value={servicegroupFilter}>{servicegroupFilter}</option>);
   }

@@ -90,19 +90,16 @@ const AlertFilters = ({
     // Save to state
 
     setClientSettings(settings => {
-      saveCookie({
+      saveCookie('Alert Filters', {
         ...settings,
-        [propName]: val
-        });
+        [propName]: val,
+      });
       return ({
         ...settings,
-        [propName]: val
+        [propName]: val,
       });
     });
-    
   };
-    
-  
 
   return (
     <>

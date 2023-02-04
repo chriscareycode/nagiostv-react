@@ -56,7 +56,7 @@ const ServiceFilters = () => {
     //   [propName]: e.target.value
     // }));
     setClientSettings(settings => {
-      saveCookie({
+      saveCookie('Service Filters', {
         ...settings,
         [propName]: e.target.value
         });
@@ -84,7 +84,7 @@ const ServiceFilters = () => {
 
     // Save to Cookie and to Recoil state
     setClientSettings(settings => {
-      saveCookie({
+      saveCookie('Service Filters', {
         ...settings,
         [propName]: val
         });

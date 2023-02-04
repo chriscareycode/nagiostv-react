@@ -56,7 +56,7 @@ const HostFilters = () => {
     //   [propName]: e.target.value
     // }));
     setClientSettings(settings => {
-      saveCookie({
+      saveCookie('Host Filters', {
         ...settings,
         [propName]: e.target.value
       });
@@ -81,7 +81,7 @@ const HostFilters = () => {
 
     // Save to Cookie and to Recoil state
     setClientSettings(settings => {
-      saveCookie({
+      saveCookie('Host Filters', {
         ...settings,
         [propName]: val
         });

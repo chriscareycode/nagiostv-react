@@ -92,9 +92,9 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
   return serviceProblemsArray;
 }
 
-export const saveCookie = (obj: ClientSettings) => {
+export const saveCookie = (changeString: string, obj: ClientSettings) => {
 	//const cookieObject = {};
 	//this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
 	Cookie.set('settings', JSON.stringify(obj));
-	console.log('Saved cookie', obj);
+	console.log('Saved cookie', changeString, obj);
 };

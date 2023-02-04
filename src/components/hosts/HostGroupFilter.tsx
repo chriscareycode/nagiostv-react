@@ -38,7 +38,7 @@ const HostGroupFilter = () => {
   
   const onChangeHostGroupFilter = (e) => {
     setClientSettings(curr => {
-      saveCookie({
+      saveCookie('HostGroup Filter', {
         ...curr,
         hostgroupFilter: e.target.value
       });

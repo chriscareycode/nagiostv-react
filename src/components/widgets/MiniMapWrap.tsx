@@ -17,10 +17,6 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 	const bigState = useRecoilValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
-	const debouncedSaveCookie = useMemo(() => {
-		return debounce((o) => saveCookie(o), 500);
-	}, []);
-
 	const onResizeMiniMap = (e: number[]) => {
 		//console.log('onResizeMiniMap', e);
 		if (!bigState.isDoneLoading) {
@@ -28,19 +24,25 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 		}
 		// Gets passed an array of [panel1width, panel2width]
 		if (e && e.length === 2 && e[1] >= 0) {
-			setClientSettings(curr => {
-				const w = Math.trunc(e[1]);
-				//console.log('setting miniMapWidth to', w);
-				const o = {
-					...curr,
-					miniMapWidth: w,
-				};
-				debouncedSaveCookie(o);
-				return o;
-			});
+			const newMiniMapWidth = Math.trunc(e[1]);
+			if (newMiniMapWidth !== clientSettings.miniMapWidth) {
+
+				setClientSettings(curr => {
+					//console.log('setting miniMapWidth to', w);
+					const o = {
+						...curr,
+						miniMapWidth: newMiniMapWidth,
+					};
+					//debouncedSaveCookie(o);
+					saveCookie('MiniMap', o);
+					return o;
+				});
+			}
 		}
 		return undefined;
 	};
+
+	const debouncedResizeMiniMap = debounce((e: number[]) => onResizeMiniMap(e), 500);
 
 	// React router location
 	const location = useLocation();
@@ -57,22 +59,29 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 	}
 
 	return (
-		<Allotment onChange={onResizeMiniMap}>
+		<>
+			{bigState.isDoneLoading && (
+				<Allotment
+					onChange={debouncedResizeMiniMap}
+				>
 
-			<Allotment.Pane >
-				{children}
-			</Allotment.Pane>
+					<Allotment.Pane >
+						{children}
+					</Allotment.Pane>
 
-			{(clientSettings.showMiniMap && bigState.isDoneLoading) && (
-			<Allotment.Pane minSize={0} preferredSize={clientSettings.miniMapWidth}>
-				<MiniMapCanvas
-					elementToSnapshot={whichElementToSnapshot}
-					miniMapWidth={clientSettings.miniMapWidth}
-				/>
-			</Allotment.Pane>
+					<Allotment.Pane
+						minSize={0}
+						preferredSize={clientSettings.miniMapWidth}
+					>
+						<MiniMapCanvas
+							elementToSnapshot={whichElementToSnapshot}
+							miniMapWidth={clientSettings.miniMapWidth}
+						/>
+					</Allotment.Pane>
+
+				</Allotment>
 			)}
-
-		</Allotment>
+		</>
 	);
 };
 
