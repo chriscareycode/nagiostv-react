@@ -69,6 +69,7 @@ const HostSection = () => {
     fetchHostFrequency,
     hostSortOrder,
     hostgroupFilter,
+    servicegroupFilter,
     //hideHistory,
     //hideHostDown,
     //hideHostSection,
@@ -103,7 +104,7 @@ const HostSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchHostFrequency, hostgroupFilter]);
+  }, [clientSettings.fetchHostFrequency, hostgroupFilter, servicegroupFilter]);
   
   const howManyCounter = useCallback((hostlist) => {
     //console.log('HostSection howManyCounter() useCallback() hostState.response changed');
@@ -186,9 +187,11 @@ const HostSection = () => {
     } else if (clientSettings.dataSource === 'livestatus') {
       url = clientSettings.livestatusPath + '?query=hostlist&details=true';
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     } else {
       url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     }
 
     setHostIsFetching(true);

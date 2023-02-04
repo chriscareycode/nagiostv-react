@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 // Recoil
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
-import { hostgroupAtom } from '../atoms/hostgroupAtom';
+import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
 import $ from 'jquery';
@@ -13,6 +13,7 @@ const DashboardFetch = () => {
   const bigState = useRecoilValue(bigStateAtom);
   const clientSettings = useRecoilValue(clientSettingsAtom);
   const setHostgroup = useSetRecoilState(hostgroupAtom);
+  const setServicegroup = useSetRecoilState(servicegroupAtom);
   const setCommentlist = useSetRecoilState(commentlistAtom);
 
   // Chop the bigState into vars
@@ -178,6 +179,52 @@ const DashboardFetch = () => {
     });
   };
 
+  const fetchServiceGroupData = () => {
+
+    let url;
+    if (useFakeSampleData) {
+      return;
+    } else if (clientSettings.dataSource === 'livestatus') {
+      url = clientSettings.livestatusPath + '?query=servicegrouplist&details=true';
+    } else {
+      url = clientSettings.baseUrl + 'objectjson.cgi?query=servicegrouplist&details=true';
+    }
+
+    $.ajax({
+      method: "GET",
+      url,
+      dataType: "json",
+      timeout: 10 * 1000
+    }).done((myJson, textStatus, jqXHR) => {
+
+      // test that return data is json
+      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+        console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+
+        setServicegroup(curr => ({
+          ...curr,
+          error: true,
+          errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+        }));
+        return;
+      }
+
+      // Pluck out the hostgrouplist result
+      const servicegroup = _.get(myJson.data, 'servicegrouplist', {});
+
+      setServicegroup({
+        error: false,
+        errorCount: 0,
+        errorMessage: '',
+        lastUpdate: new Date().getTime(),
+        response: servicegroup
+      });
+
+    }).fail((jqXHR, textStatus, errorThrown) => {
+      handleFetchFail(setServicegroup, jqXHR, textStatus, errorThrown, url);
+    });
+  };
+
   // useEffect
   useEffect(() => {
     //console.log('DashboardFetch useEffect()');
@@ -191,6 +238,7 @@ const DashboardFetch = () => {
     setTimeout(() => {
       // fetch data now
       fetchHostGroupData();
+      fetchServiceGroupData();
       fetchCommentData();
     }, 1000);
 
@@ -206,6 +254,7 @@ const DashboardFetch = () => {
 
     let intervalHandleHostGroup = setInterval(() => {
        fetchHostGroupData();
+       fetchServiceGroupData();
      }, fetchHostGroupFrequencySafe * 1000);
 
     //let intervalHandleVersionCheck = null;

@@ -63,6 +63,7 @@ const ServiceSection = () => {
   const {
     fetchServiceFrequency,
     hostgroupFilter,
+    servicegroupFilter,
     serviceSortOrder,
     language,
   } = clientSettings;
@@ -94,7 +95,7 @@ const ServiceSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchServiceFrequency, hostgroupFilter]);
+  }, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
   
   const howManyCounter = useCallback((servicelist) => {
     //console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
@@ -182,9 +183,11 @@ const ServiceSection = () => {
     } else if (clientSettings.dataSource === 'livestatus') {
       url = clientSettings.livestatusPath + '?query=servicelist&details=true';
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     } else {
       url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     }
     //console.log('Requesting Service Data: ' + url);
 

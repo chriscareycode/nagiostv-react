@@ -38,16 +38,6 @@ const bigStateInitial: BigState = {
   isCookieLoaded: false, // I have this to render things only after cookie is loaded
   isDoneLoading: false,
 
-  commentlistError: false,
-  commentlistErrorMessage: '',
-  commentlistLastUpdate: 0,
-  commentlist: {},
-
-  hostgroupError: false,
-  hostgroupErrorMessage: '',
-  hostgroupLastUpdate: 0,
-  hostgroup: {},
-  
   hideFilters: true,
   isLeftPanelOpen: false,
 };
@@ -105,7 +95,8 @@ export const clientSettingsInitial: ClientSettings = {
   hideAlertSoft: false,
 
   hostgroupFilter: '',
-  
+  servicegroupFilter: '',
+
   versionCheckDays: 1,
 
   language: 'English',

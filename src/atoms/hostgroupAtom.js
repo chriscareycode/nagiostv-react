@@ -12,3 +12,8 @@ export const hostgroupAtom = atom({
   key: 'hostgroupAtom',
   default: initialState,
 });
+
+export const servicegroupAtom = atom({
+  key: 'servicegroupAtom',
+  default: initialState,
+});

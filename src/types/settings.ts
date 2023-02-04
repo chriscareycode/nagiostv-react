@@ -14,16 +14,6 @@ export interface BigState {
 	isCookieLoaded: boolean; // I have this to render things only after cookie is loaded
 	isDoneLoading: boolean;
 
-	commentlistError: boolean;
-	commentlistErrorMessage: string;
-	commentlistLastUpdate: number;
-	commentlist: any;
-
-	hostgroupError: boolean;
-	hostgroupErrorMessage: string;
-	hostgroupLastUpdate: number;
-	hostgroup: any;
-
 	hideFilters: boolean;
 	isLeftPanelOpen: boolean;
 }
@@ -78,6 +68,7 @@ export interface ClientSettings {
 	hideAlertSoft: boolean;
 
 	hostgroupFilter: string;
+	servicegroupFilter: string;
 
 	versionCheckDays: number;
 

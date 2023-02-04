@@ -66,6 +66,7 @@ const AlertSection = () => {
     showEmoji,
     alertDaysBack,
     hostgroupFilter,
+    servicegroupFilter,
   } = clientSettings;
 
   useEffect(() => {
@@ -98,7 +99,7 @@ const AlertSection = () => {
       }
       isComponentMounted = false;
     };
-  }, [clientSettings.fetchAlertFrequency, hostgroupFilter]); 
+  }, [clientSettings.fetchAlertFrequency, hostgroupFilter, servicegroupFilter]); 
 
   const howManyCounter = useCallback((alertlist) => {
 
@@ -129,9 +130,11 @@ const AlertSection = () => {
     } else if (clientSettings.dataSource === 'livestatus') {
       url = clientSettings.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     } else {
       url = `${clientSettings.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
       if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
     }
 
     setAlertIsFetching(true);
