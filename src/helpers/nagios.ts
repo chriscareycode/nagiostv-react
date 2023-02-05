@@ -2,7 +2,7 @@
 
 /**
  * NagiosTV https://nagiostv.com
- * Copyright (C) 2008-2021 Chris Carey https://chriscarey.com
+ * Copyright (C) 2008-2023 Chris Carey https://chriscarey.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
