@@ -2,7 +2,7 @@
 
 Homepage at [NagiosTV.com](https://nagiostv.com)
 
-![Display](https://nagiostv.com/nagiostv-0.7.1-shot1.png)
+![Display](https://nagiostv.com/screenshots/nagiostv-0.8.6.png)
 
 Monitor your infrastructure with style.
 
