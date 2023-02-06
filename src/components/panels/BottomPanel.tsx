@@ -48,7 +48,7 @@ const BottomPanel = ({
 
 	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
 
-	const navigateTo = (e, pathname) => {
+	const navigateTo = (e: React.MouseEvent<HTMLElement>, pathname) => {
 		e.preventDefault();
 
 		history.push({
@@ -58,33 +58,35 @@ const BottomPanel = ({
 
 		// Close menu
 		setTimeout(() => {
-			setIsVisible(visible => !visible);
+			setIsVisible(false);
 		}, 800);
 	};
 
-	const clickedDashboard = (e) => {
+	const clickedDashboard = (e: React.MouseEvent<HTMLElement>) => {
 		navigateTo(e, '/');
 	};
 
-	const clickedSettings = (e) => {
+	const clickedSettings = (e: React.MouseEvent<HTMLElement>) => {
 		navigateTo(e, '/settings');
 	};
 
-	const clickedUpdate = (e) => {
+	const clickedUpdate = (e: React.MouseEvent<HTMLElement>) => {
 		navigateTo(e, '/update');
 	};
 
-	const clickedInfo = (e) => {
+	const clickedInfo = (e: React.MouseEvent<HTMLElement>) => {
 		navigateTo(e, '/help');
 	};
 
-	const clickedNagiosTv = (e) => {
+	const clickedNagiosTv = (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
+		e.stopPropagation(); // Prevent it from triggering standard menu click
 		setIsVisible(visible => !visible);
 	};
 
-	const clickedUpdateAvailable = (e) => {
+	const clickedUpdateAvailable = (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
+		e.stopPropagation(); // Prevent it from triggering standard menu click
 		clickedUpdate(e);
 	};
 
@@ -106,8 +108,9 @@ const BottomPanel = ({
 		}
 	};
 
-	const clickedSkipVersion = (e) => {
+	const clickedSkipVersion = (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
+		e.stopPropagation(); // Prevent it from triggering standard menu click
 		const skipVersionObj = {
 			version: latestVersion,
 			version_string: latestVersionString
