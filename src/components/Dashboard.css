@@ -1,47 +1,47 @@
-.Dashboard {
-    
-}
+.Dashboard {}
 
 .two-column-container {
-    display: flex;
-    flex-direction: row;
-    margin-left: -10px;
-    margin-right: -10px;
+	display: flex;
+	flex-direction: row;
+	margin-left: -10px;
+	margin-right: -10px;
 }
 
 .two-column-column-1 {
-    
-  flex-shrink: 0;
-  /* flex-basis: 50%; */
-  /* width: 50%; */
+
+	flex-shrink: 0;
+	/* flex-basis: 50%; */
+	/* width: 50%; */
 }
+
 .two-column-column-2 {
-    
-    flex-shrink: 0;
-    /* flex-basis: 50%; */
-    /* width: 50%; */
-  }
+
+	flex-shrink: 0;
+	/* flex-basis: 50%; */
+	/* width: 50%; */
+}
 
 .two-column-box {
-  /* width: 100%; */
-  border: 0px solid orange;
-  position: relative;
-  /* margin: 0px 10px; */
-  width: 50%;
+	/* width: 100%; */
+	border: 0px solid orange;
+	position: relative;
+	/* margin: 0px 10px; */
+	width: 50%;
 }
+
 .two-column-column-margin {
-    margin: 0px 10px;
+	margin: 0px 10px;
 }
 
 @media only screen and (max-width: 900px) {
-    .two-column-container {
-      flex-direction: column;
-      margin-left: 0px;
-      margin-right: 0px;
-    }
-  
-    .two-column-box {
-      margin: 0px 0px;
-      width: 100%;
-    }
-  }
+	.two-column-container {
+		flex-direction: column;
+		margin-left: 0px;
+		margin-right: 0px;
+	}
+
+	.two-column-box {
+		margin: 0px 0px;
+		width: 100%;
+	}
+}

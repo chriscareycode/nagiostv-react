@@ -17,57 +17,62 @@
  */
 
 a {
-  color: yellow;
+	color: yellow;
 }
 
 .Base {
-  position: fixed;
-  inset: 0 0 0 0;
+	position: fixed;
+	inset: 0 0 0 0;
 }
+
 input[type=text] {
-  width: 50%;
+	width: 50%;
 }
+
 .margin-top-5 {
-  margin-top: 5px;
+	margin-top: 5px;
 }
+
 .margin-top-10 {
-  margin-top: 10px;
+	margin-top: 10px;
 }
+
 .margin-left-10 {
-  margin-left: 10px;
+	margin-left: 10px;
 }
+
 .margin-right-10 {
-  margin-right: 10px;
+	margin-right: 10px;
 }
 
 .softIcon {
-  margin-right: 5px;
+	margin-right: 5px;
 }
 
 .display-none {
-  display: none;
+	display: none;
 }
 
-.settings {
+.settings {}
 
-}
 .settings input {
-  font-size: 1.1em;
+	font-size: 1.1em;
 }
+
 .settings button {
-  margin-left: 5px;
-  font-size: 1.1em;
+	margin-left: 5px;
+	font-size: 1.1em;
 }
 
 .display-inline-block {
-  display: inline-block;
+	display: inline-block;
 }
 
 .SettingsButtonDiv button {
-  background-color: #222;
-  color: #999;
-  border-color: #888;
-  border-radius: 4px;
+	background-color: #222;
+	color: #999;
+	border-color: #888;
+	border-radius: 4px;
 }
 
 
@@ -77,186 +82,190 @@ input[type=text] {
 /* https://www.stephen.io/mediaqueries/ */
 
 /* iPhone 10 */
-@media only screen 
-and (max-width: 1768px) {
-  
+@media only screen and (max-width: 1768px) {}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
+
+	.BottomPanel svg {
+		font-size: 1.7em !important;
+	}
 }
 
-@media only screen 
-  and (min-device-width: 320px) 
-  and (max-device-width: 480px)
-  and (-webkit-min-device-pixel-ratio: 2) {
+@media only screen and (max-device-width: 480px) {}
 
-    .BottomPanel svg {
-      font-size: 1.7em !important;
-    }
-}
-
-@media only screen and (max-device-width: 480px) {
-   
-}
-
-@media only screen 
-    and (device-width : 375px) 
-    and (device-height : 812px) 
-    and (-webkit-device-pixel-ratio : 3) {
-  
-}
+@media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {}
 
 .vertical-scroll {
-  position: absolute;
-  top: 0px;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  overflow-y: scroll;
-  padding: 0px 15px 20px 15px
+	position: absolute;
+	top: 0px;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	overflow-y: scroll;
+	padding: 0px 15px 20px 15px
 }
+
 .main-content {
-  margin-left: 0px;
-  transition: margin-left 250ms linear;
-  position: absolute;
-  top: 42px;
-  right: 0;
-  bottom: 0;
-  left: 0;
+	margin-left: 0px;
+	transition: margin-left 250ms linear;
+	position: absolute;
+	top: 42px;
+	right: 0;
+	bottom: 0;
+	left: 0;
 }
 
 /* also must update LeftPanel.css */
 .main-content.left-panel-open {
-  margin-left: 42px; 
+	margin-left: 42px;
 }
+
 /* also must update RightPanel.css */
 .main-content.right-panel-open {
-  top: 0;
+	top: 0;
 }
 
 .SettingsButtonDiv {
-  position: absolute;
-  bottom: 3px;
-  right: 3px;
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
 }
+
 .SettingsArea {
-  border: 1px solid gray;
-  background-color: #111;
-  font-size: 1.0em;
-  padding: 4px;
-  border-radius: 5px;
-  margin-bottom: 7px;
+	border: 1px solid gray;
+	background-color: #111;
+	font-size: 1.0em;
+	padding: 4px;
+	border-radius: 5px;
+	margin-bottom: 7px;
 }
 
 /* service summary (17 hosts (0 problems)) */
 
 .service-summary {
-  position: relative;
-  margin-top: 13px;
-  margin-bottom: 7px;
-  clear: both;
-  line-height: 1.5em;
-  /*overflow: hidden;*/
-  
+	position: relative;
+	margin-top: 13px;
+	margin-bottom: 7px;
+	clear: both;
+	line-height: 1.5em;
+	/*overflow: hidden;*/
+
 }
+
 .service-summary-title {
-  font-size: 1.0em;
-  margin-right: 8px;
-  margin-bottom: 5px;
-  color: #bbb;
+	font-size: 1.0em;
+	margin-right: 8px;
+	margin-bottom: 5px;
+	color: #bbb;
 }
 
 /* all ok */
 
 .all-ok-item {
-  position: relative;
-  border: 1px solid #003400;
-  border-left: 3px solid lime;
-  background-color: #001d00;
-  font-size: 1.5em;
-  border-radius: 5px;
-  overflow: hidden;
-  max-height: 0px;
-  opacity: 0;
-  transition: max-height 250ms ease-in, opacity 250ms ease-in;
-  transition-delay: 0ms;
+	position: relative;
+	border: 1px solid #003400;
+	border-left: 3px solid lime;
+	background-color: #001d00;
+	font-size: 1.5em;
+	border-radius: 5px;
+	overflow: hidden;
+	max-height: 0px;
+	opacity: 0;
+	transition: max-height 250ms ease-in, opacity 250ms ease-in;
+	transition-delay: 0ms;
 }
+
 /* this creates the padding */
-.all-ok-item > div {
-  margin: 8px;
-  margin-left: 10px;
+.all-ok-item>div {
+	margin: 8px;
+	margin-left: 10px;
 }
+
 .all-ok-item.hidden {
-  opacity: 0;
+	opacity: 0;
 }
+
 .all-ok-item.visible {
-  max-height: 120px;
-  opacity: 1;
-  transition-delay: 250ms;
+	max-height: 120px;
+	opacity: 1;
+	transition-delay: 250ms;
 }
 
 /* these some-down-items live inside HostItems and ServiceItems */
 /* probably should move to its own component */
 .some-down-items {
-  position: relative;
-  border: 1px solid #004c00;
-  border-left: 3px solid lime;
-  background-color: #001d00;
-  font-size: 1.5em;
-  border-radius: 5px;
-  overflow: hidden;
-  max-height: 0px;
-  opacity: 1;
-  transition-delay: 0ms;
-  transition: all 500ms ease-in;
+	position: relative;
+	border: 1px solid #004c00;
+	border-left: 3px solid lime;
+	background-color: #001d00;
+	font-size: 1.5em;
+	border-radius: 5px;
+	overflow: hidden;
+	max-height: 0px;
+	opacity: 1;
+	transition-delay: 0ms;
+	transition: all 500ms ease-in;
 }
+
 /* this creates the padding */
-.some-down-items > div {
-  margin: 8px;
-  margin-left: 10px;
+.some-down-items>div {
+	margin: 8px;
+	margin-left: 10px;
 }
+
 .some-down-items.hidden {
-  opacity: 0;
+	opacity: 0;
 }
+
 .some-down-items.visible {
-  max-height: 120px;
-  opacity: 1;
+	max-height: 120px;
+	opacity: 1;
 }
+
 .some-down-hidden-text {
-  font-size: 0.6em;
+	font-size: 0.6em;
 }
 
 
 /* fun stuff */
 
 .FlynnWrapper {
-  position: fixed;
-  top: 10px;
-  right: 18px;
-  z-index: 11;
+	position: fixed;
+	top: 10px;
+	right: 18px;
+	z-index: 11;
 }
 
 /* general purpose font related */
 .uppercase {
-  text-transform: uppercase;
+	text-transform: uppercase;
 }
+
 .uppercase-first {
-  text-transform: capitalize;
+	text-transform: capitalize;
 }
+
 .display-inline-block {
-  display: inline-block;
+	display: inline-block;
 }
+
 .font-size-0-6 {
-  font-size: 0.6em;
+	font-size: 0.6em;
 }
+
 .font-size-0-8 {
-  font-size: 0.8em;
+	font-size: 0.8em;
 }
+
 button {
-  cursor: pointer;
+	cursor: pointer;
 }
+
 .align-right {
-  text-align: right;
+	text-align: right;
 }
 
 .spacer-top {
-  height: 55px;
-  position: relative;
+	height: 55px;
+	position: relative;
 }

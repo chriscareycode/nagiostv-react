@@ -17,23 +17,23 @@
  */
 
 .example-enter {
-  opacity: 0.01;
-  max-height: 0px;
+	opacity: 0.01;
+	max-height: 0px;
 }
 
 .example-enter.example-enter-active {
-  opacity: 1;
-  max-height: 75px;
-  transition: all 500ms ease-in;
+	opacity: 1;
+	max-height: 75px;
+	transition: all 500ms ease-in;
 }
 
 .example-exit {
-  opacity: 1;
-  max-height: 75px;
+	opacity: 1;
+	max-height: 75px;
 }
 
 .example-exit.example-exit-active {
-  opacity: 0.01;
-  max-height: 0px;
-  transition: all 500ms ease-in;
+	opacity: 0.01;
+	max-height: 0px;
+	transition: all 500ms ease-in;
 }
