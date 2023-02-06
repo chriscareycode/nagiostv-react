@@ -1,21 +1,20 @@
 .Help a {
-    color: #6fbbf3;
+	color: #6fbbf3;
 }
 
 .help-option {
-    cursor: pointer;
-    margin-bottom: 5px;
-    display: inline-block;
+	cursor: pointer;
+	margin-bottom: 5px;
+	display: inline-block;
 }
 
 .help-option:hover {
-    color: orange;
+	color: orange;
 }
 
 .help-bottom-area {
-    position: fixed;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
+	position: fixed;
+	bottom: 40px;
+	left: 50%;
+	transform: translateX(-50%);
 }
-

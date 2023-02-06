@@ -40,305 +40,305 @@ import './Demo.css';
 
 const Demo = () => {
 
-  const [isVisible, setIsVisible] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
 
-  // Recoil state (this section)
-  const [hostState, setHostState] = useRecoilState(hostAtom);
-  const [serviceState, setServiceState] = useRecoilState(serviceAtom);
+	// Recoil state (this section)
+	const [hostState, setHostState] = useRecoilState(hostAtom);
+	const [serviceState, setServiceState] = useRecoilState(serviceAtom);
 
-  const isHostFakeDataSet = useRecoilValue(hostIsFakeDataSetAtom);
-  const isServiceFakeDataSet = useRecoilValue(serviceIsFakeDataSetAtom);
+	const isHostFakeDataSet = useRecoilValue(hostIsFakeDataSetAtom);
+	const isServiceFakeDataSet = useRecoilValue(serviceIsFakeDataSetAtom);
 
-  const hostlistRef = useRef({});
-  const servicelistRef = useRef({});
+	const hostlistRef = useRef({});
+	const servicelistRef = useRef({});
 
-  //console.log('Demo render hostState.response is ', hostState.response);
-  //console.log('Demo render serviceState.response is ', serviceState.response);
+	//console.log('Demo render hostState.response is ', hostState.response);
+	//console.log('Demo render serviceState.response is ', serviceState.response);
 
-  const addHostDown = () => {
-    // clone the ref object (it's read only)
-    const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
-    const hostlist = cloned;
-    
-    if (Object.keys(hostlist).length === 0) {
-      return;
-    }
-    
-    // loop through hostProblemsArray, set one to down, and set state
-    Object.keys(hostlist).some(key => {
-      // "UP" and "not SOFT"
-      if (hostlist[key].status === 2) {
-        // Set status to DOWN
-        hostlist[key].status = 4;
-        hostlist[key].last_time_up = new Date().getTime();
-        return true;
-      }
-      return false;
-    });
+	const addHostDown = () => {
+		// clone the ref object (it's read only)
+		const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
+		const hostlist = cloned;
 
-    // set back into ref
-    hostlistRef.current = hostlist;
+		if (Object.keys(hostlist).length === 0) {
+			return;
+		}
 
-    // convert object to array
-    const hostProblemsArray = convertHostObjectToArray(hostlist);
+		// loop through hostProblemsArray, set one to down, and set state
+		Object.keys(hostlist).some(key => {
+			// "UP" and "not SOFT"
+			if (hostlist[key].status === 2) {
+				// Set status to DOWN
+				hostlist[key].status = 4;
+				hostlist[key].last_time_up = new Date().getTime();
+				return true;
+			}
+			return false;
+		});
 
-    // set state
-    setHostState(curr => ({
-      ...curr,
-      response: hostlist,
-      problemsArray: hostProblemsArray
-    }));
+		// set back into ref
+		hostlistRef.current = hostlist;
 
-  };
+		// convert object to array
+		const hostProblemsArray = convertHostObjectToArray(hostlist);
 
-  const removeHostDown = () => {
-    // clone the ref object (it's read only)
-    const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
-    const hostlist = cloned;
-    
-    if (Object.keys(hostlist).length === 0) {
-      return;
-    }
-    
-    // loop through hostProblemsArray, set one to down, and set state
-    Object.keys(hostlist).some(key => {
-      // If status is "DOWN"
-      if (hostlist[key].status === 4) {
-        // Set status to "UP"
-        hostlist[key].status = 2;
-        hostlist[key].last_time_up = new Date().getTime();
-        return true;
-      }
-      return false;
-    });
+		// set state
+		setHostState(curr => ({
+			...curr,
+			response: hostlist,
+			problemsArray: hostProblemsArray
+		}));
 
-    // set back into ref
-    hostlistRef.current = hostlist;
+	};
 
-    // convert object to array
-    const hostProblemsArray = convertHostObjectToArray(hostlist);
+	const removeHostDown = () => {
+		// clone the ref object (it's read only)
+		const cloned = JSON.parse(JSON.stringify(hostlistRef.current));
+		const hostlist = cloned;
 
-    // set state
-    setHostState(curr => ({
-      ...curr,
-      response: hostlist,
-      problemsArray: hostProblemsArray
-    }));
-  };
+		if (Object.keys(hostlist).length === 0) {
+			return;
+		}
 
-  const addServiceWarning = () => {
-    addServiceStatus(4);
-  };
+		// loop through hostProblemsArray, set one to down, and set state
+		Object.keys(hostlist).some(key => {
+			// If status is "DOWN"
+			if (hostlist[key].status === 4) {
+				// Set status to "UP"
+				hostlist[key].status = 2;
+				hostlist[key].last_time_up = new Date().getTime();
+				return true;
+			}
+			return false;
+		});
 
-  const addServiceCritical = () => {
-    addServiceStatus(16);
-  };
+		// set back into ref
+		hostlistRef.current = hostlist;
 
-  const removeServiceWarning = () => {
-    removeServiceStatus(4);
-  };
+		// convert object to array
+		const hostProblemsArray = convertHostObjectToArray(hostlist);
 
-  const removeServiceCritical = () => {
-    removeServiceStatus(16);
-  };
+		// set state
+		setHostState(curr => ({
+			...curr,
+			response: hostlist,
+			problemsArray: hostProblemsArray
+		}));
+	};
 
-  const addServiceStatus = (status) => {
-    // clone the ref object (it's read only)
-    const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
-    const servicelist = cloned;
-    
-    //console.log('Demo addServiceStatus() serviceState', serviceState);
-    
-    if (Object.keys(servicelist).length === 0) {
-      return;
-    }
-    
-    // loop through serviceProblemsArray, set one to down, and set state
-    let done = false;
-    Object.keys(servicelist).some(hostkey => {
-      Object.keys(servicelist[hostkey]).some(key => {
-        if (servicelist[hostkey][key].status === 2) {
-          servicelist[hostkey][key].status = status;
-          servicelist[hostkey][key].last_time_up = new Date().getTime();
-          done = true;
-          return true;
-        }
-        return false;
-      });
-      if (done) { return true; }
-      return false;
-    });
+	const addServiceWarning = () => {
+		addServiceStatus(4);
+	};
 
-    // set back into ref
-    servicelistRef.current = servicelist;
+	const addServiceCritical = () => {
+		addServiceStatus(16);
+	};
 
-    const serviceProblemsArray = convertServiceObjectToArray(servicelist);    
+	const removeServiceWarning = () => {
+		removeServiceStatus(4);
+	};
 
-    // set state
-    setServiceState(curr => ({
-      ...curr,
-      response: servicelist,
-      problemsArray: serviceProblemsArray
-    }));
-  };
+	const removeServiceCritical = () => {
+		removeServiceStatus(16);
+	};
 
-  const removeServiceStatus = (status) => {
-    // clone the ref object (it's read only)
-    const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
-    const servicelist = cloned;
-    
-    if (Object.keys(servicelist).length === 0) {
-      return;
-    }
-    
-    // loop through serviceProblemsArray, set one to down, and set state
-    let done = false;
-    Object.keys(servicelist).some(hostkey => {
-      Object.keys(servicelist[hostkey]).some(key => {
-        if (servicelist[hostkey][key].status === status) {
-          servicelist[hostkey][key].status = 2;
-          servicelist[hostkey][key].last_time_up = new Date().getTime();
-          done = true;
-          return true;
-        }
-        return false;
-      });
-      if (done) { return true; }
-      return false;
-    });
+	const addServiceStatus = (status) => {
+		// clone the ref object (it's read only)
+		const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
+		const servicelist = cloned;
 
-    // set back into ref
-    servicelistRef.current = servicelist;
+		//console.log('Demo addServiceStatus() serviceState', serviceState);
 
-    const serviceProblemsArray = convertServiceObjectToArray(servicelist);
+		if (Object.keys(servicelist).length === 0) {
+			return;
+		}
 
-    // set state
-    setServiceState(curr => ({
-      ...curr,
-      response: servicelist,
-      problemsArray: serviceProblemsArray
-    }));
-  };
+		// loop through serviceProblemsArray, set one to down, and set state
+		let done = false;
+		Object.keys(servicelist).some(hostkey => {
+			Object.keys(servicelist[hostkey]).some(key => {
+				if (servicelist[hostkey][key].status === 2) {
+					servicelist[hostkey][key].status = status;
+					servicelist[hostkey][key].last_time_up = new Date().getTime();
+					done = true;
+					return true;
+				}
+				return false;
+			});
+			if (done) { return true; }
+			return false;
+		});
 
-  useEffect(() => {
-    //console.log('Demo isHostFakeDataSet changed');
+		// set back into ref
+		servicelistRef.current = servicelist;
 
-    if (isHostFakeDataSet) {
+		const serviceProblemsArray = convertServiceObjectToArray(servicelist);
 
-      //const cloned = JSON.parse(JSON.stringify(hostState.response));
-      const cloned = cloneDeep(hostState.response);
-      hostlistRef.current = cloned;
+		// set state
+		setServiceState(curr => ({
+			...curr,
+			response: servicelist,
+			problemsArray: serviceProblemsArray
+		}));
+	};
 
-      addHostDown();
-      addHostDown();
-      addHostDown();
-      
-      setTimeout(() => {
-        removeHostDown();
-      }, 10000);
+	const removeServiceStatus = (status) => {
+		// clone the ref object (it's read only)
+		const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
+		const servicelist = cloned;
 
-      setTimeout(() => {
-        removeHostDown();
-      }, 25000);
+		if (Object.keys(servicelist).length === 0) {
+			return;
+		}
 
-      setTimeout(() => {
-        removeHostDown();
-      }, 40000);
+		// loop through serviceProblemsArray, set one to down, and set state
+		let done = false;
+		Object.keys(servicelist).some(hostkey => {
+			Object.keys(servicelist[hostkey]).some(key => {
+				if (servicelist[hostkey][key].status === status) {
+					servicelist[hostkey][key].status = 2;
+					servicelist[hostkey][key].last_time_up = new Date().getTime();
+					done = true;
+					return true;
+				}
+				return false;
+			});
+			if (done) { return true; }
+			return false;
+		});
 
-      setTimeout(() => {
-        removeHostDown();
-  
-        // now at the end of the longest part of this automation, we set isVisible to true
-        // so that the interactive controls will display. We do not want people messing with them during the
-        // automatic demo.
-        
-        // though for right now since this is broken I'm going to hide the controls completely.
-        // TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
-        setIsVisible(true);
-  
-      }, 35000);
-      
-    }
+		// set back into ref
+		servicelistRef.current = servicelist;
 
-  }, [isHostFakeDataSet]);
+		const serviceProblemsArray = convertServiceObjectToArray(servicelist);
 
-  useEffect(() => {
-    //console.log('Demo isServiceFakeDataSet changed');
+		// set state
+		setServiceState(curr => ({
+			...curr,
+			response: servicelist,
+			problemsArray: serviceProblemsArray
+		}));
+	};
 
-    if (isServiceFakeDataSet) {
+	useEffect(() => {
+		//console.log('Demo isHostFakeDataSet changed');
 
-      //const cloned = JSON.parse(JSON.stringify(hostState.response));
-      const cloned = cloneDeep(serviceState.response);
-      servicelistRef.current = cloned;
+		if (isHostFakeDataSet) {
 
-      addServiceWarning();
-      addServiceWarning();
-      addServiceCritical();
-      addServiceCritical();
+			//const cloned = JSON.parse(JSON.stringify(hostState.response));
+			const cloned = cloneDeep(hostState.response);
+			hostlistRef.current = cloned;
 
-      setTimeout(() => {
-        removeServiceWarning();
-      }, 6000);
+			addHostDown();
+			addHostDown();
+			addHostDown();
 
-      setTimeout(() => {
-        addServiceWarning();
-      }, 12000);
+			setTimeout(() => {
+				removeHostDown();
+			}, 10000);
 
-      setTimeout(() => {
-        removeServiceCritical();
-      }, 15000);
+			setTimeout(() => {
+				removeHostDown();
+			}, 25000);
 
-      setTimeout(() => {
-        removeServiceWarning();
-      }, 20000);
+			setTimeout(() => {
+				removeHostDown();
+			}, 40000);
 
-      setTimeout(() => {
-        removeServiceCritical();
-      }, 30000);
+			setTimeout(() => {
+				removeHostDown();
 
-      setTimeout(() => {
-        removeServiceWarning();
-        removeServiceWarning();  
-      }, 35000);
-      
-    }
+				// now at the end of the longest part of this automation, we set isVisible to true
+				// so that the interactive controls will display. We do not want people messing with them during the
+				// automatic demo.
 
-  }, [isServiceFakeDataSet]);
+				// though for right now since this is broken I'm going to hide the controls completely.
+				// TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
+				setIsVisible(true);
 
-  
+			}, 35000);
 
-  // only show the demo controls once.
-  
-  
+		}
 
-  return (
-    
-    <div className={isVisible ? 'Demo' : 'Demo display-none'}>
-      <div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
-      <table>
-        <tbody>
-          <tr>
-            {/*<td>
+	}, [isHostFakeDataSet]);
+
+	useEffect(() => {
+		//console.log('Demo isServiceFakeDataSet changed');
+
+		if (isServiceFakeDataSet) {
+
+			//const cloned = JSON.parse(JSON.stringify(hostState.response));
+			const cloned = cloneDeep(serviceState.response);
+			servicelistRef.current = cloned;
+
+			addServiceWarning();
+			addServiceWarning();
+			addServiceCritical();
+			addServiceCritical();
+
+			setTimeout(() => {
+				removeServiceWarning();
+			}, 6000);
+
+			setTimeout(() => {
+				addServiceWarning();
+			}, 12000);
+
+			setTimeout(() => {
+				removeServiceCritical();
+			}, 15000);
+
+			setTimeout(() => {
+				removeServiceWarning();
+			}, 20000);
+
+			setTimeout(() => {
+				removeServiceCritical();
+			}, 30000);
+
+			setTimeout(() => {
+				removeServiceWarning();
+				removeServiceWarning();
+			}, 35000);
+
+		}
+
+	}, [isServiceFakeDataSet]);
+
+
+
+	// only show the demo controls once.
+
+
+
+	return (
+
+		<div className={isVisible ? 'Demo' : 'Demo display-none'}>
+			<div className="demo-header">NagiosTV demo mode - Try adding some fake issues!</div>
+			<table>
+				<tbody>
+					<tr>
+						{/*<td>
               <div className="summary-label summary-label-red">Host DOWN</div>
               <button onClick={addHostDown}>Add</button>
               <button onClick={removeHostDown}>Remove</button>
             </td>*/}
-            <td>
-              <div className="summary-label summary-label-yellow">Service WARNING</div>
-              <button onClick={addServiceWarning}>Add</button>
-              <button onClick={removeServiceWarning}>Remove</button>
-            </td>
-            <td>
-              <div className="summary-label summary-label-red">Service CRITICAL</div>
-              <button onClick={addServiceCritical}>Add</button>
-              <button onClick={removeServiceCritical}>Remove</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  );
-  
+						<td>
+							<div className="summary-label summary-label-yellow">Service WARNING</div>
+							<button onClick={addServiceWarning}>Add</button>
+							<button onClick={removeServiceWarning}>Remove</button>
+						</td>
+						<td>
+							<div className="summary-label summary-label-red">Service CRITICAL</div>
+							<button onClick={addServiceCritical}>Add</button>
+							<button onClick={removeServiceCritical}>Remove</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	);
+
 };
 
 export default Demo;

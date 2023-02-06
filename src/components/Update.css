@@ -17,62 +17,62 @@
  */
 
 .Update textarea {
-  width: 95%;
-  height: 200px;
-  background-color: #222;
-  color: lime;
-  border: 2px solid yellow;
+	width: 95%;
+	height: 200px;
+	background-color: #222;
+	color: lime;
+	border: 2px solid yellow;
 }
 
 .Update a {
-  color: #6fbbf3;
+	color: #6fbbf3;
 }
 
 .Update h3 {
-  color:#adadad;
+	color: #adadad;
 }
 
 .auto-update-error {
-  background-color: red;
-  color: yellow;
-  border-radius: 4px;
-  display: inline-block;
-  padding: 3px 8px;
+	background-color: red;
+	color: yellow;
+	border-radius: 4px;
+	display: inline-block;
+	padding: 3px 8px;
 }
 
 .auto-update-chown-command {
-  border: 1px solid #ccc;
-  background-color: #444;
-  display: inline-block;
-  padding: 2px 6px;
+	border: 1px solid #ccc;
+	background-color: #444;
+	display: inline-block;
+	padding: 2px 6px;
 }
 
 .auto-update-button {
-  color: #0f0;
-  border: 2px solid green;
-  background-color: #333;
-  font-weight: 700;
-  padding: 5px 10px;
-  cursor: pointer;
+	color: #0f0;
+	border: 2px solid green;
+	background-color: #333;
+	font-weight: 700;
+	padding: 5px 10px;
+	cursor: pointer;
 }
 
 .auto-update-button:disabled {
-  opacity: 0.6 !important;
-  cursor: default !important;
+	opacity: 0.6 !important;
+	cursor: default !important;
 }
 
 .update-help-message {
-  border: 1px solid #464646;
-  border-radius: 5px;
-  background-color: #222;
-  padding: 10px;
+	border: 1px solid #464646;
+	border-radius: 5px;
+	background-color: #222;
+	padding: 10px;
 }
 
 .update-server-setup-instructions {
-  background-color: #003a00;
-  margin-top: 20px;
-  border: 1px solid lime;
-  border-radius: 5px;
-  padding: 15px;
+	background-color: #003a00;
+	margin-top: 20px;
+	border: 1px solid lime;
+	border-radius: 5px;
+	padding: 15px;
 
 }

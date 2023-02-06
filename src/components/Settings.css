@@ -17,13 +17,13 @@
  */
 
 .Settings {
-    background-color: #111;
-    position: relative;
-    margin-bottom: 30px;
+	background-color: #111;
+	position: relative;
+	margin-bottom: 30px;
 }
 
 .Settings select {
-    border: 1px solid #ccc;
+	border: 1px solid #ccc;
 }
 
 /* .settings-top-space-for-header {
@@ -31,170 +31,178 @@
 } */
 
 .settings-header {
-    position: sticky;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    background-color: #2f2f2f;
-    border: 0px solid orange;
-    z-index: 2;
+	position: sticky;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	background-color: #2f2f2f;
+	border: 0px solid orange;
+	z-index: 2;
 }
 
 .settings-header-heading {
-    padding-top: 15px;
-    padding-bottom: 10px;
-    font-size: 1.1em;
-    margin-left: 15px;
-    color: #ddd;
+	padding-top: 15px;
+	padding-bottom: 10px;
+	font-size: 1.1em;
+	margin-left: 15px;
+	color: #ddd;
 }
 
 .settings-header-buttons {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    bottom: 5px;
-    font-size: 0.9em;
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	bottom: 5px;
+	font-size: 0.9em;
 }
 
 .settings-header-buttons button {
-    font-size: 1.0em;
+	font-size: 1.0em;
 }
 
 .SettingsCloseButton {
-    background-color: #333;
-    color: orange;
-    border: 2px solid orange;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin-left: 10px;
+	background-color: #333;
+	color: orange;
+	border: 2px solid orange;
+	border-radius: 5px;
+	padding: 5px 10px;
+	cursor: pointer;
+	margin-left: 10px;
 }
+
 .SettingSaveMessage {
-    display: inline-block;
+	display: inline-block;
 }
+
 .SettingsSaveButton {
-    background-color: #333;
-    color: lime;
-    border: 2px solid green;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
+	background-color: #333;
+	color: lime;
+	border: 2px solid green;
+	border-radius: 5px;
+	padding: 5px 10px;
+	cursor: pointer;
 }
+
 .SettingsDeleteCookieButton {
-    background-color: #333;
-    color: orange;
-    font-weight: bold;
-    font-size: 0.8em !important;
-    border: 2px solid orange;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin-top: 8px;
+	background-color: #333;
+	color: orange;
+	font-weight: bold;
+	font-size: 0.8em !important;
+	border: 2px solid orange;
+	padding: 5px 10px;
+	cursor: pointer;
+	margin-top: 8px;
 }
 
 .SettingsSaveToServerButton {
-    background-color: #333;
-    color: lime;
-    font-weight: bold;
-    border: 2px solid green;
-    padding: 5px 10px;
-    cursor: pointer;
-    margin-left: 10px;
+	background-color: #333;
+	color: lime;
+	font-weight: bold;
+	border: 2px solid green;
+	padding: 5px 10px;
+	cursor: pointer;
+	margin-left: 10px;
 }
+
 .SettingsSaveToServerButton:disabled {
-    background-color: #333;
-    color: lime;
-    font-weight: bold;
-    border: 2px solid green;
-    padding: 5px 10px;
-    cursor: default;
-    margin-left: 10px;
-    opacity: 0.6;
+	background-color: #333;
+	color: lime;
+	font-weight: bold;
+	border: 2px solid green;
+	padding: 5px 10px;
+	cursor: default;
+	margin-left: 10px;
+	opacity: 0.6;
 }
 
 .SettingsSection {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 10px;
-    background-color: #444;
-}
-.SettingsSection button {
-    
+	border: 1px solid #eee;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: 10px;
+	background-color: #444;
 }
 
+.SettingsSection button {}
+
 .raw-json-settings {
-    border: 2px solid #424242;
-    background-color: #333;
-    padding: 10px;
-    margin-top: 10px;
-    margin-right: 20px;
-    width: 100%;
-    max-width: 80vw;
-    min-height: 100px;
-    word-wrap: break-word;
-    white-space: pre-wrap;
- 
+	border: 2px solid #424242;
+	background-color: #333;
+	padding: 10px;
+	margin-top: 10px;
+	margin-right: 20px;
+	width: 100%;
+	max-width: 80vw;
+	min-height: 100px;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+
 }
 
 .SettingsCenterDiv {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .SettingsTestButton {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 table.SettingsTable {
-    border: 1px solid rgb(60, 60, 60);
-    background-color: rgb(38, 38, 38);
-    width: 100%;
-    margin-bottom: 10px;
-    margin-top: 15px;
+	border: 1px solid rgb(60, 60, 60);
+	background-color: rgb(38, 38, 38);
+	width: 100%;
+	margin-bottom: 10px;
+	margin-top: 15px;
 }
 
 table.SettingsTable td.SettingsTableHeader {
-    background-color: #333;
-    border-bottom: 2px solid #444;
-    padding: 9px;
-    margin-bottom: 5px;
+	background-color: #333;
+	border-bottom: 2px solid #444;
+	padding: 9px;
+	margin-bottom: 5px;
 }
+
 table.SettingsTable th {
-    text-align: right;
-    padding: 8px;
-    white-space: nowrap;
-    vertical-align: top;
+	text-align: right;
+	padding: 8px;
+	white-space: nowrap;
+	vertical-align: top;
 }
+
 table.SettingsTable td {
-    padding: 4px;
-    width: 70%;
+	padding: 4px;
+	width: 70%;
 }
 
 table.SettingsTable input[type=text] {
-    font-size: 1.1em;
-    width: 80%;
+	font-size: 1.1em;
+	width: 80%;
 }
+
 table.SettingsTable input[type=number] {
-    font-size: 1.1em;
-    width: 100px;
+	font-size: 1.1em;
+	width: 100px;
 }
+
 table.SettingsTable button {
-    font-size: 1.1em;
-    border-radius: 4px;
+	font-size: 1.1em;
+	border-radius: 4px;
 }
+
 table.SettingsTable select {
-    font-size: 1.1em;
+	font-size: 1.1em;
 }
 
 .Settings .input-error {
-    background-color: pink;
+	background-color: pink;
 }
 
 .Settings .settings-unsaved-changes-text {
-    background-color: brown;
-    color: yellow;
-    padding: 4px 8px;
-    border-radius: 4px;
+	background-color: brown;
+	color: yellow;
+	padding: 4px 8px;
+	border-radius: 4px;
 }

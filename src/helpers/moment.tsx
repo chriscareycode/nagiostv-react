@@ -146,124 +146,124 @@ import 'moment/locale/zh-hk';
 import 'moment/locale/zh-tw';
 
 export function listLocales() {
-  // I do the sort because Moment is returning 'en' first on the list
-  // and I want it to be alphabetical
-  return moment.locales().sort((a, b) => {
-    if (a < b) { return -1; }
-    if (a > b) { return 1; }
-    return 0;
-  });
+	// I do the sort because Moment is returning 'en' first on the list
+	// and I want it to be alphabetical
+	return moment.locales().sort((a, b) => {
+		if (a < b) { return -1; }
+		if (a > b) { return 1; }
+		return 0;
+	});
 }
 
 export function momentFormatDateTime(date, locale, format) {
-  if (date === 0) { return 'Never'; }
-  if (date === 'now') { date = new Date().getTime() }
-  if (!locale) { locale = 'en'; }
-  if (format) {
-    var m = moment(date).locale(locale).format(format);
-    return m;
-  } else {
-    return 'Unknown format';
-  }
+	if (date === 0) { return 'Never'; }
+	if (date === 'now') { date = new Date().getTime() }
+	if (!locale) { locale = 'en'; }
+	if (format) {
+		var m = moment(date).locale(locale).format(format);
+		return m;
+	} else {
+		return 'Unknown format';
+	}
 }
 
 // TODO: rename this to formatDateTimeDHMS
 export function formatDateTime(date) {
 	var m = moment(date);
-  const diff = m.diff(moment());
-  const tempTime = moment.duration(diff);
+	const diff = m.diff(moment());
+	const tempTime = moment.duration(diff);
 
-  let ret = '';
-  if (tempTime.years()) { ret += tempTime.years() + 'y '; }
-  if (tempTime.months()) { ret += tempTime.months() + 'm '; }
-  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+	let ret = '';
+	if (tempTime.years()) { ret += tempTime.years() + 'y '; }
+	if (tempTime.months()) { ret += tempTime.months() + 'm '; }
+	if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+	if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+	if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
 
-  return ret + tempTime.seconds() + 's';
+	return ret + tempTime.seconds() + 's';
 }
 
 export function formatDateTimeAgo(date) {
 	var m = moment(date);
-  const diff = m.diff(moment()) * -1;
-  const tempTime = moment.duration(diff);
+	const diff = m.diff(moment()) * -1;
+	const tempTime = moment.duration(diff);
 
-  let ret = '';
-  if (tempTime.years()) { ret += tempTime.years() + 'y '; }
-  if (tempTime.months()) { ret += tempTime.months() + 'm '; }
-  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  // only show minute or second if we are at less than 1 hour
-  if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
-  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
-  if (ret.length === 0) { ret = '0s'; }
+	let ret = '';
+	if (tempTime.years()) { ret += tempTime.years() + 'y '; }
+	if (tempTime.months()) { ret += tempTime.months() + 'm '; }
+	if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+	if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+	// only show minute or second if we are at less than 1 hour
+	if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+	if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+	if (ret.length === 0) { ret = '0s'; }
 
-  return ret;
+	return ret;
 }
 
 export function formatDateTimeAgoLong(date) {
 	var m = moment(date);
-  const diff = m.diff(moment()) * -1;
-  const tempTime = moment.duration(diff);
+	const diff = m.diff(moment()) * -1;
+	const tempTime = moment.duration(diff);
 
-  let ret = '';
-  if (tempTime.years()) { ret += tempTime.years() + 'y '; }
-  if (tempTime.months()) { ret += tempTime.months() + 'm '; }
-  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
-  // only show second if we are at less than 1 hour
-  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
-  if (ret.length === 0) { ret = '0s'; }
+	let ret = '';
+	if (tempTime.years()) { ret += tempTime.years() + 'y '; }
+	if (tempTime.months()) { ret += tempTime.months() + 'm '; }
+	if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+	if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+	if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+	// only show second if we are at less than 1 hour
+	if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+	if (ret.length === 0) { ret = '0s'; }
 
-  return ret;
+	return ret;
 }
 
 // This one starts red and moves to green over time (used for quiet for)
 // The idea is a recent issue it will show red, green means quiet for a while, nothin happening.
 export function formatDateTimeAgoColorQuietFor(date) {
-  
+
 	var m = moment(date);
-  const diff = m.diff(moment()) * -1;
-  const tempTime = moment.duration(diff);
+	const diff = m.diff(moment()) * -1;
+	const tempTime = moment.duration(diff);
 
-  let ret = '';
-  if (tempTime.years()) { ret += tempTime.years() + 'y '; }
-  if (tempTime.months()) { ret += tempTime.months() + 'm '; }
-  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  // only show minute or second if we are at less than 1 hour
-  if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
-  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
-  if (ret.length === 0) { ret = '0s'; }
+	let ret = '';
+	if (tempTime.years()) { ret += tempTime.years() + 'y '; }
+	if (tempTime.months()) { ret += tempTime.months() + 'm '; }
+	if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+	if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+	// only show minute or second if we are at less than 1 hour
+	if (tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+	if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+	if (ret.length === 0) { ret = '0s'; }
 
-  let wrapperClass = 'color-red';
-  if (tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() > 2) { wrapperClass = 'color-orange'; }
-  if (tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() > 5) { wrapperClass = 'color-yellow'; }
-  if (tempTime.minutes() >= 10) { wrapperClass = 'color-green'; }
+	let wrapperClass = 'color-red';
+	if (tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() > 2) { wrapperClass = 'color-orange'; }
+	if (tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() > 5) { wrapperClass = 'color-yellow'; }
+	if (tempTime.minutes() >= 10) { wrapperClass = 'color-green'; }
 
-  return <span className={wrapperClass}>{ret}</span>;
+	return <span className={wrapperClass}>{ret}</span>;
 }
 
 export function formatDateTimeAgoColor(date) {
-  
+
 	var m = moment(date);
-  const diff = m.diff(moment()) * -1;
-  const tempTime = moment.duration(diff);
+	const diff = m.diff(moment()) * -1;
+	const tempTime = moment.duration(diff);
 
-  let ret = '';
-  if (tempTime.years()) { ret += tempTime.years() + 'y '; }
-  if (tempTime.months()) { ret += tempTime.months() + 'm '; }
-  if (tempTime.days()) { ret += tempTime.days() + 'd '; }
-  if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
-  // only show minute or second if we are at less than 1 hour
-  if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
-  if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
-  if (ret.length === 0) { ret = '0s'; }
+	let ret = '';
+	if (tempTime.years()) { ret += tempTime.years() + 'y '; }
+	if (tempTime.months()) { ret += tempTime.months() + 'm '; }
+	if (tempTime.days()) { ret += tempTime.days() + 'd '; }
+	if (tempTime.hours()) { ret += tempTime.hours() + 'h '; }
+	// only show minute or second if we are at less than 1 hour
+	if (ret.length === 0 && tempTime.minutes()) { ret += tempTime.minutes() + 'm '; }
+	if (ret.length === 0 && tempTime.seconds()) { ret += tempTime.seconds() + 's '; }
+	if (ret.length === 0) { ret = '0s'; }
 
-  let wrapperClass = 'color-green';
-  if (tempTime.days() === 0 && tempTime.hours() >= 1) { wrapperClass = 'color-orange'; }
-  if (tempTime.days() >= 1) { wrapperClass = 'color-red'; }
+	let wrapperClass = 'color-green';
+	if (tempTime.days() === 0 && tempTime.hours() >= 1) { wrapperClass = 'color-orange'; }
+	if (tempTime.days() >= 1) { wrapperClass = 'color-red'; }
 
-  return <span className={wrapperClass}>{ret}</span>;
+	return <span className={wrapperClass}>{ret}</span>;
 }

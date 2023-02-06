@@ -22,24 +22,24 @@ import './Help.css';
 
 const Help = () => {
 
-  return (
-    <div className="Help">
-      <h2>NagiosTV Info and Help</h2>
+	return (
+		<div className="Help">
+			<h2>NagiosTV Info and Help</h2>
 
-      <div style={{ position: 'absolute', top: 20, right: 20 }}>
-        <Link to="/"><button>Back to Dashboard</button></Link>
-      </div>
+			<div style={{ position: 'absolute', top: 20, right: 20 }}>
+				<Link to="/"><button>Back to Dashboard</button></Link>
+			</div>
 
-      <div className="update-help-message">
-        <div>NagiosTV website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">https://nagiostv.com</a></div>
-        <br />
-        <div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">https://github.com/chriscareycode/nagiostv-react</a></div>
-        <br />
-        <div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">https://chriscarey.com</a></div>
-      </div>      
-    </div>
-  );
-  
+			<div className="update-help-message">
+				<div>NagiosTV website: <a href="https://nagiostv.com" target="_blank" rel="noopener noreferrer">https://nagiostv.com</a></div>
+				<br />
+				<div>Source code at GitHub: <a href="https://github.com/chriscareycode/nagiostv-react" target="_blank" rel="noopener noreferrer">https://github.com/chriscareycode/nagiostv-react</a></div>
+				<br />
+				<div>NagiosTV by Chris Carey <a href="https://chriscarey.com/" target="_blank" rel="noopener noreferrer">https://chriscarey.com</a></div>
+			</div>
+		</div>
+	);
+
 }
 
 export default Help;

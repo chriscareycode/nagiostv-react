@@ -21,122 +21,122 @@ const useFakeSampleData = urlParams.get('fakedata') === 'true' || urlParams.get(
 // state which is used internally by NagiosTV
 //**************************************************************************** */
 
-const bigStateInitial: BigState = { 
+const bigStateInitial: BigState = {
 
-  currentVersion: 76, // This gets incremented with each new release (manually)
-  currentVersionString: '0.8.6', // This gets incremented with each new release (manually)
-  latestVersion: 0,
-  latestVersionString: '',
-  lastVersionCheckTime: 0,
+	currentVersion: 76, // This gets incremented with each new release (manually)
+	currentVersionString: '0.8.6', // This gets incremented with each new release (manually)
+	latestVersion: 0,
+	latestVersionString: '',
+	lastVersionCheckTime: 0,
 
-  isDemoMode,
-  isDebugMode,
-  isStressTestMode,
-  useFakeSampleData,
+	isDemoMode,
+	isDebugMode,
+	isStressTestMode,
+	useFakeSampleData,
 
-  isRemoteSettingsLoaded: false,
-  isCookieLoaded: false, // I have this to render things only after cookie is loaded
-  isDoneLoading: false,
+	isRemoteSettingsLoaded: false,
+	isCookieLoaded: false, // I have this to render things only after cookie is loaded
+	isDoneLoading: false,
 
-  hideFilters: true,
-  isLeftPanelOpen: false,
+	hideFilters: true,
+	isLeftPanelOpen: false,
 };
 
 //**************************************************************************** */
 // state which is loaded and saved into client cookie / server settings
 //**************************************************************************** */
 export const clientSettingsInitial: ClientSettings = {
-  
-  titleString: 'NagiosTV',
-  dataSource: 'cgi',
-  baseUrl: '/nagios/cgi-bin/', // Base path to Nagios cgi-bin folder
-  livestatusPath: 'connectors/livestatus.php',
 
-  fetchHostFrequency: 30, // seconds
-  fetchServiceFrequency: 30, // seconds
-  fetchAlertFrequency: 60, // seconds
-  fetchHostGroupFrequency: 3600, // seconds
-  fetchCommentFrequency: 120, // seconds
+	titleString: 'NagiosTV',
+	dataSource: 'cgi',
+	baseUrl: '/nagios/cgi-bin/', // Base path to Nagios cgi-bin folder
+	livestatusPath: 'connectors/livestatus.php',
 
-  alertDaysBack: 30,
-  alertHoursBack: 24,
-  alertMaxItems: 5000,
+	fetchHostFrequency: 30, // seconds
+	fetchServiceFrequency: 30, // seconds
+	fetchAlertFrequency: 60, // seconds
+	fetchHostGroupFrequency: 3600, // seconds
+	fetchCommentFrequency: 120, // seconds
 
-  hostsAndServicesSideBySide: false,
-  hideSummarySection: true,
-  hideServiceSection: false,
-  hideServicePending: false,
-  hideServiceWarning: false,
-  hideServiceUnknown: false,
-  hideServiceCritical: false,
-  hideServiceAcked: false,
-  hideServiceScheduled: false,
-  hideServiceFlapping: false,
-  hideServiceSoft: false,
-  hideServiceNotificationsDisabled: false,
-  serviceSortOrder: 'newest',
+	alertDaysBack: 30,
+	alertHoursBack: 24,
+	alertMaxItems: 5000,
 
-  hideHostSection: false,
-  hideHostPending: false,
-  hideHostDown: false,
-  hideHostUnreachable: false,
-  hideHostAcked: false,
-  hideHostScheduled: false,
-  hideHostFlapping: false,
-  hideHostSoft: false,
-  hideHostNotificationsDisabled: false,
-  hostSortOrder: 'newest',
+	hostsAndServicesSideBySide: false,
+	hideSummarySection: true,
+	hideServiceSection: false,
+	hideServicePending: false,
+	hideServiceWarning: false,
+	hideServiceUnknown: false,
+	hideServiceCritical: false,
+	hideServiceAcked: false,
+	hideServiceScheduled: false,
+	hideServiceFlapping: false,
+	hideServiceSoft: false,
+	hideServiceNotificationsDisabled: false,
+	serviceSortOrder: 'newest',
 
-  hideHistory: false,
-  hideHistoryTitle: false,
-  hideHistory24hChart: false,
-  hideHistoryChart: false,
+	hideHostSection: false,
+	hideHostPending: false,
+	hideHostDown: false,
+	hideHostUnreachable: false,
+	hideHostAcked: false,
+	hideHostScheduled: false,
+	hideHostFlapping: false,
+	hideHostSoft: false,
+	hideHostNotificationsDisabled: false,
+	hostSortOrder: 'newest',
 
-  hideAlertSoft: false,
+	hideHistory: false,
+	hideHistoryTitle: false,
+	hideHistory24hChart: false,
+	hideHistoryChart: false,
 
-  hostgroupFilter: '',
-  servicegroupFilter: '',
+	hideAlertSoft: false,
 
-  versionCheckDays: 1,
+	hostgroupFilter: '',
+	servicegroupFilter: '',
 
-  language: 'English',
-  locale: 'en',
-  dateFormat: 'llll',
-  clockDateFormat: 'll',
-  clockTimeFormat: 'LTS',
+	versionCheckDays: 1,
 
-  // audio and visual
-  fontSizeEm: '1em',
-  customLogoEnabled: false,
-  customLogoUrl: './sample-image/resedit.png',
-  flynnEnabled: false,
-  flynnConcernedAt: 1,
-  flynnAngryAt: 2,
-  flynnBloodyAt: 4,
-  flynnCssScale: '0.5',
-  showEmoji: false,
-  speakItems: false,
-  speakItemsVoice: '',
-  playSoundEffects: false,
-  soundEffectCritical: './sample-audio/critical.mp3',
-  soundEffectWarning: './sample-audio/warning.mp3',
-  soundEffectOk: './sample-audio/ok.mp3',
-  showNextCheckInProgressBar: true,
-  hideHamburgerMenu: false,
-  hideBottomMenu: false,
-  automaticScroll: false,
-  automaticScrollTimeMultiplier: 4,
-  automaticScrollWaitSeconds: 10,
-  showMiniMap: false,
-  miniMapWidth: 120,
+	language: 'English',
+	locale: 'en',
+	dateFormat: 'llll',
+	clockDateFormat: 'll',
+	clockTimeFormat: 'LTS',
+
+	// audio and visual
+	fontSizeEm: '1em',
+	customLogoEnabled: false,
+	customLogoUrl: './sample-image/resedit.png',
+	flynnEnabled: false,
+	flynnConcernedAt: 1,
+	flynnAngryAt: 2,
+	flynnBloodyAt: 4,
+	flynnCssScale: '0.5',
+	showEmoji: false,
+	speakItems: false,
+	speakItemsVoice: '',
+	playSoundEffects: false,
+	soundEffectCritical: './sample-audio/critical.mp3',
+	soundEffectWarning: './sample-audio/warning.mp3',
+	soundEffectOk: './sample-audio/ok.mp3',
+	showNextCheckInProgressBar: true,
+	hideHamburgerMenu: false,
+	hideBottomMenu: false,
+	automaticScroll: false,
+	automaticScrollTimeMultiplier: 4,
+	automaticScrollWaitSeconds: 10,
+	showMiniMap: false,
+	miniMapWidth: 120,
 };
 
 export const bigStateAtom = atom({
-  key: 'bigStateAtom',
-  default: bigStateInitial,
+	key: 'bigStateAtom',
+	default: bigStateInitial,
 });
 
 export const clientSettingsAtom = atom({
-  key: 'clientSettingsAtom',
-  default: clientSettingsInitial,
+	key: 'clientSettingsAtom',
+	default: clientSettingsInitial,
 });

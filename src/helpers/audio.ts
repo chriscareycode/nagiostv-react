@@ -25,102 +25,102 @@
 import { debounce } from 'lodash';
 
 // debounce the playSoundEffect function so multiple sounds at the same time wont freak out the audio engine
-export const playSoundEffectDebounced = debounce(function(type, state, settings) {
-  playSoundEffect(type, state, settings);
+export const playSoundEffectDebounced = debounce(function (type, state, settings) {
+	playSoundEffect(type, state, settings);
 }, 200);
 
 // if sound is delimited by a semicolon; then choose one at random
 function pickSound(soundConfig) {
-  if (soundConfig.indexOf(';') !== -1) {
-    const soundArray = soundConfig.split(';').filter(sound => sound.length > 0);
-    return soundArray[Math.floor(Math.random() * soundArray.length)];
-  }
-  return soundConfig;
+	if (soundConfig.indexOf(';') !== -1) {
+		const soundArray = soundConfig.split(';').filter(sound => sound.length > 0);
+		return soundArray[Math.floor(Math.random() * soundArray.length)];
+	}
+	return soundConfig;
 }
 
 // playSoundEffect
 export function playSoundEffect(type, state, settings) {
-  
-  const audioCritical = pickSound(settings.soundEffectCritical);
-  const audioWarning = pickSound(settings.soundEffectWarning);
-  const audioOk = pickSound(settings.soundEffectOk);
 
-  //console.log('playSoundEffect', type, state, audioCritical, audioWarning, audioOk);
+	const audioCritical = pickSound(settings.soundEffectCritical);
+	const audioWarning = pickSound(settings.soundEffectWarning);
+	const audioOk = pickSound(settings.soundEffectOk);
 
-  let audio;
+	//console.log('playSoundEffect', type, state, audioCritical, audioWarning, audioOk);
 
-  switch(type+state) {
-    case 'hostdown':
-    case 'hostunreachable':
-      audio = new Audio(audioCritical);
-      break;
-    case 'hostup':
-      audio = new Audio(audioOk);
-      break;
-    case 'servicecritical':
-      audio = new Audio(audioCritical);
-      break;
-    case 'servicewarning':
-      audio = new Audio(audioWarning);
-      break;
-    case 'serviceok':
-      audio = new Audio(audioOk);
-      break;
-    default:
-      break;
-  }
+	let audio;
 
-  if (audio) {
-    const promise = audio.play();
-    promise.catch((err) => {
-      if (err instanceof DOMException) {
-        console.log(err.message);
-        //console.log(err.code);
-        //console.log(err.name);
-        
-        // TODO: pop up a message to the UI. Not just console.log here
-        console.log('Blocked by autoplay prevention. Touch the UI to enable sound');
-      } else {
-        console.log('error');
-        console.log(err);
-        console.log(typeof err);
-      }
-    });
-  }
+	switch (type + state) {
+		case 'hostdown':
+		case 'hostunreachable':
+			audio = new Audio(audioCritical);
+			break;
+		case 'hostup':
+			audio = new Audio(audioOk);
+			break;
+		case 'servicecritical':
+			audio = new Audio(audioCritical);
+			break;
+		case 'servicewarning':
+			audio = new Audio(audioWarning);
+			break;
+		case 'serviceok':
+			audio = new Audio(audioOk);
+			break;
+		default:
+			break;
+	}
+
+	if (audio) {
+		const promise = audio.play();
+		promise.catch((err) => {
+			if (err instanceof DOMException) {
+				console.log(err.message);
+				//console.log(err.code);
+				//console.log(err.name);
+
+				// TODO: pop up a message to the UI. Not just console.log here
+				console.log('Blocked by autoplay prevention. Touch the UI to enable sound');
+			} else {
+				console.log('error');
+				console.log(err);
+				console.log(typeof err);
+			}
+		});
+	}
 }
 
 function massageSpeakingWords(words) {
-  // Convert NEMS uppercase to lowercase which speaks it better
-  const newWords = words.replace('NEMS', 'nems');
-  
-  return newWords;
+	// Convert NEMS uppercase to lowercase which speaks it better
+	const newWords = words.replace('NEMS', 'nems');
+
+	return newWords;
 }
 
 export function speakAudio(words, voice) {
-  
-  //console.log('speakAudio', words, voice);
-  const massagedWords = massageSpeakingWords(words);
 
-  let sayWhat;
-  try {
-    sayWhat = new SpeechSynthesisUtterance(massagedWords);
-  } catch(e) {
-    console.log('SpeechSynthesisUtterance not supported on this browser');
-    return;
-  }
+	//console.log('speakAudio', words, voice);
+	const massagedWords = massageSpeakingWords(words);
 
-  // test for window.speechSynthesis
-  if (!window.speechSynthesis) {
-    console.log('speechSynthesis not supported on this browser');
-    return;
-  }
+	let sayWhat;
+	try {
+		sayWhat = new SpeechSynthesisUtterance(massagedWords);
+	} catch (e) {
+		console.log('SpeechSynthesisUtterance not supported on this browser');
+		return;
+	}
 
-  if (voice) {
-    let mySpeechSynthesisVoice = window.speechSynthesis.getVoices().filter(v => v.name === voice);
-    if (mySpeechSynthesisVoice.length > 0) {
-      sayWhat.voice = mySpeechSynthesisVoice[0];
-    }
-  }
-  window.speechSynthesis.speak(sayWhat);
-  
+	// test for window.speechSynthesis
+	if (!window.speechSynthesis) {
+		console.log('speechSynthesis not supported on this browser');
+		return;
+	}
+
+	if (voice) {
+		let mySpeechSynthesisVoice = window.speechSynthesis.getVoices().filter(v => v.name === voice);
+		if (mySpeechSynthesisVoice.length > 0) {
+			sayWhat.voice = mySpeechSynthesisVoice[0];
+		}
+	}
+	window.speechSynthesis.speak(sayWhat);
+
 }
