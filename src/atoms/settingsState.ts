@@ -126,6 +126,7 @@ export const clientSettingsInitial: ClientSettings = {
   hideBottomMenu: false,
   automaticScroll: false,
   automaticScrollTimeMultiplier: 4,
+  automaticScrollWaitSeconds: 10,
   showMiniMap: false,
   miniMapWidth: 120,
 };

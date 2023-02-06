@@ -87,7 +87,10 @@ const Dashboard = () => {
             {!hideServiceSection && <ServiceSection />}
           </div>
         )}
-                    
+
+        {/* "AboveAlert" div (used for automatic scrolling routine) */}
+        <div className="AboveAlertScroll"></div>
+
         {/* Alert History Section */}
         {!hideHistory && <AlertSection />}
 

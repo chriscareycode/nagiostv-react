@@ -142,12 +142,12 @@ const Base = () => {
 											{/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
 											{automaticScroll === false && <ScrollToTop />}
 
-											{(isDoneLoading && automaticScroll) && <ScrollToSection
-												settingsObject={clientSettings}
-												automaticScrollTimeMultiplier={automaticScrollTimeMultiplier}
-											/>}
+											{(isDoneLoading && automaticScroll) && (
+												<ScrollToSection
+													clientSettings={clientSettings}
+												/>
+											)}
 										</div>
-
 									</Route>
 
 								</Switch>

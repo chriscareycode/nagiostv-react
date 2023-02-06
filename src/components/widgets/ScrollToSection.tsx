@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import $ from 'jquery';
+import { ClientSettings } from 'types/settings';
 
 const debug = false;
-const waitTime = 10 * 1000; // would be nice to be user adjustable
 const topBuffer = 0; // height of the menu bar
 const sectionBufferSubtract = 15;
 const scrollAreaSelector = '.vertical-scroll-dash';
 
-const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
+interface ScrollToSectionProps {
+	clientSettings: ClientSettings;
+}
+
+const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 	const scrollAreaElement = document.querySelector<HTMLElement>(scrollAreaSelector);
 
@@ -23,8 +27,8 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		if (AboveAlertScrollEl) {
 			//const yPos = AboveAlertScrollEl.offsetTop - AboveAlertScrollEl.scrollTop + AboveAlertScrollEl.clientTop;
 			const yPos = AboveAlertScrollEl.offsetTop + AboveAlertScrollEl.clientTop + topBuffer;
-			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl', yPos, window.innerHeight);
-			if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl2', AboveAlertScrollEl.offsetTop, AboveAlertScrollEl.scrollTop, AboveAlertScrollEl.clientTop);
+			//if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl', yPos, window.innerHeight);
+			//if (debug) console.log('ScrollToSection() scrollToNextSection() AboveAlertScrollEl2', AboveAlertScrollEl.offsetTop, AboveAlertScrollEl.scrollTop, AboveAlertScrollEl.clientTop);
 			if (yPos < window.innerHeight) {
 				if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. aborting scroll.', yPos, window.innerHeight, scrollAreaElement?.scrollTop);
 				// Though we cant just abort if the alerts is on screen. I think this could cause a bug where if items resolve
@@ -63,7 +67,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		if (currentSection === 'above-alert') {
 			const sectionEl = document.querySelector<HTMLElement>('.AboveAlertScroll');
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
+				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight - 60 }, animateSpeed);
 			}
 		}
 
@@ -101,23 +105,31 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 	}, []);
 
 	useEffect(() => {
-		if (debug) console.log('ScrollToSection() useEffect() trigger. Multiplier', automaticScrollTimeMultiplier);
+		if (debug) console.log('ScrollToSection() useEffect() trigger. Multiplier', clientSettings.automaticScrollTimeMultiplier);
+
+		const waitTime = clientSettings.automaticScrollWaitSeconds * 1000;
 
 		// Detect which sections we have
 		const sections: string[] = [];
+		// stop at top
 		sections.push('top');
-		//if (settingsObject.hideHostSection === false) { sections.push('host'); }
-		//if (settingsObject.hideServiceSection === false) { sections.push('service'); }
-		//if (settingsObject.hideServiceSection === false) { sections.push('above-alert'); }
-		if (settingsObject.hideHistory === false) { sections.push('alert'); }
+		// stop at host
+		//if (clientSettings.hideHostSection === false) { sections.push('host'); }
+		// stop above service
+		//if (clientSettings.hideServiceSection === false) { sections.push('service'); }
+		// stop below host and service
+		if (clientSettings.hideServiceSection === false) { sections.push('above-alert'); }
+		// stop at the top of alert
+		if (clientSettings.hideHistory === false) { sections.push('alert'); }
+		
 		if (sections.length === 0) {
 			// Abort if no sections are found
 			if (debug) console.log('ScrollToSection() useEffect() No sections visible, exiting');
 			return;
 		}
-		if (settingsObject.hideHistory) {
-			sections.push('bottom');
-		}
+		// if (clientSettings.hideHistory) {
+		// 	sections.push('bottom');
+		// }
 		//console.log('ScrollToSection useEffect() Got sections', sections);
 
 		let myCurrentSection = sections[currentIndex]; // start with the first section we have
@@ -159,14 +171,14 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
 		}
 		if (animateSpeed <= defaultAnimateSpeed) {
-			animateSpeed = defaultAnimateSpeed * automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
+			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
 		} else {
 			// add a multiplier to change the overall speed
-			animateSpeed = animateSpeed * automaticScrollTimeMultiplier;
+			animateSpeed = animateSpeed * clientSettings.automaticScrollTimeMultiplier;
 		}
 
 		if (animateSpeed <= 0) {
-			animateSpeed = defaultAnimateSpeed * automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
+			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
 		}
 
 		// scroll to the next section		
@@ -192,7 +204,7 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 		return () => {
 			clearTimeout(handle);
 		};
-	}, [currentIndex, setCurrentIndex]);
+	}, [clientSettings, currentIndex, setCurrentIndex]);
 
 	return (
 		<div className="ScrollToSection">
@@ -203,9 +215,9 @@ const ScrollToSection = ({ settingsObject, automaticScrollTimeMultiplier }) => {
 
 function memoFn(prev, next) {
   if (debug) console.log('ScrollToSection() memoFn()', prev, next);
-	const same = prev.settingsObject.hideServiceSection === next.settingsObject.hideServiceSection &&
-		prev.settingsObject.hideHostSection === next.settingsObject.hideHostSection &&
-		prev.settingsObject.hideHistory === next.settingsObject.hideHistory;
+	const same = prev.clientSettings.hideServiceSection === next.clientSettings.hideServiceSection &&
+		prev.clientSettings.hideHostSection === next.clientSettings.hideHostSection &&
+		prev.clientSettings.hideHistory === next.clientSettings.hideHistory;
 
 	if (same === false) {
 		if (debug) console.log('ScrollToSection() memoFn() re-rendering');

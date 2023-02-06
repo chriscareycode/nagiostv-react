@@ -99,6 +99,7 @@ export interface ClientSettings {
 	hideBottomMenu: boolean;
 	automaticScroll: boolean;
 	automaticScrollTimeMultiplier: number;
+	automaticScrollWaitSeconds: number;
 	showMiniMap: boolean;
 	miniMapWidth: number;
 }

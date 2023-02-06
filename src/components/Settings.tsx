@@ -688,14 +688,26 @@ const Settings = () => {
                   When there are many down hosts or services this will scroll the screen through all the items
                 </td>
               </tr>
-              {clientSettingsTemp.automaticScroll && <tr>
-                <th>Automatic Scroll Time Multiplier:</th>
-                <td>
-                  <input type="number" min="0.1" max="10" value={clientSettingsTemp.automaticScrollTimeMultiplier} onChange={handleChange('automaticScrollTimeMultiplier', 'number')} />
-                  &nbsp;
-                  Slow down the scroll routine by multiplying the animation time 2 = 2x, 2.5 = 2.5x, 3 = 3x. Higher is slower.
-                </td>
-              </tr>}
+              {clientSettingsTemp.automaticScroll && (
+                <tr>
+                  <th>Automatic Scroll Time Multiplier:</th>
+                  <td>
+                    <input type="number" min="0.1" max="10" value={clientSettingsTemp.automaticScrollTimeMultiplier} onChange={handleChange('automaticScrollTimeMultiplier', 'number')} />
+                    &nbsp;
+                    Slow down the scroll routine by multiplying the animation time 2 = 2x, 2.5 = 2.5x, 3 = 3x. Higher number is slower.
+                  </td>
+                </tr>
+              )}
+              {clientSettingsTemp.automaticScroll && (
+                <tr>
+                  <th>Automatic Scroll Wait Time:</th>
+                  <td>
+                    <input type="number" min="0" max="20" value={clientSettingsTemp.automaticScrollWaitSeconds} onChange={handleChange('automaticScrollWaitSeconds', 'number')} />
+                    &nbsp;
+                    Control how long the page waits after it reaches it's new location
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
 
