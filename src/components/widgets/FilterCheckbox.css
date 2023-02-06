@@ -1,22 +1,22 @@
 .Checkbox {
-  margin-left: 4px;
-  cursor: pointer;
-  border: 1px solid gray;
-  border-radius: 4px;
-  padding: 3px 7px;
-  background-color: rgba(250, 250, 250, 0.3);
-  font-size: 0.7em;
-  position: relative;
-  top: -2px;
+	margin-left: 4px;
+	cursor: pointer;
+	border: 1px solid gray;
+	border-radius: 4px;
+	padding: 3px 7px;
+	background-color: rgba(250, 250, 250, 0.3);
+	font-size: 0.7em;
+	position: relative;
+	top: -2px;
 }
 
 .Checkbox input {
-  position: relative;
-  top: 2px;
-  left: -3px;
+	position: relative;
+	top: 2px;
+	left: -3px;
 }
 
-.Checkbox > span {
+.Checkbox>span {
 	white-space: nowrap;
 }
 
@@ -28,75 +28,86 @@
 	font-weight: bold;
 	font-size: 1.1em;
 }
+
 .Checkbox.warning {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: yellow;
+	border: 0px solid yellow;
+	background-color: #585804;
+	color: yellow;
 }
+
 .Checkbox.unknown {
-  border: 0px solid orange;
-  background-color: rgba(255, 177, 2, 0.3);
-  color: orange;
+	border: 0px solid orange;
+	background-color: rgba(255, 177, 2, 0.3);
+	color: orange;
 }
+
 .Checkbox.critical {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-  color: orange;
+	border: 0px solid red;
+	background-color: rgba(255, 2, 2, 0.3);
+	color: orange;
 }
+
 .Checkbox.acked {
-  border: 1px solid #004c00;
-  background-color: #006700;
-  color: lime;
+	border: 1px solid #004c00;
+	background-color: #006700;
+	color: lime;
 }
+
 .Checkbox.scheduled {
-  border: 0px solid green;
-  background-color: rgba(0, 253, 43, 0.3);
+	border: 0px solid green;
+	background-color: rgba(0, 253, 43, 0.3);
 }
+
 .Checkbox.flapping {
-  border: 0px solid gray;
-  background-color: rgba(255, 177, 2, 0.3);
+	border: 0px solid gray;
+	background-color: rgba(255, 177, 2, 0.3);
 }
+
 .Checkbox.soft {
-  border: 0px solid yellow;
-  background-color: #585804;
-  color: #fbdba0;
+	border: 0px solid yellow;
+	background-color: #585804;
+	color: #fbdba0;
 }
+
 .Checkbox.notifications_disabled {
-  border: 0px solid yellow;
-  background-color: #484848;
-  color: white;
+	border: 0px solid yellow;
+	background-color: #484848;
+	color: white;
 }
 
 /* host */
 
 .Checkbox.down {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-  color: orange;
+	border: 0px solid red;
+	background-color: rgba(255, 2, 2, 0.3);
+	color: orange;
 }
+
 .Checkbox.unreachable {
-  border: 0px solid red;
-  background-color: rgba(255, 2, 2, 0.3);
-  color: orange;
+	border: 0px solid red;
+	background-color: rgba(255, 2, 2, 0.3);
+	color: orange;
 }
+
 .Checkbox.pending {
-  border: 0px solid gray;
-  background-color: rgba(250, 250, 250, 0.3);
+	border: 0px solid gray;
+	background-color: rgba(250, 250, 250, 0.3);
 }
 
 /* dim */
 
 .Checkbox.dim {
-  border: 0px solid yellow;
-  opacity: 0.5;
+	border: 0px solid yellow;
+	opacity: 0.5;
 }
 
 /* hidden checkbox */
 
 .Checkbox.checkbox-hidden input[type=checkbox] {
-  opacity: 0;
-  display: none;
+	opacity: 0;
+	display: none;
 }
+
 .Checkbox.checkbox-hidden.checkbox-unchecked {
-  opacity: 0.5;
+	opacity: 0.5;
 }

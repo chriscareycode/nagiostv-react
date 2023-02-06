@@ -20,40 +20,40 @@ import { Component } from 'react';
 import './HowMany.css';
 
 interface HowManyProps {
-  howMany: number;
-  howManyDown: number;
+	howMany: number;
+	howManyDown: number;
 }
 
 class HowMany extends Component<HowManyProps> {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
-    if (nextProps.howMany !== this.props.howMany || nextProps.howManyDown !== this.props.howManyDown) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+	shouldComponentUpdate(nextProps, nextState) {
+		//console.log('shouldComponentUpdate', nextProps, nextState);
+		if (nextProps.howMany !== this.props.howMany || nextProps.howManyDown !== this.props.howManyDown) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-  render() {
-    
-    const howMany = this.props.howMany;
-    const howManyDown = this.props.howManyDown;
+	render() {
 
-    const res = [...Array(howMany)].map((_, i) => {
-      if (i < howManyDown) {
-        return <span key={i} className="HowManyItem HowManyItemProblem"></span>;
-      } else {
-        return <span key={i} className="HowManyItem"></span>;
-      }
-    });
+		const howMany = this.props.howMany;
+		const howManyDown = this.props.howManyDown;
 
-    return (
-      <>
-        {res}
-      </>
-    );
-  }
+		const res = [...Array(howMany)].map((_, i) => {
+			if (i < howManyDown) {
+				return <span key={i} className="HowManyItem HowManyItemProblem"></span>;
+			} else {
+				return <span key={i} className="HowManyItem"></span>;
+			}
+		});
+
+		return (
+			<>
+				{res}
+			</>
+		);
+	}
 }
 
 export default HowMany;

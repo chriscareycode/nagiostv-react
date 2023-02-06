@@ -20,88 +20,88 @@ import { Component } from 'react';
 import './Progress.css';
 
 interface ProgressProps {
-  seconds: number;
-  color: string;
+	seconds: number;
+	color: string;
 }
 
 class Progress extends Component<ProgressProps> {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
+	shouldComponentUpdate(nextProps, nextState) {
+		//console.log('shouldComponentUpdate', nextProps, nextState);
 
-    if (nextProps.seconds < 0 && this.state.started === true) {
-      this.setState({ started: false });
-      //return true;
-    }
+		if (nextProps.seconds < 0 && this.state.started === true) {
+			this.setState({ started: false });
+			//return true;
+		}
 
-    // If there is an increase in the seconds set the started flag to true
-    if (nextProps.seconds > this.props.seconds && this.state.started === false) {
-      this.setState({ started: true });
-    }
+		// If there is an increase in the seconds set the started flag to true
+		if (nextProps.seconds > this.props.seconds && this.state.started === false) {
+			this.setState({ started: true });
+		}
 
-    // we re-render when the seconds value jumps up, never when it goes down
-    // the check for nextState.started !== this.state.started is for first run
-    if (nextProps.seconds > this.props.seconds || nextState.started !== this.state.started) {
-      return true;
-    } else {
-      return false;
-    }
+		// we re-render when the seconds value jumps up, never when it goes down
+		// the check for nextState.started !== this.state.started is for first run
+		if (nextProps.seconds > this.props.seconds || nextState.started !== this.state.started) {
+			return true;
+		} else {
+			return false;
+		}
 
-    // if (nextState.started !== this.state.started) {
-    //   return true;
-    // }
-  }
+		// if (nextState.started !== this.state.started) {
+		//   return true;
+		// }
+	}
 
-  state = {
-    //progressMax: 15,
-    //progressValue: 15,
-    started: false
-  };
+	state = {
+		//progressMax: 15,
+		//progressValue: 15,
+		started: false
+	};
 
-  timeoutHandle: NodeJS.Timeout | null = null;
+	timeoutHandle: NodeJS.Timeout | null = null;
 
-  componentDidMount() {
-    // setInterval(() => {
-    //   this.setState({
-    //     progressValue: this.state.progressValue > 0 ? this.state.progressValue - 1 : this.state.progressMax
-    //   });
-    // }, 1000);
+	componentDidMount() {
+		// setInterval(() => {
+		//   this.setState({
+		//     progressValue: this.state.progressValue > 0 ? this.state.progressValue - 1 : this.state.progressMax
+		//   });
+		// }, 1000);
 
 
-    this.timeoutHandle = setTimeout(() => {
-      this.setState({ started: true });
-    }, 1 * 1000);
+		this.timeoutHandle = setTimeout(() => {
+			this.setState({ started: true });
+		}, 1 * 1000);
 
-    // setInterval(() => {
-    //   this.setState({ started: false });
+		// setInterval(() => {
+		//   this.setState({ started: false });
 
-    //   setTimeout(() => {
-    //     this.setState({ started: true });
-    //   }, 1 * 1000);
+		//   setTimeout(() => {
+		//     this.setState({ started: true });
+		//   }, 1 * 1000);
 
-    // }, 14 * 1000);
-  }
+		// }, 14 * 1000);
+	}
 
-  componentWillUnmount() {
-    if (this.timeoutHandle) {
-      clearTimeout(this.timeoutHandle);
-    }
-  }
+	componentWillUnmount() {
+		if (this.timeoutHandle) {
+			clearTimeout(this.timeoutHandle);
+		}
+	}
 
-  render() {
+	render() {
 
-    //console.log('Progress render');
-    
-    const progressStyle = {
-      animation: this.state.started ? `progress-keyframes ${this.props.seconds}s linear` : 'none'
-    };
+		//console.log('Progress render');
 
-    return (
-      <div className="Progress progress">
-        <div className={`progress-bar ${this.props.color}`} style={progressStyle}></div>
-      </div>
-    );
-  }
+		const progressStyle = {
+			animation: this.state.started ? `progress-keyframes ${this.props.seconds}s linear` : 'none'
+		};
+
+		return (
+			<div className="Progress progress">
+				<div className={`progress-bar ${this.props.color}`} style={progressStyle}></div>
+			</div>
+		);
+	}
 }
 
 export default Progress;

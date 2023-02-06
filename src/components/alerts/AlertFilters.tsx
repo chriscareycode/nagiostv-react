@@ -31,96 +31,96 @@ import { ClientSettings } from 'types/settings';
 import { saveCookie } from 'helpers/nagiostv';
 
 const AlertFilters = ({
-  //hideFilters,
-  //hideAlertSoft,
-  //howManyAlerts,
-  howManyAlertSoft,
+	//hideFilters,
+	//hideAlertSoft,
+	//howManyAlerts,
+	howManyAlertSoft,
 }) => {
 
-  const bigState = useRecoilValue(bigStateAtom);
-  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const bigState = useRecoilValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
-  // Chop the bigState into vars
-  const {
-    hideFilters,
-  } = bigState;
+	// Chop the bigState into vars
+	const {
+		hideFilters,
+	} = bigState;
 
-  // Chop the clientSettings into vars
-  const {
-    hideAlertSoft,
-    //hostSortOrder,
-    //hostgroupFilter,
-    //hideHistory,
-    //hideHostDown,
-    //hideHostSection,
-    //serviceSortOrder,
-    language,
-  } = clientSettings;
+	// Chop the clientSettings into vars
+	const {
+		hideAlertSoft,
+		//hostSortOrder,
+		//hostgroupFilter,
+		//hideHistory,
+		//hideHostDown,
+		//hideHostSection,
+		//serviceSortOrder,
+		language,
+	} = clientSettings;
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const propsToCauseRender = [
-  //     'hideFilters',
-  //     'hideAlertSoft',
-  //     'howManyAlertSoft'
-  //   ];
-  //   for(let i=0;i<propsToCauseRender.length;i++) {
-  //     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // }
+	// shouldComponentUpdate(nextProps, nextState) {
+	//   const propsToCauseRender = [
+	//     'hideFilters',
+	//     'hideAlertSoft',
+	//     'howManyAlertSoft'
+	//   ];
+	//   for(let i=0;i<propsToCauseRender.length;i++) {
+	//     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
+	//       return true;
+	//     }
+	//   }
+	//   return false;
+	// }
 
-  const handleCheckboxChange = (e, propName, dataType) => {
-    // This will get called twice (see note below). The little hack there deals with it
-    // So we actually do not want e.preventDefault(); here
-    //console.log('handleCheckboxChange', e);
+	const handleCheckboxChange = (e, propName, dataType) => {
+		// This will get called twice (see note below). The little hack there deals with it
+		// So we actually do not want e.preventDefault(); here
+		//console.log('handleCheckboxChange', e);
 
-    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
-    if (typeof e.target.checked === 'undefined') { return; }
- 
-    console.log('handleCheckboxChange going through');
+		// we put this to solve the bubble issue where the click goes through the label then to the checkbox
+		if (typeof e.target.checked === 'undefined') { return; }
 
-    let val = true;
-    if (dataType === 'checkbox') {
-      val = (!e.target.checked);
-    } else {
-      val = e.target.value;
-    }
-    // Save to state
+		console.log('handleCheckboxChange going through');
 
-    setClientSettings(settings => {
-      saveCookie('Alert Filters', {
-        ...settings,
-        [propName]: val,
-      });
-      return ({
-        ...settings,
-        [propName]: val,
-      });
-    });
-  };
+		let val = true;
+		if (dataType === 'checkbox') {
+			val = (!e.target.checked);
+		} else {
+			val = e.target.value;
+		}
+		// Save to state
 
-  return (
-    <>
+		setClientSettings(settings => {
+			saveCookie('Alert Filters', {
+				...settings,
+				[propName]: val,
+			});
+			return ({
+				...settings,
+				[propName]: val,
+			});
+		});
+	};
 
-      {/*<span className="filter-ok-label filter-ok-label-gray"><strong>{howManyAlerts}</strong> Alerts</span>*/}
+	return (
+		<>
 
-      {(!hideFilters || howManyAlertSoft !== 0) && <span>
-        &nbsp;
-        <Checkbox
-          filterName="soft"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideAlertSoft'}
-          defaultChecked={!hideAlertSoft}
-          howMany={howManyAlertSoft}
-          howManyText={translate('soft', language)}
-        />
-      </span>}
-    </>
-  );
-  
+			{/*<span className="filter-ok-label filter-ok-label-gray"><strong>{howManyAlerts}</strong> Alerts</span>*/}
+
+			{(!hideFilters || howManyAlertSoft !== 0) && <span>
+				&nbsp;
+				<Checkbox
+					filterName="soft"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideAlertSoft'}
+					defaultChecked={!hideAlertSoft}
+					howMany={howManyAlertSoft}
+					howManyText={translate('soft', language)}
+				/>
+			</span>}
+		</>
+	);
+
 };
 
 export default AlertFilters;

@@ -1,19 +1,20 @@
 .AlertItems {
-  margin-top: 12px;
-  opacity: 0.8;
+	margin-top: 12px;
+	opacity: 0.8;
 }
 
 .ShowMoreArea {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-  min-height: 20px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	text-align: center;
+	min-height: 20px;
 }
+
 .ShowMoreArea button {
-  font-size: 1.1em;
-  border-radius: 5px;
-  margin: 0 4px;
-  color: white;
-  background-color: #333;
-  border: 0px solid lime;
+	font-size: 1.1em;
+	border-radius: 5px;
+	margin: 0 4px;
+	color: white;
+	background-color: #333;
+	border: 0px solid lime;
 }

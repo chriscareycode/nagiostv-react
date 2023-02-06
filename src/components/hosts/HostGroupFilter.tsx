@@ -29,57 +29,57 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const HostGroupFilter = () => {
 
-  //const bigState = useRecoilValue(bigStateAtom);
-  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-  const hostgroupState = useRecoilValue(hostgroupAtom);
+	//const bigState = useRecoilValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const hostgroupState = useRecoilValue(hostgroupAtom);
 
-  const hostgroup = hostgroupState.response;
-  const hostgroupFilter = clientSettings.hostgroupFilter;
-  
-  const onChangeHostGroupFilter = (e) => {
-    setClientSettings(curr => {
-      saveCookie('HostGroup Filter', {
-        ...curr,
-        hostgroupFilter: e.target.value
-      });
-      return ({
-        ...curr,
-        hostgroupFilter: e.target.value
-      });
-    });
+	const hostgroup = hostgroupState.response;
+	const hostgroupFilter = clientSettings.hostgroupFilter;
 
-  };
+	const onChangeHostGroupFilter = (e) => {
+		setClientSettings(curr => {
+			saveCookie('HostGroup Filter', {
+				...curr,
+				hostgroupFilter: e.target.value
+			});
+			return ({
+				...curr,
+				hostgroupFilter: e.target.value
+			});
+		});
 
-  if (!hostgroup) {
-    return (<div className="HostGroupFilter">Could not load hostgroups</div>);
-  }
+	};
 
-  const keys = Object.keys(hostgroup);
-  // add an option for each hostgroup returned by the server
-  const options = keys.map((key, i) => {
-    return <option key={i} value={key}>{key}</option>;
-  });
-  // if the saved hostgroupFilter setting is not in the list of hostgroups from the server, add it manually
-  if (hostgroupFilter && keys.indexOf(hostgroupFilter) === -1) {
-    options.push(<option key={hostgroupFilter} value={hostgroupFilter}>{hostgroupFilter}</option>);
-  }
+	if (!hostgroup) {
+		return (<div className="HostGroupFilter">Could not load hostgroups</div>);
+	}
 
-  return (
-    <div className="HostGroupFilter">
-      HostGroup Filter: {' '}
-      <select onChange={onChangeHostGroupFilter} value={hostgroupFilter}>
-        <option value="">no filter</option>
-        {options}
-      </select>
-    </div>
-  );
-  
+	const keys = Object.keys(hostgroup);
+	// add an option for each hostgroup returned by the server
+	const options = keys.map((key, i) => {
+		return <option key={i} value={key}>{key}</option>;
+	});
+	// if the saved hostgroupFilter setting is not in the list of hostgroups from the server, add it manually
+	if (hostgroupFilter && keys.indexOf(hostgroupFilter) === -1) {
+		options.push(<option key={hostgroupFilter} value={hostgroupFilter}>{hostgroupFilter}</option>);
+	}
+
+	return (
+		<div className="HostGroupFilter">
+			HostGroup Filter: {' '}
+			<select onChange={onChangeHostGroupFilter} value={hostgroupFilter}>
+				<option value="">no filter</option>
+				{options}
+			</select>
+		</div>
+	);
+
 }
 
 function propsAreEqual(prevProps, nextProps) {
-  // return Object.keys(prevProps.hostgroup).length === Object.keys(nextProps.hostgroup).length &&
-  //   prevProps.hostgroupFilter === nextProps.hostgroupFilter;
-  return true;
+	// return Object.keys(prevProps.hostgroup).length === Object.keys(nextProps.hostgroup).length &&
+	//   prevProps.hostgroupFilter === nextProps.hostgroupFilter;
+	return true;
 }
 
 export default React.memo(HostGroupFilter, propsAreEqual);

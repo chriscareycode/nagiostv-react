@@ -1,57 +1,55 @@
 .AlertItem {
-  background-color: #222;
-  border: 0px solid #9c9c9c;
-  font-size: 1em;
-  padding: 4px;
-  border-radius: 5px;
-  margin-bottom: 5px;
+	background-color: #222;
+	border: 0px solid #9c9c9c;
+	font-size: 1em;
+	padding: 4px;
+	border-radius: 5px;
+	margin-bottom: 5px;
 
-  overflow: hidden;
-  color: white;
-  justify-content: center;
+	overflow: hidden;
+	color: white;
+	justify-content: center;
 }
 
 .AlertItemRight {
-  float: right;
-  border: 0px solid #ccc;
-  /*background-color: #444;*/
-  border-radius: 5px;
-  padding: 0px 5px;
-  position: relative;
-  top: 0px;
-  left: 4px;
-  text-align: right;
+	float: right;
+	border: 0px solid #ccc;
+	/*background-color: #444;*/
+	border-radius: 5px;
+	padding: 0px 5px;
+	position: relative;
+	top: 0px;
+	left: 4px;
+	text-align: right;
 }
 
 .alert-item-right-date {
-  font-size: 0.8em;
-  color: #bbb;
+	font-size: 0.8em;
+	color: #bbb;
 }
 
 /* soft */
 .alert-item-state-type-2 {
-  color: #bbb;
-  font-size: 0.7em;
+	color: #bbb;
+	font-size: 0.7em;
 }
 
 /* hard */
 .alert-item-state-type-1 {
-  font-size: 0.7em;
+	font-size: 0.7em;
 }
 
-.alert-item-host-name { 
-  
-}
+.alert-item-host-name {}
 
 .alert-item-description {
-  font-size: 1em;
-  padding: 2px 4px;
-  border-radius: 4px;
-  position: relative;
-  top: 0px;
-  border: 0px solid #545454;
-  background-color:#101010;
-  margin-left: 2px;
-  margin-right: 5px;
-  color: #fbc37c;
+	font-size: 1em;
+	padding: 2px 4px;
+	border-radius: 4px;
+	position: relative;
+	top: 0px;
+	border: 0px solid #545454;
+	background-color: #101010;
+	margin-left: 2px;
+	margin-right: 5px;
+	color: #fbc37c;
 }

@@ -7,15 +7,15 @@
 .history-chart-wrap {
 	/* animation: fadeIn 1s; */
 }
- 
- @keyframes fadeIn {
+
+@keyframes fadeIn {
 	0% {
 		opacity: 0;
 		height: 0px;
 	}
+
 	100% {
 		opacity: 1;
 		height: 173px;
 	}
- }
-
+}

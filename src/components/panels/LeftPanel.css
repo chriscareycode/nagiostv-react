@@ -1,86 +1,96 @@
 .LeftPanel {
-  position: fixed;
-  top: 40px;
-  bottom: 0px;
-  left: -50px;
-  width: 40px;
-  border: 0px solid #333;
-  /* background-color: #1d1d1d; */
-  z-index: 13;
-  overflow: hidden;
-  transition: left 250ms linear;
+	position: fixed;
+	top: 40px;
+	bottom: 0px;
+	left: -50px;
+	width: 40px;
+	border: 0px solid #333;
+	/* background-color: #1d1d1d; */
+	z-index: 13;
+	overflow: hidden;
+	transition: left 250ms linear;
 }
 
 .LeftPanel.left-panel-open {
-  left: 0px;
+	left: 0px;
 }
 
 .LeftPanel .nav-sidebar-icon {
-  
-  width: 50px;
-  height: 50px;
-  border: 0px solid #333;
-  text-align: center;
-  font-size: 1.2em;
-  color: #666;
 
-  display: grid;
-  place-content: center;
+	width: 50px;
+	height: 50px;
+	border: 0px solid #333;
+	text-align: center;
+	font-size: 1.2em;
+	color: #666;
+
+	display: grid;
+	place-content: center;
 }
 
 .LeftPanel .nav-sidebar-icon svg {
-  color: #666;
-  
+	color: #666;
+
 }
 
 .nav-sidebar-icon-error {
-  animation: error-blink 2s infinite alternate;
+	animation: error-blink 2s infinite alternate;
 }
+
 @keyframes error-blink {
-  0%   { color: red; }
-  50% { color: orange; }
-  100% { color: yellow; }
+	0% {
+		color: red;
+	}
+
+	50% {
+		color: orange;
+	}
+
+	100% {
+		color: yellow;
+	}
 }
 
 .nav-sidebar-icon-selected {
-  color: #eee;
+	color: #eee;
 }
 
 .LeftPanel .nav-sidebar-item {
-  position: static;
-  width: 50px;
-  height: 50px;
-  border: 0px solid #333;
-  text-align: center;
+	position: static;
+	width: 50px;
+	height: 50px;
+	border: 0px solid #333;
+	text-align: center;
 }
 
 .LeftPanel .nav-sidebar-number {
-  margin-top: 20px;
-  color: orange;
-  font-size: 1.4em;
-  text-align: center;
+	margin-top: 20px;
+	color: orange;
+	font-size: 1.4em;
+	text-align: center;
 }
 
 .nav-sidebar-bottom-float {
-  position: absolute;
-  bottom: 0;
+	position: absolute;
+	bottom: 0;
 }
 
 .nav-sidebar-hr {
-  border-bottom: 1px solid #555;
-  margin: 0 10px 10px 10px;
+	border-bottom: 1px solid #555;
+	margin: 0 10px 10px 10px;
 }
 
 /* styles for react router links */
 
 .LeftPanel a {
-  text-decoration: none;
-}
-.LeftPanel .is-active > svg {
-  color: #eee !important;
-  font-size: 0.9em !important;
-}
-.LeftPanel .is-active > .nav-sidebar-icon-text {
-  color: #eee;
+	text-decoration: none;
 }
 
+.LeftPanel .is-active>svg {
+	color: #eee !important;
+	font-size: 0.9em !important;
+}
+
+.LeftPanel .is-active>.nav-sidebar-icon-text {
+	color: #eee;
+}

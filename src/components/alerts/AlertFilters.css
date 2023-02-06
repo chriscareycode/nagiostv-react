@@ -1,20 +1,21 @@
 .filter-ok-label {
-  font-size: 0.7em;
-  padding: 2px 4px;
-  border-radius: 4px;
-  position: relative;
-  top: -2px;
-  white-space: nowrap;
+	font-size: 0.7em;
+	padding: 2px 4px;
+	border-radius: 4px;
+	position: relative;
+	top: -2px;
+	white-space: nowrap;
 }
 
 .filter-ok-label-green {
-  border: 1px solid #004c00;
-  background-color: #006700;
-  color: lime;
-  
+	border: 1px solid #004c00;
+	background-color: #006700;
+	color: lime;
+
 }
+
 .filter-ok-label-gray {
-  border: 1px solid #545454;
-  background-color: #3e3e3e;
-  color: #ccc;
+	border: 1px solid #545454;
+	background-color: #3e3e3e;
+	color: #ccc;
 }

@@ -23,16 +23,16 @@ import { AppContextProvider } from "./components/AppContext";
 
 const App = () => {
 
-  return (
-    <div className="App">
-      <AppContextProvider>
-        <RecoilRoot>
-          <Base />
-        </RecoilRoot>
-      </AppContextProvider>
-    </div>
-  );
-  
+	return (
+		<div className="App">
+			<AppContextProvider>
+				<RecoilRoot>
+					<Base />
+				</RecoilRoot>
+			</AppContextProvider>
+		</div>
+	);
+
 };
 
 export default App;

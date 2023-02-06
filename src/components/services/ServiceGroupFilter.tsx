@@ -29,57 +29,57 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const ServiceGroupFilter = () => {
 
-  //const bigState = useRecoilValue(bigStateAtom);
-  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-  const servicegroupState = useRecoilValue(servicegroupAtom);
+	//const bigState = useRecoilValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const servicegroupState = useRecoilValue(servicegroupAtom);
 
-  const servicegroup = servicegroupState.response;
-  const servicegroupFilter = clientSettings.servicegroupFilter;
-  
-  const onChangeServiceGroupFilter = (e) => {
-    setClientSettings(curr => {
-      saveCookie('Service Group Filter', {
-        ...curr,
-        servicegroupFilter: e.target.value
-      });
-      return ({
-        ...curr,
-        servicegroupFilter: e.target.value
-      });
-    });
+	const servicegroup = servicegroupState.response;
+	const servicegroupFilter = clientSettings.servicegroupFilter;
 
-  };
+	const onChangeServiceGroupFilter = (e) => {
+		setClientSettings(curr => {
+			saveCookie('Service Group Filter', {
+				...curr,
+				servicegroupFilter: e.target.value
+			});
+			return ({
+				...curr,
+				servicegroupFilter: e.target.value
+			});
+		});
 
-  if (!servicegroup) {
-    return (<div className="HostGroupFilter">Could not load servicegroups</div>);
-  }
+	};
 
-  const keys = Object.keys(servicegroup);
-  // add an option for each servicegroup returned by the server
-  const options = keys.map((key, i) => {
-    return <option key={i} value={key}>{key}</option>;
-  });
-  // if the saved servicegroupFilter setting is not in the list of servicegroups from the server, add it manually
-  if (servicegroupFilter && keys.indexOf(servicegroupFilter) === -1) {
-    options.push(<option key={servicegroupFilter} value={servicegroupFilter}>{servicegroupFilter}</option>);
-  }
+	if (!servicegroup) {
+		return (<div className="HostGroupFilter">Could not load servicegroups</div>);
+	}
 
-  return (
-    <div className="HostGroupFilter">
-      ServiceGroup Filter: {' '}
-      <select onChange={onChangeServiceGroupFilter} value={servicegroupFilter}>
-        <option value="">no filter</option>
-        {options}
-      </select>
-    </div>
-  );
-  
+	const keys = Object.keys(servicegroup);
+	// add an option for each servicegroup returned by the server
+	const options = keys.map((key, i) => {
+		return <option key={i} value={key}>{key}</option>;
+	});
+	// if the saved servicegroupFilter setting is not in the list of servicegroups from the server, add it manually
+	if (servicegroupFilter && keys.indexOf(servicegroupFilter) === -1) {
+		options.push(<option key={servicegroupFilter} value={servicegroupFilter}>{servicegroupFilter}</option>);
+	}
+
+	return (
+		<div className="HostGroupFilter">
+			ServiceGroup Filter: {' '}
+			<select onChange={onChangeServiceGroupFilter} value={servicegroupFilter}>
+				<option value="">no filter</option>
+				{options}
+			</select>
+		</div>
+	);
+
 }
 
 function propsAreEqual(prevProps, nextProps) {
-  // return Object.keys(prevProps.hostgroup).length === Object.keys(nextProps.hostgroup).length &&
-  //   prevProps.hostgroupFilter === nextProps.hostgroupFilter;
-  return true;
+	// return Object.keys(prevProps.hostgroup).length === Object.keys(nextProps.hostgroup).length &&
+	//   prevProps.hostgroupFilter === nextProps.hostgroupFilter;
+	return true;
 }
 
 export default React.memo(ServiceGroupFilter, propsAreEqual);

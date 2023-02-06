@@ -1,23 +1,21 @@
 .HostItems {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .HostItem {
-  margin-bottom: 8px;
+	margin-bottom: 8px;
 }
 
 .HostItem:last-of-type {
-  margin-bottom: 0px;
+	margin-bottom: 0px;
 }
 
 .HostItemBorder {
-  padding: 5px;
-  padding-left: 7px;
-  padding-right: 7px;
-  border-radius: 5px;
-  min-height: 33px;
+	padding: 5px;
+	padding-left: 7px;
+	padding-right: 7px;
+	border-radius: 5px;
+	min-height: 33px;
 }
 
-.HostItemBorder:last-of-type {
-  
-}
+.HostItemBorder:last-of-type {}

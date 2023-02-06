@@ -4,12 +4,10 @@
 	overflow: hidden;
 }
 
-{/* soft */}
 .host-item-soft {
 	opacity: 0.6;
 }
 
-{/* soft */}
 .host-item-state-type-0 {
 	color: #bbb;
 	font-size: 0.7em;
@@ -20,7 +18,6 @@
 	top: -2px;
 }
 
-{/* hard */}
 .host-item-state-type-1 {
 	font-size: 0.7em;
 	background-color: #111;

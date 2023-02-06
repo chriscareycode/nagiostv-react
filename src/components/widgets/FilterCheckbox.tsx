@@ -19,33 +19,33 @@
 import './FilterCheckbox.css';
 
 const FilterCheckbox = ({
-  stateName,
-  filterName,
-  hideFilters,
-  defaultChecked,
-  howMany,
-  howManyText,
-  handleCheckboxChange,
+	stateName,
+	filterName,
+	hideFilters,
+	defaultChecked,
+	howMany,
+	howManyText,
+	handleCheckboxChange,
 }) => {
 
-  const clicky = e => {
-    handleCheckboxChange(e, stateName, 'checkbox');
-  };
-  
-  let classN = 'Checkbox uppercase ' + filterName;
-  //if (howMany) { classN += ' dim'; }
-  if (hideFilters) { classN += ' checkbox-hidden'; }
-  if (!defaultChecked) { classN += ' checkbox-unchecked'; }
+	const clicky = e => {
+		handleCheckboxChange(e, stateName, 'checkbox');
+	};
 
-  return (
-    <label className={classN} onClick={clicky}>
-      <span>
-        <input type="checkbox" defaultChecked={defaultChecked}  />
-        <span className={'checkbox-value'}>{howMany}</span> <span>{howManyText}</span>
-      </span>
-    </label>
-  );
-  
+	let classN = 'Checkbox uppercase ' + filterName;
+	//if (howMany) { classN += ' dim'; }
+	if (hideFilters) { classN += ' checkbox-hidden'; }
+	if (!defaultChecked) { classN += ' checkbox-unchecked'; }
+
+	return (
+		<label className={classN} onClick={clicky}>
+			<span>
+				<input type="checkbox" defaultChecked={defaultChecked} />
+				<span className={'checkbox-value'}>{howMany}</span> <span>{howManyText}</span>
+			</span>
+		</label>
+	);
+
 };
 
 export default FilterCheckbox;

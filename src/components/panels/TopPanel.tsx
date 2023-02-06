@@ -38,170 +38,170 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const TopPanel = (props) => {
 
-  const [bigState, setBigState] = useRecoilState(bigStateAtom);
-  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const [bigState, setBigState] = useRecoilState(bigStateAtom);
+	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
-  const {
-    //isDoneLoading,
-    isLeftPanelOpen,
-    //settingsLoaded,
-    hideFilters,
-  } = bigState;
+	const {
+		//isDoneLoading,
+		isLeftPanelOpen,
+		//settingsLoaded,
+		hideFilters,
+	} = bigState;
 
-  const {
-    alertDaysBack,
-    hideHistory24hChart,
-    hideHistoryChart,
-    //fontSizeEm,
-    playSoundEffects,
-    speakItems,
-    automaticScroll,
-  } = clientSettings;
+	const {
+		alertDaysBack,
+		hideHistory24hChart,
+		hideHistoryChart,
+		//fontSizeEm,
+		playSoundEffects,
+		speakItems,
+		automaticScroll,
+	} = clientSettings;
 
-  const clickedHamburgerMenu = () => {
-    setBigState(curr => ({
-      ...curr,
-      isLeftPanelOpen: !curr.isLeftPanelOpen
-    }));
-  };
+	const clickedHamburgerMenu = () => {
+		setBigState(curr => ({
+			...curr,
+			isLeftPanelOpen: !curr.isLeftPanelOpen
+		}));
+	};
 
-  const toggleAndSaveCookie = (settingName) => {
-    setClientSettings(curr => {
-      const s = {
-        ...curr,
-        [settingName]: !curr[settingName]
-      };
-      saveCookie('TopPanel', s);
-      return s;
-    });
-  };
+	const toggleAndSaveCookie = (settingName) => {
+		setClientSettings(curr => {
+			const s = {
+				...curr,
+				[settingName]: !curr[settingName]
+			};
+			saveCookie('TopPanel', s);
+			return s;
+		});
+	};
 
-  const clickedSound = () => {
-    toggleAndSaveCookie('playSoundEffects');
-  };
+	const clickedSound = () => {
+		toggleAndSaveCookie('playSoundEffects');
+	};
 
-  const clickedSpeak = () => {
-    toggleAndSaveCookie('speakItems');
-  };
+	const clickedSpeak = () => {
+		toggleAndSaveCookie('speakItems');
+	};
 
-  const clickedFilter = () => {
-    setBigState(curr => ({
-      ...curr,
-      hideFilters: !curr.hideFilters
-    }));
-  };
+	const clickedFilter = () => {
+		setBigState(curr => ({
+			...curr,
+			hideFilters: !curr.hideFilters
+		}));
+	};
 
-  const clickedCharts = () => {
-    toggleAndSaveCookie('hideHistoryChart');
-  };
+	const clickedCharts = () => {
+		toggleAndSaveCookie('hideHistoryChart');
+	};
 
-  const clickedCharts24h = () => {
-    toggleAndSaveCookie('hideHistory24hChart');
-  };
+	const clickedCharts24h = () => {
+		toggleAndSaveCookie('hideHistory24hChart');
+	};
 
-  const clickedAutomaticScroll = () => {
-    toggleAndSaveCookie('automaticScroll');
-  };
+	const clickedAutomaticScroll = () => {
+		toggleAndSaveCookie('automaticScroll');
+	};
 
-  return (
-    <div className="TopPanel top-panel-height">
+	return (
+		<div className="TopPanel top-panel-height">
 
-        <div className="header-right-float">
+			<div className="header-right-float">
 
-        {/* filter icon */}
-        <div
-          data-tip="Show/Hide Filters"
-          className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
-          onClick={clickedFilter}
-        >
-          <FontAwesomeIcon icon={faFilter} /> Filters
-        </div>
+				{/* filter icon */}
+				<div
+					data-tip="Show/Hide Filters"
+					className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
+					onClick={clickedFilter}
+				>
+					<FontAwesomeIcon icon={faFilter} /> Filters
+				</div>
 
-        {/* automatic scroll icon */}
-        <div
-          data-tip="Automatic Scroll"
-          className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-          onClick={clickedAutomaticScroll}
-        >
-          <FontAwesomeIcon icon={faSort} />
-        </div>
+				{/* automatic scroll icon */}
+				<div
+					data-tip="Automatic Scroll"
+					className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+					onClick={clickedAutomaticScroll}
+				>
+					<FontAwesomeIcon icon={faSort} />
+				</div>
 
-        {/* chart icon */}
-        <div
-          data-tip="Show/Hide 24h Charts"
-          className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-          onClick={clickedCharts24h}
-        >
-          <FontAwesomeIcon icon={faChartBar} /> 24h
-        </div>
+				{/* chart icon */}
+				<div
+					data-tip="Show/Hide 24h Charts"
+					className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+					onClick={clickedCharts24h}
+				>
+					<FontAwesomeIcon icon={faChartBar} /> 24h
+				</div>
 
-        {/* chart icon */}
-        <div
-          data-tip="Show/Hide Long Charts"
-          className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-          onClick={clickedCharts}
-        >
-          <FontAwesomeIcon icon={faChartBar} /> {alertDaysBack}d
-        </div>
+				{/* chart icon */}
+				<div
+					data-tip="Show/Hide Long Charts"
+					className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+					onClick={clickedCharts}
+				>
+					<FontAwesomeIcon icon={faChartBar} /> {alertDaysBack}d
+				</div>
 
-        {/* sound effects icon */}
-        <div
-          data-tip="Sound Effects"
-          className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-          onClick={clickedSound}
-        >
-          <FontAwesomeIcon icon={faVolumeUp}  />
-        </div>
+				{/* sound effects icon */}
+				<div
+					data-tip="Sound Effects"
+					className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+					onClick={clickedSound}
+				>
+					<FontAwesomeIcon icon={faVolumeUp} />
+				</div>
 
-        {/* speak items icon */}
-        <div
-          data-tip="Speak"
-          className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-          onClick={clickedSpeak}
-        >
-          <FontAwesomeIcon icon={faBullhorn} />
-        </div>
+				{/* speak items icon */}
+				<div
+					data-tip="Speak"
+					className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+					onClick={clickedSpeak}
+				>
+					<FontAwesomeIcon icon={faBullhorn} />
+				</div>
 
-        {/* clock */}
-        <Clock
-            locale={clientSettings.locale}
-            clockDateFormat={clientSettings.clockDateFormat}
-            clockTimeFormat={clientSettings.clockTimeFormat}
-        />
+				{/* clock */}
+				<Clock
+					locale={clientSettings.locale}
+					clockDateFormat={clientSettings.clockDateFormat}
+					clockTimeFormat={clientSettings.clockTimeFormat}
+				/>
 
-        {/* flynn */}
-        {clientSettings.flynnEnabled &&
-            <Flynn />
-        }
-        
-        {/* custom logo */}
-        {clientSettings.customLogoEnabled &&
-            <CustomLogo
-            settings={clientSettings}
-            />
-        }
-        </div>
+				{/* flynn */}
+				{clientSettings.flynnEnabled &&
+					<Flynn />
+				}
 
-        {/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
-        {/*<div className="header-left-spacer"></div>*/}
+				{/* custom logo */}
+				{clientSettings.customLogoEnabled &&
+					<CustomLogo
+						settings={clientSettings}
+					/>
+				}
+			</div>
 
-        {/* hamburger menu */}
-        {clientSettings.hideHamburgerMenu === false && <div className={isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
-            <div className="hamburger-menu-center">
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-        </div>}
+			{/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
+			{/*<div className="header-left-spacer"></div>*/}
 
-        {/* title string */}
-        <div className="header-application-name">{clientSettings.titleString}</div>
+			{/* hamburger menu */}
+			{clientSettings.hideHamburgerMenu === false && <div className={isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
+				<div className="hamburger-menu-center">
+					<FontAwesomeIcon icon={faBars} />
+				</div>
+			</div>}
 
-        {/* show the polling time */}
-        {/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+			{/* title string */}
+			<div className="header-application-name">{clientSettings.titleString}</div>
 
-        <ReactTooltip place="bottom" type="dark" effect="solid"/>
-    </div>
-  );
-  
+			{/* show the polling time */}
+			{/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+
+			<ReactTooltip place="bottom" type="dark" effect="solid" />
+		</div>
+	);
+
 }
 
 export default TopPanel;

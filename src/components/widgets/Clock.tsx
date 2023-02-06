@@ -25,41 +25,41 @@ import './Clock.css';
 //import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 const Clock = ({
-  locale,
-  clockDateFormat,
-  clockTimeFormat,
+	locale,
+	clockDateFormat,
+	clockTimeFormat,
 }) => {
 
-  const dateRef = useRef<HTMLDivElement>(null);
+	const dateRef = useRef<HTMLDivElement>(null);
 
-  useEffect(
-    () => {
-      //start timer
-      //console.log('Clock() Start 1s interval');
-      const timer = setInterval(() => {
-        if (dateRef && dateRef.current) {
-          dateRef.current.innerHTML = 
-            momentFormatDateTime('now', locale, clockDateFormat) +
-            '&nbsp;' +
-            momentFormatDateTime('now', locale, clockTimeFormat);
-        }
-      }, 1000);
+	useEffect(
+		() => {
+			//start timer
+			//console.log('Clock() Start 1s interval');
+			const timer = setInterval(() => {
+				if (dateRef && dateRef.current) {
+					dateRef.current.innerHTML =
+						momentFormatDateTime('now', locale, clockDateFormat) +
+						'&nbsp;' +
+						momentFormatDateTime('now', locale, clockTimeFormat);
+				}
+			}, 1000);
 
-      return () => {
-        //stop timer
-        //console.log('Clock() Stop interval');
-        if (timer) {
-          clearInterval(timer);
-        }
-      };
-    },
-    [locale, clockDateFormat, clockTimeFormat]
-  );
+			return () => {
+				//stop timer
+				//console.log('Clock() Stop interval');
+				if (timer) {
+					clearInterval(timer);
+				}
+			};
+		},
+		[locale, clockDateFormat, clockTimeFormat]
+	);
 
-  return (
-    <div className="Clock" ref={dateRef} />
-  );
-  
+	return (
+		<div className="Clock" ref={dateRef} />
+	);
+
 }
 
 export default Clock;

@@ -28,203 +28,203 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const HostFilters = () => {
 
-  const hostHowManyState = useRecoilValue(hostHowManyAtom);
+	const hostHowManyState = useRecoilValue(hostHowManyAtom);
 
-  const bigState = useRecoilValue(bigStateAtom);
-  const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const bigState = useRecoilValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
 
-  // Chop the bigState into vars
-  const {
-    hideFilters,
-  } = bigState;
+	// Chop the bigState into vars
+	const {
+		hideFilters,
+	} = bigState;
 
-  // Chop the clientSettings into vars
-  const {
-    hostSortOrder,
-    language,
-  } = clientSettings;
+	// Chop the clientSettings into vars
+	const {
+		hostSortOrder,
+		language,
+	} = clientSettings;
 
-  const handleSelectChange = (e) => {
-    // This will get called twice (see note below). The little hack there deals with it
-    // So we actually do not want e.preventDefault(); here
-    console.log('handleSelectChange', e.target);
-    // console.log('event.target.value', event.target.value);
-    const propName = e.target.getAttribute('data-varname');
-    //console.log(propName);
-    // setClientSettings(settings => ({
-    //   ...settings,
-    //   [propName]: e.target.value
-    // }));
-    setClientSettings(settings => {
-      saveCookie('Host Filters', {
-        ...settings,
-        [propName]: e.target.value
-      });
-      return ({
-        ...settings,
-        [propName]: e.target.value
-      });
-    });
-  };
+	const handleSelectChange = (e) => {
+		// This will get called twice (see note below). The little hack there deals with it
+		// So we actually do not want e.preventDefault(); here
+		console.log('handleSelectChange', e.target);
+		// console.log('event.target.value', event.target.value);
+		const propName = e.target.getAttribute('data-varname');
+		//console.log(propName);
+		// setClientSettings(settings => ({
+		//   ...settings,
+		//   [propName]: e.target.value
+		// }));
+		setClientSettings(settings => {
+			saveCookie('Host Filters', {
+				...settings,
+				[propName]: e.target.value
+			});
+			return ({
+				...settings,
+				[propName]: e.target.value
+			});
+		});
+	};
 
-  const handleCheckboxChange = (e, propName, dataType) => {
-    //console.log('handleCheckboxChange', e.target, propName, dataType);
-    // we put this to solve the bubble issue where the click goes through the label then to the checkbox
-    if (typeof e.target.checked === 'undefined') { return; }
- 
-    let val = true;
-    if (dataType === 'checkbox') {
-      val = (!e.target.checked);
-    } else {
-      val = e.target.value;
-    }
+	const handleCheckboxChange = (e, propName, dataType) => {
+		//console.log('handleCheckboxChange', e.target, propName, dataType);
+		// we put this to solve the bubble issue where the click goes through the label then to the checkbox
+		if (typeof e.target.checked === 'undefined') { return; }
 
-    // Save to Cookie and to Recoil state
-    setClientSettings(settings => {
-      saveCookie('Host Filters', {
-        ...settings,
-        [propName]: val
-        });
-      return ({
-        ...settings,
-        [propName]: val
-      });
-    });
-    
-  };
-  
-  const {
-    //howManyHosts,
-    howManyHostUp,
-    howManyHostDown,
-    howManyHostUnreachable,
-    howManyHostPending,
-    howManyHostAcked,
-    howManyHostScheduled,
-    howManyHostFlapping,
-    howManyHostSoft,
-    howManyHostNotificationsDisabled,
-  } = hostHowManyState;
+		let val = true;
+		if (dataType === 'checkbox') {
+			val = (!e.target.checked);
+		} else {
+			val = e.target.value;
+		}
 
-  return (
-    <>
+		// Save to Cookie and to Recoil state
+		setClientSettings(settings => {
+			saveCookie('Host Filters', {
+				...settings,
+				[propName]: val
+			});
+			return ({
+				...settings,
+				[propName]: val
+			});
+		});
 
-      {!hideFilters && <select value={hostSortOrder} data-varname={'hostSortOrder'} onChange={handleSelectChange}>
-        <option value="newest">{translate('newest first', language)}</option>
-        <option value="oldest">{translate('oldest first', language)}</option>
-      </select>}
+	};
 
-      {(howManyHostDown !== 9) && <span>
-        &nbsp;
-        <span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
-      </span>}
+	const {
+		//howManyHosts,
+		howManyHostUp,
+		howManyHostDown,
+		howManyHostUnreachable,
+		howManyHostPending,
+		howManyHostAcked,
+		howManyHostScheduled,
+		howManyHostFlapping,
+		howManyHostSoft,
+		howManyHostNotificationsDisabled,
+	} = hostHowManyState;
 
-      {(!hideFilters || howManyHostDown !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="down"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostDown'}
-          defaultChecked={!clientSettings.hideHostDown}
-          howMany={howManyHostDown}
-          howManyText={translate('down', language)}
-        />
-      </span>}
+	return (
+		<>
 
-      {(!hideFilters || howManyHostUnreachable !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="unreachable"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostUnreachable'}
-          defaultChecked={!clientSettings.hideHostUnreachable}
-          howMany={howManyHostUnreachable}
-          howManyText={translate('unreachable', language)}
-        />
-      </span>}
+			{!hideFilters && <select value={hostSortOrder} data-varname={'hostSortOrder'} onChange={handleSelectChange}>
+				<option value="newest">{translate('newest first', language)}</option>
+				<option value="oldest">{translate('oldest first', language)}</option>
+			</select>}
 
-      {(!hideFilters || howManyHostPending !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="pending"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostPending'}
-          defaultChecked={!clientSettings.hideHostPending}
-          howMany={howManyHostPending}
-          howManyText={translate('pending', language)}
-        />
-      </span>}
+			{(howManyHostDown !== 9) && <span>
+				&nbsp;
+				<span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
+			</span>}
 
-      {(!hideFilters || howManyHostAcked !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="acked"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostAcked'}
-          defaultChecked={!clientSettings.hideHostAcked}
-          howMany={howManyHostAcked}
-          howManyText={translate('acked', language)}
-        />
-      </span>}
+			{(!hideFilters || howManyHostDown !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="down"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostDown'}
+					defaultChecked={!clientSettings.hideHostDown}
+					howMany={howManyHostDown}
+					howManyText={translate('down', language)}
+				/>
+			</span>}
 
-      {(!hideFilters || howManyHostScheduled !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="scheduled"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostScheduled'}
-          defaultChecked={!clientSettings.hideHostScheduled}
-          howMany={howManyHostScheduled}
-          howManyText={translate('scheduled', language)}
-        />
-      </span>}
+			{(!hideFilters || howManyHostUnreachable !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="unreachable"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostUnreachable'}
+					defaultChecked={!clientSettings.hideHostUnreachable}
+					howMany={howManyHostUnreachable}
+					howManyText={translate('unreachable', language)}
+				/>
+			</span>}
 
-      {(!hideFilters || howManyHostFlapping !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="flapping"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostFlapping'}
-          defaultChecked={!clientSettings.hideHostFlapping}
-          howMany={howManyHostFlapping}
-          howManyText={translate('flapping', language)}
-        />
-      </span>}
+			{(!hideFilters || howManyHostPending !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="pending"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostPending'}
+					defaultChecked={!clientSettings.hideHostPending}
+					howMany={howManyHostPending}
+					howManyText={translate('pending', language)}
+				/>
+			</span>}
 
-      {(!hideFilters || howManyHostSoft !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="soft"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostSoft'}
-          defaultChecked={!clientSettings.hideHostSoft}
-          howMany={howManyHostSoft}
-          howManyText={translate('soft', language)}
-        />
-      </span>}
+			{(!hideFilters || howManyHostAcked !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="acked"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostAcked'}
+					defaultChecked={!clientSettings.hideHostAcked}
+					howMany={howManyHostAcked}
+					howManyText={translate('acked', language)}
+				/>
+			</span>}
 
-      {(!hideFilters || howManyHostNotificationsDisabled !== 0) && <span>
-        {' '}
-        <FilterCheckbox
-          filterName="notifications_disabled"
-          hideFilters={hideFilters}
-          handleCheckboxChange={handleCheckboxChange}
-          stateName={'hideHostNotificationsDisabled'}
-          defaultChecked={!clientSettings.hideHostNotificationsDisabled}
-          howMany={howManyHostNotificationsDisabled}
-          howManyText={translate('notifications disabled', language)}
-        />
-      </span>}
+			{(!hideFilters || howManyHostScheduled !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="scheduled"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostScheduled'}
+					defaultChecked={!clientSettings.hideHostScheduled}
+					howMany={howManyHostScheduled}
+					howManyText={translate('scheduled', language)}
+				/>
+			</span>}
 
-    </>
-  );
+			{(!hideFilters || howManyHostFlapping !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="flapping"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostFlapping'}
+					defaultChecked={!clientSettings.hideHostFlapping}
+					howMany={howManyHostFlapping}
+					howManyText={translate('flapping', language)}
+				/>
+			</span>}
+
+			{(!hideFilters || howManyHostSoft !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="soft"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostSoft'}
+					defaultChecked={!clientSettings.hideHostSoft}
+					howMany={howManyHostSoft}
+					howManyText={translate('soft', language)}
+				/>
+			</span>}
+
+			{(!hideFilters || howManyHostNotificationsDisabled !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="notifications_disabled"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostNotificationsDisabled'}
+					defaultChecked={!clientSettings.hideHostNotificationsDisabled}
+					howMany={howManyHostNotificationsDisabled}
+					howManyText={translate('notifications disabled', language)}
+				/>
+			</span>}
+
+		</>
+	);
 }
 
 export default HostFilters;

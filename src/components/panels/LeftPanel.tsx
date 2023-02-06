@@ -18,11 +18,11 @@
 
 // React Router
 import {
-  HashRouter as Router,
-  //Switch,
-  //Route,
-  //Link,
-  NavLink
+	HashRouter as Router,
+	//Switch,
+	//Route,
+	//Link,
+	NavLink
 } from "react-router-dom";
 
 import './LeftPanel.css';
@@ -34,65 +34,65 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 interface LeftPanelProps {
-  isLeftPanelOpen: boolean;
+	isLeftPanelOpen: boolean;
 }
 
 const LeftPanel = ({
-  isLeftPanelOpen
+	isLeftPanelOpen
 }: LeftPanelProps) => {
-  return (
-    <div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
-      <Router>
-        <div className="nav-sidebar-icon">
-          <span data-tip="Dashboard" data-place="right">
-            <NavLink exact={true} activeClassName='is-active' to="/">
-              <FontAwesomeIcon
-                className="nav-sidebar-icon-icon"
-                icon={faTachometerAlt}
-              />
-            </NavLink>
-          </span>
-        </div>
+	return (
+		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
+			<Router>
+				<div className="nav-sidebar-icon">
+					<span data-tip="Dashboard" data-place="right">
+						<NavLink exact={true} activeClassName='is-active' to="/">
+							<FontAwesomeIcon
+								className="nav-sidebar-icon-icon"
+								icon={faTachometerAlt}
+							/>
+						</NavLink>
+					</span>
+				</div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Settings" data-place="right">
-            <NavLink activeClassName='is-active' to="/settings">
-              <FontAwesomeIcon
-                className="nav-sidebar-icon-icon"
-                icon={faTools}
-              />
-            </NavLink>
-          </span>
-        </div>
+				<div className="nav-sidebar-icon">
+					<span data-tip="Settings" data-place="right">
+						<NavLink activeClassName='is-active' to="/settings">
+							<FontAwesomeIcon
+								className="nav-sidebar-icon-icon"
+								icon={faTools}
+							/>
+						</NavLink>
+					</span>
+				</div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Update">
-            <NavLink activeClassName='is-active' to="/update">
-              <FontAwesomeIcon
-                className="nav-sidebar-icon-icon"
-                icon={faUpload}
-              />
-            </NavLink>
-          </span>
-        </div>
+				<div className="nav-sidebar-icon">
+					<span data-tip="Update">
+						<NavLink activeClassName='is-active' to="/update">
+							<FontAwesomeIcon
+								className="nav-sidebar-icon-icon"
+								icon={faUpload}
+							/>
+						</NavLink>
+					</span>
+				</div>
 
-        <div className="nav-sidebar-icon">
-          <span data-tip="Info and Help">
-            <NavLink activeClassName='is-active' to="/help">
-              <FontAwesomeIcon
-                className="nav-sidebar-icon-icon"
-                icon={faQuestionCircle}
-              />
-            </NavLink>
-          </span>
-        </div>
+				<div className="nav-sidebar-icon">
+					<span data-tip="Info and Help">
+						<NavLink activeClassName='is-active' to="/help">
+							<FontAwesomeIcon
+								className="nav-sidebar-icon-icon"
+								icon={faQuestionCircle}
+							/>
+						</NavLink>
+					</span>
+				</div>
 
-        <div className="nav-sidebar-bottom-float" />          
-        
-      </Router>
+				<div className="nav-sidebar-bottom-float" />
 
-    </div>
-  );
+			</Router>
+
+		</div>
+	);
 }
 
 export default LeftPanel;

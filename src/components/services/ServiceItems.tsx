@@ -22,9 +22,9 @@ import React from 'react';
 import { useRecoilValue } from 'recoil';
 //import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import {
-  //serviceIsFetchingAtom,
-  //serviceAtom,
-  serviceHowManyAtom
+	//serviceIsFetchingAtom,
+	//serviceAtom,
+	serviceHowManyAtom
 } from '../../atoms/serviceAtom';
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
@@ -44,125 +44,125 @@ import { ClientSettings } from 'types/settings';
 import './ServiceItems.css';
 
 interface ServiceItemsProps {
-  serviceProblemsArray: Service[];
-  settings: ClientSettings;
-  isDemoMode: boolean;
+	serviceProblemsArray: Service[];
+	settings: ClientSettings;
+	isDemoMode: boolean;
 }
 
 const ServiceItems = ({
-  serviceProblemsArray,
-  settings,
-  isDemoMode,
-  //servicelistError,
-  //howManyServices,
-  //commentlist
+	serviceProblemsArray,
+	settings,
+	isDemoMode,
+	//servicelistError,
+	//howManyServices,
+	//commentlist
 }: ServiceItemsProps) => {
 
-  //const nodeRef = React.useRef(null);
+	//const nodeRef = React.useRef(null);
 
-  const commentlistState = useRecoilValue(commentlistAtom);
-  const commentlistObject = commentlistState.commentlistObject;
-  
-  const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+	const commentlistState = useRecoilValue(commentlistAtom);
+	const commentlistObject = commentlistState.commentlistObject;
 
-  const {
-    howManyServices,
-    // howManyServiceOk,
-    // howManyServiceWarning,
-    // howManyServiceUnknown,
-    // howManyServiceCritical,
-    // howManyServicePending,
-    // howManyServiceAcked,
-    // howManyServiceScheduled,
-    // howManyServiceFlapping,
-    // howManyServiceSoft,
-    // howManyServiceNotificationsDisabled,
-  } = serviceHowManyState;
+	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+
+	const {
+		howManyServices,
+		// howManyServiceOk,
+		// howManyServiceWarning,
+		// howManyServiceUnknown,
+		// howManyServiceCritical,
+		// howManyServicePending,
+		// howManyServiceAcked,
+		// howManyServiceScheduled,
+		// howManyServiceFlapping,
+		// howManyServiceSoft,
+		// howManyServiceNotificationsDisabled,
+	} = serviceHowManyState;
 
 
 
-  //console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
-  //console.log(Object.keys(this.props.serviceProblemsArray));
-  
-  const filteredServiceProblemsArray = serviceProblemsArray.filter(item => {
-    if (settings.hideServicePending) {
-      if (item.status === 1) { return false; }
-    }
-    if (settings.hideServiceWarning) {
-      if (item.status === 4) { return false; }
-    }
-    if (settings.hideServiceUnknown) {
-      if (item.status === 8) { return false; }
-    }
-    if (settings.hideServiceCritical) {
-      if (item.status === 16) { return false; }
-    }
-    if (settings.hideServiceAcked) {
-      if (item.problem_has_been_acknowledged) { return false; }
-    }
-    if (settings.hideServiceScheduled) {
-      if (item.scheduled_downtime_depth > 0) { return false; }
-    }
-    if (settings.hideServiceFlapping) {
-      if (item.is_flapping) { return false; }
-    }
-    if (settings.hideServiceSoft) {
-      if (item.state_type === 0) { return false; }
-    }
-    if (settings.hideServiceNotificationsDisabled) {
-      if (item.notifications_enabled === false) { return false; }
-    }
-    return true;
-  });
+	//console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
+	//console.log(Object.keys(this.props.serviceProblemsArray));
 
-  const howManyHidden = serviceProblemsArray.length - filteredServiceProblemsArray.length;
-  const showSomeDownItems = serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
-  const { language } = settings;
+	const filteredServiceProblemsArray = serviceProblemsArray.filter(item => {
+		if (settings.hideServicePending) {
+			if (item.status === 1) { return false; }
+		}
+		if (settings.hideServiceWarning) {
+			if (item.status === 4) { return false; }
+		}
+		if (settings.hideServiceUnknown) {
+			if (item.status === 8) { return false; }
+		}
+		if (settings.hideServiceCritical) {
+			if (item.status === 16) { return false; }
+		}
+		if (settings.hideServiceAcked) {
+			if (item.problem_has_been_acknowledged) { return false; }
+		}
+		if (settings.hideServiceScheduled) {
+			if (item.scheduled_downtime_depth > 0) { return false; }
+		}
+		if (settings.hideServiceFlapping) {
+			if (item.is_flapping) { return false; }
+		}
+		if (settings.hideServiceSoft) {
+			if (item.state_type === 0) { return false; }
+		}
+		if (settings.hideServiceNotificationsDisabled) {
+			if (item.notifications_enabled === false) { return false; }
+		}
+		return true;
+	});
 
-  return (
-    <div className="ServiceItems">
+	const howManyHidden = serviceProblemsArray.length - filteredServiceProblemsArray.length;
+	const showSomeDownItems = serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
+	const { language } = settings;
 
-      <div className={`all-ok-item ${serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-        <span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
-      </div>
+	return (
+		<div className="ServiceItems">
 
-      <div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-        <div>
-          <span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceProblemsArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
-          <span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
-        </div>
-      </div>
+			<div className={`all-ok-item ${serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
+				<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
+			</div>
 
-      <TransitionGroup className="service-items-wrap">
+			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
+				<div>
+					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceProblemsArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
+					<span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
+				</div>
+			</div>
 
-        {filteredServiceProblemsArray.map((e, i) => {
-          //console.log('ServiceItem item');
-          //console.log(e, i);
+			<TransitionGroup className="service-items-wrap">
 
-          return (
+				{filteredServiceProblemsArray.map((e, i) => {
+					//console.log('ServiceItem item');
+					//console.log(e, i);
 
-            <CSSTransition
-              key={e.host_name + '-' + e.description}
-              classNames="example"
-              timeout={{ enter: 500, exit: 500 }}
-            >
-              <ServiceItem
-                //ref={nodeRef}
-                settings={settings}
-                serviceItem={e}
-                comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
-                howManyDown={filteredServiceProblemsArray.length}
-                isDemoMode={isDemoMode}
-              />
-            </CSSTransition>
-            
-          );
-          
-        })}
-      </TransitionGroup>
-    </div>
-  );
-  
+					return (
+
+						<CSSTransition
+							key={e.host_name + '-' + e.description}
+							classNames="example"
+							timeout={{ enter: 500, exit: 500 }}
+						>
+							<ServiceItem
+								//ref={nodeRef}
+								settings={settings}
+								serviceItem={e}
+								comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
+								howManyDown={filteredServiceProblemsArray.length}
+								isDemoMode={isDemoMode}
+							/>
+						</CSSTransition>
+
+					);
+
+				})}
+			</TransitionGroup>
+		</div>
+	);
+
 }
 
 export default ServiceItems;

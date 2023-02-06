@@ -42,278 +42,278 @@ let isComponentMounted = false;
 
 const ServiceSection = () => {
 
-  //console.log('ServiceSection run');
+	//console.log('ServiceSection run');
 
-  // Recoil state (this section)
-  const [serviceIsFetching, setServiceIsFetching] = useRecoilState(serviceIsFetchingAtom);
-  const setServiceIsFakeDataSet = useSetRecoilState(serviceIsFakeDataSetAtom);
-  const [serviceState, setServiceState] = useRecoilState(serviceAtom);
-  const setServiceHowManyState = useSetRecoilState(serviceHowManyAtom);
-  // Recoil state (main)
-  const [bigState, setBigState] = useRecoilState(bigStateAtom);
-  const clientSettings = useRecoilValue(clientSettingsAtom);
-  
-  // Chop the bigState into vars
-  const {
-    isDemoMode,
-    useFakeSampleData,
-  } = bigState;
+	// Recoil state (this section)
+	const [serviceIsFetching, setServiceIsFetching] = useRecoilState(serviceIsFetchingAtom);
+	const setServiceIsFakeDataSet = useSetRecoilState(serviceIsFakeDataSetAtom);
+	const [serviceState, setServiceState] = useRecoilState(serviceAtom);
+	const setServiceHowManyState = useSetRecoilState(serviceHowManyAtom);
+	// Recoil state (main)
+	const [bigState, setBigState] = useRecoilState(bigStateAtom);
+	const clientSettings = useRecoilValue(clientSettingsAtom);
 
-  // Chop the clientSettings into vars
-  const {
-    fetchServiceFrequency,
-    hostgroupFilter,
-    servicegroupFilter,
-    serviceSortOrder,
-    language,
-  } = clientSettings;
+	// Chop the bigState into vars
+	const {
+		isDemoMode,
+		useFakeSampleData,
+	} = bigState;
 
-  useEffect(() => {
+	// Chop the clientSettings into vars
+	const {
+		fetchServiceFrequency,
+		hostgroupFilter,
+		servicegroupFilter,
+		serviceSortOrder,
+		language,
+	} = clientSettings;
 
-    isComponentMounted = true;
+	useEffect(() => {
 
-    const timeoutHandle = setTimeout(() => {
-      fetchServiceData();
-    }, 1000);
+		isComponentMounted = true;
 
-    let intervalHandle: NodeJS.Timeout | null = null;
-    if (isDemoMode === false && useFakeSampleData == false) {
-      // safetly net in case the interval value is bad
-      const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
-      // we fetch alerts on a slower frequency interval
-      intervalHandle = setInterval(() => {
-        fetchServiceData();
-      }, fetchServiceFrequencySafe * 1000);
-    }
+		const timeoutHandle = setTimeout(() => {
+			fetchServiceData();
+		}, 1000);
 
-    return () => {
-      if (timeoutHandle) {
-        clearTimeout(timeoutHandle);
-      }
-      if (intervalHandle) {
-        clearInterval(intervalHandle);
-      }
-      isComponentMounted = false;
-    };
-  }, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
-  
-  const howManyCounter = useCallback((servicelist) => {
-    //console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
+		let intervalHandle: NodeJS.Timeout | null = null;
+		if (isDemoMode === false && useFakeSampleData == false) {
+			// safetly net in case the interval value is bad
+			const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
+			// we fetch alerts on a slower frequency interval
+			intervalHandle = setInterval(() => {
+				fetchServiceData();
+			}, fetchServiceFrequencySafe * 1000);
+		}
 
-    // count how many items in each of the service states
-    let howManyServices = 0;
-    let howManyServicePending = 0;
-    let howManyServiceWarning = 0;
-    let howManyServiceUnknown = 0;
-    let howManyServiceCritical = 0;
-    let howManyServiceAcked = 0;
-    let howManyServiceScheduled = 0;
-    let howManyServiceFlapping = 0;
-    let howManyServiceSoft = 0;
-    let howManyServiceNotificationsDisabled = 0;
+		return () => {
+			if (timeoutHandle) {
+				clearTimeout(timeoutHandle);
+			}
+			if (intervalHandle) {
+				clearInterval(intervalHandle);
+			}
+			isComponentMounted = false;
+		};
+	}, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
 
-    if (servicelist) {
-      Object.keys(servicelist).forEach((host) => {
-        howManyServices += Object.keys(servicelist[host]).length;
-        Object.keys(servicelist[host]).forEach((service) => {
-          if (servicelist[host][service].status === 1) {
-            howManyServicePending++;
-          }
-          if (servicelist[host][service].status === 4) {
-            howManyServiceWarning++;
-          }
-          if (servicelist[host][service].status === 8) {
-            howManyServiceUnknown++;
-          }
-          if (servicelist[host][service].status === 16) {
-            howManyServiceCritical++;
-          }
-          if (servicelist[host][service].problem_has_been_acknowledged) {
-            howManyServiceAcked++;
-          }
-          if (servicelist[host][service].scheduled_downtime_depth > 0) {
-            howManyServiceScheduled++;
-          }
-          if (servicelist[host][service].is_flapping) {
-            howManyServiceFlapping++;
-          }
-          // only count soft items if they are not OK state
-          if (servicelist[host][service].status !== 2 && servicelist[host][service].state_type === 0) {
-            howManyServiceSoft++;
-          }
-          // count notifications_enabled === false
-          // only count notifications_enabled items if they are not OK state
-          if (servicelist[host][service].status !== 2 && servicelist[host][service].notifications_enabled === false) {
-            howManyServiceNotificationsDisabled++;
-          }
-        });
-      });
-    }
+	const howManyCounter = useCallback((servicelist) => {
+		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
 
-    const howManyServiceOk = howManyServices - howManyServiceWarning - howManyServiceCritical - howManyServiceUnknown;
+		// count how many items in each of the service states
+		let howManyServices = 0;
+		let howManyServicePending = 0;
+		let howManyServiceWarning = 0;
+		let howManyServiceUnknown = 0;
+		let howManyServiceCritical = 0;
+		let howManyServiceAcked = 0;
+		let howManyServiceScheduled = 0;
+		let howManyServiceFlapping = 0;
+		let howManyServiceSoft = 0;
+		let howManyServiceNotificationsDisabled = 0;
 
-    setServiceHowManyState({
-      howManyServices,
-      howManyServiceOk,
-      howManyServiceWarning,
-      howManyServiceUnknown,
-      howManyServiceCritical,
-      howManyServicePending,
-      howManyServiceAcked,
-      howManyServiceScheduled,
-      howManyServiceFlapping,
-      howManyServiceSoft,
-      howManyServiceNotificationsDisabled,
-    });
+		if (servicelist) {
+			Object.keys(servicelist).forEach((host) => {
+				howManyServices += Object.keys(servicelist[host]).length;
+				Object.keys(servicelist[host]).forEach((service) => {
+					if (servicelist[host][service].status === 1) {
+						howManyServicePending++;
+					}
+					if (servicelist[host][service].status === 4) {
+						howManyServiceWarning++;
+					}
+					if (servicelist[host][service].status === 8) {
+						howManyServiceUnknown++;
+					}
+					if (servicelist[host][service].status === 16) {
+						howManyServiceCritical++;
+					}
+					if (servicelist[host][service].problem_has_been_acknowledged) {
+						howManyServiceAcked++;
+					}
+					if (servicelist[host][service].scheduled_downtime_depth > 0) {
+						howManyServiceScheduled++;
+					}
+					if (servicelist[host][service].is_flapping) {
+						howManyServiceFlapping++;
+					}
+					// only count soft items if they are not OK state
+					if (servicelist[host][service].status !== 2 && servicelist[host][service].state_type === 0) {
+						howManyServiceSoft++;
+					}
+					// count notifications_enabled === false
+					// only count notifications_enabled items if they are not OK state
+					if (servicelist[host][service].status !== 2 && servicelist[host][service].notifications_enabled === false) {
+						howManyServiceNotificationsDisabled++;
+					}
+				});
+			});
+		}
 
-  }, [serviceState]);
+		const howManyServiceOk = howManyServices - howManyServiceWarning - howManyServiceCritical - howManyServiceUnknown;
 
-  const fetchServiceData = () => {
+		setServiceHowManyState({
+			howManyServices,
+			howManyServiceOk,
+			howManyServiceWarning,
+			howManyServiceUnknown,
+			howManyServiceCritical,
+			howManyServicePending,
+			howManyServiceAcked,
+			howManyServiceScheduled,
+			howManyServiceFlapping,
+			howManyServiceSoft,
+			howManyServiceNotificationsDisabled,
+		});
 
-    // if we are offline, let's just skip
-    // This is broken on Midori browser on Raspberry Pi and I assume others then. Disabling for now.
-    // if (!navigator.onLine) {
-    //   console.log('fetchServiceData() browser is offline');
-    //   return;
-    // }
+	}, [serviceState]);
 
-    let url;
-    if (useFakeSampleData) {
-      url = './sample-data/servicelist.json';
-    } else if (clientSettings.dataSource === 'livestatus') {
-      url = clientSettings.livestatusPath + '?query=servicelist&details=true';
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-    } else {
-      url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
-      if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-      if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-    }
-    //console.log('Requesting Service Data: ' + url);
+	const fetchServiceData = () => {
 
-    setServiceIsFetching(true);
+		// if we are offline, let's just skip
+		// This is broken on Midori browser on Raspberry Pi and I assume others then. Disabling for now.
+		// if (!navigator.onLine) {
+		//   console.log('fetchServiceData() browser is offline');
+		//   return;
+		// }
 
-    $.ajax({
-      method: "GET",
-      url,
-      dataType: "json",
-      timeout: (fetchServiceFrequency - 2) * 1000
-    }).done((myJson, textStatus, jqXHR) => {
+		let url;
+		if (useFakeSampleData) {
+			url = './sample-data/servicelist.json';
+		} else if (clientSettings.dataSource === 'livestatus') {
+			url = clientSettings.livestatusPath + '?query=servicelist&details=true';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		} else {
+			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		}
+		//console.log('Requesting Service Data: ' + url);
 
-      // test that return data is json
-      if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-        console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-        setServiceIsFetching(false);
-        setServiceState(curr => ({
-          ...curr,
-          error: true,
-          errorCount: curr.errorCount + 1,
-          errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-        }));
-        
-        return;
-      }
+		setServiceIsFetching(true);
 
-      // Success
+		$.ajax({
+			method: "GET",
+			url,
+			dataType: "json",
+			timeout: (fetchServiceFrequency - 2) * 1000
+		}).done((myJson, textStatus, jqXHR) => {
 
-      // Make an array from the object
-      let my_list: Record<string, Record<string, Service>> = _.get(myJson.data, 'servicelist', {});
+			// test that return data is json
+			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+				console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+				setServiceIsFetching(false);
+				setServiceState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+				}));
 
-      // If we are in demo mode then clean the fake data
-      if (isDemoMode) {
-        my_list = cleanDemoDataServicelist(my_list);
-      }
+				return;
+			}
 
-      // convert the service object into an array (and sort it)
-      const myArray = convertServiceObjectToArray(my_list);
+			// Success
 
-      // check for old stale data (detect if nagios is down)
-      const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
-      const hours = duration.asHours().toFixed(1);
+			// Make an array from the object
+			let my_list: Record<string, Record<string, Service>> = _.get(myJson.data, 'servicelist', {});
 
-      // we disable the stale check if in demo mode since the demo data is always stale
-      if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {
-        if (isComponentMounted) {
-          setServiceIsFetching(false);
-          setServiceState(curr => ({
-            ...curr,
-            error: true,
-            errorCount: curr.errorCount + 1,
-            errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-            lastUpdate: new Date().getTime(),
-            response: my_list,
-            problemsArray: myArray
-          }));
-        }
-      } else {
-        
-        if (isComponentMounted) {
-          setServiceIsFetching(false);
-          setServiceState(curr => ({
-            ...curr,
-            error: false,
-            errorCount: 0,
-            errorMessage: '',
-            lastUpdate: new Date().getTime(),
-            response: my_list,
-            problemsArray: myArray
-          }));
+			// If we are in demo mode then clean the fake data
+			if (isDemoMode) {
+				my_list = cleanDemoDataServicelist(my_list);
+			}
 
-          setServiceIsFakeDataSet(useFakeSampleData);
+			// convert the service object into an array (and sort it)
+			const myArray = convertServiceObjectToArray(my_list);
 
-          howManyCounter(my_list);
-        }
-      }
-    }).fail((jqXHR, textStatus, errorThrown) => { 
-      if (isComponentMounted) {
-        setServiceIsFetching(false);
-        setServiceState(curr => ({
-          ...curr,
-          error: true,
-          errorCount: curr.errorCount + 1,
-          errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-        }));
-      }
-    });
-  }
+			// check for old stale data (detect if nagios is down)
+			const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+			const hours = duration.asHours().toFixed(1);
 
-  const servicelist = serviceState.response;
+			// we disable the stale check if in demo mode since the demo data is always stale
+			if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {
+				if (isComponentMounted) {
+					setServiceIsFetching(false);
+					setServiceState(curr => ({
+						...curr,
+						error: true,
+						errorCount: curr.errorCount + 1,
+						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+						lastUpdate: new Date().getTime(),
+						response: my_list,
+						problemsArray: myArray
+					}));
+				}
+			} else {
 
-  // Mutating state on serviceState.problemsArray is not allowed (the sort below)
-  // so we need to copy this to something
-  let sortedServiceProblemsArray: Service[] = [];
-  if (Array.isArray(serviceState.problemsArray)) {
-    sortedServiceProblemsArray = [...serviceState.problemsArray];
-  }
+				if (isComponentMounted) {
+					setServiceIsFetching(false);
+					setServiceState(curr => ({
+						...curr,
+						error: false,
+						errorCount: 0,
+						errorMessage: '',
+						lastUpdate: new Date().getTime(),
+						response: my_list,
+						problemsArray: myArray
+					}));
 
-  let howManyServices = 0;
-  Object.keys(servicelist).forEach(host => {
-    howManyServices += Object.keys(servicelist[host]).length;
-  });
+					setServiceIsFakeDataSet(useFakeSampleData);
 
-  let sort = 1;
-  if (serviceSortOrder === 'oldest') { sort = -1; }
-  sortedServiceProblemsArray.sort((a, b) => {
-    if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
-    if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
-    return 0;
-  });
+					howManyCounter(my_list);
+				}
+			}
+		}).fail((jqXHR, textStatus, errorThrown) => {
+			if (isComponentMounted) {
+				setServiceIsFetching(false);
+				setServiceState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+				}));
+			}
+		});
+	}
 
-  return (
-    <div className="ServiceSection">
-      
-      <div className="service-summary">
-            
-        <span className="service-summary-title">
-          <strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
-          {hostgroupFilter && <span>({hostgroupFilter})</span>}
-        </span>
+	const servicelist = serviceState.response;
 
-        {/* service filters */}
-        <ServiceFilters />
+	// Mutating state on serviceState.problemsArray is not allowed (the sort below)
+	// so we need to copy this to something
+	let sortedServiceProblemsArray: Service[] = [];
+	if (Array.isArray(serviceState.problemsArray)) {
+		sortedServiceProblemsArray = [...serviceState.problemsArray];
+	}
 
-        {/* how many down emoji */}
-        {/*
+	let howManyServices = 0;
+	Object.keys(servicelist).forEach(host => {
+		howManyServices += Object.keys(servicelist[host]).length;
+	});
+
+	let sort = 1;
+	if (serviceSortOrder === 'oldest') { sort = -1; }
+	sortedServiceProblemsArray.sort((a, b) => {
+		if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
+		if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
+		return 0;
+	});
+
+	return (
+		<div className="ServiceSection">
+
+			<div className="service-summary">
+
+				<span className="service-summary-title">
+					<strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
+					{hostgroupFilter && <span>({hostgroupFilter})</span>}
+				</span>
+
+				{/* service filters */}
+				<ServiceFilters />
+
+				{/* how many down emoji */}
+				{/*
         {showEmoji && <HowManyEmoji
           howMany={howManyServices}
           howManyWarning={howManyServiceWarning}
@@ -322,31 +322,31 @@ const ServiceSection = () => {
         />}
         */}
 
-        {/* loading spinner */}
-        <PollingSpinner
-          isFetching={serviceIsFetching}
-          isDemoMode={isDemoMode}
-          error={serviceState.error}
-          errorCount={serviceState.errorCount}
-          fetchVariableName={'fetchServiceFrequency'}
-        />
+				{/* loading spinner */}
+				<PollingSpinner
+					isFetching={serviceIsFetching}
+					isDemoMode={isDemoMode}
+					error={serviceState.error}
+					errorCount={serviceState.errorCount}
+					fetchVariableName={'fetchServiceFrequency'}
+				/>
 
-      </div>
-      
-      {/** Show Error Message - If there is a servicelist error (ajax fetching) then show the error message here */}
+			</div>
+
+			{/** Show Error Message - If there is a servicelist error (ajax fetching) then show the error message here */}
 			{/* Disabled in Demo mode */}
-      {(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
+			{(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
-      <ServiceItems
-        serviceProblemsArray={sortedServiceProblemsArray}
-        settings={clientSettings}
-        //servicelistError={serviceState.error}
-        isDemoMode={isDemoMode}
-      />
+			<ServiceItems
+				serviceProblemsArray={sortedServiceProblemsArray}
+				settings={clientSettings}
+				//servicelistError={serviceState.error}
+				isDemoMode={isDemoMode}
+			/>
 
-    </div>
-  );
-  
+		</div>
+	);
+
 };
 
 export default ServiceSection;

@@ -1,26 +1,26 @@
 .PollingSpinner.loading-spinner {
-  position: absolute;
-  right: -5px;
-  top: 1px;
-  
-  color: rgb(138, 138, 45);
-  margin-left: 15px;
-  margin-right: 0px;
-  font-size: 0.8em;
+	position: absolute;
+	right: -5px;
+	top: 1px;
+
+	color: rgb(138, 138, 45);
+	margin-left: 15px;
+	margin-right: 0px;
+	font-size: 0.8em;
 }
 
 /* .two-column-container .PollingSpinner.loading-spinner {
   position: absolute;
   right: -5px;
 } */
-  
+
 .PollingSpinner.loading-spinner.loading-spinner-fadeout {
-  color: #444;
-  transition: color 1000ms ease-in;
+	color: #444;
+	transition: color 1000ms ease-in;
 }
 
 .PollingSpinner svg {
-  position: relative;
-  top: -1px;
-  left: -2px;
+	position: relative;
+	top: -1px;
+	left: -2px;
 }

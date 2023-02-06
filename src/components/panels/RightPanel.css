@@ -1,17 +1,16 @@
 .RightPanel {
-    position: fixed;
-    top: 40px;
-    bottom: 0px;
-    right: -120px;
-    width: 120px;
-    border: 0px solid #333;
-    /* background-color: #1d1d1d; */
-    z-index: 13;
-    overflow: hidden;
-    /* transition: right 250ms linear; */
-  }
-  
-  .RightPanel.right-panel-open {
-    right: 0px;
-  }
+	position: fixed;
+	top: 40px;
+	bottom: 0px;
+	right: -120px;
+	width: 120px;
+	border: 0px solid #333;
+	/* background-color: #1d1d1d; */
+	z-index: 13;
+	overflow: hidden;
+	/* transition: right 250ms linear; */
+}
 
+.RightPanel.right-panel-open {
+	right: 0px;
+}

@@ -24,9 +24,9 @@ import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 
 // React Router
 import {
-  HashRouter as Router,
-  NavLink,
-  withRouter
+	HashRouter as Router,
+	NavLink,
+	withRouter
 } from "react-router-dom";
 import Cookie from 'js-cookie';
 import './BottomPanel.css';
@@ -36,176 +36,176 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 const BottomPanel = ({
-  history,
-  settingsObject,
-  latestVersion,
-  latestVersionString,
-  currentVersion,
-  currentVersionString,
+	history,
+	settingsObject,
+	latestVersion,
+	latestVersionString,
+	currentVersion,
+	currentVersionString,
 }) => {
 
-  const [isVisible, setIsVisible] = useState(false);
+	const [isVisible, setIsVisible] = useState(false);
 
-  const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);  
+	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
 
-  const navigateTo = (e, pathname) => {
-    e.preventDefault();
-    
-    history.push({
-      pathname,
-      //state: param
-    });
+	const navigateTo = (e, pathname) => {
+		e.preventDefault();
 
-    // Close menu
-    setTimeout(() => {
-      setIsVisible(visible => !visible);
-    }, 800);
-  };
+		history.push({
+			pathname,
+			//state: param
+		});
 
-  const clickedDashboard = (e) => {
-    navigateTo(e, '/');
-  };
+		// Close menu
+		setTimeout(() => {
+			setIsVisible(visible => !visible);
+		}, 800);
+	};
 
-  const clickedSettings = (e) => {
-    navigateTo(e, '/settings');
-  };
+	const clickedDashboard = (e) => {
+		navigateTo(e, '/');
+	};
 
-  const clickedUpdate = (e) => {
-    navigateTo(e, '/update');
-  };
+	const clickedSettings = (e) => {
+		navigateTo(e, '/settings');
+	};
 
-  const clickedInfo = (e) => {
-    navigateTo(e, '/help');
-  };
+	const clickedUpdate = (e) => {
+		navigateTo(e, '/update');
+	};
 
-  const clickedNagiosTv = (e) => {
-    e.preventDefault();
-    setIsVisible(visible => !visible);
-  };
+	const clickedInfo = (e) => {
+		navigateTo(e, '/help');
+	};
 
-  const clickedUpdateAvailable = (e) => {
-    e.preventDefault();
-    clickedUpdate(e);
-  };
+	const clickedNagiosTv = (e) => {
+		e.preventDefault();
+		setIsVisible(visible => !visible);
+	};
 
-  const loadSkipVersionCookie = () => {
-    const cookieString = Cookie.get('skipVersion');
-    if (cookieString) {
-      try {
-        const skipVersionObj = JSON.parse(cookieString);
-        if (skipVersionObj) {
-          //console.log('Loaded skipVersion cookie', skipVersionObj);
-          setSkipVersionCookie({
-            version: skipVersionObj.version,
-            version_string: skipVersionObj.version_string,
-          });
-        }
-      } catch (e) {
-        console.log('Could not parse the skipVersion cookie');
-      }
-    }
-  };
+	const clickedUpdateAvailable = (e) => {
+		e.preventDefault();
+		clickedUpdate(e);
+	};
 
-  const clickedSkipVersion = (e) => {
-    e.preventDefault();
-    const skipVersionObj = {
-      version: latestVersion,
-      version_string: latestVersionString
-    };
-    Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-    setSkipVersionCookie({
-      version: latestVersion,
-      version_string: latestVersionString,
-    });
-  };
+	const loadSkipVersionCookie = () => {
+		const cookieString = Cookie.get('skipVersion');
+		if (cookieString) {
+			try {
+				const skipVersionObj = JSON.parse(cookieString);
+				if (skipVersionObj) {
+					//console.log('Loaded skipVersion cookie', skipVersionObj);
+					setSkipVersionCookie({
+						version: skipVersionObj.version,
+						version_string: skipVersionObj.version_string,
+					});
+				}
+			} catch (e) {
+				console.log('Could not parse the skipVersion cookie');
+			}
+		}
+	};
 
-  useEffect(() => {
-    loadSkipVersionCookie();
-  }, []);
-    
-  const isUpdateAvailable = latestVersion > currentVersion;
+	const clickedSkipVersion = (e) => {
+		e.preventDefault();
+		const skipVersionObj = {
+			version: latestVersion,
+			version_string: latestVersionString
+		};
+		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
+		setSkipVersionCookie({
+			version: latestVersion,
+			version_string: latestVersionString,
+		});
+	};
 
-  //console.log('BottomPanel render() ' + new Date());
+	useEffect(() => {
+		loadSkipVersionCookie();
+	}, []);
 
-  return (
-    <>
-      <div className="BottomPanel">
+	const isUpdateAvailable = latestVersion > currentVersion;
 
-        {settingsObject.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
+	//console.log('BottomPanel render() ' + new Date());
 
-        {settingsObject.hideBottomMenu === false && <div className="bottom-panel-area">
-          <div className="bottom-panel-area-text">
-            {/* current version */}
-            <span
-              className="current-version"
-              onClick={clickedNagiosTv}
-            >NagiosTV <span className="">v{currentVersionString}</span></span>
+	return (
+		<>
+			<div className="BottomPanel">
 
-            {/* update available */}
-            {(isUpdateAvailable && skipVersionCookie.version !== latestVersion) && (
-            <span>
-              <span className="update-available">
-                <a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>
-                &nbsp;-&nbsp;
-                <a onClick={clickedSkipVersion}>skip this version</a>
-              </span>
-            </span>
-            )}
-          </div>
-        </div>}
+				{settingsObject.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
 
-        <div className={isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
+				{settingsObject.hideBottomMenu === false && <div className="bottom-panel-area">
+					<div className="bottom-panel-area-text">
+						{/* current version */}
+						<span
+							className="current-version"
+							onClick={clickedNagiosTv}
+						>NagiosTV <span className="">v{currentVersionString}</span></span>
 
-          <Router>
-          <div className="nav-sidebar-icon">
-            <span>
-              <NavLink exact={true} activeClassName='is-active' to="/" onClick={clickedDashboard}>
-                <FontAwesomeIcon
-                  className="nav-sidebar-icon-icon"
-                  icon={faTachometerAlt}
-                />
-                <div className="nav-sidebar-icon-text">Dash</div>
-              </NavLink>
-            </span>
-          </div>
+						{/* update available */}
+						{(isUpdateAvailable && skipVersionCookie.version !== latestVersion) && (
+							<span>
+								<span className="update-available">
+									<a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>
+									&nbsp;-&nbsp;
+									<a onClick={clickedSkipVersion}>skip this version</a>
+								</span>
+							</span>
+						)}
+					</div>
+				</div>}
 
-          <div className="nav-sidebar-icon" >
-            <span>
-              <NavLink activeClassName='is-active' to="/settings" onClick={clickedSettings}>
-                <FontAwesomeIcon
-                  className="nav-sidebar-icon-icon"
-                  icon={faTools}
-                />
-                <div className="nav-sidebar-icon-text">Settings</div>
-              </NavLink>
-            </span>
-          </div>
+				<div className={isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 
-          <div className="nav-sidebar-icon">
-            <span>
-              <NavLink activeClassName='is-active' className={isUpdateAvailable ? 'update-available-button' : ''} to="/update" onClick={clickedUpdate}>
-                <FontAwesomeIcon
-                  className="nav-sidebar-icon-icon"
-                  icon={faUpload}
-                />
-                <div className="nav-sidebar-icon-text">Update</div>
-              </NavLink>
-            </span>
-          </div>
+					<Router>
+						<div className="nav-sidebar-icon">
+							<span>
+								<NavLink exact={true} activeClassName='is-active' to="/" onClick={clickedDashboard}>
+									<FontAwesomeIcon
+										className="nav-sidebar-icon-icon"
+										icon={faTachometerAlt}
+									/>
+									<div className="nav-sidebar-icon-text">Dash</div>
+								</NavLink>
+							</span>
+						</div>
 
-          <div className="nav-sidebar-icon">
-            <span>
-              <NavLink activeClassName='is-active' to="/help" onClick={clickedInfo}>
-                <FontAwesomeIcon
-                  className="nav-sidebar-icon-icon"
-                  icon={faQuestionCircle}
-                />
-                <div className="nav-sidebar-icon-text">Info</div>
-              </NavLink>
-            </span>
-          </div>
+						<div className="nav-sidebar-icon" >
+							<span>
+								<NavLink activeClassName='is-active' to="/settings" onClick={clickedSettings}>
+									<FontAwesomeIcon
+										className="nav-sidebar-icon-icon"
+										icon={faTools}
+									/>
+									<div className="nav-sidebar-icon-text">Settings</div>
+								</NavLink>
+							</span>
+						</div>
 
-          {/*
+						<div className="nav-sidebar-icon">
+							<span>
+								<NavLink activeClassName='is-active' className={isUpdateAvailable ? 'update-available-button' : ''} to="/update" onClick={clickedUpdate}>
+									<FontAwesomeIcon
+										className="nav-sidebar-icon-icon"
+										icon={faUpload}
+									/>
+									<div className="nav-sidebar-icon-text">Update</div>
+								</NavLink>
+							</span>
+						</div>
+
+						<div className="nav-sidebar-icon">
+							<span>
+								<NavLink activeClassName='is-active' to="/help" onClick={clickedInfo}>
+									<FontAwesomeIcon
+										className="nav-sidebar-icon-icon"
+										icon={faQuestionCircle}
+									/>
+									<div className="nav-sidebar-icon-text">Info</div>
+								</NavLink>
+							</span>
+						</div>
+
+						{/*
           <div className="nav-sidebar-icon-spacer"></div>
               
           <div className="nav-sidebar-icon">
@@ -223,19 +223,19 @@ const BottomPanel = ({
           </div>
           */}
 
-          </Router>
+					</Router>
 
-        </div>
+				</div>
 
-      </div>
-    </>
-  );
-  
+			</div>
+		</>
+	);
+
 }
 
 function memoFn(prev, next) {
-  //console.log('memoFn', prev, next);
-  return false; // update
+	//console.log('memoFn', prev, next);
+	return false; // update
 }
 
 export default withRouter(React.memo(BottomPanel, memoFn));

@@ -1,91 +1,92 @@
 /* TopPanel.css */
 
 .top-panel-height {
-    height: 40px;
+	height: 40px;
 }
 
 .TopPanel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-    background-color: #181b1f;
-    border-bottom: 1px solid rgba(204,204,220,.07);
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 10;
+	background-color: #181b1f;
+	border-bottom: 1px solid rgba(204, 204, 220, .07);
 }
-  
-.TopPanel > .header-right-float {
-    position: absolute;
-    top: 0;
-    right:  0px;
-    height: 40px;
-    vertical-align: top;
-    margin-right: 15px;
+
+.TopPanel>.header-right-float {
+	position: absolute;
+	top: 0;
+	right: 0px;
+	height: 40px;
+	vertical-align: top;
+	margin-right: 15px;
 }
-  
-.TopPanel > .header-application-name {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-left: 15px;
-    margin-right: 10px;
-    display: inline-block;
-    color: #ddd;
-    user-select: none;
+
+.TopPanel>.header-application-name {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-left: 15px;
+	margin-right: 10px;
+	display: inline-block;
+	color: #ddd;
+	user-select: none;
 }
 
 .TopPanel .generic-icon {
-    display: inline-block;
-    vertical-align: top;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #ccc;
-    margin-right: 15px;
-    cursor: pointer;
+	display: inline-block;
+	vertical-align: top;
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #ccc;
+	margin-right: 15px;
+	cursor: pointer;
 }
 
 .TopPanel .generic-icon.generic-icon-disabled {
-    color: #666;
+	color: #666;
 }
 
-.TopPanel .generic-icon.filter-icon {  
-    /* color: rgb(211, 151, 22); */
+.TopPanel .generic-icon.filter-icon {
+	/* color: rgb(211, 151, 22); */
 }
-.TopPanel .generic-icon.filter-icon.generic-icon-disabled {  
-    /* color: rgb(139, 118, 71);; */
+
+.TopPanel .generic-icon.filter-icon.generic-icon-disabled {
+	/* color: rgb(139, 118, 71);; */
 }
 
 /* if we have the hamburger menu then we do not need the extra left margin */
-.TopPanel > .hamburger-menu + .header-application-name {
-    margin-left: 0px;
+.TopPanel>.hamburger-menu+.header-application-name {
+	margin-left: 0px;
 }
 
-.TopPanel > .hamburger-menu {
-    font-size: 1.2em;
-    display: inline-block;
-    
-    height: 40px;
-    width: 45px;
-    color: #666;
-    transition: color 250ms linear;
-    cursor: pointer;
+.TopPanel>.hamburger-menu {
+	font-size: 1.2em;
+	display: inline-block;
+
+	height: 40px;
+	width: 45px;
+	color: #666;
+	transition: color 250ms linear;
+	cursor: pointer;
 }
 
-.TopPanel > .hamburger-menu > .hamburger-menu-center {
-    height: 40px;
-    width: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1ch;
+.TopPanel>.hamburger-menu>.hamburger-menu-center {
+	height: 40px;
+	width: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1ch;
 }
 
-.TopPanel > .hamburger-menu.hamburger-menu-active {
-  color: #fff;
+.TopPanel>.hamburger-menu.hamburger-menu-active {
+	color: #fff;
 }
 
-.TopPanel > .hamburger-menu:hover {
-    color: orange;
+.TopPanel>.hamburger-menu:hover {
+	color: orange;
 }

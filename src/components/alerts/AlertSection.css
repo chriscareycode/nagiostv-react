@@ -1,22 +1,22 @@
 .AlertSection {
-  margin-bottom: 30px;
+	margin-bottom: 30px;
 }
 
 /* history */
 
 .history-summary {
-  position: relative;
-  margin-top: 15px;
-  clear: both;
+	position: relative;
+	margin-top: 15px;
+	clear: both;
 }
 
 .history-summary-title {
-  font-size: 0.8em;
-  color: #bbb;
+	font-size: 0.8em;
+	color: #bbb;
 }
 
 .history-chart-title {
-  text-align: center;
-  font-size: 1em;
-  color: #555;
+	text-align: center;
+	font-size: 1em;
+	color: #555;
 }

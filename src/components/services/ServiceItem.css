@@ -3,6 +3,7 @@
 	cursor: pointer;
 	overflow: hidden;
 }
+
 .comment {
 	margin-top: 0px;
 	font-size: 0.8em;
@@ -23,12 +24,17 @@
 }
 
 .comment-color {
-  color: #e27cfb; /* purple */
-  color: #fbdba0; /* peach */
-  color: lime; /* to match with ACKED green. Since it's a good thing */
-  color: #7cfd7c; /* soft/light green */
-  color: #fdee7c;
-  color: #fdfdfd; /* whitish */
+	color: #e27cfb;
+	/* purple */
+	color: #fbdba0;
+	/* peach */
+	color: lime;
+	/* to match with ACKED green. Since it's a good thing */
+	color: #7cfd7c;
+	/* soft/light green */
+	color: #fdee7c;
+	color: #fdfdfd;
+	/* whitish */
 }
 
 .checking-now {
@@ -73,12 +79,12 @@
 	position: relative;
 	top: 0px;
 	border: 0px solid #545454;
-	background-color:#101010;
+	background-color: #101010;
 	margin-right: 5px;
 	margin-left: 5px;
 	color: #fdee7c;
-  }
+}
 
-  .service-item-host-name {
-	  display: inline-block;
-  }
+.service-item-host-name {
+	display: inline-block;
+}

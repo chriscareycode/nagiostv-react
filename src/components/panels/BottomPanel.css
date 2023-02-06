@@ -1,5 +1,5 @@
 .BottomPanel {
-  /*
+	/*
   position: fixed;
   bottom: 0px;
   left: 50%;
@@ -17,126 +17,126 @@
 }
 
 .BottomPanel .nav-sidebar-icon {
-  margin-left: 2px;
-  margin-right: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 
-.BottomPanel > .bottom-panel-area {
-  position: fixed;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 13;
+.BottomPanel>.bottom-panel-area {
+	position: fixed;
+	bottom: 0px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 13;
 
-  background-color: #222222;
-  border: 1px solid #444;
-  border-bottom: 0;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+	background-color: #222222;
+	border: 1px solid #444;
+	border-bottom: 0;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 
-  text-align: center;
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
-  
-  font-size: 0.9em;
-  color: #999;
-  cursor: pointer;
+	text-align: center;
+	display: inline-block;
+	white-space: nowrap;
+	vertical-align: middle;
+
+	font-size: 0.9em;
+	color: #999;
+	cursor: pointer;
 }
 
-.BottomPanel> .bottom-panel-area > .bottom-panel-area-text {
-  
-  background-color: #111;
-  border: 0px solid #444;
-  border-radius: 5px;
+.BottomPanel>.bottom-panel-area>.bottom-panel-area-text {
 
-  margin: 3px 3px;
-  text-align: center;
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
-  
-  padding: 2px 5px;
-  font-size: 0.9em;
-  color: #999;
-  cursor: pointer;
+	background-color: #111;
+	border: 0px solid #444;
+	border-radius: 5px;
+
+	margin: 3px 3px;
+	text-align: center;
+	display: inline-block;
+	white-space: nowrap;
+	vertical-align: middle;
+
+	padding: 2px 5px;
+	font-size: 0.9em;
+	color: #999;
+	cursor: pointer;
 }
 
 .bottom-panel-nav-area {
-  position: fixed;
-  bottom: -56px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 12;
+	position: fixed;
+	bottom: -56px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 12;
 
-  height: 49px;
-  transition: bottom 250ms linear, opacity 350ms linear;
+	height: 49px;
+	transition: bottom 250ms linear, opacity 350ms linear;
 
-  border: 2px solid #333;
-  border-radius: 5px;
-  /*
+	border: 2px solid #333;
+	border-radius: 5px;
+	/*
   border-bottom: 0;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   */
-  text-align: center;
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
-  background-color: #111;
-  padding: 2px 5px;
-  font-size: 0.9em;
-  color: #999;
-  opacity: 0;
+	text-align: center;
+	display: inline-block;
+	white-space: nowrap;
+	vertical-align: middle;
+	background-color: #111;
+	padding: 2px 5px;
+	font-size: 0.9em;
+	color: #999;
+	opacity: 0;
 }
 
 .bottom-panel-nav-area-visible {
-  bottom: 29px;
-  opacity: 1;
+	bottom: 29px;
+	opacity: 1;
 }
 
 
 .BottomPanel .current-version:hover {
-  color: orange;
+	color: orange;
 }
 
 
 .BottomPanel .nav-sidebar-icon-spacer {
-  display: inline-block;
-  border-right: 2px solid #333;
-  height: 30px;
-  vertical-align: middle;
-  margin-left: 6px;
-  margin-right: 4px;
+	display: inline-block;
+	border-right: 2px solid #333;
+	height: 30px;
+	vertical-align: middle;
+	margin-left: 6px;
+	margin-right: 4px;
 }
 
 .BottomPanel .nav-sidebar-icon {
-  position: relative;
-  width: 50px;
-  height: 50px;
-  border: 0px solid #333;
-  text-align: center;
-  display: inline-block;
-  vertical-align: middle;
-  cursor: pointer;
+	position: relative;
+	width: 50px;
+	height: 50px;
+	border: 0px solid #333;
+	text-align: center;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
 }
 
 .BottomPanel .nav-sidebar-icon .nav-sidebar-icon-text {
-  font-size: 0.8em;
-  color: #555;
+	font-size: 0.8em;
+	color: #555;
 }
 
 .BottomPanel .nav-sidebar-icon span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .BottomPanel .nav-sidebar-icon svg {
-  font-size: 1.2em;
-  color: #666;
+	font-size: 1.2em;
+	color: #666;
 }
 
 /*
@@ -146,63 +146,73 @@
 */
 
 .nav-sidebar-icon-error {
-  animation: error-blink 2s infinite alternate;
+	animation: error-blink 2s infinite alternate;
 }
 
 @keyframes error-blink {
-  0%   { color: red; }
-  50% { color: orange; }
-  100% { color: yellow; }
+	0% {
+		color: red;
+	}
+
+	50% {
+		color: orange;
+	}
+
+	100% {
+		color: yellow;
+	}
 }
 
 .BottomPanel .nav-sidebar-number {
-  margin-top: 20px;
-  color: orange;
-  font-size: 1.4em;
-  text-align: center;
+	margin-top: 20px;
+	color: orange;
+	font-size: 1.4em;
+	text-align: center;
 }
 
 .nav-sidebar-bottom-float {
-  position: absolute;
-  bottom: 0;
+	position: absolute;
+	bottom: 0;
 }
 
 /* styles for react router links */
 
 .BottomPanel a {
-  text-decoration: none;
+	text-decoration: none;
 }
-.BottomPanel .is-active > svg {
-  color: #eee !important;
-  font-size: 0.9em !important;
+
+.BottomPanel .is-active>svg {
+	color: #eee !important;
+	font-size: 0.9em !important;
 }
-.BottomPanel .is-active > .nav-sidebar-icon-text {
-  color: #eee;
+
+.BottomPanel .is-active>.nav-sidebar-icon-text {
+	color: #eee;
 }
 
 /* more footer */
 
 .update-available {
-  padding: 1px 8px;
-  border-radius: 5px;
+	padding: 1px 8px;
+	border-radius: 5px;
 }
 
 .update-available a {
-  color: #a7a749;
-  text-decoration: none;
-  cursor: pointer;
+	color: #a7a749;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 .update-available a:hover {
-  color: orange;
+	color: orange;
 }
 
 .bottom-panel-nagiostv-brand {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #444;
-  font-size: 0.7em;
-  
+	position: fixed;
+	bottom: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: #444;
+	font-size: 0.7em;
+
 }

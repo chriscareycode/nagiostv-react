@@ -21,27 +21,27 @@ import { ClientSettings } from 'types/settings';
 import './CustomLogo.css';
 
 interface CustomLogoProps {
-  settings: ClientSettings;
+	settings: ClientSettings;
 }
 
 class CustomLogo extends Component<CustomLogoProps> {
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //console.log('shouldComponentUpdate', nextProps, nextState);
-    if (nextProps.settings.customLogoEnabled !== this.props.settings.customLogoEnabled || nextProps.settings.customLogoUrl !== this.props.settings.customLogoUrl) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+	shouldComponentUpdate(nextProps, nextState) {
+		//console.log('shouldComponentUpdate', nextProps, nextState);
+		if (nextProps.settings.customLogoEnabled !== this.props.settings.customLogoEnabled || nextProps.settings.customLogoUrl !== this.props.settings.customLogoUrl) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-  render() {
-    return (
-      <div className="CustomLogo">
-        <img alt="custom logo" src={this.props.settings.customLogoUrl} />
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="CustomLogo">
+				<img alt="custom logo" src={this.props.settings.customLogoUrl} />
+			</div>
+		);
+	}
 }
 
 export default CustomLogo;
