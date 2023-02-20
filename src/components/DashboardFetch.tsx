@@ -53,7 +53,7 @@ const DashboardFetch = () => {
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=commentlist&details=true';
+			url = clientSettings.livestatusPath + '?query=commentlist';
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 		}
@@ -139,7 +139,7 @@ const DashboardFetch = () => {
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=hostgrouplist&details=true';
+			url = clientSettings.livestatusPath + '?query=hostgrouplist';
 		} else {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
 		}
@@ -185,7 +185,7 @@ const DashboardFetch = () => {
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=servicegrouplist&details=true';
+			url = clientSettings.livestatusPath + '?query=servicegrouplist';
 		} else {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=servicegrouplist&details=true';
 		}
@@ -199,7 +199,7 @@ const DashboardFetch = () => {
 
 			// test that return data is json
 			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
-				console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
 					...curr,

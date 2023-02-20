@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -48,7 +48,8 @@ const ServiceSection = () => {
 	const [serviceIsFetching, setServiceIsFetching] = useRecoilState(serviceIsFetchingAtom);
 	const setServiceIsFakeDataSet = useSetRecoilState(serviceIsFakeDataSetAtom);
 	const [serviceState, setServiceState] = useRecoilState(serviceAtom);
-	const setServiceHowManyState = useSetRecoilState(serviceHowManyAtom);
+	const [serviceHowManyState, setServiceHowManyState] = useRecoilState(serviceHowManyAtom);
+	const totalCount = useRef(0);
 	// Recoil state (main)
 	const [bigState, setBigState] = useRecoilState(bigStateAtom);
 	const clientSettings = useRecoilValue(clientSettingsAtom);
@@ -73,6 +74,7 @@ const ServiceSection = () => {
 		isComponentMounted = true;
 
 		const timeoutHandle = setTimeout(() => {
+			fetchServiceCount();
 			fetchServiceData();
 		}, 1000);
 
@@ -82,6 +84,7 @@ const ServiceSection = () => {
 			const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
+				fetchServiceCount();
 				fetchServiceData();
 			}, fetchServiceFrequencySafe * 1000);
 		}
@@ -114,7 +117,10 @@ const ServiceSection = () => {
 
 		if (servicelist) {
 			Object.keys(servicelist).forEach((host) => {
+				
+				// Deprecated now that we are getting the count from another api
 				howManyServices += Object.keys(servicelist[host]).length;
+
 				Object.keys(servicelist[host]).forEach((service) => {
 					if (servicelist[host][service].status === 1) {
 						howManyServicePending++;
@@ -149,6 +155,8 @@ const ServiceSection = () => {
 				});
 			});
 		}
+		
+		howManyServices = totalCount.current;
 
 		const howManyServiceOk = howManyServices - howManyServiceWarning - howManyServiceCritical - howManyServiceUnknown;
 
@@ -166,7 +174,39 @@ const ServiceSection = () => {
 			howManyServiceNotificationsDisabled,
 		});
 
-	}, [serviceState]);
+	}, [serviceState.lastUpdate]);
+
+	const fetchServiceCount = () => {
+
+		let url;
+		if (useFakeSampleData) {
+			url = './sample-data/servicecount.json';
+		} else if (clientSettings.dataSource === 'livestatus') {
+			url = clientSettings.livestatusPath + '?query=servicecount';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		} else {
+			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicecount';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		}
+
+		$.ajax({
+			method: "GET",
+			url,
+			dataType: "json",
+			timeout: (fetchServiceFrequency - 2) * 1000
+		}).done((myJson, textStatus, jqXHR) => {
+			//console.log('servicecount', myJson);
+			let total = 0;
+			Object.keys(myJson.data.count).forEach((aaKey) => {
+				total += myJson.data.count[aaKey];
+			});
+			//console.log('setting service totalCount to ', total);
+			totalCount.current = total;
+		});
+
+	};
 
 	const fetchServiceData = () => {
 
@@ -181,11 +221,13 @@ const ServiceSection = () => {
 		if (useFakeSampleData) {
 			url = './sample-data/servicelist.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=servicelist&details=true';
+			url = clientSettings.livestatusPath + '?query=servicelist';
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
+			// add filter for servicestatus "not ok" only
+			url += '&servicestatus=warning+critical+unknown+pending';
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
@@ -277,19 +319,19 @@ const ServiceSection = () => {
 		});
 	}
 
-	const servicelist = serviceState.response;
-
 	// Mutating state on serviceState.problemsArray is not allowed (the sort below)
 	// so we need to copy this to something
 	let sortedServiceProblemsArray: Service[] = [];
 	if (Array.isArray(serviceState.problemsArray)) {
 		sortedServiceProblemsArray = [...serviceState.problemsArray];
 	}
-
-	let howManyServices = 0;
-	Object.keys(servicelist).forEach(host => {
-		howManyServices += Object.keys(servicelist[host]).length;
-	});
+	
+	// let howManyServices = 0;
+	// const servicelist = serviceState.response;
+	// Object.keys(servicelist).forEach(host => {
+	// 	howManyServices += Object.keys(servicelist[host]).length;
+	// });
+	const howManyServices = serviceHowManyState.howManyServices;
 
 	let sort = 1;
 	if (serviceSortOrder === 'oldest') { sort = -1; }

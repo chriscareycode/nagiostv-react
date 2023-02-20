@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 // Recoil
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -48,7 +48,8 @@ const HostSection = () => {
 	const [hostIsFetching, setHostIsFetching] = useRecoilState(hostIsFetchingAtom);
 	const setHostIsFakeDataSet = useSetRecoilState(hostIsFakeDataSetAtom);
 	const [hostState, setHostState] = useRecoilState(hostAtom);
-	const setHostHowManyState = useSetRecoilState(hostHowManyAtom);
+	const [hostHowManyState, setHostHowManyState] = useRecoilState(hostHowManyAtom);
+	const totalCount = useRef(0);
 	// Recoil state (main)
 	const [bigState, setBigState] = useRecoilState(bigStateAtom);
 	const clientSettings = useRecoilValue(clientSettingsAtom);
@@ -81,6 +82,7 @@ const HostSection = () => {
 		isComponentMounted = true;
 
 		const timeoutHandle = setTimeout(() => {
+			fetchHostCount();
 			fetchHostData();
 		}, 1000);
 
@@ -91,6 +93,7 @@ const HostSection = () => {
 			const fetchHostFrequencySafe = (typeof fetchHostFrequency === 'number' && fetchHostFrequency >= 5) ? fetchHostFrequency : clientSettingsInitial.fetchHostFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
+				fetchHostCount();
 				fetchHostData();
 			}, fetchHostFrequencySafe * 1000);
 		}
@@ -110,7 +113,10 @@ const HostSection = () => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
 
 		// count how many items in each of the host states
-		const howManyHosts = Object.keys(hostlist).length;
+
+		//const howManyHosts = Object.keys(hostlist).length; // 2023-02-18 Deprecated now that we are getting the count from another api
+		const howManyHosts = totalCount.current;
+
 		let howManyHostPending = 0;
 		let howManyHostUp = 0;
 		let howManyHostDown = 0;
@@ -170,7 +176,39 @@ const HostSection = () => {
 		});
 
 
-	}, [hostState]);
+	}, [hostState.lastUpdate]);
+
+	const fetchHostCount = () => {
+
+		let url;
+		if (useFakeSampleData) {
+			url = './sample-data/hostcount.json';
+		} else if (clientSettings.dataSource === 'livestatus') {
+			url = clientSettings.livestatusPath + '?query=hostcount';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		} else {
+			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostcount';
+			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
+			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
+		}
+
+		$.ajax({
+			method: "GET",
+			url,
+			dataType: "json",
+			timeout: (fetchHostFrequency - 2) * 1000
+		}).done((myJson, textStatus, jqXHR) => {
+			//console.log('hostcount', myJson);
+			let total = 0;
+			Object.keys(myJson.data.count).forEach((aaKey) => {
+				total += myJson.data.count[aaKey];
+			});
+			//console.log('setting host totalCount to ', total);
+			totalCount.current = total;
+		});
+
+	};
 
 	const fetchHostData = () => {
 
@@ -185,11 +223,13 @@ const HostSection = () => {
 		if (useFakeSampleData) {
 			url = './sample-data/hostlist.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=hostlist&details=true';
+			url = clientSettings.livestatusPath + '?query=hostlist';
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
+			// add filter for hoststatus "not up" only
+			url += '&hoststatus=down+unreachable+pending';
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
@@ -285,16 +325,16 @@ const HostSection = () => {
 		});
 	};
 
-	const hostlist = hostState.response;
-
+	
 	// Mutating state on hostState.problemsArray is not allowed (the sort below)
 	// so we need to copy this to something
 	let sortedHostProblemsArray: Host[] = [];
 	if (Array.isArray(hostState.problemsArray)) {
 		sortedHostProblemsArray = [...hostState.problemsArray];
 	}
-
-	const howManyHosts = Object.keys(hostlist).length;
+	
+	const hostlist = hostState.response;
+	const howManyHosts = hostHowManyState.howManyHosts;
 
 	// Sort the data based on the hostSortOrder value
 	let sort = 1;
