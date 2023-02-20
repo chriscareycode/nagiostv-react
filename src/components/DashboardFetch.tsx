@@ -78,7 +78,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist = myJson.data.commentlist;
+			const commentlist: Comment[] = myJson.data.commentlist;
 			// Massage the commentlist so we have one key per hostname
 			const commentlistObject = {
 				hosts: {},
@@ -88,6 +88,20 @@ const DashboardFetch = () => {
 			if (commentlist) {
 
 				Object.keys(commentlist).forEach((id) => {
+					// host
+					const host_key = commentlist[id].host_name;
+					//console.log('commentlist[id]', commentlist[id]);
+					// If this comment has a service_description then its not for hosts so skip it
+					if (!commentlist[id].service_description) {
+						if (commentlistObject.hosts.hasOwnProperty(host_key)) {
+							commentlistObject.hosts[host_key].comments.push(commentlist[id]);
+						} else {
+							commentlistObject.hosts[host_key] = {
+								comments: []
+							};
+							commentlistObject.hosts[host_key].comments.push(commentlist[id]);
+						}
+					}
 					//service
 					if (commentlist[id].comment_type === 2) {
 						const service_key = `${commentlist[id].host_name}_${commentlist[id].service_description}`;
@@ -100,21 +114,11 @@ const DashboardFetch = () => {
 							commentlistObject.services[service_key].comments.push(commentlist[id]);
 						}
 					}
-					// host
-					const host_key = commentlist[id].host_name;
-					if (commentlistObject.hosts.hasOwnProperty(host_key)) {
-						commentlistObject.hosts[host_key].comments.push(commentlist[id]);
-					} else {
-						commentlistObject.hosts[host_key] = {
-							comments: []
-						};
-						commentlistObject.hosts[host_key].comments.push(commentlist[id]);
-					}
 				});
 
 				// DEBUG the massaged commentlistObject
-				//console.log('commentlist', commentlist);
-				//console.log({commentlistObject});
+				// console.log('commentlist', commentlist);
+				// console.log({commentlistObject});
 			}
 
 			// TODO: Optimization: only set this if it's different (which is rare)
