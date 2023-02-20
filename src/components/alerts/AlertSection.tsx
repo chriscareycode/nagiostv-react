@@ -67,6 +67,7 @@ const AlertSection = () => {
 		alertDaysBack,
 		hostgroupFilter,
 		servicegroupFilter,
+		miniMapWidth,
 	} = clientSettings;
 
 	useEffect(() => {
@@ -299,6 +300,7 @@ const AlertSection = () => {
 					alertDaysBack={1}
 					hideAlertSoft={hideAlertSoft}
 					locale={locale}
+					triggerReflow={miniMapWidth}
 				/>}
 
 			</div>}
@@ -322,6 +324,7 @@ const AlertSection = () => {
 					alertDaysBack={alertDaysBack}
 					hideAlertSoft={hideAlertSoft}
 					locale={locale}
+					triggerReflow={miniMapWidth}
 				/>}
 
 			</div>}

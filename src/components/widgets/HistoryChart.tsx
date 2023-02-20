@@ -35,6 +35,7 @@ interface HistoryChartProps {
 	groupBy: moment.unitOfTime.Base;
 	alertHoursBack?: number;
 	alertDaysBack?: number;
+	triggerReflow: number;
 }
 interface HistoryChartState {
 	intervalHandle: NodeJS.Timeout | null;
@@ -53,6 +54,7 @@ const HistoryChart = ({
 	groupBy,
 	alertHoursBack,
 	alertDaysBack,
+	triggerReflow,
 }: HistoryChartProps) => {
 
 	//console.log(new Date(), 'HistoryChart render');
@@ -351,6 +353,23 @@ const HistoryChart = ({
 			clearInterval(intervalHandle);
 		};
 	}, [alertlistLastUpdate]);
+
+	useEffect(() => {
+		// Handler to call on window resize
+		function handleResize() {
+			// Set window width/height to state
+			const chart = chartComponentRef.current?.chart;
+			if (chart) {
+				chart.reflow();
+			}
+		}
+		// Add event listener
+		window.addEventListener("resize", handleResize);
+		// Call handler right away so state gets updated with initial window size
+		handleResize();
+		// Remove event listener on cleanup
+		return () => window.removeEventListener("resize", handleResize);
+	}, [triggerReflow]);
 
 	// const debugMode = document.location.search.indexOf('debug=true') !== -1;
 	// const alertlistDebug = alertlist.map((al, i) => {
