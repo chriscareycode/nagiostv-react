@@ -74,8 +74,8 @@ const ServiceSection = () => {
 		isComponentMounted = true;
 
 		const timeoutHandle = setTimeout(() => {
-			fetchServiceCount();
-			fetchServiceData();
+			fetchServiceCountThenFetchData();
+			//fetchServiceData();
 		}, 1000);
 
 		let intervalHandle: NodeJS.Timeout | null = null;
@@ -84,8 +84,8 @@ const ServiceSection = () => {
 			const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
-				fetchServiceCount();
-				fetchServiceData();
+				fetchServiceCountThenFetchData();
+				//fetchServiceData();
 			}, fetchServiceFrequencySafe * 1000);
 		}
 
@@ -176,7 +176,7 @@ const ServiceSection = () => {
 
 	}, [serviceState.lastUpdate]);
 
-	const fetchServiceCount = () => {
+	const fetchServiceCountThenFetchData = () => {
 
 		let url;
 		if (useFakeSampleData) {
@@ -204,6 +204,8 @@ const ServiceSection = () => {
 			});
 			//console.log('setting service totalCount to ', total);
 			totalCount.current = total;
+		}).then(() => {
+			fetchServiceData();
 		});
 
 	};

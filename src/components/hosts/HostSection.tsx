@@ -82,8 +82,8 @@ const HostSection = () => {
 		isComponentMounted = true;
 
 		const timeoutHandle = setTimeout(() => {
-			fetchHostCount();
-			fetchHostData();
+			fetchHostCountThenFetchData();
+			//fetchHostData();
 		}, 1000);
 
 		let intervalHandle: NodeJS.Timeout | null = null;
@@ -93,8 +93,8 @@ const HostSection = () => {
 			const fetchHostFrequencySafe = (typeof fetchHostFrequency === 'number' && fetchHostFrequency >= 5) ? fetchHostFrequency : clientSettingsInitial.fetchHostFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
-				fetchHostCount();
-				fetchHostData();
+				fetchHostCountThenFetchData();
+				//fetchHostData();
 			}, fetchHostFrequencySafe * 1000);
 		}
 
@@ -178,7 +178,7 @@ const HostSection = () => {
 
 	}, [hostState.lastUpdate]);
 
-	const fetchHostCount = () => {
+	const fetchHostCountThenFetchData = () => {
 
 		let url;
 		if (useFakeSampleData) {
@@ -206,6 +206,8 @@ const HostSection = () => {
 			});
 			//console.log('setting host totalCount to ', total);
 			totalCount.current = total;
+		}).then(() => {
+			fetchHostData();
 		});
 
 	};
