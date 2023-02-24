@@ -29,7 +29,7 @@ import CustomLogo from '../widgets/CustomLogo';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faVolumeUp, faBullhorn, faChartBar, faFilter, faSort } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faVolumeUp, faBullhorn, faFilter, faSort, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 
 // Import CSS
 import './TopPanel.css';
@@ -132,7 +132,7 @@ const TopPanel = (props) => {
 					className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 					onClick={clickedCharts24h}
 				>
-					<FontAwesomeIcon icon={faChartBar} /> 24h
+					<FontAwesomeIcon icon={faChartSimple} /> 24h
 				</div>
 
 				{/* chart icon */}
@@ -141,7 +141,7 @@ const TopPanel = (props) => {
 					className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 					onClick={clickedCharts}
 				>
-					<FontAwesomeIcon icon={faChartBar} /> {alertDaysBack}d
+					<FontAwesomeIcon icon={faChartSimple} /> {alertDaysBack}d
 				</div>
 
 				{/* sound effects icon */}

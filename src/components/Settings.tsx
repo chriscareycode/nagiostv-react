@@ -382,7 +382,7 @@ const Settings = () => {
 								<th>Check for new version:</th>
 								<td>
 									<select value={clientSettingsTemp.versionCheckDays} onChange={handleChange('versionCheckDays', 'number')}>
-										<option value={0}>Off</option>
+										<option value={0}>Never</option>
 										<option value={1}>1 day</option>
 										<option value={7}>1 week</option>
 										<option value={30}>1 month</option>
