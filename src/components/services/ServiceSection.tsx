@@ -75,7 +75,6 @@ const ServiceSection = () => {
 
 		const timeoutHandle = setTimeout(() => {
 			fetchServiceCountThenFetchData();
-			//fetchServiceData();
 		}, 1000);
 
 		let intervalHandle: NodeJS.Timeout | null = null;
@@ -85,7 +84,6 @@ const ServiceSection = () => {
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
 				fetchServiceCountThenFetchData();
-				//fetchServiceData();
 			}, fetchServiceFrequencySafe * 1000);
 		}
 

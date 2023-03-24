@@ -83,7 +83,6 @@ const HostSection = () => {
 
 		const timeoutHandle = setTimeout(() => {
 			fetchHostCountThenFetchData();
-			//fetchHostData();
 		}, 1000);
 
 		let intervalHandle: NodeJS.Timeout | null = null;
@@ -94,7 +93,6 @@ const HostSection = () => {
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
 				fetchHostCountThenFetchData();
-				//fetchHostData();
 			}, fetchHostFrequencySafe * 1000);
 		}
 
