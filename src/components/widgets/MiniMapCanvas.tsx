@@ -27,6 +27,7 @@ export default function MiniMapCanvas({
 			html2canvas(myElement, {
 				backgroundColor: '#111111',
 				scale: 0.25,
+				logging: false,
 			}).then(function (canvas) {
 				const mmi = document.querySelector('#mmimg');
 				const imgDataUrl = canvas.toDataURL();
