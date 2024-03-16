@@ -223,7 +223,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "Or: 2";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 
 	
 	$json = queryLivestatus($query);
@@ -311,7 +311,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "Or: 3";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 
 	$json = queryLivestatus($query);
 
@@ -398,7 +398,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "Filter: time >= " . $alert_starttime;
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 
 	$json = queryLivestatus($query);
 
@@ -480,7 +480,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "GET comments";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
@@ -537,7 +537,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "GET hostgroups";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
@@ -591,7 +591,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "GET servicegroups";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
@@ -646,7 +646,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "Columns: state";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
@@ -687,7 +687,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "Columns: state";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
@@ -727,7 +727,7 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "GET status";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
-	$query = join($query_arr, "\n");
+	$query = implode("\n", $query_arr);
 	
 	$json = queryLivestatus($query);
 	
