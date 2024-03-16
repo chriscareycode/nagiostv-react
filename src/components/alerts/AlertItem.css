@@ -39,7 +39,9 @@
 	font-size: 0.7em;
 }
 
-.alert-item-host-name {}
+.alert-item-host-name {
+
+}
 
 .alert-item-description {
 	font-size: 1em;
@@ -52,4 +54,12 @@
 	margin-left: 2px;
 	margin-right: 5px;
 	color: #fbc37c;
+}
+
+.alert-item-clickable {
+	cursor: pointer;
+}
+
+.alert-item-clickable:hover {
+	text-decoration: underline;
 }

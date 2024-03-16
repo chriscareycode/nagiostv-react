@@ -130,12 +130,12 @@ class AlertItem extends Component<AlertItemProps> {
 
 						<div style={{ marginTop: '2px' }}>
 							{/* host */}
-							{e.object_type === 1 && <span className="alert-item-host-name" onClick={this.openNagiosHostPage} style={{ cursor: 'pointer' }}>{e.name}</span>}
+							{e.object_type === 1 && <span className="alert-item-host-name alert-item-clickable" onClick={this.openNagiosHostPage}>{e.name}</span>}
 							{/* service */}
-							{e.object_type === 2 && <span className="alert-item-host-name" onClick={this.openNagiosHostPage} style={{ cursor: 'pointer' }}>{e.host_name}</span>}
+							{e.object_type === 2 && <span className="alert-item-host-name alert-item-clickable" onClick={this.openNagiosHostPage}>{e.host_name}</span>}
 							{' '}
 							<span className={alertTextClass(e.object_type, e.state)}>
-								{e.object_type === 2 && <span className="alert-item-description" onClick={this.openNagiosServicePage} style={{ cursor: 'pointer' }}>{e.description}</span>}
+								{e.object_type === 2 && <span className="alert-item-description alert-item-clickable" onClick={this.openNagiosServicePage}>{e.description}</span>}
 								{e.plugin_output}
 							</span>
 						</div>
