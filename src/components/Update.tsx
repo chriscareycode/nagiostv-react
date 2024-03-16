@@ -348,7 +348,7 @@ const Update = ({
 				<ul>
 					<li>One-click update to latest</li>
 					<ul>
-						<li>You can use the one-click update routines inside app here to update to the latest version. This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
+						<li>You can use the one-click update routines inside the app here to update to the latest version. This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
 					</ul>
 					<li>Rollback to an older version</li>
 					<ul>
