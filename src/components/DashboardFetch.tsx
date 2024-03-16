@@ -7,6 +7,7 @@ import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
 import $ from 'jquery';
 import _ from 'lodash';
+import { programStatusAtom } from "atoms/programAtom";
 
 const DashboardFetch = () => {
 
@@ -15,6 +16,7 @@ const DashboardFetch = () => {
 	const setHostgroup = useSetRecoilState(hostgroupAtom);
 	const setServicegroup = useSetRecoilState(servicegroupAtom);
 	const setCommentlist = useSetRecoilState(commentlistAtom);
+	const setProgramStatus = useSetRecoilState(programStatusAtom)
 
 	// Chop the bigState into vars
 	const {
@@ -229,6 +231,49 @@ const DashboardFetch = () => {
 		});
 	};
 
+	const fetchProgramStatus = () => {
+
+		let url;
+		if (useFakeSampleData) {
+			return;
+		} else if (clientSettings.dataSource === 'livestatus') {
+			url = clientSettings.livestatusPath + '?query=programstatus';
+		} else {
+			url = clientSettings.baseUrl + 'statusjson.cgi?query=programstatus';
+		}
+
+		$.ajax({
+			method: "GET",
+			url,
+			dataType: "json",
+			timeout: 10 * 1000
+		}).done((myJson, textStatus, jqXHR) => {
+
+			// test that return data is json
+			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+
+				setServicegroup(curr => ({
+					...curr,
+					error: true,
+					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+				}));
+				return;
+			}
+
+			setProgramStatus({
+				error: false,
+				errorCount: 0,
+				errorMessage: '',
+				lastUpdate: new Date().getTime(),
+				response: myJson
+			});
+
+		}).fail((jqXHR, textStatus, errorThrown) => {
+			handleFetchFail(setProgramStatus, jqXHR, textStatus, errorThrown, url);
+		});
+	};
+
 	// useEffect
 	useEffect(() => {
 		//console.log('DashboardFetch useEffect()');
@@ -241,6 +286,7 @@ const DashboardFetch = () => {
 		// fetch the initial data after 1 second
 		setTimeout(() => {
 			// fetch data now
+			fetchProgramStatus();
 			fetchHostGroupData();
 			fetchServiceGroupData();
 			fetchCommentData();
