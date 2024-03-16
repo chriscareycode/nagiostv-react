@@ -135,11 +135,13 @@ NagiosTV was started around 2008. Originally it was called ajax-monitor-for-nagi
 Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
 This ended up being a very painful install for many, requires a database server, and the database size continuously grew and needed maintenance and trimming.
 
-Later I released JavaScript versions which used "MK livestatus", and experimented with another another version using "status-json". These seemed a lot better since they got rid of the database requirement, but still required installation that many users were not willing or able to do.
+Later I released vanilla JavaScript and Ember.js versions which used "MK livestatus", and experimented with another another version using "status-json". These seemed a lot better since they got rid of the database requirement, but still required installation that many users were not willing or able to do.
 
-Now with Nagios 4, Nagios Core 4.0.7 and newer comes with [new JSON CGI's built-in](https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/). This allows NagiosTV to read status data from Nagios with no external dependencies. 
+In 2014 with the release of Nagios Core 4.0.7, we got [new JSON CGI's built-in](https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/). This allows NagiosTV (and other third-party apps) to read status data from Nagios with no external dependencies. 
 
-This project is the latest in many rewrites of NagiosTV. It uses React, connecting to the new Nagios CGIs. More recently, MK Livestatus connector was added.
+In 2018, with the increased popularity of the React JavaScript ecosystem, I started this new project to replace the previous version written in Ember.js.
+
+This project is the latest in many rewrites of NagiosTV over the years using different tech stacks. This one uses React, and TypeScript, and connecting to Nagios with the Nagios CGIs. More recently, MK Livestatus connector was added.
 
 Development
 -------------
@@ -147,6 +149,6 @@ Check out README-development.md for instructions to build and run in development
 
 Created by
 ------------
-NagiosTV https://nagiostv.com
+NagiosTV by Chris Carey https://nagiostv.com
 Copyright (C) 2008-2023 Chris Carey https://chriscarey.com
 
