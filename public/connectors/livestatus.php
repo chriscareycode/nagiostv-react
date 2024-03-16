@@ -710,6 +710,64 @@ if ($query_string["query"] == "hostlist") {
 	header('Content-Type: application/json');
 	print_r($encoded);
 
+} elseif ($query_string["query"] == "programstatus") {
+	
+	# servicecount
+
+	# create the base object
+	$res = array(
+		"format_version" => 0,
+		"result" => array(
+			"query" => "programstatus"
+		)
+	);
+
+	# create query
+	$query_arr = array();
+	$query_arr[] = "GET status";
+	$query_arr[] = "OutputFormat: json";
+	$query_arr[] = "ResponseHeader: fixed16";
+	$query = join($query_arr, "\n");
+	
+	$json = queryLivestatus($query);
+	
+	# debug
+	// header('Content-Type: application/json');
+	// print_r($json);
+	// exit();
+	
+	$decoded = json_decode($json, true);
+	$decoded_size = sizeof($decoded);
+
+	$list = array();
+	
+	for ($x = 1; $x < $decoded_size; $x++) {
+		
+		$item = array();
+		
+		# loop through the first index in the result which contains the key names
+		# and create a new array of name->value pair objects for this data
+		foreach($decoded[0] as $index => $value) {
+			$item[$value] = $decoded[$x][$index];
+		}
+
+		# nagios cgi has "version" instead of "program_version" like livestatus
+		$item["version"] = $item["program_version"];
+		# livestatus dates are not unix timestamp. We need to multiply them by 1000 to match nagios cgi
+		$item["program_start"] = $item["program_start"] * 1000;
+			  
+		# set item into the correct spot in the JSON
+		# $list[ $item["name"] ] = $item;
+		$list = $item;
+	}
+	
+	$res["data"]["programstatus"] = $list;
+
+	# output the result
+	$encoded = json_encode($res);
+	header('Content-Type: application/json');
+	print_r($encoded);
+
 } else {
 	print("unknown or no 'query' queryparam");
 }
