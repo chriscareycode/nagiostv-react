@@ -37,6 +37,7 @@ import * as clipboard from "clipboard-polyfill/text";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from 'types/settings';
+import Flynn from './Flynn/Flynn';
 
 const Settings = () => {
 
@@ -743,13 +744,16 @@ const Settings = () => {
 								</td>
 							</tr>}
 							<tr>
-								<th>Doom Guy (Flynn):</th>
+								<th>Doomguy:</th>
 								<td>
 									<select value={clientSettingsTemp.flynnEnabled.toString()} onChange={handleChange('flynnEnabled', 'boolean')}>
 										<option value={'true'}>On</option>
 										<option value={'false'}>Off</option>
 									</select>
-									<span> &nbsp; The character from the game Doom</span>
+									<span> &nbsp; The character from the 1993 video game Doom</span>
+									<span style={{ position: 'relative' }}>
+										<Flynn style={{ position: 'absolute', top: -13 }} />
+									</span>
 								</td>
 							</tr>
 
@@ -760,15 +764,15 @@ const Settings = () => {
 										<table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
 											<tbody>
 												{clientSettingsTemp.flynnEnabled && <tr>
-													<th>Doom Guy angry at</th>
+													<th>Doomguy angry at</th>
 													<td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnAngryAt} onChange={handleChange('flynnAngryAt', 'number')} /> services down</td>
 												</tr>}
 												{clientSettingsTemp.flynnEnabled && <tr>
-													<th>Doom Guy bloody at</th>
+													<th>Doomguy bloody at</th>
 													<td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnBloodyAt} onChange={handleChange('flynnBloodyAt', 'number')} /> services down</td>
 												</tr>}
 												{clientSettingsTemp.flynnEnabled && <tr>
-													<th>Doom Guy CSS scale</th>
+													<th>Doomguy CSS scale</th>
 													<td>
 														<input type="number" min="0" max="4" value={clientSettingsTemp.flynnCssScale} onChange={handleChange('flynnCssScale', 'string')} />
 														<span style={{ marginLeft: '8px' }}>{clientSettingsTemp.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)

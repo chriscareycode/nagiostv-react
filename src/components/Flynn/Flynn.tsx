@@ -34,7 +34,7 @@ import flynnImage from './flynn.png';
 */
 
 
-const Flynn = () => {
+const Flynn = ({ style }: { style?: React.CSSProperties }) => {
 
 	const smileClasses = ['flynn20', 'flynn21', 'flynn22', 'flynn23'];
 	const happyClasses = ['flynn1', 'flynn6', 'flynn11'];
@@ -90,7 +90,7 @@ const Flynn = () => {
 	};
 
 	return (
-		<div className="flynn-wrap">
+		<div className="flynn-wrap" style={style}>
 			<div style={{ backgroundImage: 'url(' + flynnImage + ')', transform: scale }} className={flynnClass} onClick={clickedFlynn}>
 			</div>
 		</div>
