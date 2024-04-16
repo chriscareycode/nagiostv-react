@@ -23,7 +23,6 @@ import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import ReactTooltip from 'react-tooltip';
 
 // Import Widgets
-import Flynn from '../Flynn/Flynn';
 import Clock from '../widgets/Clock';
 import CustomLogo from '../widgets/CustomLogo';
 
@@ -168,11 +167,6 @@ const TopPanel = (props) => {
 					clockDateFormat={clientSettings.clockDateFormat}
 					clockTimeFormat={clientSettings.clockTimeFormat}
 				/>
-
-				{/* flynn */}
-				{clientSettings.flynnEnabled &&
-					<Flynn />
-				}
 
 				{/* custom logo */}
 				{clientSettings.customLogoEnabled &&
