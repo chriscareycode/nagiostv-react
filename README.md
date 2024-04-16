@@ -53,7 +53,7 @@ $ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.8.7
 ```console
 $ tar xvfz nagiostv-0.8.7.tar.gz
 ```
-- We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html`.
+- We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html/` or `/usr/local/nagiosxi/html/`.
 
 Below is an example command to move NagiosTV into place, but you need to change /usr/local/nagios/share/ to the correct path for your Linux install:
 ```console
