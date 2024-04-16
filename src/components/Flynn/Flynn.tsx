@@ -33,8 +33,10 @@ import flynnImage from './flynn.png';
  Flynn will be bloody at >= 4 services down
 */
 
-
-const Flynn = ({ style }: { style?: React.CSSProperties }) => {
+const Flynn = ({ scaleCss, style }: {
+	scaleCss?: string,
+	style?: React.CSSProperties
+}) => {
 
 	const smileClasses = ['flynn20', 'flynn21', 'flynn22', 'flynn23'];
 	const happyClasses = ['flynn1', 'flynn6', 'flynn11'];
@@ -76,7 +78,11 @@ const Flynn = ({ style }: { style?: React.CSSProperties }) => {
 
 	// Get the class name and scale
 	flynnClass = 'flynn ' + item;
-	const scale = 'scale(' + clientSettings.flynnCssScale + ')';
+	//const transformCss = 'scale(' + clientSettings.flynnCssScale + ')';
+	const transformCss = {
+		backgroundImage: 'url(' + flynnImage + ')',
+		transform: `scale(${scaleCss ? scaleCss : '1'})`,
+	};
 
 	//console.log('flynnClass is ' + flynnClass + ' ' + new Date());
 
@@ -91,7 +97,7 @@ const Flynn = ({ style }: { style?: React.CSSProperties }) => {
 
 	return (
 		<div className="flynn-wrap" style={style}>
-			<div style={{ backgroundImage: 'url(' + flynnImage + ')', transform: scale }} className={flynnClass} onClick={clickedFlynn}>
+			<div style={transformCss} className={flynnClass} onClick={clickedFlynn}>
 			</div>
 		</div>
 	);

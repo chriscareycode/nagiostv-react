@@ -1,4 +1,11 @@
-.flynn-wrap {
+.summary .flynn-wrap {
+	position: relative;
+    top: 3px;
+		right: 0px;
+    width: 48px;
+    height: 64px;
+}
+.TopPanel .flynn-wrap {
 	display: inline-block;
 	height: 40px;
 	width: 35px;
@@ -6,7 +13,6 @@
 }
 
 .flynn {
-
 	position: absolute;
 	top: 5px;
 	right: 0px;
