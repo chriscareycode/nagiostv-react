@@ -13,6 +13,7 @@ import { programStatusAtom } from 'atoms/programAtom';
 import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers/moment';
 // CSS
 import './Summary.css';
+import Flynn from 'components/Flynn/Flynn';
 
 
 export default function Summary() {
@@ -66,85 +67,101 @@ export default function Summary() {
 
 			<div className="summary-item">
 
-				{/** Hosts Down */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
+				<div className="summary-left-side">
+
+					{/** Hosts Down */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
+						</div>
+						<div className="summary-box-text"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts<br />down</span></div>
 					</div>
-					<div className="summary-box-text"><span className={hostHowManyState.howManyHostDown > 0 ? 'color-white' : 'color-white'}>hosts<br />down</span></div>
-				</div>
 
-				{/** Hosts Unreachable */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
+					{/** Hosts Unreachable */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
+						</div>
+						<div className="summary-box-text"><span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-white' : 'color-white'}>hosts<br />unreachable</span></div>
 					</div>
-					<div className="summary-box-text"><span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-white' : 'color-white'}>hosts<br />unreachable</span></div>
-				</div>
 
-				{/** Hosts Total */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={'color-green'}>{hostHowManyState.howManyHosts}</span>
+					{/** Hosts Total */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={'color-green'}>{hostHowManyState.howManyHosts}</span>
+						</div>
+						<div className="summary-box-text"><span className={hostHowManyState.howManyHosts > 0 ? 'color-white' : 'color-white'}>hosts<br />total</span></div>
 					</div>
-					<div className="summary-box-text"><span className={hostHowManyState.howManyHosts > 0 ? 'color-white' : 'color-white'}>hosts<br />total</span></div>
-				</div>
 
-				{/** Blue Separator */}
-				<div className="summary-box summary-box-separator">
-				</div>
-
-				{/** Service Critical */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-red' : 'color-green'}>{serviceHowManyState.howManyServiceCritical}</span>
+					{/** Blue Separator */}
+					<div className="summary-box summary-box-separator">
 					</div>
-					<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services<br />critical</span></div>
-				</div>
 
-				{/** Service Warning */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
+					{/** Service Critical */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-red' : 'color-green'}>{serviceHowManyState.howManyServiceCritical}</span>
+						</div>
+						<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-white' : 'color-white'}>services<br />critical</span></div>
 					</div>
-					<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
-				</div>
 
-				{/** Service Unknown */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
+					{/** Service Warning */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
+						</div>
+						<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-white' : 'color-white'}>services<br />warning</span></div>
 					</div>
-					<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
-				</div>
 
-				{/** Service Total */}
-				<div className="summary-box">
-					<div className="summary-box-big-number">
-						<span className={'color-green'}>{serviceHowManyState.howManyServices}</span>
+					{/** Service Unknown */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
+						</div>
+						<div className="summary-box-text"><span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
 					</div>
-					<div className="summary-box-text"><span className={serviceHowManyState.howManyServices > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
+
+					{/** Service Total */}
+					<div className="summary-box">
+						<div className="summary-box-big-number">
+							<span className={'color-green'}>{serviceHowManyState.howManyServices}</span>
+						</div>
+						<div className="summary-box-text"><span className={serviceHowManyState.howManyServices > 0 ? 'color-white' : 'color-white'}>services<br />unknown</span></div>
+					</div>
+
 				</div>
 
-				<div className="summary-box float-right overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
-					<div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
-					<div className="margin-top-5 color-peach no-wrap">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
-				</div>
+				<div className="summary-right-side">
 
-				<div className="summary-box float-right">
-					<div className="margin-top-5 font-size-0-6">Uptime</div>
-					<div className="margin-top-5 color-peach">{formatDateTimeAgo(programStart)}</div>
-				</div>
+					{/* these are floating right */}
 
-				<div className="summary-box float-right">
-					<div className="margin-top-5 font-size-0-6">Nagios</div>
-					<div className="margin-top-5 color-peach">v{programVersion}</div>
-				</div>
+					<div className="summary-box">
+						<div className="margin-top-5 font-size-0-6">Nagios</div>
+						<div className="margin-top-5 color-peach">v{programVersion}</div>
+					</div>
 
-				{/* <div className="summary-box float-right">
-					Drift<br />
-					20s
-				</div> */}
+					<div className="summary-box">
+						<div className="margin-top-5 font-size-0-6">Uptime</div>
+						<div className="margin-top-5 color-peach">{formatDateTimeAgo(programStart)}</div>
+					</div>
+
+					<div className="summary-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
+						<div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
+						<div className="margin-top-5 color-peach no-wrap">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
+					</div>
+
+					{/* <div className="summary-box float-right">
+						Drift<br />
+						20s
+					</div> */}
+
+					{clientSettings.flynnEnabled && <div className="summary-box float-right overflow-hidden">
+						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
+							<Flynn scaleCss={'1'} />
+						</div>
+					</div>}
+
+				</div>
 
 			</div>
 
