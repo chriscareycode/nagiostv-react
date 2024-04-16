@@ -495,7 +495,7 @@ const Settings = () => {
 										<option value={'true'}>Show</option>
 									</select>
 									&nbsp;
-									Show a "MiniMap" on the right side of the screen (testing this)
+									Show a "MiniMap" on the right side of the screen (Experimental, may cause memory leak)
 								</td>
 							</tr>
 							<tr>
@@ -750,9 +750,11 @@ const Settings = () => {
 										<option value={'true'}>On</option>
 										<option value={'false'}>Off</option>
 									</select>
-									<span> &nbsp; The character from the 1993 video game Doom</span>
-									<span style={{ position: 'relative' }}>
-										<Flynn style={{ position: 'absolute', top: -13 }} />
+									<span style={{ position: 'relative' }}> &nbsp; The character from the 1993 video game Doom
+
+										<span style={{ position: 'absolute', top: 0, right: -56, height: 32, width: 24 }}>
+											<Flynn scaleCss='0.5' style={{ position: 'absolute', top: -13 }} />
+										</span>
 									</span>
 								</td>
 							</tr>
