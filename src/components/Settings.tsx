@@ -1,5 +1,3 @@
-/*eslint react/no-direct-mutation-state: "off"*/
-
 /**
  * NagiosTV https://nagiostv.com
  * Copyright (C) 2008-2023 Chris Carey https://chriscarey.com
@@ -37,7 +35,7 @@ import * as clipboard from "clipboard-polyfill/text";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from 'types/settings';
-import Flynn from './Flynn/Flynn';
+import Doomguy from './Doomguy/Doomguy';
 
 const Settings = () => {
 
@@ -746,14 +744,14 @@ const Settings = () => {
 							<tr>
 								<th>Doomguy:</th>
 								<td>
-									<select value={clientSettingsTemp.flynnEnabled.toString()} onChange={handleChange('flynnEnabled', 'boolean')}>
+									<select value={clientSettingsTemp.doomguyEnabled.toString()} onChange={handleChange('doomguyEnabled', 'boolean')}>
 										<option value={'true'}>On</option>
 										<option value={'false'}>Off</option>
 									</select>
 									<span style={{ position: 'relative' }}> &nbsp; The character from the 1993 video game Doom
 
 										<span style={{ position: 'absolute', top: 0, right: -56, height: 32, width: 24 }}>
-											<Flynn scaleCss='0.5' style={{ position: 'absolute', top: -13 }} />
+											<Doomguy scaleCss='0.5' style={{ position: 'absolute', top: -13 }} />
 										</span>
 									</span>
 								</td>
@@ -765,20 +763,13 @@ const Settings = () => {
 									<div style={{ paddingLeft: '40px' }}>
 										<table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
 											<tbody>
-												{clientSettingsTemp.flynnEnabled && <tr>
+												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy angry at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnAngryAt} onChange={handleChange('flynnAngryAt', 'number')} /> services down</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> services down</td>
 												</tr>}
-												{clientSettingsTemp.flynnEnabled && <tr>
+												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy bloody at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.flynnBloodyAt} onChange={handleChange('flynnBloodyAt', 'number')} /> services down</td>
-												</tr>}
-												{clientSettingsTemp.flynnEnabled && <tr>
-													<th>Doomguy CSS scale</th>
-													<td>
-														<input type="number" min="0" max="4" value={clientSettingsTemp.flynnCssScale} onChange={handleChange('flynnCssScale', 'string')} />
-														<span style={{ marginLeft: '8px' }}>{clientSettingsTemp.flynnCssScale}x scale</span> (change the size of Flynn. Decimal values OK here like 0.5)
-													</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> services down</td>
 												</tr>}
 											</tbody>
 										</table>

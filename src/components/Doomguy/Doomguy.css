@@ -1,24 +1,24 @@
-.summary .flynn-wrap {
+.summary .doomguy-wrap {
 	position: relative;
     top: 3px;
 		right: 0px;
     width: 48px;
     height: 64px;
 }
-.TopPanel .flynn-wrap {
+.TopPanel .doomguy-wrap {
 	display: inline-block;
 	height: 40px;
 	width: 35px;
 	position: relative;
 }
 
-.flynn {
+.doomguy {
 	position: absolute;
 	top: 5px;
 	right: 0px;
 
 
-	/*background-image: url('/flynn/flynn.png');*/
+	/*background-image: url('/doomguy/doomguy.png');*/
 	height: 64px;
 	width: 48px;
 
@@ -28,111 +28,111 @@
 	/*transition: transform 500ms linear;*/
 }
 
-.flynn1 {
+.doomguy1 {
 	background-position: 0px 0px
 }
 
-.flynn2 {
+.doomguy2 {
 	background-position: 0px -64px
 }
 
-.flynn3 {
+.doomguy3 {
 	background-position: 0px -128px;
 }
 
-.flynn4 {
+.doomguy4 {
 	background-position: 0px -192px;
 }
 
-.flynn5 {
+.doomguy5 {
 	background-position: 0px -256px;
 }
 
-.flynn6 {
+.doomguy6 {
 	background-position: 0px -320px;
 }
 
-.flynn7 {
+.doomguy7 {
 	background-position: 0px -384px;
 }
 
-.flynn8 {
+.doomguy8 {
 	background-position: 0px -448px;
 }
 
-.flynn9 {
+.doomguy9 {
 	background-position: 0px -512px;
 }
 
-.flynn10 {
+.doomguy10 {
 	background-position: 0px -576px;
 }
 
 /* this one is an exception to the 64 rule */
-.flynn11 {
+.doomguy11 {
 	background-position: 0px -640px
 }
 
-.flynn12 {
+.doomguy12 {
 	background-position: 0px -704px
 }
 
-.flynn13 {
+.doomguy13 {
 	background-position: 0px -768px;
 }
 
-.flynn14 {
+.doomguy14 {
 	background-position: 0px -832px;
 }
 
-.flynn15 {
+.doomguy15 {
 	background-position: 0px -896px;
 }
 
-.flynn16 {
+.doomguy16 {
 	background-position: 0px -960px;
 }
 
-.flynn17 {
+.doomguy17 {
 	background-position: 0px -1024px;
 }
 
-.flynn18 {
+.doomguy18 {
 	background-position: 0px -1088px;
 }
 
-.flynn19 {
+.doomguy19 {
 	background-position: 0px -1152px;
 }
 
-.flynn20 {
+.doomguy20 {
 	background-position: 0px -1216px;
 }
 
-.flynn20 {
+.doomguy20 {
 	background-position: 0px -1280px;
 }
 
-.flynn21 {
+.doomguy21 {
 	background-position: 0px -1344px;
 }
 
-.flynn22 {
+.doomguy22 {
 	background-position: 0px -1408px;
 }
 
-.flynn23 {
+.doomguy23 {
 	background-position: 0px -1472px;
 }
 
-.flynn24 {
+.doomguy24 {
 	background-position: 0px -1536px;
 }
 
-.flynn25 {
+.doomguy25 {
 	background-position: 0px -1600px;
 }
 
-.flynn26 {
+.doomguy26 {
 	background-position: 0px -1664px;
 }

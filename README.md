@@ -32,7 +32,7 @@ NagiosTV also has some fun addons:
 
 - Sound effects for state changes
 - Speak the state changes
-- Doom Guy (Flynn), the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Flynn gets.
+- Doom Guy (Doomguy), the character from the game Doom. This is just a bit of added fun to bring some emotion to server monitoring. The more services are down, the more angry Doomguy gets.
 
 Technology
 ------------

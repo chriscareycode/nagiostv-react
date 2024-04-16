@@ -24,24 +24,24 @@ import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 
-import './Flynn.css';
+import './Doomguy.css';
 // @ts-ignore-next-line
-import flynnImage from './flynn.png';
+import doomguyImage from './Doomguy.png';
 /*
- Flynn will be happy at 0 services down
- Flynn will be angry at < 4 services down
- Flynn will be bloody at >= 4 services down
+ Doomguy will be happy at 0 services down
+ Doomguy will be angry at < 4 services down
+ Doomguy will be bloody at >= 4 services down
 */
 
-const Flynn = ({ scaleCss, style }: {
+const Doomguy = ({ scaleCss, style }: {
 	scaleCss?: string,
 	style?: React.CSSProperties
 }) => {
 
-	const smileClasses = ['flynn20', 'flynn21', 'flynn22', 'flynn23'];
-	const happyClasses = ['flynn1', 'flynn6', 'flynn11'];
-	const angryClasses = ['flynn2', 'flynn3', 'flynn7', 'flynn8', 'flynn12', 'flynn13', 'flynn16', 'flynn17', 'flynn18', 'flynn19'];
-	const bloodyClasses = ['flynn4', 'flynn5', 'flynn9', 'flynn10', 'flynn14', 'flynn15', 'flynn24', 'flynn25'];
+	const smileClasses = ['doomguy20', 'doomguy21', 'doomguy22', 'doomguy23'];
+	const happyClasses = ['doomguy1', 'doomguy6', 'doomguy11'];
+	const angryClasses = ['doomguy2', 'doomguy3', 'doomguy7', 'doomguy8', 'doomguy12', 'doomguy13', 'doomguy16', 'doomguy17', 'doomguy18', 'doomguy19'];
+	const bloodyClasses = ['doomguy4', 'doomguy5', 'doomguy9', 'doomguy10', 'doomguy14', 'doomguy15', 'doomguy24', 'doomguy25'];
 
 	const clientSettings = useRecoilValue(clientSettingsAtom);
 	const hostHowManyState = useRecoilValue(hostHowManyAtom);
@@ -54,15 +54,15 @@ const Flynn = ({ scaleCss, style }: {
 		serviceHowManyState.howManyServiceWarning +
 		serviceHowManyState.howManyServiceCritical;
 
-	let flynnClass = 'flynn';
+	let doomguyClass = 'doomguy';
 	let classes: any[] = [];
 	if (howManyDown === -1) {
 		classes = smileClasses;
 	} else if (howManyDown === 0) {
 		classes = happyClasses;
-	} else if (howManyDown >= clientSettings.flynnAngryAt && howManyDown < clientSettings.flynnBloodyAt) {
+	} else if (howManyDown >= clientSettings.doomguyAngryAt && howManyDown < clientSettings.doomguyBloodyAt) {
 		classes = angryClasses;
-	} else if (howManyDown >= clientSettings.flynnBloodyAt) {
+	} else if (howManyDown >= clientSettings.doomguyBloodyAt) {
 		classes = bloodyClasses;
 	} else {
 		classes = happyClasses;
@@ -73,21 +73,21 @@ const Flynn = ({ scaleCss, style }: {
 
 	// If clicked then force smile
 	if (clicked) {
-		item = 'flynn23';
+		item = 'doomguy23';
 	}
 
 	// Get the class name and scale
-	flynnClass = 'flynn ' + item;
-	//const transformCss = 'scale(' + clientSettings.flynnCssScale + ')';
+	doomguyClass = 'doomguy ' + item;
+	//const transformCss = 'scale(' + clientSettings.doomguyCssScale + ')';
 	const transformCss = {
-		backgroundImage: 'url(' + flynnImage + ')',
+		backgroundImage: 'url(' + doomguyImage + ')',
 		transform: `scale(${scaleCss ? scaleCss : '1'})`,
 	};
 
-	//console.log('flynnClass is ' + flynnClass + ' ' + new Date());
+	//console.log('doomguyClass is ' + doomguyClass + ' ' + new Date());
 
 	// If clicked then force smile
-	const clickedFlynn = () => {
+	const clickedDoomguy = () => {
 		setClicked(true);
 		// TODO this could trigger a setState on unmounted component
 		setTimeout(() => {
@@ -96,12 +96,12 @@ const Flynn = ({ scaleCss, style }: {
 	};
 
 	return (
-		<div className="flynn-wrap" style={style}>
-			<div style={transformCss} className={flynnClass} onClick={clickedFlynn}>
+		<div className="doomguy-wrap" style={style}>
+			<div style={transformCss} className={doomguyClass} onClick={clickedDoomguy}>
 			</div>
 		</div>
 	);
 
 };
 
-export default Flynn;
+export default Doomguy;

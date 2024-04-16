@@ -82,11 +82,12 @@ export interface ClientSettings {
 	fontSizeEm: string;
 	customLogoEnabled: boolean;
 	customLogoUrl: string;
-	flynnEnabled: boolean;
-	flynnConcernedAt: number;
-	flynnAngryAt: number;
-	flynnBloodyAt: number;
-	flynnCssScale: string;
+
+	doomguyEnabled: boolean;
+	doomguyConcernedAt: number;
+	doomguyAngryAt: number;
+	doomguyBloodyAt: number;
+
 	showEmoji: boolean;
 	speakItems: boolean;
 	speakItemsVoice: string;

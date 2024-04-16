@@ -13,7 +13,7 @@ import { programStatusAtom } from 'atoms/programAtom';
 import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers/moment';
 // CSS
 import './Summary.css';
-import Flynn from 'components/Flynn/Flynn';
+import Doomguy from 'components/Doomguy/Doomguy';
 
 
 export default function Summary() {
@@ -155,9 +155,9 @@ export default function Summary() {
 						20s
 					</div> */}
 
-					{clientSettings.flynnEnabled && <div className="summary-box float-right overflow-hidden">
+					{clientSettings.doomguyEnabled && <div className="summary-box float-right overflow-hidden">
 						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
-							<Flynn scaleCss={'1'} />
+							<Doomguy scaleCss={'1'} />
 						</div>
 					</div>}
 
