@@ -1,0 +1,26 @@
+{
+  "format_version": 0,
+  "result": {
+    "query_time": 1713631611000,
+    "cgi": "statusjson.cgi",
+    "user": "chris",
+    "query": "servicecount",
+    "query_status": "released",
+    "program_start": 1713052066000,
+    "last_data_update": 1713631606000,
+    "type_code": 0,
+    "type_text": "Success",
+    "message": ""
+  },
+  "data": {
+    "selectors": {
+    },
+    "count": {
+      "ok": 136,
+      "warning": 1,
+      "critical": 0,
+      "unknown": 0,
+      "pending": 0
+    }
+  }
+}
