@@ -17,8 +17,8 @@
  */
 
 import { useEffect, useState } from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 // React Router
@@ -52,10 +52,10 @@ const Update = ({
 	currentVersionString,
 }) => {
 
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 	const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
-	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
+	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
 	const [testPhpState, setTestPhpState] = useState<TestPhpState>({
 		loading: false,
 		error: false,

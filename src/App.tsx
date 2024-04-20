@@ -18,7 +18,7 @@
 
 import './App.css';
 import Base from './components/Base';
-import { RecoilRoot } from 'recoil';
+import { Provider } from 'jotai'
 import { AppContextProvider } from "./components/AppContext";
 
 const App = () => {
@@ -26,9 +26,9 @@ const App = () => {
 	return (
 		<div className="App">
 			<AppContextProvider>
-				<RecoilRoot>
+				<Provider>
 					<Base />
-				</RecoilRoot>
+				</Provider>
 			</AppContextProvider>
 		</div>
 	);

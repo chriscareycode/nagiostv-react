@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react";
 import './MiniMapCanvas.css';
 import { hostAtom } from 'atoms/hostAtom';
 import { serviceAtom } from 'atoms/serviceAtom';
-import { useRecoilValue } from "recoil";
+import { useAtomValue } from 'jotai';
 
 interface MiniMapCanvasProps {
 	elementToSnapshot: string;
@@ -17,8 +17,8 @@ export default function MiniMapCanvas({
 	miniMapWidth,
 }: MiniMapCanvasProps) {
 
-	const hostState = useRecoilValue(hostAtom);
-	const serviceState = useRecoilValue(serviceAtom);
+	const hostState = useAtomValue(hostAtom);
+	const serviceState = useAtomValue(serviceAtom);
 
 	// The function that uses html2canvas to take a snapshot of the area
 	const snap = () => {

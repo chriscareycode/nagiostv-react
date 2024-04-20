@@ -17,8 +17,8 @@
  */
 
 import React from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { servicegroupAtom } from '../../atoms/hostgroupAtom';
 import './ServiceGroupFilter.css';
@@ -29,9 +29,9 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const ServiceGroupFilter = () => {
 
-	//const bigState = useRecoilValue(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-	const servicegroupState = useRecoilValue(servicegroupAtom);
+	//const bigState = useAtomValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const servicegroupState = useAtomValue(servicegroupAtom);
 
 	const servicegroup = servicegroupState.response;
 	const servicegroupFilter = clientSettings.servicegroupFilter;

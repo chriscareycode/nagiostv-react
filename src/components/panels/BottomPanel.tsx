@@ -18,8 +18,8 @@
 
 import React, { useEffect, useState } from 'react';
 
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 
 // React Router
@@ -46,7 +46,7 @@ const BottomPanel = ({
 
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
+	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
 
 	const navigateTo = (e: React.MouseEvent<HTMLElement>, pathname) => {
 		e.preventDefault();

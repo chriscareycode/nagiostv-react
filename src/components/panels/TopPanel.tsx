@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useRecoilState } from 'recoil';
+import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 
 // Import external libraries
@@ -37,8 +37,8 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const TopPanel = (props) => {
 
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	const {
 		//isDoneLoading,

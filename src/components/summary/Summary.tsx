@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 // Widgets
 import AlertItem from 'components/alerts/AlertItem';
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import { alertAtom } from '../../atoms/alertAtom';
@@ -18,12 +18,12 @@ import Doomguy from 'components/Doomguy/Doomguy';
 
 export default function Summary() {
 
-	// Recoil state (this section)
-	const hostHowManyState = useRecoilValue(hostHowManyAtom);
-	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
-	const alertState = useRecoilValue(alertAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
-	const programStatus = useRecoilValue(programStatusAtom);
+	// State Management state (this section)
+	const hostHowManyState = useAtomValue(hostHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
+	const alertState = useAtomValue(alertAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
+	const programStatus = useAtomValue(programStatusAtom);
 	
 	// Extract a couple of fields out of programStatus that we are using: "program_start" and "version"
 	const programStart = programStatus?.response?.data?.programstatus?.program_start;

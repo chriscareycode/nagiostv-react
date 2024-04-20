@@ -17,8 +17,8 @@
  */
 
 import { useEffect, useState } from 'react';
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import { Link } from "react-router-dom";
@@ -39,9 +39,9 @@ import Doomguy from './Doomguy/Doomguy';
 
 const Settings = () => {
 
-	// Recoil state
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	// State Management state
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	// Component state
 	// takes a copy of the clientSettings and saves it into local state (for editing)

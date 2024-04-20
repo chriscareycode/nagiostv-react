@@ -17,8 +17,8 @@
  */
 
 import React from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 // Helpers
 import { translate } from '../../helpers/language';
@@ -37,8 +37,8 @@ const AlertFilters = ({
 	howManyAlertSoft,
 }) => {
 
-	const bigState = useRecoilValue(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	// Chop the bigState into vars
 	const {

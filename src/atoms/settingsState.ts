@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 // Types
 import { BigState, ClientSettings } from 'types/settings';
 // Import Polyfills
@@ -130,12 +130,6 @@ export const clientSettingsInitial: ClientSettings = {
 	miniMapWidth: 120,
 };
 
-export const bigStateAtom = atom({
-	key: 'bigStateAtom',
-	default: bigStateInitial,
-});
+export const bigStateAtom = atom(bigStateInitial);
 
-export const clientSettingsAtom = atom({
-	key: 'clientSettingsAtom',
-	default: clientSettingsInitial,
-});
+export const clientSettingsAtom = atom(clientSettingsInitial);

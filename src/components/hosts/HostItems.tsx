@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import {
 	//hostIsFetchingAtom,
 	//hostAtom,
@@ -42,10 +42,10 @@ const HostItems = ({
 	isDemoMode,
 }) => {
 
-	const commentlistState = useRecoilValue(commentlistAtom);
+	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
 
-	const hostHowManyState = useRecoilValue(hostHowManyAtom);
+	const hostHowManyState = useAtomValue(hostHowManyAtom);
 
 	const {
 		howManyHosts,

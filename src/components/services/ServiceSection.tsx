@@ -17,8 +17,8 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+// State Management
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { serviceIsFetchingAtom, serviceAtom, serviceHowManyAtom, serviceIsFakeDataSetAtom } from '../../atoms/serviceAtom';
 
@@ -44,15 +44,15 @@ const ServiceSection = () => {
 
 	//console.log('ServiceSection run');
 
-	// Recoil state (this section)
-	const [serviceIsFetching, setServiceIsFetching] = useRecoilState(serviceIsFetchingAtom);
-	const setServiceIsFakeDataSet = useSetRecoilState(serviceIsFakeDataSetAtom);
-	const [serviceState, setServiceState] = useRecoilState(serviceAtom);
-	const [serviceHowManyState, setServiceHowManyState] = useRecoilState(serviceHowManyAtom);
+	// State Management state (this section)
+	const [serviceIsFetching, setServiceIsFetching] = useAtom(serviceIsFetchingAtom);
+	const setServiceIsFakeDataSet = useSetAtom(serviceIsFakeDataSetAtom);
+	const [serviceState, setServiceState] = useAtom(serviceAtom);
+	const [serviceHowManyState, setServiceHowManyState] = useAtom(serviceHowManyAtom);
 	const totalCount = useRef(0);
-	// Recoil state (main)
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	// State Management state (main)
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	// Chop the bigState into vars
 	const {

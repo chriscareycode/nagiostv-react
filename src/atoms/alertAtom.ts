@@ -1,10 +1,7 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 import { AlertWrap } from 'types/hostAndServiceTypes';
 
-export const alertIsFetchingAtom = atom({
-	key: 'alertIsFetchingAtom',
-	default: false,
-});
+export const alertIsFetchingAtom = atom(false);
 
 const initialState: AlertWrap = {
 	error: false,
@@ -15,15 +12,9 @@ const initialState: AlertWrap = {
 	responseArray: []
 };
 
-export const alertAtom = atom({
-	key: 'alertAtom',
-	default: initialState,
-});
+export const alertAtom = atom(initialState);
 
 export const alertHowManyAtom = atom({
-	key: 'alertHowManyAtom',
-	default: {
-		howManyAlerts: 0,
-		howManyAlertSoft: 0,
-	},
+	howManyAlerts: 0,
+	howManyAlertSoft: 0,
 });

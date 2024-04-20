@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-// Recoil
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+// State Management
+import { useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
@@ -11,12 +11,12 @@ import { programStatusAtom } from "atoms/programAtom";
 
 const DashboardFetch = () => {
 
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
-	const setHostgroup = useSetRecoilState(hostgroupAtom);
-	const setServicegroup = useSetRecoilState(servicegroupAtom);
-	const setCommentlist = useSetRecoilState(commentlistAtom);
-	const setProgramStatus = useSetRecoilState(programStatusAtom)
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
+	const setHostgroup = useSetAtom(hostgroupAtom);
+	const setServicegroup = useSetAtom(servicegroupAtom);
+	const setCommentlist = useSetAtom(commentlistAtom);
+	const setProgramStatus = useSetAtom(programStatusAtom)
 
 	// Chop the bigState into vars
 	const {

@@ -18,8 +18,8 @@
 
 import { useState } from 'react';
 
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
@@ -43,9 +43,9 @@ const Doomguy = ({ scaleCss, style }: {
 	const angryClasses = ['doomguy2', 'doomguy3', 'doomguy7', 'doomguy8', 'doomguy12', 'doomguy13', 'doomguy16', 'doomguy17', 'doomguy18', 'doomguy19'];
 	const bloodyClasses = ['doomguy4', 'doomguy5', 'doomguy9', 'doomguy10', 'doomguy14', 'doomguy15', 'doomguy24', 'doomguy25'];
 
-	const clientSettings = useRecoilValue(clientSettingsAtom);
-	const hostHowManyState = useRecoilValue(hostHowManyAtom);
-	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
+	const hostHowManyState = useAtomValue(hostHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 
 	const [clicked, setClicked] = useState(false); // Temp make him angry
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
@@ -13,9 +13,9 @@ const SettingsLoad = () => {
 
 	//console.log('SettingsLoad run');
 
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
 
 	const {
 		isDemoMode,

@@ -26,8 +26,8 @@
  * 
  */
 
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import {
@@ -62,8 +62,8 @@ import MiniMapWrap from './widgets/MiniMapWrap';
 const Base = () => {
 
 	//lets move as much state as possible up and out of this component
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	const {
 		isDoneLoading,

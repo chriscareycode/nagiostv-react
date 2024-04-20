@@ -1,6 +1,6 @@
 import React from 'react';
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // Dashboard Fetch (For HostGroup and Comment)
 import DashboardFetch from './DashboardFetch';
@@ -19,8 +19,8 @@ import './Dashboard.css';
 
 const Dashboard = () => {
 
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	// Chop the bigState into vars
 	const {

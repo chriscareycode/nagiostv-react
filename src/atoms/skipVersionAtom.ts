@@ -1,10 +1,6 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
 export const skipVersionAtom = atom({
-	key: 'skipVersionAtom',
-	default: {
-		version: 0,
-		version_string: '',
-	}
+	version: 0,
+	version_string: '',
 });
-

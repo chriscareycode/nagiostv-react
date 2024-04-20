@@ -17,8 +17,8 @@
  */
 
 import { useCallback, useEffect } from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
 
@@ -40,13 +40,13 @@ const AlertSection = () => {
 
 	//console.log('AlertSection run');
 
-	// Recoil state (this section)
-	const [alertIsFetching, setAlertIsFetching] = useRecoilState(alertIsFetchingAtom);
-	const [alertState, setAlertState] = useRecoilState(alertAtom);
-	const [alertHowManyState, setAlertHowManyState] = useRecoilState(alertHowManyAtom);
-	// Recoil state (main)
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	// State Management state (this section)
+	const [alertIsFetching, setAlertIsFetching] = useAtom(alertIsFetchingAtom);
+	const [alertState, setAlertState] = useAtom(alertAtom);
+	const [alertHowManyState, setAlertHowManyState] = useAtom(alertHowManyAtom);
+	// State Management state (main)
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	const {
 		isDemoMode,
