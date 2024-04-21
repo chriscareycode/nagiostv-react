@@ -58,6 +58,7 @@ import './Base.css';
 import './animation.css';
 
 import MiniMapWrap from './widgets/MiniMapWrap';
+import SettingsFakeData from './SettingsFakeData';
 
 const Base = () => {
 
@@ -164,6 +165,7 @@ const Base = () => {
 		<div id="Base" className="Base">
 
 			<SettingsLoad />
+			<SettingsFakeData />
 
 			<Router>
 
