@@ -235,7 +235,7 @@ const DashboardFetch = () => {
 
 		let url;
 		if (useFakeSampleData) {
-			return;
+			url = './sample-data/programstatus.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
 			url = clientSettings.livestatusPath + '?query=programstatus';
 		} else {

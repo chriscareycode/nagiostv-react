@@ -1,0 +1,37 @@
+{
+	"format_version": 0,
+	"result": {
+	  "query_time": 1713715097000,
+	  "cgi": "statusjson.cgi",
+	  "user": "chris",
+	  "query": "programstatus",
+	  "query_status": "released",
+	  "program_start": 1713052066000,
+	  "last_data_update": 1713715096000,
+	  "type_code": 0,
+	  "type_text": "Success",
+	  "message": ""
+	},
+	"data": {
+	  "programstatus": {
+		"version": "4.4.6",
+		"nagios_pid": 12607,
+		"daemon_mode": true,
+		"program_start": 1713052066000,
+		"last_log_rotation": 1713682799000,
+		"enable_notifications": true,
+		"execute_service_checks": true,
+		"accept_passive_service_checks": true,
+		"execute_host_checks": true,
+		"accept_passive_host_checks": true,
+		"enable_event_handlers": true,
+		"obsess_over_services": false,
+		"obsess_over_hosts": false,
+		"check_service_freshness": true,
+		"check_host_freshness": true,
+		"enable_flap_detection": true,
+		"process_performance_data": false
+	  }
+	}
+  }
+  
