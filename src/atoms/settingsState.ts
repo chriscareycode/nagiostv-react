@@ -8,6 +8,9 @@ import 'url-search-params-polyfill';
 // demo mode uses fake data and rotates through a couple of alerts as an example
 const urlParams = new URLSearchParams(window.location.search);
 const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
+if (isDemoMode) {
+	console.log('Demo mode is on');
+}
 
 const isStressTestMode = urlParams.get('stresstest') === 'true';
 
