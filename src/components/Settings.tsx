@@ -764,12 +764,16 @@ const Settings = () => {
 										<table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
 											<tbody>
 												{clientSettingsTemp.doomguyEnabled && <tr>
+													<th>Doomguy concerned at</th>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyConcernedAt} onChange={handleChange('doomguyConcernedAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
+												</tr>}
+												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy angry at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> services down</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
 												</tr>}
 												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy bloody at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> services down</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
 												</tr>}
 											</tbody>
 										</table>
