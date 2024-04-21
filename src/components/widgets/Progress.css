@@ -1,11 +1,11 @@
 .Progress {
 	position: absolute;
 	bottom: 1px;
-	left: 1px;
-	right: 1px;
-	height: 10px;
-	border-bottom-left-radius: 7px;
-	border-bottom-right-radius: 7px;
+	left: 0px;
+	right: 0px;
+	height: 8px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 	overflow: hidden;
 }
 
@@ -14,11 +14,17 @@
 	to   { transform: scaleX(1); }
 }
 
+@keyframes progress-reverse-keyframes {
+	from { transform: scaleX(1); }
+	to   { transform: scaleX(0); }
+}
+
 .Progress .progress-bar {
-	height: 10px;
+	height: 8px;
 	background-color: gray;
 	width: 100%;
 	opacity: 0.3;
+	animation-interation-count: 1;
 	animation-timing-function: linear;
 	transform-origin: left;
 }

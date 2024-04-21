@@ -185,7 +185,7 @@ class HostItem extends Component<HostItemProps> {
 						))}
 					</div>}
 
-					{(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress seconds={secondsToNextCheck} color={hostTextClass(e.status)}></Progress>}
+					{(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={hostTextClass(e.status)}></Progress>}
 
 				</div>
 			</div>

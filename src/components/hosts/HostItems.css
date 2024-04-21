@@ -16,6 +16,7 @@
 	padding-right: 7px;
 	border-radius: 5px;
 	min-height: 33px;
+	padding-bottom: 10px;
 }
 
 .HostItemBorder:last-of-type {}

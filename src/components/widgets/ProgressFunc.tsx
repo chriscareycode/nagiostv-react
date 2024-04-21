@@ -17,15 +17,15 @@
  */
 
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import './Progress.css';
 
 interface ProgressProps {
-	seconds: number;
+	next_check: number;
 	color: string;
 }
 
-const Progress = ({ seconds, color }: ProgressProps) => {
+const Progress = ({ next_check, color }: ProgressProps) => {
 
 	const [started, setStarted] = useState(false);
 
@@ -106,20 +106,41 @@ const Progress = ({ seconds, color }: ProgressProps) => {
 	// 	}
 	// }
 
+	const previous_next_check = useRef(0);
+
 	useEffect(() => {
+
+		if (next_check > previous_next_check.current) {
+			previous_next_check.current = next_check;
+			setStarted(true);
+		}
+
+		//setStarted(true);
+		const seconds = (next_check - Date.now()) / 1000;
+		const timeoutHandle = setTimeout(() => {
+			setStarted(false);
+		}, seconds * 1000);
+		return () => {
+			clearTimeout(timeoutHandle);
+		}
 		
-	}, []);
+	}, [setStarted, next_check]);
 	
 
-	// console.log('Progress render', this.props.seconds);
+	const seconds = (next_check - Date.now()) / 1000;
+
+	console.log('Progress render', next_check, seconds);
+
 
 	const progressStyle = {
-		animation: started ? `progress-keyframes ${seconds}s linear` : 'none'
+		animation: started ?
+			`progress-keyframes ${seconds}s linear` :
+			'progress-reverse-keyframes 1s linear'
 	};
 
 	return (
 		<div className="Progress progress">
-			{started && <div className={`progress-bar ${color}`} style={progressStyle}></div>}
+			<div className={`progress-bar ${color}`} style={progressStyle}></div>
 		</div>
 	);
 	
@@ -128,8 +149,8 @@ const Progress = ({ seconds, color }: ProgressProps) => {
 // write a function to pass into memo
 function arePropsEqual(prevProps, nextProps, ) {
 	// When this function returns, true we do not render, false we render
-	// return prevProps.seconds === nextProps.seconds;
-	return true;
+	return prevProps.next_check === nextProps.next_check;
+	// return true;
 }
 
 
