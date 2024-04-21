@@ -9,11 +9,12 @@
  */
 
 import { hostAtom } from "atoms/hostAtom";
-import { serviceAtom } from "atoms/serviceAtom";
+import { serviceAtom } from "atoms/serviceAtom"
 import { bigStateAtom, clientSettingsAtom } from "atoms/settingsState";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
+const startAfterSeconds = 4; // This is how long to wait before starting the first/initial fake data
 const fakeOutIntervalSeconds = 40; // This needs to be longer than the polling interval for hosts and services.
 
 const SettingsFakeData = () => {
@@ -55,7 +56,7 @@ const SettingsFakeData = () => {
 			setTimeout(() => {
 				console.log('Running fakeOutTheData to fake out the fake data...');
 				fakeOutTheData();
-			}, 5 * 1000);
+			}, startAfterSeconds * 1000);
 
 			// Start an interval of 1 minute to run the fakeOutTheData function
 			console.log('Starting an interval to call fakeOutTheData...');
