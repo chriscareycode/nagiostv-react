@@ -9,12 +9,12 @@
 	overflow: hidden;
 }
 
-@keyframes progress-keyframes {
+@keyframes scaleup-keyframes {
 	from { transform: scaleX(0); }
 	to   { transform: scaleX(1); }
 }
 
-@keyframes progress-reverse-keyframes {
+@keyframes scaledown-keyframes {
 	from { transform: scaleX(1); }
 	to   { transform: scaleX(0); }
 }
@@ -24,7 +24,6 @@
 	background-color: gray;
 	width: 100%;
 	opacity: 0.3;
-	animation-interation-count: 1;
 	animation-timing-function: linear;
 	transform-origin: left;
 }
