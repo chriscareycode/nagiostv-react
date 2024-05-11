@@ -5,8 +5,8 @@ import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atom
 import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
-import $ from 'jquery';
 import _ from 'lodash';
+import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
 
 const DashboardFetch = () => {
@@ -31,8 +31,8 @@ const DashboardFetch = () => {
 
 	// Functions
 
-	const handleFetchFail = (setFn, jqXHR, textStatus, errorThrown, url) => {
-		if (jqXHR.status === 0) {
+	const handleFetchFail = (setFn, error, url) => {
+		if (error.status === 0) {
 			// CONNECTION REFUSED
 			setFn(curr => ({
 				...curr,
@@ -44,7 +44,7 @@ const DashboardFetch = () => {
 			setFn(curr => ({
 				...curr,
 				error: true,
-				errorMessage: 'ERROR: ' + jqXHR.status + ' ' + errorThrown + ' - ' + url
+				errorMessage: 'ERROR: ' + error.status + ' ' + error + ' - ' + url
 			}));
 		}
 	};
@@ -60,15 +60,14 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 		}
 
-		$.ajax({
+		axios({
 			method: "GET",
 			url,
-			dataType: "json",
 			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
+		}).then((response) => {
 
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchCommentData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setCommentlist(curr => ({
@@ -80,7 +79,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist: Comment[] = myJson.data.commentlist;
+			const commentlist: Comment[] = response.data.commentlist;
 			// Massage the commentlist so we have one key per hostname
 			const commentlistObject = {
 				hosts: {},
@@ -134,8 +133,8 @@ const DashboardFetch = () => {
 			});
 
 
-		}).fail((jqXHR, textStatus, errorThrown) => {
-			handleFetchFail(setCommentlist, jqXHR, textStatus, errorThrown, url);
+		}).catch((error) => {
+			handleFetchFail(setCommentlist, error, url);
 		});
 	};
 
@@ -150,15 +149,14 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
 		}
 
-		$.ajax({
+		axios({
 			method: "GET",
 			url,
-			dataType: "json",
 			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
+		}).then(response => {
 
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setHostgroup(curr => ({
@@ -170,7 +168,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the hostgrouplist result
-			const hostgroup = _.get(myJson.data, 'hostgrouplist', {});
+			const hostgroup = _.get(response.data, 'hostgrouplist', {});
 
 			setHostgroup({
 				error: false,
@@ -180,8 +178,8 @@ const DashboardFetch = () => {
 				response: hostgroup
 			});
 
-		}).fail((jqXHR, textStatus, errorThrown) => {
-			handleFetchFail(setHostgroup, jqXHR, textStatus, errorThrown, url);
+		}).catch(error => {
+			handleFetchFail(setHostgroup, error, url);
 		});
 	};
 
@@ -196,15 +194,14 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=servicegrouplist&details=true';
 		}
 
-		$.ajax({
+		axios({
 			method: "GET",
 			url,
-			dataType: "json",
 			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
+		}).then((response) => {
 
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
@@ -216,7 +213,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the hostgrouplist result
-			const servicegroup = _.get(myJson.data, 'servicegrouplist', {});
+			const servicegroup = _.get(response.data, 'servicegrouplist', {});
 
 			setServicegroup({
 				error: false,
@@ -226,8 +223,8 @@ const DashboardFetch = () => {
 				response: servicegroup
 			});
 
-		}).fail((jqXHR, textStatus, errorThrown) => {
-			handleFetchFail(setServicegroup, jqXHR, textStatus, errorThrown, url);
+		}).catch(error => {
+			handleFetchFail(setServicegroup, error, url);
 		});
 	};
 
@@ -242,15 +239,14 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=programstatus';
 		}
 
-		$.ajax({
+		axios({
 			method: "GET",
 			url,
-			dataType: "json",
 			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
+		}).then(response => {
 
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
@@ -266,11 +262,11 @@ const DashboardFetch = () => {
 				errorCount: 0,
 				errorMessage: '',
 				lastUpdate: new Date().getTime(),
-				response: myJson
+				response: response.data,
 			});
 
-		}).fail((jqXHR, textStatus, errorThrown) => {
-			handleFetchFail(setProgramStatus, jqXHR, textStatus, errorThrown, url);
+		}).catch(error => {
+			handleFetchFail(setProgramStatus, error, url);
 		});
 	};
 

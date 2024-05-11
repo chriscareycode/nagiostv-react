@@ -32,7 +32,7 @@ import HostFilters from './HostFilters';
 
 // 3rd party addons
 import moment from 'moment';
-import $ from 'jquery';
+import axios from 'axios';
 import _ from 'lodash';
 import { Host } from 'types/hostAndServiceTypes';
 
@@ -191,21 +191,31 @@ const HostSection = () => {
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
+		setHostIsFetching(true);
+
+		axios.get(url, {
 			timeout: (fetchHostFrequency - 2) * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-			//console.log('hostcount', myJson);
+		})
+		.then((response) => {
 			let total = 0;
-			Object.keys(myJson.data.count).forEach((aaKey) => {
-				total += myJson.data.count[aaKey];
+			Object.keys(response.data.data.count).forEach((aaKey) => {
+				total += response.data.data.count[aaKey];
 			});
-			//console.log('setting host totalCount to ', total);
 			totalCount.current = total;
-		}).then(() => {
 			fetchHostData();
+		})
+		.catch((error) => {
+			console.log('fetchHostCountThenFetchData() ajax error');
+			if (isComponentMounted) {
+				setHostIsFetching(false);
+
+				setHostState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+				}));
+			}
 		});
 
 	};
@@ -236,15 +246,14 @@ const HostSection = () => {
 
 		setHostIsFetching(true);
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
+		axios({
+			method: "get",
+			url: url,
 			timeout: (fetchHostFrequency - 2) * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-
+		})
+		.then((response) => {
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setHostIsFetching(false);
 				setHostState(curr => ({
@@ -259,7 +268,7 @@ const HostSection = () => {
 			// Success
 
 			// Make an array from the object
-			let my_list: Record<string, Host> = _.get(myJson.data, 'hostlist', {});
+			let my_list: Record<string, Host> = _.get(response.data.data, 'hostlist', {});
 
 			// If we are in demo mode then clean the fake data
 			// The fake data has a bunch of dates of hosts and services being down.
@@ -272,7 +281,7 @@ const HostSection = () => {
 			const myArray = convertHostObjectToArray(my_list);
 
 			// check for old data (nagios down?)
-			const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+			const duration = moment.duration(new Date().getTime() - response.data.result.last_data_update);
 			const hours = duration.asHours().toFixed(1);
 
 			if (isDemoMode === false && useFakeSampleData === false && parseFloat(hours) >= 1) {
@@ -307,11 +316,11 @@ const HostSection = () => {
 
 					setHostIsFakeDataSet(useFakeSampleData);
 
-
 					howManyCounter(my_list);
 				}
 			}
-		}).fail((jqXHR, textStatus, errorThrown) => {
+		})
+		.catch((error) => {
 			if (isComponentMounted) {
 				setHostIsFetching(false);
 

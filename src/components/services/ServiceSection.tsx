@@ -32,7 +32,7 @@ import ServiceFilters from './ServiceFilters';
 
 // 3rd party addons
 import moment from 'moment';
-import $ from 'jquery';
+import axios from 'axios';
 import _ from 'lodash';
 
 // Types
@@ -189,21 +189,30 @@ const ServiceSection = () => {
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
+		setServiceIsFetching(true);
+
+		axios.get(url, {
 			timeout: (fetchServiceFrequency - 2) * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-			//console.log('servicecount', myJson);
+		})
+		.then((response) => {
 			let total = 0;
-			Object.keys(myJson.data.count).forEach((aaKey) => {
-				total += myJson.data.count[aaKey];
+			Object.keys(response.data.data.count).forEach((aaKey) => {
+				total += response.data.data.count[aaKey];
 			});
-			//console.log('setting service totalCount to ', total);
 			totalCount.current = total;
-		}).then(() => {
 			fetchServiceData();
+		})
+		.catch((error) => {
+			if (isComponentMounted) {
+				setServiceIsFetching(false);
+
+				setServiceState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+				}));
+			}
 		});
 
 	};
@@ -235,15 +244,14 @@ const ServiceSection = () => {
 
 		setServiceIsFetching(true);
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
+		axios({
+			method: "get",
+			url: url,
 			timeout: (fetchServiceFrequency - 2) * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-
+		})
+		.then((response) => {
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers['content-type'].indexOf('application/json') === -1) {
 				console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setServiceIsFetching(false);
 				setServiceState(curr => ({
@@ -252,14 +260,13 @@ const ServiceSection = () => {
 					errorCount: curr.errorCount + 1,
 					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
 				}));
-
 				return;
 			}
 
 			// Success
 
 			// Make an array from the object
-			let my_list: Record<string, Record<string, Service>> = _.get(myJson.data, 'servicelist', {});
+			let my_list: Record<string, Record<string, Service>> = _.get(response.data.data, 'servicelist', {});
 
 			// If we are in demo mode then clean the fake data
 			if (isDemoMode) {
@@ -270,7 +277,7 @@ const ServiceSection = () => {
 			const myArray = convertServiceObjectToArray(my_list);
 
 			// check for old stale data (detect if nagios is down)
-			const duration = moment.duration(new Date().getTime() - myJson.result.last_data_update);
+			const duration = moment.duration(new Date().getTime() - response.data.result.last_data_update);
 			const hours = duration.asHours().toFixed(1);
 
 			// we disable the stale check if in demo mode since the demo data is always stale
@@ -288,7 +295,6 @@ const ServiceSection = () => {
 					}));
 				}
 			} else {
-
 				if (isComponentMounted) {
 					setServiceIsFetching(false);
 					setServiceState(curr => ({
@@ -306,9 +312,11 @@ const ServiceSection = () => {
 					howManyCounter(my_list);
 				}
 			}
-		}).fail((jqXHR, textStatus, errorThrown) => {
+		})
+		.catch((error) => {
 			if (isComponentMounted) {
 				setServiceIsFetching(false);
+
 				setServiceState(curr => ({
 					...curr,
 					error: true,

@@ -25,7 +25,8 @@ import { skipVersionAtom } from '../atoms/skipVersionAtom';
 import { Link } from "react-router-dom";
 import Cookie from 'js-cookie';
 import './Update.css';
-import $ from 'jquery';
+import axios from 'axios';
+
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
@@ -109,33 +110,28 @@ const Update = ({
 
 		const url = 'auto-version-switch.php?testphp=true';
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
-			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-			// Got data
-			//console.log('testPhp result', myJson);
-			setTestPhpState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: myJson
+		axios.get(url, { timeout: 10 * 1000 })
+			.then((response) => {
+				// Got data
+				setTestPhpState({
+					loading: false,
+					error: false,
+					errorMessage: '',
+					result: response.data
+				});
+			})
+			.catch((error) => {
+				// Error
+				setTestPhpState({
+					loading: false,
+					error: true,
+					errorMessage: 'Error testing PHP',
+					result: {
+						whoami: null,
+						script: null,
+					}
+				});
 			});
-
-		}).catch((err) => {
-			// Error
-			setTestPhpState({
-				loading: false,
-				error: true,
-				errorMessage: 'Error testing PHP',
-				result: {
-					whoami: null,
-					script: null,
-				}
-			});
-		});
 	};
 
 	const fetchLatestVersion = () => {
@@ -148,38 +144,34 @@ const Update = ({
 
 		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + currentVersionString;
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
-			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-			// Got data
-			//console.log('latestVersion result', myJson);
-			// set version into local state
-			setLatestVersionState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: myJson
+		axios.get(url, { timeout: 10 * 1000 })
+			.then((response) => {
+				// Got data
+				const myJson = response.data;
+				// set version into local state
+				setLatestVersionState({
+					loading: false,
+					error: false,
+					errorMessage: '',
+					result: myJson
+				});
+				// set version into bigState
+				setBigState(curr => ({
+					...curr,
+					latestVersion: myJson.version,
+					latestVersionString: myJson.version_string,
+					lastVersionCheckTime: new Date().getTime(),
+				}));
+			})
+			.catch((error) => {
+				// Error
+				setLatestVersionState({
+					loading: false,
+					error: true,
+					errorMessage: 'Error getting latest version from server',
+					result: {}
+				});
 			});
-			// set version into bigState
-			setBigState(curr => ({
-				...curr,
-				latestVersion: myJson.version,
-				latestVersionString: myJson.version_string,
-				lastVersionCheckTime: new Date().getTime(),
-			}));
-
-		}).catch((err) => {
-			// Error
-			setLatestVersionState({
-				loading: false,
-				error: true,
-				errorMessage: 'Error getting latest version from server',
-				result: {}
-			});
-		});
 	};
 
 	const fetchReleasesFromGithub = () => {
@@ -191,28 +183,26 @@ const Update = ({
 		}));
 
 		const url = 'https://api.github.com/repos/chriscareycode/nagiostv-react/releases';
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
-			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-			// Got data from Github
-			setGithubState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: myJson
+
+		axios.get(url, { timeout: 10 * 1000 })
+			.then((response) => {
+				// Got data from Github
+				setGithubState({
+					loading: false,
+					error: false,
+					errorMessage: '',
+					result: response.data
+				});
+			})
+			.catch((error) => {
+				// Error
+				setGithubState({
+					loading: false,
+					error: true,
+					errorMessage: 'Error fetching from github',
+					result: {}
+				});
 			});
-		}).catch((err) => {
-			// Error
-			setGithubState({
-				loading: false,
-				error: true,
-				errorMessage: 'Error fetching from github',
-				result: {}
-			});
-		});
 	};
 
 	const selectChanged = (e) => {
@@ -231,28 +221,26 @@ const Update = ({
 		}));
 
 		const url = `auto-version-switch.php?version=v${latestVersionString}`;
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "html",
-			timeout: 30 * 1000
-		}).done((result, textStatus, jqXHR) => {
-			// Got data from update php script
-			setUpdateState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: result
+
+		axios.get(url, { timeout: 30 * 1000 })
+			.then((response) => {
+				// Got data from update php script
+				setUpdateState({
+					loading: false,
+					error: false,
+					errorMessage: '',
+					result: response.data
+				});
+			})
+			.catch((error) => {
+				// Error
+				setUpdateState({
+					loading: false,
+					error: true,
+					errorMessage: 'Error calling auto-version-switch.php',
+					result: ''
+				});
 			});
-		}).catch((err) => {
-			// Error
-			setUpdateState({
-				loading: false,
-				error: true,
-				errorMessage: 'Error calling auto-version-switch.php',
-				result: ''
-			});
-		});
 
 	};
 
@@ -265,29 +253,26 @@ const Update = ({
 		}));
 
 		const url = `auto-version-switch.php?version=${selected}`;
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "html",
-			timeout: 30 * 1000
-		}).done((result, textStatus, jqXHR) => {
-			// Success
-			setDowngradeState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: result
-			});
-		}).catch((err) => {
-			// Error
-			setDowngradeState({
-				loading: false,
-				error: true,
-				errorMessage: 'Error calling auto-version-switch.php',
-				result: ''
-			});
-		});
 
+		axios.get(url, { timeout: 30 * 1000 })
+			.then((response) => {
+				// Success
+				setDowngradeState({
+					loading: false,
+					error: false,
+					errorMessage: '',
+					result: response.data
+				});
+			})
+			.catch((error) => {
+				// Error
+				setDowngradeState({
+					loading: false,
+					error: true,
+					errorMessage: 'Error calling auto-version-switch.php',
+					result: ''
+				});
+			});
 	};
 
 	const clickedSkipVersion = () => {
