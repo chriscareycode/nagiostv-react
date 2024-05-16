@@ -33,6 +33,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import './AlertSection.css';
+import { handleFetchFail } from 'helpers/axios';
 
 let isComponentMounted = false;
 
@@ -140,14 +141,13 @@ const AlertSection = () => {
 
 		setAlertIsFetching(true);
 
-		axios({
-			method: "get",
-			url: url,
-			timeout: (fetchAlertFrequency - 2) * 1000
-		})
+		axios.get(
+			url,
+			{timeout: (fetchAlertFrequency - 2) * 1000}
+		)
 		.then((response) => {
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				// We check this since the axios could take a while to respond and the page may have unmounted
@@ -207,12 +207,8 @@ const AlertSection = () => {
 			if (isComponentMounted) {
 				setAlertIsFetching(false);
 
-				setAlertState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+				handleFetchFail(setAlertState, error, url, true);
+
 			} else {
 				console.log('AlertSection failed but component is not mounted');
 			}

@@ -37,6 +37,7 @@ import _ from 'lodash';
 
 // Types
 import { Service } from '../../types/hostAndServiceTypes';
+import { handleFetchFail } from 'helpers/axios';
 
 let isComponentMounted = false;
 
@@ -244,14 +245,13 @@ const ServiceSection = () => {
 
 		setServiceIsFetching(true);
 
-		axios({
-			method: "get",
-			url: url,
-			timeout: (fetchServiceFrequency - 2) * 1000
-		})
+		axios.get(
+			url,
+			{timeout: (fetchServiceFrequency - 2) * 1000}
+		)
 		.then((response) => {
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setServiceIsFetching(false);
 				setServiceState(curr => ({
@@ -317,12 +317,7 @@ const ServiceSection = () => {
 			if (isComponentMounted) {
 				setServiceIsFetching(false);
 
-				setServiceState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+				handleFetchFail(setServiceState, error, url, true);
 			}
 		});
 	}

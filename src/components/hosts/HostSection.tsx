@@ -35,6 +35,7 @@ import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
 import { Host } from 'types/hostAndServiceTypes';
+import { handleFetchFail } from 'helpers/axios';
 
 //import './HostSection.css';
 
@@ -209,12 +210,7 @@ const HostSection = () => {
 			if (isComponentMounted) {
 				setHostIsFetching(false);
 
-				setHostState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+				handleFetchFail(setHostState, error, url, true);
 			}
 		});
 
@@ -246,14 +242,13 @@ const HostSection = () => {
 
 		setHostIsFetching(true);
 
-		axios({
-			method: "get",
-			url: url,
-			timeout: (fetchHostFrequency - 2) * 1000
-		})
+		axios.get(
+			url,
+			{ timeout: (fetchHostFrequency - 2) * 1000 }
+		)
 		.then((response) => {
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setHostIsFetching(false);
 				setHostState(curr => ({
@@ -324,12 +319,7 @@ const HostSection = () => {
 			if (isComponentMounted) {
 				setHostIsFetching(false);
 
-				setHostState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+				handleFetchFail(setHostState, error, url, true);
 			}
 		});
 	};
@@ -342,7 +332,7 @@ const HostSection = () => {
 		sortedHostProblemsArray = [...hostState.problemsArray];
 	}
 	
-	const hostlist = hostState.response;
+	// const hostlist = hostState.response;
 	const howManyHosts = hostHowManyState.howManyHosts;
 
 	// Sort the data based on the hostSortOrder value

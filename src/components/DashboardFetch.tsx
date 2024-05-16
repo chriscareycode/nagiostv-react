@@ -8,6 +8,7 @@ import { commentlistAtom } from '../atoms/commentlistAtom';
 import _ from 'lodash';
 import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
+import { handleFetchFail } from "helpers/axios";
 
 const DashboardFetch = () => {
 
@@ -31,24 +32,6 @@ const DashboardFetch = () => {
 
 	// Functions
 
-	const handleFetchFail = (setFn, error, url) => {
-		if (error.status === 0) {
-			// CONNECTION REFUSED
-			setFn(curr => ({
-				...curr,
-				error: true,
-				errorMessage: 'ERROR: CONNECTION REFUSED to ' + url
-			}));
-		} else {
-			// UNKNOWN (add more errors here)
-			setFn(curr => ({
-				...curr,
-				error: true,
-				errorMessage: 'ERROR: ' + error.status + ' ' + error + ' - ' + url
-			}));
-		}
-	};
-
 	const fetchCommentData = () => {
 
 		let url;
@@ -60,14 +43,13 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
 		}
 
-		axios({
-			method: "GET",
+		axios.get(
 			url,
-			timeout: 10 * 1000
-		}).then((response) => {
+			{timeout: 10 * 1000}
+		).then((response) => {
 
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchCommentData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setCommentlist(curr => ({
@@ -134,7 +116,7 @@ const DashboardFetch = () => {
 
 
 		}).catch((error) => {
-			handleFetchFail(setCommentlist, error, url);
+			handleFetchFail(setCommentlist, error, url, true);
 		});
 	};
 
@@ -149,14 +131,13 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
 		}
 
-		axios({
-			method: "GET",
+		axios.get(
 			url,
-			timeout: 10 * 1000
-		}).then(response => {
+			{ timeout: 10 * 1000 }
+		).then(response => {
 
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setHostgroup(curr => ({
@@ -179,7 +160,7 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
-			handleFetchFail(setHostgroup, error, url);
+			handleFetchFail(setHostgroup, error, url, true);
 		});
 	};
 
@@ -194,14 +175,13 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'objectjson.cgi?query=servicegrouplist&details=true';
 		}
 
-		axios({
-			method: "GET",
+		axios.get(
 			url,
-			timeout: 10 * 1000
-		}).then((response) => {
+			{ timeout: 10 * 1000 }
+		).then((response) => {
 
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
@@ -224,7 +204,7 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
-			handleFetchFail(setServicegroup, error, url);
+			handleFetchFail(setServicegroup, error, url, true);
 		});
 	};
 
@@ -239,14 +219,13 @@ const DashboardFetch = () => {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=programstatus';
 		}
 
-		axios({
-			method: "GET",
+		axios.get(
 			url,
-			timeout: 10 * 1000
-		}).then(response => {
+			{ timeout: 10 * 1000 }
+		).then(response => {
 
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
@@ -266,7 +245,7 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
-			handleFetchFail(setProgramStatus, error, url);
+			handleFetchFail(setProgramStatus, error, url, true);
 		});
 	};
 

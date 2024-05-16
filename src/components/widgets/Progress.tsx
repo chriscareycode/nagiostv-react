@@ -49,8 +49,16 @@ const Progress = ({ next_check, color }: ProgressProps) => {
 		
 	}, [setStarted, next_check]);
 	
-	const seconds = (next_check - Date.now()) / 1000;
-	// console.log('Progress render', next_check, seconds);
+	let seconds = (next_check - Date.now()) / 1000;
+	if (seconds > 2) {
+		seconds = seconds - 2;
+	}
+	if (seconds < 0) {
+		seconds = 0;
+	}
+	
+	// console.log('Progress render', next_check, Date.now(), seconds);
+
 	const progressStyle = {
 		animation: started ?
 			`scaledown-keyframes 1s linear, scaleup-keyframes ${seconds}s linear` :
@@ -69,6 +77,7 @@ const Progress = ({ next_check, color }: ProgressProps) => {
 function arePropsEqual(prevProps, nextProps, ) {
 	// When this function returns, true we do not render, false we render
 	return prevProps.next_check === nextProps.next_check;
+	// return true;
 }
 
 

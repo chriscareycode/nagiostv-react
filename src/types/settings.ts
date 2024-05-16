@@ -104,3 +104,8 @@ export interface ClientSettings {
 	showMiniMap: boolean;
 	miniMapWidth: number;
 }
+
+export interface VersionCheck {
+	version: number;
+	version_string: string;
+}

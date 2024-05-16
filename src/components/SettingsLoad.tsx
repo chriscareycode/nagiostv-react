@@ -5,9 +5,9 @@ import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
-import { ClientSettings } from 'types/settings';
+import { ClientSettings, VersionCheck } from 'types/settings';
 
 const SettingsLoad = () => {
 
@@ -161,15 +161,15 @@ const SettingsLoad = () => {
 	const getRemoteSettings = () => {
 		const url = 'client-settings.json?v=' + new Date().getTime();
 
-		axios({
-			method: "GET",
-			url,
-			timeout: 10 * 1000
-		}).then(response => {
+		axios.get(
+			url, { timeout: 10 * 1000 }
+		).then((response: AxiosResponse<ClientSettings>) => {
+
+			console.log('SettingsLoad DEBUG response', response);
 
 			console.log('SettingsLoad DEBUG response', response);
 			// test that return data is json
-			if (response.headers['content-type'].indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
 				getCookie();
 				return;
@@ -197,8 +197,8 @@ const SettingsLoad = () => {
 			// getCookie() is then going to call loadSettingsFromUrl()
 			getCookie();
 
-		}).catch((err) => {
-			console.log('getRemoteSettings() ajax ERROR:', err);
+		}).catch((error) => {
+			console.log('getRemoteSettings() ajax ERROR:', error);
 			console.log('Skipping server settings.');
 			getCookie();
 		});
@@ -247,26 +247,24 @@ const SettingsLoad = () => {
 
 		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
 
-		axios({
-			method: "GET",
+		axios.get(
 			url,
-			timeout: 5 * 1000
+			{timeout: 5 * 1000}
+		).then((response: AxiosResponse<VersionCheck>) => {
+			const myJson = response.data;
+			console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
+
+			setBigState(curr => ({
+				...curr,
+				latestVersion: myJson.version,
+				latestVersionString: myJson.version_string,
+				lastVersionCheckTime: nowTime,
+			}));
+
 		})
-			.then(response => {
-				const myJson = response.data;
-				console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
-
-				setBigState(curr => ({
-					...curr,
-					latestVersion: myJson.version,
-					latestVersionString: myJson.version_string,
-					lastVersionCheckTime: nowTime,
-				}));
-
-			})
-			.catch(error => {
-				console.log('There was some error with the version check', error);
-			});
+		.catch(error => {
+			console.log('There was some error with the version check', error);
+		});
 	};
 
 

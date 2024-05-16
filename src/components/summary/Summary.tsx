@@ -15,7 +15,6 @@ import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers
 import './Summary.css';
 import Doomguy from 'components/Doomguy/Doomguy';
 
-
 export default function Summary() {
 
 	// State Management state (this section)
@@ -60,10 +59,10 @@ export default function Summary() {
 		<div className="summary">
 
 			{/* <div className="service-summary">
-        <span className="service-summary-title">
-          Summary
-        </span>
-      </div> */}
+			<span className="service-summary-title">
+				Summary
+			</span>
+			</div> */}
 
 			<div className="summary-item">
 
@@ -135,34 +134,37 @@ export default function Summary() {
 
 					{/* these are floating right */}
 
+	  				{/* Nagios Version */}
 					<div className="summary-box">
 						<div className="margin-top-5 font-size-0-6">Nagios</div>
 						<div className="margin-top-5 color-peach">v{programVersion}</div>
 					</div>
 
+	  				{/* Uptime */}
 					<div className="summary-box">
 						<div className="margin-top-5 font-size-0-6">Uptime</div>
 						<div className="margin-top-5 color-peach">{formatDateTimeAgo(programStart)}</div>
 					</div>
 
+					{/* Quiet For */}
 					<div className="summary-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
 						<div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
 						<div className="margin-top-5 color-peach no-wrap">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
 					</div>
 
+					{/* Drift */}
 					{/* <div className="summary-box float-right">
 						Drift<br />
 						20s
 					</div> */}
 
+					{/* Doomguy */}
 					{clientSettings.doomguyEnabled && <div className="summary-box float-right overflow-hidden">
 						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
 							<Doomguy scaleCss={'1'} />
 						</div>
 					</div>}
-
 				</div>
-
 			</div>
 
 			{alertlist.length > 0 && <div style={{ margin: '13px 0px 5px 0px' }}>
