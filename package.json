@@ -4,12 +4,20 @@
   "private": true,
   "homepage": "./",
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^15.0.7",
     "@types/node": "^18.19.33",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
-    "react-scripts": "^5.0.1",
-    "typescript": "^4.9.5"
+    "@vitejs/plugin-react": "^4.2.1",
+    "c8": "^9.1.0",
+    "jsdom": "^24.0.0",
+    "typescript": "^4.9.5",
+    "vite": "^5.2.11",
+    "vite-plugin-pwa": "^0.20.0",
+    "vite-plugin-svgr": "^4.2.0",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.6.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -37,11 +45,11 @@
     "url-search-params-polyfill": "^8.2.5"
   },
   "scripts": {
-    "start": "BROWSER=none PORT=3015 react-scripts start",
-    "build": "react-scripts build",
-    "build:dev": "react-scripts build --profile",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
+    "test": "vitest watch",
+    "test:no-watch": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "proxy": "node proxy.js"
   },
   "browserslist": {

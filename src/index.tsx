@@ -48,7 +48,15 @@ import App from './App';
 
 // React 18
 const container = document.getElementById('app');
+/* If there is no container, display an error message to the DOM */
+if (!container) {
+  const error = document.createElement('div');
+  error.innerHTML = 'Error: Could not find the root element. Make sure the element with id="app" is in the DOM.';
+  document.body.appendChild(error);
+  throw new Error('Could not find the root element. Make sure the element with id="app" is in the DOM.');
+}
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
-root.render(<App tab="home" />);
+// root.render(<App tab="home" />);
+root.render(<App />);
 
 //registerServiceWorker();

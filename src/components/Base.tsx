@@ -162,7 +162,7 @@ const Base = () => {
 	);
 
 	return (
-		<div id="Base" className="Base">
+		<div id="Base" data-testid="Base" className="Base">
 
 			<SettingsLoad />
 			<SettingsFakeData />
