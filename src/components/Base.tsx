@@ -93,7 +93,7 @@ const Base = () => {
 	const mainContent = (
 		<>
 			{/* wrapper around the main content */}
-			<div className={`main-content ${isLeftPanelOpen ? ' left-panel-open' : ''} ${showMiniMap ? ' right-panel-open' : ''}`}>
+			<div className={`main-content ${showMiniMap ? ' right-panel-open' : ''}`}>
 
 				{!isDoneLoading && <div>Settings are not loaded yet</div>}
 
