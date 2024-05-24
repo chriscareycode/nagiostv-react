@@ -1,6 +1,7 @@
 {
   "name": "nagiostv",
   "version": "0.8.7",
+  "type": "module",
   "private": true,
   "homepage": "./",
   "devDependencies": {
