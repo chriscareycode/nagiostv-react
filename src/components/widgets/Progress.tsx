@@ -16,92 +16,69 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+
+import { memo, useEffect, useRef, useState } from 'react';
 import './Progress.css';
 
 interface ProgressProps {
-	seconds: number;
+	next_check: number;
 	color: string;
 }
 
-class Progress extends Component<ProgressProps> {
+const Progress = ({ next_check, color }: ProgressProps) => {
 
-	shouldComponentUpdate(nextProps, nextState) {
-		//console.log('shouldComponentUpdate', nextProps, nextState);
+	const [started, setStarted] = useState(false);
+	const previous_next_check = useRef(0);
 
-		if (nextProps.seconds < 0 && this.state.started === true) {
-			this.setState({ started: false });
-			//return true;
+	useEffect(() => {
+
+		// If next_check value increases, then store the value and set started to true
+		if (next_check > previous_next_check.current) {
+			previous_next_check.current = next_check;
+			setStarted(true);
 		}
 
-		// If there is an increase in the seconds set the started flag to true
-		if (nextProps.seconds > this.props.seconds && this.state.started === false) {
-			this.setState({ started: true });
+		// Start a timer that will fire at the next_check time and set started to false
+		const seconds = (next_check - Date.now()) / 1000;
+		const timeoutHandle = setTimeout(() => {
+			setStarted(false);
+		}, seconds * 1000);
+		return () => {
+			clearTimeout(timeoutHandle);
 		}
-
-		// we re-render when the seconds value jumps up, never when it goes down
-		// the check for nextState.started !== this.state.started is for first run
-		if (nextProps.seconds > this.props.seconds || nextState.started !== this.state.started) {
-			return true;
-		} else {
-			return false;
-		}
-
-		// if (nextState.started !== this.state.started) {
-		//   return true;
-		// }
+		
+	}, [setStarted, next_check]);
+	
+	let seconds = (next_check - Date.now()) / 1000;
+	if (seconds > 2) {
+		seconds = seconds - 2;
 	}
+	if (seconds < 0) {
+		seconds = 0;
+	}
+	
+	// console.log('Progress render', next_check, Date.now(), seconds);
 
-	state = {
-		//progressMax: 15,
-		//progressValue: 15,
-		started: false
+	const progressStyle = {
+		animation: started ?
+			`scaledown-keyframes 1s linear, scaleup-keyframes ${seconds}s linear` :
+			'none'
 	};
 
-	timeoutHandle: NodeJS.Timeout | null = null;
-
-	componentDidMount() {
-		// setInterval(() => {
-		//   this.setState({
-		//     progressValue: this.state.progressValue > 0 ? this.state.progressValue - 1 : this.state.progressMax
-		//   });
-		// }, 1000);
-
-
-		this.timeoutHandle = setTimeout(() => {
-			this.setState({ started: true });
-		}, 1 * 1000);
-
-		// setInterval(() => {
-		//   this.setState({ started: false });
-
-		//   setTimeout(() => {
-		//     this.setState({ started: true });
-		//   }, 1 * 1000);
-
-		// }, 14 * 1000);
-	}
-
-	componentWillUnmount() {
-		if (this.timeoutHandle) {
-			clearTimeout(this.timeoutHandle);
-		}
-	}
-
-	render() {
-
-		//console.log('Progress render');
-
-		const progressStyle = {
-			animation: this.state.started ? `progress-keyframes ${this.props.seconds}s linear` : 'none'
-		};
-
-		return (
-			<div className="Progress progress">
-				<div className={`progress-bar ${this.props.color}`} style={progressStyle}></div>
-			</div>
-		);
-	}
+	return (
+		<div className="Progress progress">
+			<div className={`progress-bar ${color}`} style={progressStyle}></div>
+		</div>
+	);
+	
 }
 
-export default Progress;
+// write a function to pass into memo
+function arePropsEqual(prevProps, nextProps, ) {
+	// When this function returns, true we do not render, false we render
+	return prevProps.next_check === nextProps.next_check;
+	// return true;
+}
+
+
+export default memo(Progress, arePropsEqual);

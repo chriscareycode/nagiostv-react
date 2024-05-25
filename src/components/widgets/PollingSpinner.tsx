@@ -1,6 +1,6 @@
 import React from 'react';
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,7 +18,7 @@ const PollingSpinner = ({
 }) => {
 	//console.log('PollingSpinner run');
 
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	const fetchFrequency = clientSettings[fetchVariableName];
 

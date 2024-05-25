@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 // Types
 import { BigState, ClientSettings } from 'types/settings';
 // Import Polyfills
@@ -8,6 +8,9 @@ import 'url-search-params-polyfill';
 // demo mode uses fake data and rotates through a couple of alerts as an example
 const urlParams = new URLSearchParams(window.location.search);
 const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
+if (isDemoMode) {
+	console.log('Demo mode is on');
+}
 
 const isStressTestMode = urlParams.get('stresstest') === 'true';
 
@@ -130,12 +133,6 @@ export const clientSettingsInitial: ClientSettings = {
 	miniMapWidth: 120,
 };
 
-export const bigStateAtom = atom({
-	key: 'bigStateAtom',
-	default: bigStateInitial,
-});
+export const bigStateAtom = atom(bigStateInitial);
 
-export const clientSettingsAtom = atom({
-	key: 'clientSettingsAtom',
-	default: clientSettingsInitial,
-});
+export const clientSettingsAtom = atom(clientSettingsInitial);

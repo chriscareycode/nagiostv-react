@@ -26,8 +26,8 @@
  * 
  */
 
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import {
@@ -58,12 +58,13 @@ import './Base.css';
 import './animation.css';
 
 import MiniMapWrap from './widgets/MiniMapWrap';
+import SettingsFakeData from './SettingsFakeData';
 
 const Base = () => {
 
 	//lets move as much state as possible up and out of this component
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	const {
 		isDoneLoading,
@@ -92,7 +93,7 @@ const Base = () => {
 	const mainContent = (
 		<>
 			{/* wrapper around the main content */}
-			<div className={`main-content ${isLeftPanelOpen ? ' left-panel-open' : ''} ${showMiniMap ? ' right-panel-open' : ''}`}>
+			<div className={`main-content ${showMiniMap ? ' right-panel-open' : ''}`}>
 
 				{!isDoneLoading && <div>Settings are not loaded yet</div>}
 
@@ -161,9 +162,10 @@ const Base = () => {
 	);
 
 	return (
-		<div id="Base" className="Base">
+		<div id="Base" data-testid="Base" className="Base">
 
 			<SettingsLoad />
+			<SettingsFakeData />
 
 			<Router>
 

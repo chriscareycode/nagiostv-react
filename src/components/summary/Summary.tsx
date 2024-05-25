@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 // Widgets
 import AlertItem from 'components/alerts/AlertItem';
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import { alertAtom } from '../../atoms/alertAtom';
@@ -15,15 +15,14 @@ import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers
 import './Summary.css';
 import Doomguy from 'components/Doomguy/Doomguy';
 
-
 export default function Summary() {
 
-	// Recoil state (this section)
-	const hostHowManyState = useRecoilValue(hostHowManyAtom);
-	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
-	const alertState = useRecoilValue(alertAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
-	const programStatus = useRecoilValue(programStatusAtom);
+	// State Management state (this section)
+	const hostHowManyState = useAtomValue(hostHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
+	const alertState = useAtomValue(alertAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
+	const programStatus = useAtomValue(programStatusAtom);
 	
 	// Extract a couple of fields out of programStatus that we are using: "program_start" and "version"
 	const programStart = programStatus?.response?.data?.programstatus?.program_start;
@@ -60,10 +59,10 @@ export default function Summary() {
 		<div className="summary">
 
 			{/* <div className="service-summary">
-        <span className="service-summary-title">
-          Summary
-        </span>
-      </div> */}
+			<span className="service-summary-title">
+				Summary
+			</span>
+			</div> */}
 
 			<div className="summary-item">
 
@@ -135,34 +134,37 @@ export default function Summary() {
 
 					{/* these are floating right */}
 
+	  				{/* Nagios Version */}
 					<div className="summary-box">
 						<div className="margin-top-5 font-size-0-6">Nagios</div>
 						<div className="margin-top-5 color-peach">v{programVersion}</div>
 					</div>
 
+	  				{/* Uptime */}
 					<div className="summary-box">
 						<div className="margin-top-5 font-size-0-6">Uptime</div>
 						<div className="margin-top-5 color-peach">{formatDateTimeAgo(programStart)}</div>
 					</div>
 
+					{/* Quiet For */}
 					<div className="summary-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
 						<div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
 						<div className="margin-top-5 color-peach no-wrap">{quietForMs ? formatDateTimeAgoColorQuietFor(quietForMs) : '?'}</div>
 					</div>
 
+					{/* Drift */}
 					{/* <div className="summary-box float-right">
 						Drift<br />
 						20s
 					</div> */}
 
+					{/* Doomguy */}
 					{clientSettings.doomguyEnabled && <div className="summary-box float-right overflow-hidden">
 						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
 							<Doomguy scaleCss={'1'} />
 						</div>
 					</div>}
-
 				</div>
-
 			</div>
 
 			{alertlist.length > 0 && <div style={{ margin: '13px 0px 5px 0px' }}>

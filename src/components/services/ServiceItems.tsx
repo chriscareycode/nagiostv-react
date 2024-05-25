@@ -18,8 +18,8 @@
 
 import React from 'react';
 
-// Recoil
-import { useRecoilValue } from 'recoil';
+// State Management
+import { useAtomValue } from 'jotai';
 //import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import {
 	//serviceIsFetchingAtom,
@@ -60,10 +60,10 @@ const ServiceItems = ({
 
 	//const nodeRef = React.useRef(null);
 
-	const commentlistState = useRecoilValue(commentlistAtom);
+	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
 
-	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 
 	const {
 		howManyServices,

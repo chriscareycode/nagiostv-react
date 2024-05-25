@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
 const initialState = {
 	error: false,
@@ -12,8 +12,5 @@ const initialState = {
 	},
 };
 
-export const commentlistAtom = atom({
-	key: 'commentlistAtom',
-	default: initialState,
-});
+export const commentlistAtom = atom(initialState);
 

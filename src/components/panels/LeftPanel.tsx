@@ -32,6 +32,8 @@ import './LeftPanel.css';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { useSetAtom } from "jotai";
+import { bigStateAtom } from "atoms/settingsState";
 
 interface LeftPanelProps {
 	isLeftPanelOpen: boolean;
@@ -40,6 +42,17 @@ interface LeftPanelProps {
 const LeftPanel = ({
 	isLeftPanelOpen
 }: LeftPanelProps) => {
+
+	const setBigState = useSetAtom(bigStateAtom);
+
+	const clickedItem = () => {
+		//console.log('clicked');
+		setBigState(curr => ({
+			...curr,
+			isLeftPanelOpen: false,
+		}));
+	}
+
 	return (
 		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
 			<Router>
@@ -49,6 +62,7 @@ const LeftPanel = ({
 							<FontAwesomeIcon
 								className="nav-sidebar-icon-icon"
 								icon={faTachometerAlt}
+								onClick={clickedItem}
 							/>
 						</NavLink>
 					</span>
@@ -60,6 +74,7 @@ const LeftPanel = ({
 							<FontAwesomeIcon
 								className="nav-sidebar-icon-icon"
 								icon={faTools}
+								onClick={clickedItem}
 							/>
 						</NavLink>
 					</span>
@@ -71,6 +86,7 @@ const LeftPanel = ({
 							<FontAwesomeIcon
 								className="nav-sidebar-icon-icon"
 								icon={faUpload}
+								onClick={clickedItem}
 							/>
 						</NavLink>
 					</span>
@@ -82,6 +98,7 @@ const LeftPanel = ({
 							<FontAwesomeIcon
 								className="nav-sidebar-icon-icon"
 								icon={faQuestionCircle}
+								onClick={clickedItem}
 							/>
 						</NavLink>
 					</span>

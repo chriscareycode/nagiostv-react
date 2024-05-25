@@ -1,9 +1,6 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
-export const programStatusIsFetchingAtom = atom({
-	key: 'programStatusIsFetchingAtom',
-	default: false,
-});
+export const programStatusIsFetchingAtom = atom(false);
 
 export interface ProgramStatusWrap {
 	error: boolean;
@@ -21,7 +18,4 @@ const initialState: ProgramStatusWrap = {
 	response: {}
 };
 
-export const programStatusAtom = atom({
-	key: 'programStatusAtom',
-	default: initialState,
-});
+export const programStatusAtom = atom(initialState);

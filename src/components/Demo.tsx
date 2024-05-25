@@ -17,8 +17,8 @@
  */
 
 import { useEffect, useState, useRef } from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 //import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { hostAtom, hostIsFakeDataSetAtom } from '../atoms/hostAtom';
 import { serviceAtom, serviceIsFakeDataSetAtom } from '../atoms/serviceAtom';
@@ -42,12 +42,12 @@ const Demo = () => {
 
 	const [isVisible, setIsVisible] = useState(false);
 
-	// Recoil state (this section)
-	const [hostState, setHostState] = useRecoilState(hostAtom);
-	const [serviceState, setServiceState] = useRecoilState(serviceAtom);
+	// State Management state (this section)
+	const [hostState, setHostState] = useAtom(hostAtom);
+	const [serviceState, setServiceState] = useAtom(serviceAtom);
 
-	const isHostFakeDataSet = useRecoilValue(hostIsFakeDataSetAtom);
-	const isServiceFakeDataSet = useRecoilValue(serviceIsFakeDataSetAtom);
+	const isHostFakeDataSet = useAtomValue(hostIsFakeDataSetAtom);
+	const isServiceFakeDataSet = useAtomValue(serviceIsFakeDataSetAtom);
 
 	const hostlistRef = useRef({});
 	const servicelistRef = useRef({});

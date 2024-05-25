@@ -3,7 +3,7 @@ import { Allotment } from "allotment";
 import { debounce } from 'lodash';
 import { useLocation } from "react-router-dom";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 import "allotment/dist/style.css";
 import { saveCookie } from 'helpers/nagiostv';
@@ -14,8 +14,8 @@ interface MiniMapWrapProps {
 
 const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 
-	const bigState = useRecoilValue(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	const onResizeMiniMap = (e: number[]) => {
 		//console.log('onResizeMiniMap', e);

@@ -17,8 +17,8 @@
  */
 
 import { useCallback, useEffect } from 'react';
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
 
@@ -29,10 +29,11 @@ import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
 import HistoryChart from '../widgets/HistoryChart';
 
-import $ from 'jquery';
+import axios from 'axios';
 import _ from 'lodash';
 
 import './AlertSection.css';
+import { handleFetchFail } from 'helpers/axios';
 
 let isComponentMounted = false;
 
@@ -40,13 +41,13 @@ const AlertSection = () => {
 
 	//console.log('AlertSection run');
 
-	// Recoil state (this section)
-	const [alertIsFetching, setAlertIsFetching] = useRecoilState(alertIsFetchingAtom);
-	const [alertState, setAlertState] = useRecoilState(alertAtom);
-	const [alertHowManyState, setAlertHowManyState] = useRecoilState(alertHowManyAtom);
-	// Recoil state (main)
-	const bigState = useRecoilValue(bigStateAtom);
-	const clientSettings = useRecoilValue(clientSettingsAtom);
+	// State Management state (this section)
+	const [alertIsFetching, setAlertIsFetching] = useAtom(alertIsFetchingAtom);
+	const [alertState, setAlertState] = useAtom(alertAtom);
+	const [alertHowManyState, setAlertHowManyState] = useAtom(alertHowManyAtom);
+	// State Management state (main)
+	const bigState = useAtomValue(bigStateAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	const {
 		isDemoMode,
@@ -140,18 +141,16 @@ const AlertSection = () => {
 
 		setAlertIsFetching(true);
 
-		$.ajax({
-			method: "GET",
+		axios.get(
 			url,
-			dataType: "json",
-			timeout: (fetchAlertFrequency - 2) * 1000
-		}).done((myJson, textStatus, jqXHR) => {
-
+			{timeout: (fetchAlertFrequency - 2) * 1000}
+		)
+		.then((response) => {
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
-				// We check this since the ajax could take a while to respond and the page may have unmounted
+				// We check this since the axios could take a while to respond and the page may have unmounted
 				if (isComponentMounted) {
 					// Save settings
 					setAlertIsFetching(false);
@@ -168,10 +167,7 @@ const AlertSection = () => {
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
-			const myAlertlist = _.get(myJson.data, 'alertlist', []).reverse();
-
-			// store the actual count of alert list items before we trim
-			//const myAlertlistCount = myAlertlist.length;
+			const myAlertlist = _.get(response.data.data, 'alertlist', []).reverse();
 
 			// trim
 			if (myAlertlist.length > alertMaxItems) {
@@ -180,24 +176,17 @@ const AlertSection = () => {
 
 			// If we are in demo mode then let's modify the latest timestamps
 			if (useFakeSampleData) {
-				//console.log('myAlertlist', myAlertlist);
-				//myAlertlist[0].timestamp = new Date().getTime();
-				//myAlertlist[1].timestamp = new Date().getTime() - 5000;
-
 				// Find out how far in the past the newest alert data item is
 				const howMuchToScoochBy = new Date().getTime() - myAlertlist[0].timestamp;
 
 				// Loop through every item and scooch it forward just the right amount
 				myAlertlist.forEach(a => a.timestamp += howMuchToScoochBy);
-
 			}
 
-			// We check this since the ajax could take a while to respond and the page may have unmounted
+			// We check this since the axios could take a while to respond and the page may have unmounted
 			if (isComponentMounted) {
 				// Save settings
 				setAlertIsFetching(false);
-
-				// TODO: see if the list of alert items has changed. if it has not, maybe we don't need to update
 
 				setAlertState(curr => ({
 					...curr,
@@ -205,7 +194,7 @@ const AlertSection = () => {
 					errorCount: 0,
 					errorMessage: '',
 					lastUpdate: new Date().getTime(),
-					response: myJson.data,
+					response: response.data.data,
 					responseArray: myAlertlist
 				}));
 
@@ -213,25 +202,16 @@ const AlertSection = () => {
 			} else {
 				console.log('AlertSection got data but component is not mounted');
 			}
-
-
-
-		}).fail((jqXHR, textStatus, errorThrown) => {
-
+		})
+		.catch((error) => {
 			if (isComponentMounted) {
-
 				setAlertIsFetching(false);
 
-				setAlertState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+				handleFetchFail(setAlertState, error, url, true);
+
 			} else {
 				console.log('AlertSection failed but component is not mounted');
 			}
-
 		});
 	};
 

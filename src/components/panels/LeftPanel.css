@@ -1,11 +1,10 @@
 .LeftPanel {
 	position: fixed;
 	top: 40px;
-	bottom: 0px;
 	left: -50px;
-	width: 40px;
+	width: 50px;
 	border: 0px solid #333;
-	/* background-color: #1d1d1d; */
+	background-color: #1d1d1d;
 	z-index: 13;
 	overflow: hidden;
 	transition: left 250ms linear;

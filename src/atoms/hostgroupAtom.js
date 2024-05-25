@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
 const initialState = {
 	error: false,
@@ -8,12 +8,6 @@ const initialState = {
 	response: {}
 };
 
-export const hostgroupAtom = atom({
-	key: 'hostgroupAtom',
-	default: initialState,
-});
+export const hostgroupAtom = atom(initialState);
 
-export const servicegroupAtom = atom({
-	key: 'servicegroupAtom',
-	default: initialState,
-});
+export const servicegroupAtom = atom(initialState);

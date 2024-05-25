@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Recoil
-import { useRecoilState, useRecoilValue } from 'recoil';
+// State Management
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 
@@ -28,10 +28,10 @@ import { saveCookie } from 'helpers/nagiostv';
 
 const ServiceFilters = () => {
 
-	const serviceHowManyState = useRecoilValue(serviceHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 
-	const bigState = useRecoilValue(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 	const settingsObject = clientSettings; // TODO rename
 
 	// Chop the bigState into vars

@@ -17,8 +17,8 @@
  */
 
 import { useEffect, useState } from 'react';
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import { Link } from "react-router-dom";
@@ -39,9 +39,9 @@ import Doomguy from './Doomguy/Doomguy';
 
 const Settings = () => {
 
-	// Recoil state
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
+	// State Management state
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	// Component state
 	// takes a copy of the clientSettings and saves it into local state (for editing)
@@ -764,12 +764,16 @@ const Settings = () => {
 										<table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
 											<tbody>
 												{clientSettingsTemp.doomguyEnabled && <tr>
+													<th>Doomguy concerned at</th>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyConcernedAt} onChange={handleChange('doomguyConcernedAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
+												</tr>}
+												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy angry at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> services down</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
 												</tr>}
 												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy bloody at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> services down</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
 												</tr>}
 											</tbody>
 										</table>

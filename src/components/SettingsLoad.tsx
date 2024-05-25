@@ -1,21 +1,21 @@
 import React, { useEffect, useRef } from 'react';
 
-// Recoil
-import { useRecoilState } from 'recoil';
+// State Management
+import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
-import $ from 'jquery';
+import axios, { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
-import { ClientSettings } from 'types/settings';
+import { ClientSettings, VersionCheck } from 'types/settings';
 
 const SettingsLoad = () => {
 
 	//console.log('SettingsLoad run');
 
-	const [bigState, setBigState] = useRecoilState(bigStateAtom);
-	const [clientSettings, setClientSettings] = useRecoilState(clientSettingsAtom);
-	const [skipVersionCookie, setSkipVersionCookie] = useRecoilState(skipVersionAtom);
+	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
 
 	const {
 		isDemoMode,
@@ -161,28 +161,27 @@ const SettingsLoad = () => {
 	const getRemoteSettings = () => {
 		const url = 'client-settings.json?v=' + new Date().getTime();
 
-		$.ajax({
-			method: "GET",
-			url,
-			dataType: "json",
-			timeout: 10 * 1000
-		}).done((myJson, textStatus, jqXHR) => {
+		axios.get(
+			url, { timeout: 10 * 1000 }
+		).then((response: AxiosResponse<ClientSettings>) => {
 
+			console.log('SettingsLoad DEBUG response', response);
+
+			console.log('SettingsLoad DEBUG response', response);
 			// test that return data is json
-			if (jqXHR.getResponseHeader('content-type').indexOf('application/json') === -1) {
+			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
-
 				getCookie();
 				return;
 			}
 
 			// Got good server settings
-			console.log('Found server default settings client-settings.json - Loading default settings:', myJson);
+			console.log('Found server default settings client-settings.json - Loading default settings:', response.data);
 
 			// save settings to client settings state
 			setClientSettings(curr => ({
 				...curr,
-				...myJson
+				...response.data,
 			}));
 
 			// update a boolean so we know settings were loaded
@@ -192,14 +191,14 @@ const SettingsLoad = () => {
 			}));
 
 			// Now that we have loaded server settings, set the document.title from the title setting
-			if (myJson.titleString) { document.title = myJson.titleString; }
+			if (response.data.titleString) { document.title = response.data.titleString; }
 
 			// Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
 			// getCookie() is then going to call loadSettingsFromUrl()
 			getCookie();
 
-		}).catch((err) => {
-			console.log('getRemoteSettings() ajax ERROR:', err);
+		}).catch((error) => {
+			console.log('getRemoteSettings() ajax ERROR:', error);
 			console.log('Skipping server settings.');
 			getCookie();
 		});
@@ -248,26 +247,24 @@ const SettingsLoad = () => {
 
 		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
 
-		$.ajax({
-			method: "GET",
+		axios.get(
 			url,
-			dataType: "json",
-			timeout: 5 * 1000
+			{timeout: 5 * 1000}
+		).then((response: AxiosResponse<VersionCheck>) => {
+			const myJson = response.data;
+			console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
+
+			setBigState(curr => ({
+				...curr,
+				latestVersion: myJson.version,
+				latestVersionString: myJson.version_string,
+				lastVersionCheckTime: nowTime,
+			}));
+
 		})
-			.done(myJson => {
-				console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
-
-				setBigState(curr => ({
-					...curr,
-					latestVersion: myJson.version,
-					latestVersionString: myJson.version_string,
-					lastVersionCheckTime: nowTime,
-				}));
-
-			})
-			.fail(err => {
-				console.log('There was some error with the version check', err);
-			});
+		.catch(error => {
+			console.log('There was some error with the version check', error);
+		});
 	};
 
 
