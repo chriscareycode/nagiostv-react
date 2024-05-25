@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React, { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 // State Management
 import { useAtom } from 'jotai';
@@ -26,7 +26,7 @@ import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 import {
 	HashRouter as Router,
 	NavLink,
-	withRouter
+	useHistory
 } from "react-router-dom";
 import Cookie from 'js-cookie';
 import './BottomPanel.css';
@@ -34,21 +34,31 @@ import './BottomPanel.css';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { ClientSettings } from '../../types/settings';
+
+interface BottomPanelProps {
+	settingsObject: ClientSettings;
+	latestVersion: number;
+	latestVersionString: string;
+	currentVersion: number;
+	currentVersionString: string;
+}
 
 const BottomPanel = ({
-	history,
 	settingsObject,
 	latestVersion,
 	latestVersionString,
 	currentVersion,
 	currentVersionString,
-}) => {
+}: BottomPanelProps) => {
 
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
 
-	const navigateTo = (e: React.MouseEvent<HTMLElement>, pathname) => {
+	const history = useHistory();
+
+	const navigateTo = (e: React.MouseEvent<HTMLElement>, pathname: string) => {
 		e.preventDefault();
 
 		history.push({
@@ -236,9 +246,9 @@ const BottomPanel = ({
 
 }
 
-function memoFn(prev, next) {
+function memoFn() {
 	//console.log('memoFn', prev, next);
-	return false; // update
+	return false; // no update
 }
 
-export default withRouter(React.memo(BottomPanel, memoFn));
+export default memo(BottomPanel, memoFn);

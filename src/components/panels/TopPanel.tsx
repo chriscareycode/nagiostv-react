@@ -17,7 +17,7 @@
  */
 
 import { useAtom } from 'jotai';
-import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 
 // Import external libraries
 import ReactTooltip from 'react-tooltip';
@@ -30,12 +30,13 @@ import CustomLogo from '../widgets/CustomLogo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faVolumeUp, faBullhorn, faFilter, faSort, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 
+import { saveCookie } from 'helpers/nagiostv';
+
 // Import CSS
 import './TopPanel.css';
 import { ClientSettings } from 'types/settings';
-import { saveCookie } from 'helpers/nagiostv';
 
-const TopPanel = (props) => {
+const TopPanel = () => {
 
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
@@ -64,7 +65,7 @@ const TopPanel = (props) => {
 		}));
 	};
 
-	const toggleAndSaveCookie = (settingName) => {
+	const toggleAndSaveCookie = (settingName: keyof ClientSettings) => {
 		setClientSettings(curr => {
 			const s = {
 				...curr,
