@@ -33,7 +33,8 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import './AlertSection.css';
-import { handleFetchFail } from 'helpers/axios';
+import { handleFetchFail } from '../../helpers/axios';
+import { Alert } from '../../types/hostAndServiceTypes';
 
 let isComponentMounted = false;
 
@@ -103,7 +104,7 @@ const AlertSection = () => {
 		};
 	}, [clientSettings.fetchAlertFrequency, hostgroupFilter, servicegroupFilter]);
 
-	const howManyCounter = useCallback((alertlist) => {
+	const howManyCounter = useCallback((alertlist: Alert[]) => {
 
 		// count how many soft history items
 		let howManyAlertSoft = 0;
@@ -167,7 +168,7 @@ const AlertSection = () => {
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
-			const myAlertlist = _.get(response.data.data, 'alertlist', []).reverse();
+			const myAlertlist = _.get(response.data.data, 'alertlist', []).reverse() as Alert[];
 
 			// trim
 			if (myAlertlist.length > alertMaxItems) {
