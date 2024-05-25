@@ -95,7 +95,12 @@ const Base = () => {
 			{/* wrapper around the main content */}
 			<div className={`main-content ${showMiniMap ? ' right-panel-open' : ''}`}>
 
-				{!isDoneLoading && <div>Settings are not loaded yet</div>}
+				{!isDoneLoading && (
+					<div className="settings-not-loaded">
+						Settings are not loaded yet.<br />
+						Try refreshing the page.
+					</div>
+				)}
 
 				<Route
 					render={({ location }) => {

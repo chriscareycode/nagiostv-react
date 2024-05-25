@@ -269,3 +269,7 @@ button {
 	height: 55px;
 	position: relative;
 }
+
+.settings-not-loaded {
+	margin: 10px;
+}
