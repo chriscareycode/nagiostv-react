@@ -127,15 +127,18 @@ const AlertSection = () => {
 	const fetchAlertData = () => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
 
-		let url;
+		let url = '';
+		// let endtime = '%2B0'; // +0
+		let endtime = '%2D0'; // -0
+
 		if (useFakeSampleData) {
 			url = './sample-data/alertlist.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=%2B`;
+			url = clientSettings.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=${endtime}`;
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		} else {
-			url = `${clientSettings.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=%2B0`;
+			url = `${clientSettings.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=${endtime}`;
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
