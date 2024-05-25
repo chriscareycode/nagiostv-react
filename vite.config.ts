@@ -49,6 +49,8 @@ export default defineConfig({
 			'atoms': path.resolve(__dirname, 'src/atoms'),
 			'components': path.resolve(__dirname, 'src/components'),
 			'helpers': path.resolve(__dirname, 'src/helpers'),
+			'types': path.resolve(__dirname, 'src/types'),
+			'widgets': path.resolve(__dirname, 'src/widgets'),
 		},
 	},
 	server: {
