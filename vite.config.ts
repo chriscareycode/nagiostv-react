@@ -44,6 +44,7 @@ export default defineConfig({
 		}),
 	],
 	resolve: {
+		// alias. These also need to be set up in tsconfig.json
 		alias: {
 			'~': path.resolve(__dirname, './src'),
 			'atoms': path.resolve(__dirname, 'src/atoms'),

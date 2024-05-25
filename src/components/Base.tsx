@@ -59,12 +59,13 @@ import './animation.css';
 
 import MiniMapWrap from './widgets/MiniMapWrap';
 import SettingsFakeData from './SettingsFakeData';
+import { BigState, ClientSettings } from 'types/settings';
 
 const Base = () => {
 
 	//lets move as much state as possible up and out of this component
-	const bigState = useAtomValue(bigStateAtom);
-	const clientSettings = useAtomValue(clientSettingsAtom);
+	const bigState = useAtomValue<BigState>(bigStateAtom);
+	const clientSettings = useAtomValue<ClientSettings>(clientSettingsAtom);
 
 	const {
 		isDoneLoading,
