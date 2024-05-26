@@ -26,6 +26,11 @@ export interface HostWrap {
 	problemsArray: Host[]
 }
 
+export type ServiceList = {
+  [hostname: string]: {
+    [servicename: string]: Service;
+  };
+};
 export interface Service {
 	// TODO: sort these
 	host_name: string;

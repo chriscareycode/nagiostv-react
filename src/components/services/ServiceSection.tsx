@@ -36,7 +36,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 // Types
-import { Service } from '../../types/hostAndServiceTypes';
+import { Service, ServiceList } from '../../types/hostAndServiceTypes';
 import { handleFetchFail } from 'helpers/axios';
 
 let isComponentMounted = false;
@@ -99,7 +99,7 @@ const ServiceSection = () => {
 		};
 	}, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
 
-	const howManyCounter = useCallback((servicelist) => {
+	const howManyCounter = useCallback((servicelist: ServiceList) => {
 		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
 
 		// count how many items in each of the service states
@@ -177,7 +177,7 @@ const ServiceSection = () => {
 
 	const fetchServiceCountThenFetchData = () => {
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			url = './sample-data/servicecount.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
@@ -227,7 +227,7 @@ const ServiceSection = () => {
 		//   return;
 		// }
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			url = './sample-data/servicelist.json';
 		} else if (clientSettings.dataSource === 'livestatus') {

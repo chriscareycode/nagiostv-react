@@ -18,12 +18,12 @@
 	  "jsx": "react-jsx",
 	  "baseUrl": ".",
 	  "paths": {
-		"atoms/*": ["src/atoms/*"],
-		"components/*": ["src/components/*"],
-		"helpers/*": ["src/helpers/*"],
-		"types/*": ["src/types/*"],
-		"widgets/*": ["src/widgets/*"],
-		"utils/*": ["src/utils/*"]
+			"atoms/*": ["src/atoms/*"],
+			"components/*": ["src/components/*"],
+			"helpers/*": ["src/helpers/*"],
+			"types/*": ["src/types/*"],
+			"widgets/*": ["src/widgets/*"],
+			"utils/*": ["src/utils/*"]
 	  }
 	},
 	"include": ["src"]

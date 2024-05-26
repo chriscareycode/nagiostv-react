@@ -1,4 +1,7 @@
-export const handleFetchFail = (setFn, error, url: string, incrementErrorCount: boolean) => {
+import { AxiosError } from "axios";
+import { SetStateAction } from "jotai";
+
+export const handleFetchFail = (setFn: SetStateAction<any>, error: AxiosError, url: string, incrementErrorCount: boolean) => {
 	// console.log('handleFetchFail DEBUG error', error);
 
 	let errorMessage = '';
@@ -12,14 +15,14 @@ export const handleFetchFail = (setFn, error, url: string, incrementErrorCount: 
 	}
 
 	if (incrementErrorCount) {
-		setFn(curr => ({
+		setFn((curr: any) => ({
 			...curr,
 			error: true,
 			errorCount: curr.errorCount + 1,
 			errorMessage
 		}));
 	} else {
-		setFn(curr => ({
+		setFn((curr: any) => ({
 			...curr,
 			error: true,
 			errorMessage
