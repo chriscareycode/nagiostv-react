@@ -18,6 +18,20 @@
    * along with this program.  If not, see <https://www.gnu.org/licenses/>.
    */
 
+  /**
+   * Functions
+   */
+  function deleteFilesAndDirectories($dir) {
+    $files = array_diff(scandir($dir), array('.','..'));
+    foreach ($files as $file) {
+        (is_dir("$dir/$file")) ? deleteFilesAndDirectories("$dir/$file") : unlink("$dir/$file");
+    }
+    return rmdir($dir);
+  }
+
+  /**
+   * Main
+   */
   $temp_dir = 'temp';
   $cwd = getcwd();
 
@@ -66,19 +80,9 @@
         exit();
       }
     } else {
-
-      echo "Temp directory exists, deleting files in there..\n";
-
       // temp dir exists. delete all files in there
-      $files = glob($temp_dir.'/*');  
-   
-      // Deleting all the files in the list 
-      foreach($files as $file) { 
-        if(is_file($file))  
-          // Delete the given file 
-          unlink($file);  
-      } 
-
+      echo "Temp directory exists, deleting files in there..\n";
+      deleteFilesAndDirectories($temp_dir);
     }
 
     // Use file_get_contents() function to get the file 
