@@ -18,6 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// Do not edit this socket_path here.
+// Instead, create a file called livestatus-settings.ini and put the socket_path in there.
+// See livestatus-settings.ini.sample for an example.
 $socket_path = "/usr/local/nagios/var/rw/live.sock";
 
 # load the ini config if it exists. This allows us to override the socket path
@@ -108,7 +111,7 @@ function queryLivestatus($query) {
 	#}
 
 	if($read === false) {
-	  die("Livestatus error 1: ".socket_strerror(socket_last_error($sock)));
+		die("Livestatus error 1: ".socket_strerror(socket_last_error($sock))." Query: ".$query);
 	}
 
 	$status = substr($read, 0, 3);
@@ -225,7 +228,6 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "ResponseHeader: fixed16";
 	$query = implode("\n", $query_arr);
 
-	
 	$json = queryLivestatus($query);
 	
 	# debug
