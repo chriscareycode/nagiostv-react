@@ -17,7 +17,7 @@ const isStressTestMode = urlParams.get('stresstest') === 'true';
 // turn on debug mode if ?debug=true
 const isDebugMode = urlParams.get('debug') === 'true';
 
-// use fake data (dev) if ?fakedata=true
+// use fake data (for local development) if ?fakedata=true, or if demo mode is true (?demo=true)
 const useFakeSampleData = urlParams.get('fakedata') === 'true' || urlParams.get('fakeData') === 'true' || isDemoMode;
 
 //**************************************************************************** */

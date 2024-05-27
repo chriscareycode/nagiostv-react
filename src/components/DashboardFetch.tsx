@@ -255,6 +255,9 @@ const DashboardFetch = () => {
 
 		// If we are in demo mode then exit here
 		if (isDemoMode) {
+			setTimeout(() => {
+				fetchProgramStatus();
+			}, 1000);
 			return;
 		}
 
@@ -291,7 +294,12 @@ const DashboardFetch = () => {
 			//if (intervalHandleVersionCheck) { clearInterval(intervalHandleVersionCheck); }
 		};
 
-	}, [clientSettings.fetchCommentFrequency, clientSettings.fetchHostGroupFrequency]);
+	}, [
+		clientSettings.fetchCommentFrequency,
+		clientSettings.fetchHostGroupFrequency,
+		isDemoMode,
+		useFakeSampleData,
+	]);
 
 	//console.log('DashboardFetch render()');
 
