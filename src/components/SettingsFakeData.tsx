@@ -71,7 +71,11 @@ const SettingsFakeData = () => {
 				clearInterval(interval);
 			}
 		}
-	}, [setHostState, setServiceState, bigState.useFakeSampleData]);
+	}, [
+		bigState.useFakeSampleData,
+		setHostState,
+		setServiceState,
+	]);
 
 	return (<></>);
 };

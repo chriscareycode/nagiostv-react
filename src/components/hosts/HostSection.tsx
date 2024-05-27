@@ -34,8 +34,9 @@ import HostFilters from './HostFilters';
 import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
-import { Host } from 'types/hostAndServiceTypes';
+import { Host, HostList } from 'types/hostAndServiceTypes';
 import { handleFetchFail } from 'helpers/axios';
+import { howManyHostCounter } from './host-functions';
 
 //import './HostSection.css';
 
@@ -108,72 +109,24 @@ const HostSection = () => {
 		};
 	}, [clientSettings.fetchHostFrequency, hostgroupFilter, servicegroupFilter]);
 
-	const howManyCounter = useCallback((hostlist) => {
+	const howManyCounter = useCallback((hostlist: HostList) => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
 
 		// count how many items in each of the host states
-
-		//const howManyHosts = Object.keys(hostlist).length; // 2023-02-18 Deprecated now that we are getting the count from another api
-		const howManyHosts = totalCount.current;
-
-		let howManyHostPending = 0;
-		let howManyHostUp = 0;
-		let howManyHostDown = 0;
-		let howManyHostUnreachable = 0;
-		let howManyHostAcked = 0;
-		let howManyHostScheduled = 0;
-		let howManyHostFlapping = 0;
-		let howManyHostSoft = 0;
-		let howManyHostNotificationsDisabled = 0;
-
-		if (hostlist) {
-			Object.keys(hostlist).forEach((host) => {
-
-				if (hostlist[host].status === 1) {
-					howManyHostPending++;
-				}
-				if (hostlist[host].status === 4) {
-					howManyHostDown++;
-				}
-				if (hostlist[host].status === 8) {
-					howManyHostUnreachable++;
-				}
-				if (hostlist[host].problem_has_been_acknowledged) {
-					howManyHostAcked++;
-				}
-				if (hostlist[host].scheduled_downtime_depth > 0) {
-					howManyHostScheduled++;
-				}
-				if (hostlist[host].is_flapping) {
-					howManyHostFlapping++;
-				}
-				// only count soft items if they are not up
-				if (hostlist[host].status !== 2 && hostlist[host].state_type === 0) {
-					howManyHostSoft++;
-				}
-				// count notifications_enabled === false
-				// only count these if they are not up
-				if (hostlist[host].status !== 2 && hostlist[host].notifications_enabled === false) {
-					howManyHostNotificationsDisabled++;
-				}
-			});
-
-			howManyHostUp = howManyHosts - howManyHostDown - howManyHostUnreachable;
-		}
+		const howMany = howManyHostCounter(hostlist, totalCount);
 
 		setHostHowManyState({
-			howManyHosts,
-			howManyHostPending,
-			howManyHostUp,
-			howManyHostDown,
-			howManyHostUnreachable,
-			howManyHostAcked,
-			howManyHostScheduled,
-			howManyHostFlapping,
-			howManyHostSoft,
-			howManyHostNotificationsDisabled,
+			howManyHosts: howMany.howManyHosts,
+			howManyHostPending: howMany.howManyHostPending,
+			howManyHostUp: howMany.howManyHostUp,
+			howManyHostDown: howMany.howManyHostDown,
+			howManyHostUnreachable: howMany.howManyHostUnreachable,
+			howManyHostAcked: howMany.howManyHostAcked,
+			howManyHostScheduled: howMany.howManyHostScheduled,
+			howManyHostFlapping: howMany.howManyHostFlapping,
+			howManyHostSoft: howMany.howManyHostSoft,
+			howManyHostNotificationsDisabled: howMany.howManyHostNotificationsDisabled,
 		});
-
 
 	}, [hostState.lastUpdate]);
 

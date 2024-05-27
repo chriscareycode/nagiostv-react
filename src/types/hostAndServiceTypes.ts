@@ -1,3 +1,7 @@
+export type HostList = {
+	[hostname: string]: Host
+};
+
 export interface Host {
 	// TODO: sort these
 	name: string;
@@ -31,6 +35,7 @@ export type ServiceList = {
     [servicename: string]: Service;
   };
 };
+
 export interface Service {
 	// TODO: sort these
 	host_name: string;

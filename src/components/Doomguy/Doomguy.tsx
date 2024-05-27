@@ -47,7 +47,7 @@ const Doomguy = ({ scaleCss, style }: {
 	const hostHowManyState = useAtomValue(hostHowManyAtom);
 	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 
-	const [clicked, setClicked] = useState(false); // Temp make him angry
+	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
 
 	const howManyDown =
 		hostHowManyState.howManyHostDown +
