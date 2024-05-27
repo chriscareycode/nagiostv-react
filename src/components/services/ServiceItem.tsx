@@ -29,13 +29,14 @@ import Progress from '../widgets/Progress';
 // Types
 import { ClientSettings } from 'types/settings';
 import { Comment, Service } from 'types/hostAndServiceTypes';
+import { CommentListResponseObject } from 'types/commentTypes';
 
 interface ServiceItemProps {
 	settings: ClientSettings;
 	serviceItem: Service;
 	isDemoMode: boolean;
 	howManyDown: number;
-	comments: Comment[];
+	comments: CommentListResponseObject[];
 }
 
 class ServiceItem extends Component<ServiceItemProps> {

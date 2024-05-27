@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import { useRef } from 'react';
 
 // State Management
 import { useAtomValue } from 'jotai';
@@ -40,7 +40,7 @@ import ServiceItem from './ServiceItem';
 import { Service } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 
-// css
+// CSS
 import './ServiceItems.css';
 
 interface ServiceItemsProps {
@@ -58,7 +58,7 @@ const ServiceItems = ({
 	//commentlist
 }: ServiceItemsProps) => {
 
-	//const nodeRef = React.useRef(null);
+	const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -78,8 +78,6 @@ const ServiceItems = ({
 		// howManyServiceSoft,
 		// howManyServiceNotificationsDisabled,
 	} = serviceHowManyState;
-
-
 
 	//console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
 	//console.log(Object.keys(this.props.serviceProblemsArray));
@@ -140,29 +138,25 @@ const ServiceItems = ({
 					//console.log(e, i);
 
 					return (
-
 						<CSSTransition
 							key={e.host_name + '-' + e.description}
 							classNames="example"
 							timeout={{ enter: 500, exit: 500 }}
+							nodeRef={nodeRef}
 						>
 							<ServiceItem
-								//ref={nodeRef}
 								settings={settings}
 								serviceItem={e}
-								comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : null}
+								comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
 								howManyDown={filteredServiceProblemsArray.length}
 								isDemoMode={isDemoMode}
 							/>
 						</CSSTransition>
-
 					);
-
 				})}
 			</TransitionGroup>
 		</div>
 	);
-
 }
 
 export default ServiceItems;

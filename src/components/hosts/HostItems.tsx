@@ -33,14 +33,25 @@ import HostItem from './HostItem';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faSun } from '@fortawesome/free-solid-svg-icons';
 
-// css
+// CSS
 import './HostItems.css';
+import { useRef } from 'react';
+import { Host } from 'types/hostAndServiceTypes';
+import { ClientSettings } from 'types/settings';
+
+interface HostItemsProps {
+	hostProblemsArray: Host[];
+	settings: ClientSettings;
+	isDemoMode: boolean;
+}
 
 const HostItems = ({
 	hostProblemsArray,
 	settings,
 	isDemoMode,
-}) => {
+}: HostItemsProps) => {
+
+	const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -122,11 +133,12 @@ const HostItems = ({
 							classNames="example"
 							timeout={{ enter: 500, exit: 500 }}
 							unmountOnExit
+							nodeRef={nodeRef}
 						>
 							<HostItem
 								settings={settings}
 								hostItem={e}
-								comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : null}
+								comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
 								howManyDown={filteredHostProblemsArray.length}
 								isDemoMode={isDemoMode}
 							/>

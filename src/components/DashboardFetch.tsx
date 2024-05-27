@@ -10,19 +10,7 @@ import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
 import { handleFetchFail } from "helpers/axios";
 import { Comment } from "types/hostAndServiceTypes";
-
-// The structure of the data coming back from the server
-interface CommentListResponseObject {
-	host_name: string;
-	service_description: string;
-	comment_type: number;
-	// There are a LOT more fields but I'm only typing the ones I need for now
-}
-
-interface CommentListObject {
-	hosts: Record<string, { comments: CommentListResponseObject[] }>;
-	services: Record<string, { comments: CommentListResponseObject[] }>;
-}
+import { CommentListObject, CommentListResponseObject } from "types/commentTypes";
 
 const DashboardFetch = () => {
 
@@ -48,7 +36,7 @@ const DashboardFetch = () => {
 
 	const fetchCommentData = () => {
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
@@ -137,7 +125,7 @@ const DashboardFetch = () => {
 
 	const fetchHostGroupData = () => {
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
@@ -181,7 +169,7 @@ const DashboardFetch = () => {
 
 	const fetchServiceGroupData = () => {
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			return;
 		} else if (clientSettings.dataSource === 'livestatus') {
@@ -225,7 +213,7 @@ const DashboardFetch = () => {
 
 	const fetchProgramStatus = () => {
 
-		let url;
+		let url = '';
 		if (useFakeSampleData) {
 			url = './sample-data/programstatus.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
