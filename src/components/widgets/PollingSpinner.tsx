@@ -7,6 +7,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import './PollingSpinner.css';
 import Cookie from 'js-cookie';
+import { ClientSettings } from 'types/settings';
+
+interface PollingSpinnerProps {
+	isFetching: boolean;
+	isDemoMode: boolean;
+	error: boolean;
+	errorCount: number;
+	fetchFrequency: number;
+	fetchVariableName: 'fetchAlertFrequency' | 'fetchHostFrequency' | 'fetchServiceFrequency';
+}
 
 const PollingSpinner = ({
 	isFetching,
@@ -15,14 +25,14 @@ const PollingSpinner = ({
 	errorCount,
 	//fetchFrequency,
 	fetchVariableName,
-}) => {
+}: PollingSpinnerProps) => {
 	//console.log('PollingSpinner run');
 
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	const fetchFrequency = clientSettings[fetchVariableName];
 
-	const onChangeSelect = e => {
+	const onChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		//console.log('onChangeSelect', e.target.value);
 		//console.log('onChangeSelect', typeof e.target.value);
 
@@ -59,12 +69,12 @@ const PollingSpinner = ({
 };
 
 // memoFn will re render the compopnent if return false
-function memoFn(prev, next) {
-	//console.log('memoFn', prev, next);
+function arePropsEqual(prev: PollingSpinnerProps, next: PollingSpinnerProps) {
+	//console.log('arePropsEqual', prev, next);
 	const equals =
 		prev.isFetching === next.isFetching &&
 		prev.errorCount === next.errorCount;
 	return equals;
 }
 
-export default React.memo(PollingSpinner, memoFn);
+export default React.memo(PollingSpinner, arePropsEqual);

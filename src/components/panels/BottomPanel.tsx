@@ -246,9 +246,8 @@ const BottomPanel = ({
 
 }
 
-function memoFn() {
-	//console.log('memoFn', prev, next);
-	return false; // no update
+function arePropsEqual() {
+	return true; // props equal = no update
 }
 
-export default memo(BottomPanel, memoFn);
+export default memo(BottomPanel, arePropsEqual);

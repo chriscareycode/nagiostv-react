@@ -142,7 +142,7 @@ const Demo = () => {
 		removeServiceStatus(16);
 	};
 
-	const addServiceStatus = (status) => {
+	const addServiceStatus = (status: number) => {
 		// clone the ref object (it's read only)
 		const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
 		const servicelist = cloned;
@@ -182,7 +182,7 @@ const Demo = () => {
 		}));
 	};
 
-	const removeServiceStatus = (status) => {
+	const removeServiceStatus = (status: number) => {
 		// clone the ref object (it's read only)
 		const cloned = JSON.parse(JSON.stringify(servicelistRef.current));
 		const servicelist = cloned;

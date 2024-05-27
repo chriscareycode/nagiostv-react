@@ -7,6 +7,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
+    "@types/jquery": "^3.5.30",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.17.4",
     "@types/node": "^18.19.33",

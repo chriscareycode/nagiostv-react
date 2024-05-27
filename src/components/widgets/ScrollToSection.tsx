@@ -15,7 +15,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 	const scrollAreaElement = document.querySelector<HTMLElement>(scrollAreaSelector);
 
-	const scrollToNextSection = (currentSection, animateSpeed) => {
+	const scrollToNextSection = (currentSection: string, animateSpeed: number) => {
 
 		if (debug) console.log('ScrollToSection() scrollToNextSection() moving to', currentSection, animateSpeed);
 		/**
@@ -213,17 +213,17 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
   
 };
 
-function memoFn(prev, next) {
-  if (debug) console.log('ScrollToSection() memoFn()', prev, next);
+function arePropsEqual(prev: ScrollToSectionProps, next: ScrollToSectionProps) {
+  if (debug) console.log('ScrollToSection() arePropsEqual()', prev, next);
 	const same = prev.clientSettings.hideServiceSection === next.clientSettings.hideServiceSection &&
 		prev.clientSettings.hideHostSection === next.clientSettings.hideHostSection &&
 		prev.clientSettings.hideHistory === next.clientSettings.hideHistory;
 
 	if (same === false) {
-		if (debug) console.log('ScrollToSection() memoFn() re-rendering');
+		if (debug) console.log('ScrollToSection() arePropsEqual() re-rendering');
 	}
   //return false; // update
 	return same;
 }
 
-export default React.memo(ScrollToSection, memoFn);
+export default React.memo(ScrollToSection, arePropsEqual);

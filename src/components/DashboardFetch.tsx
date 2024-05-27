@@ -9,6 +9,20 @@ import _ from 'lodash';
 import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
 import { handleFetchFail } from "helpers/axios";
+import { Comment } from "types/hostAndServiceTypes";
+
+// The structure of the data coming back from the server
+interface CommentListResponseObject {
+	host_name: string;
+	service_description: string;
+	comment_type: number;
+	// There are a LOT more fields but I'm only typing the ones I need for now
+}
+
+interface CommentListObject {
+	hosts: Record<string, { comments: CommentListResponseObject[] }>;
+	services: Record<string, { comments: CommentListResponseObject[] }>;
+}
 
 const DashboardFetch = () => {
 
@@ -61,9 +75,10 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist: Comment[] = response.data.commentlist;
+			const commentlist: Record<string, CommentListResponseObject> = response.data.commentlist;
+
 			// Massage the commentlist so we have one key per hostname
-			const commentlistObject = {
+			const commentlistObject: CommentListObject = {
 				hosts: {},
 				services: {},
 			};

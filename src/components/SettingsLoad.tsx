@@ -44,7 +44,7 @@ const SettingsLoad = () => {
 	const loadSettingsFromUrl = () => {
 
 		const urlParams = new URLSearchParams(window.location.search);
-		const urlObject = {};
+		const urlObject: Record<string, unknown> = {};
 
 		for (var item of urlParams) {
 			//console.log('key: ' + item[0] + ', ' + 'value: ' + item[1]);
@@ -219,8 +219,18 @@ const SettingsLoad = () => {
 		// as is common on TV rotation
 		const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
 
-		if (lastVersionCheckTimeCookie !== 0) {
-			const diff = nowTime - lastVersionCheckTimeCookie;
+		// If the cookie is set then we need to safely convert the string back into an integer
+		let lastVersionCheckTimeCookieInt = 0;
+		if (lastVersionCheckTimeCookie) {
+			try {
+				lastVersionCheckTimeCookieInt = parseInt(lastVersionCheckTimeCookie, 10);
+			} catch (e) {
+				console.log('Could not parse the lastVersionCheckTime cookie');
+			}
+		}
+
+		if (lastVersionCheckTimeCookieInt !== 0) {
+			const diff = nowTime - lastVersionCheckTimeCookieInt;
 			if (diff < twentyThreeHoursInSeconds) {
 				console.log('Not performing version check since it was done ' + (diff / 1000).toFixed(0) + ' seconds ago (Cookie check)');
 				return;
@@ -243,7 +253,7 @@ const SettingsLoad = () => {
 		// I'm setting this one here not in the callback to prevent the rapid fire
 		lastVersionCheckTimeRef.current = nowTime;
 		// Set the last version check in the cookie (for page refresh)
-		Cookie.set('lastVersionCheckTime', nowTime);
+		Cookie.set('lastVersionCheckTime', nowTime.toString());
 
 		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
 
@@ -325,9 +335,8 @@ const SettingsLoad = () => {
 	return (<></>);
 };
 
-function memoFn(prev, next) {
-	//console.log('SettingsLoad memoFn', prev, next);
-	return true; // do not update
+function arePropsEqual() {
+	return true; // props equal = no update
 }
 
-export default React.memo(SettingsLoad, memoFn);
+export default React.memo(SettingsLoad, arePropsEqual);
