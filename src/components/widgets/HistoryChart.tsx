@@ -46,6 +46,10 @@ interface HighChartsSeriesData {
 	xNice: string;
 }
 
+interface GroupByData {
+	[key: string]: Alert[];
+}
+
 const HistoryChart = ({
 	alertlistLastUpdate,
 	alertlist,
@@ -150,7 +154,7 @@ const HistoryChart = ({
 
 	useEffect(() => {
 
-		const massageGroupByDataIntoHighchartsData = (groupByData, min, max) => {
+		const massageGroupByDataIntoHighchartsData = (groupByData: GroupByData, min: number, max: number) => {
 
 			let returnArray: HighChartsSeriesData[] = [];
 
@@ -165,8 +169,10 @@ const HistoryChart = ({
 			// Sort the array in descending order by the x value
 			// (WTF.. this causes a Highchart 15 bug but fixes the Highcharts margin bug that has been plaguing me for ages)
 			// www.highcharts.com/errors/15/ 
-			returnArray.sort((a, b) => b.x - a.x);
-			//returnArray.sort((a, b) => a.x - b.x);
+			//returnArray.sort((a, b) => b.x - a.x);
+
+			// Sort the array in ascending order by the x value
+			returnArray.sort((a, b) => a.x - b.x);
 
 			return returnArray;
 		};
