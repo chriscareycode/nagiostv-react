@@ -70,15 +70,13 @@ const Progress = ({ next_check, color }: ProgressProps) => {
 			<div className={`progress-bar ${color}`} style={progressStyle}></div>
 		</div>
 	);
-	
 }
 
 // write a function to pass into memo
-function arePropsEqual(prevProps, nextProps, ) {
+function arePropsEqual(prevProps: ProgressProps, nextProps: ProgressProps) {
 	// When this function returns, true we do not render, false we render
 	return prevProps.next_check === nextProps.next_check;
 	// return true;
 }
-
 
 export default memo(Progress, arePropsEqual);

@@ -3,8 +3,13 @@ import _ from 'lodash';
 import './ScrollToTop.css';
 
 const scrollAreaSelector = '.vertical-scroll-dash';
+interface ScrollToTopProps {
+}
+interface ScrollToTopState {
+	isAtBottom: boolean;
+}
 
-class ScrollToTop extends React.Component {
+class ScrollToTop extends React.Component<ScrollToTopProps, ScrollToTopState>{
 
 	state = {
 		isAtBottom: false
@@ -26,7 +31,7 @@ class ScrollToTop extends React.Component {
 		}
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps: ScrollToTopProps, nextState: ScrollToTopState) {
 		if (nextState.isAtBottom !== this.state.isAtBottom) {
 			return true;
 		}

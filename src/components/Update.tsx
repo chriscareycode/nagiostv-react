@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -31,11 +31,15 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
+interface GithubResult {
+	tag_name: string;
+	name: string;
+}
 interface GithubState {
 	loading: boolean;
 	error: boolean;
 	errorMessage: string;
-	result: any;
+	result: GithubResult[] | null;
 }
 
 interface TestPhpState {
@@ -48,10 +52,15 @@ interface TestPhpState {
 	}
 }
 
+interface UpdateProps {
+	currentVersion: number;
+	currentVersionString: string;
+}
+
 const Update = ({
 	currentVersion,
 	currentVersionString,
-}) => {
+}: UpdateProps) => {
 
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -200,12 +209,12 @@ const Update = ({
 					loading: false,
 					error: true,
 					errorMessage: 'Error fetching from github',
-					result: {}
+					result: null,
 				});
 			});
 	};
 
-	const selectChanged = (e) => {
+	const selectChanged = (e: ChangeEvent<HTMLSelectElement>) => {
 		//console.log(e.target.value);
 		setSelected(e.target.value);
 	};
@@ -312,7 +321,7 @@ const Update = ({
 	 * Start Render
 	 */
 
-	const options = githubState.result.map((r, i) => {
+	const options = githubState.result?.map((r, i) => {
 		return <option key={i} value={r.tag_name}>{r.tag_name} {r.name}</option>
 	});
 

@@ -23,6 +23,7 @@
  * https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
  */
 import { debounce } from 'lodash';
+import { ClientSettings } from 'types/settings';
 
 // debounce the playSoundEffect function so multiple sounds at the same time wont freak out the audio engine
 export const playSoundEffectDebounced = debounce(function (type, state, settings) {
@@ -30,7 +31,7 @@ export const playSoundEffectDebounced = debounce(function (type, state, settings
 }, 200);
 
 // if sound is delimited by a semicolon; then choose one at random
-function pickSound(soundConfig) {
+function pickSound(soundConfig: string) {
 	if (soundConfig.indexOf(';') !== -1) {
 		const soundArray = soundConfig.split(';').filter(sound => sound.length > 0);
 		return soundArray[Math.floor(Math.random() * soundArray.length)];
@@ -39,7 +40,7 @@ function pickSound(soundConfig) {
 }
 
 // playSoundEffect
-export function playSoundEffect(type, state, settings) {
+export function playSoundEffect(type: string, state: string, settings: ClientSettings) {
 
 	const audioCritical = pickSound(settings.soundEffectCritical);
 	const audioWarning = pickSound(settings.soundEffectWarning);
@@ -89,14 +90,13 @@ export function playSoundEffect(type, state, settings) {
 	}
 }
 
-function massageSpeakingWords(words) {
+function massageSpeakingWords(words: string) {
 	// Convert NEMS uppercase to lowercase which speaks it better
 	const newWords = words.replace('NEMS', 'nems');
-
 	return newWords;
 }
 
-export function speakAudio(words, voice) {
+export function speakAudio(words: string, voice: string) {
 
 	//console.log('speakAudio', words, voice);
 	const massagedWords = massageSpeakingWords(words);
