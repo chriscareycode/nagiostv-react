@@ -25,6 +25,7 @@ import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
 import { saveCookie } from 'helpers/nagiostv';
+import { ChangeEvent } from 'react';
 
 const ServiceFilters = () => {
 
@@ -45,16 +46,22 @@ const ServiceFilters = () => {
 		language,
 	} = clientSettings;
 
-	const handleSelectChange = (e) => {
-		//console.log('handleSelectChange', e.target);
+	const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+		// console.log('handleSelectChange', e.target);
 		// console.log(event);
 		// console.log(event.target.getAttribute('data-varname'));
 		// console.log('event.target.value', event.target.value);
 		const propName = e.target.getAttribute('data-varname');
+
 		// setClientSettings(settings => ({
 		//   ...settings,
 		//   [propName]: e.target.value
 		// }));
+
+		if (propName === null) {
+			return;
+		}
+
 		setClientSettings(settings => {
 			saveCookie('Service Filters', {
 				...settings,
@@ -68,14 +75,14 @@ const ServiceFilters = () => {
 
 	};
 
-	const handleCheckboxChange = (e, propName, dataType) => {
+	const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>, propName: string, dataType: 'checkbox') => {
 		// This will get called twice (see note below). The little hack there deals with it
 		// So we actually do not want e.preventDefault(); here
 		//console.log('handleCheckboxChange', e.target, propName, dataType);
 		// we put this to solve the bubble issue where the click goes through the label then to the checkbox
 		if (typeof e.target.checked === 'undefined') { return; }
 
-		let val = true;
+		let val: boolean | string = true;
 		if (dataType === 'checkbox') {
 			val = (!e.target.checked);
 		} else {

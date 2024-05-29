@@ -16,7 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { ChangeEvent } from 'react';
 import './FilterCheckbox.css';
+
+interface FilterCheckboxProps {
+	stateName: string;
+	filterName: string;
+	hideFilters: boolean;
+	defaultChecked: boolean;
+	howMany: number;
+	howManyText: string;
+	handleCheckboxChange: (e: ChangeEvent<HTMLInputElement>, propName: string, dataType: 'checkbox') => void;
+}
 
 const FilterCheckbox = ({
 	stateName,
@@ -26,10 +37,11 @@ const FilterCheckbox = ({
 	howMany,
 	howManyText,
 	handleCheckboxChange,
-}) => {
+}: FilterCheckboxProps) => {
 
-	const clicky = e => {
-		handleCheckboxChange(e, stateName, 'checkbox');
+	const clicky = (e: React.MouseEvent<HTMLLabelElement>) => {
+		const f = e as unknown as ChangeEvent<HTMLInputElement>;
+		handleCheckboxChange(f, stateName, 'checkbox');
 	};
 
 	let classN = 'Checkbox uppercase ' + filterName;

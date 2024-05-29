@@ -14,7 +14,7 @@ interface PollingSpinnerProps {
 	isDemoMode: boolean;
 	error: boolean;
 	errorCount: number;
-	fetchFrequency: number;
+	//fetchFrequency: number;
 	fetchVariableName: 'fetchAlertFrequency' | 'fetchHostFrequency' | 'fetchServiceFrequency';
 }
 

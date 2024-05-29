@@ -33,7 +33,7 @@ interface QuietForProps {
 
 class QuietFor extends Component<QuietForProps> {
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps: QuietForProps) {
 		//console.log('shouldComponentUpdate', nextProps, nextState);
 		if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
 			return true;
@@ -46,7 +46,7 @@ class QuietFor extends Component<QuietForProps> {
 
 		const { language } = this.props;
 
-		const quietForText = (date_now, date_future) => {
+		const quietForText = (date_now: number, date_future: number) => {
 			//var diff = date_now - date_future;
 			//var total_minutes = (diff/(60*1000)).toFixed(0);
 
@@ -111,8 +111,6 @@ class QuietFor extends Component<QuietForProps> {
 		//     icon = <FontAwesomeIcon className="color-red" icon={faCloudShowersHeavy} />;
 		//     color = 'color-red'; 
 		// }
-
-
 
 		//console.log('quietFor render');
 		return (

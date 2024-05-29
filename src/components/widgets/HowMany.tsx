@@ -26,7 +26,7 @@ interface HowManyProps {
 
 class HowMany extends Component<HowManyProps> {
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps: HowManyProps) {
 		//console.log('shouldComponentUpdate', nextProps, nextState);
 		if (nextProps.howMany !== this.props.howMany || nextProps.howManyDown !== this.props.howManyDown) {
 			return true;

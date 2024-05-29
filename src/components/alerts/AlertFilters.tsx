@@ -16,26 +16,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 // Helpers
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox';
-// External Deps
-import Cookie from 'js-cookie';
+import { saveCookie } from 'helpers/nagiostv';
 // CSS
 import './AlertFilters.css';
-import { ClientSettings } from 'types/settings';
-import { saveCookie } from 'helpers/nagiostv';
+
+interface AlertFiltersProps {
+	howManyAlertSoft: number;
+}
 
 const AlertFilters = ({
-	//hideFilters,
-	//hideAlertSoft,
-	//howManyAlerts,
 	howManyAlertSoft,
-}) => {
+}: AlertFiltersProps) => {
 
 	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
@@ -48,30 +45,10 @@ const AlertFilters = ({
 	// Chop the clientSettings into vars
 	const {
 		hideAlertSoft,
-		//hostSortOrder,
-		//hostgroupFilter,
-		//hideHistory,
-		//hideHostDown,
-		//hideHostSection,
-		//serviceSortOrder,
 		language,
 	} = clientSettings;
 
-	// shouldComponentUpdate(nextProps, nextState) {
-	//   const propsToCauseRender = [
-	//     'hideFilters',
-	//     'hideAlertSoft',
-	//     'howManyAlertSoft'
-	//   ];
-	//   for(let i=0;i<propsToCauseRender.length;i++) {
-	//     if (nextProps[propsToCauseRender[i]] !== this.props[propsToCauseRender[i]]) {
-	//       return true;
-	//     }
-	//   }
-	//   return false;
-	// }
-
-	const handleCheckboxChange = (e, propName, dataType) => {
+	const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>, propName: string, dataType: 'checkbox') => {
 		// This will get called twice (see note below). The little hack there deals with it
 		// So we actually do not want e.preventDefault(); here
 		//console.log('handleCheckboxChange', e);
@@ -81,14 +58,14 @@ const AlertFilters = ({
 
 		console.log('handleCheckboxChange going through');
 
-		let val = true;
+		let val: boolean | string = true;
 		if (dataType === 'checkbox') {
 			val = (!e.target.checked);
 		} else {
 			val = e.target.value;
 		}
-		// Save to state
 
+		// Save to state
 		setClientSettings(settings => {
 			saveCookie('Alert Filters', {
 				...settings,
@@ -103,7 +80,6 @@ const AlertFilters = ({
 
 	return (
 		<>
-
 			{/*<span className="filter-ok-label filter-ok-label-gray"><strong>{howManyAlerts}</strong> Alerts</span>*/}
 
 			{(!hideFilters || howManyAlertSoft !== 0) && <span>

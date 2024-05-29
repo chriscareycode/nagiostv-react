@@ -259,7 +259,7 @@ const AlertSection = () => {
 					isDemoMode={isDemoMode}
 					error={alertState.error}
 					errorCount={alertState.errorCount}
-					//fetchFrequency={fetchAlertFrequency}
+					// fetchFrequency={fetchAlertFrequency}
 					fetchVariableName={'fetchAlertFrequency'}
 				/>
 

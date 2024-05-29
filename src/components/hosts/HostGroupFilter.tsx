@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
@@ -36,7 +36,7 @@ const HostGroupFilter = () => {
 	const hostgroup = hostgroupState.response;
 	const hostgroupFilter = clientSettings.hostgroupFilter;
 
-	const onChangeHostGroupFilter = (e) => {
+	const onChangeHostGroupFilter = (e: ChangeEvent<HTMLSelectElement>) => {
 		setClientSettings(curr => {
 			saveCookie('HostGroup Filter', {
 				...curr,
@@ -76,7 +76,7 @@ const HostGroupFilter = () => {
 
 }
 
-function propsAreEqual(prevProps, nextProps) {
+function propsAreEqual() {
 	// return Object.keys(prevProps.hostgroup).length === Object.keys(nextProps.hostgroup).length &&
 	//   prevProps.hostgroupFilter === nextProps.hostgroupFilter;
 	return true;

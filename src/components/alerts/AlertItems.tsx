@@ -21,12 +21,13 @@ import { translate } from '../../helpers/language';
 
 import AlertItem from './AlertItem';
 import QuietFor from './QuietFor';
-// css
+
+import { Alert } from 'types/hostAndServiceTypes';
+import { ClientSettings } from 'types/settings';
+// CSS
 import '../animation.css';
 import '../services/ServiceItems.css';
 import './AlertItems.css';
-import { Alert } from 'types/hostAndServiceTypes';
-import { ClientSettings } from 'types/settings';
 
 interface AlertItemsProps {
 	items: Alert[];
@@ -36,7 +37,7 @@ interface AlertItemsProps {
 
 class AlertItems extends Component<AlertItemsProps> {
 
-	constructor(props) {
+	constructor(props: AlertItemsProps) {
 		super(props);
 
 		this.showMore = this.showMore.bind(this);
@@ -62,7 +63,6 @@ class AlertItems extends Component<AlertItemsProps> {
 
 	render() {
 
-
 		const filteredHistoryArray = this.props.items.filter(item => {
 			if (this.props.settings.hideAlertSoft) {
 				if (item.state_type === 2) { return false; }
@@ -73,8 +73,6 @@ class AlertItems extends Component<AlertItemsProps> {
 		let trimmedItems = [...filteredHistoryArray];
 		trimmedItems.length = this.state.howManyToRender;
 		const { language, locale, dateFormat } = this.props.settings;
-
-
 
 		return (
 			<div className="AlertItems">

@@ -33,7 +33,7 @@ interface HowManyEmojiState {
 
 class HowManyEmoji extends Component<HowManyEmojiProps, HowManyEmojiState> {
 
-	shouldComponentUpdate(nextProps, nextState) {
+	shouldComponentUpdate(nextProps: HowManyEmojiProps, nextState: HowManyEmojiState) {
 		//console.log('HowManyEmoji shouldComponentUpdate', nextProps, nextState);
 		if (
 			nextProps.howMany !== this.props.howMany ||

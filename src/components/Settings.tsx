@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 // State Management
 import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -107,7 +107,7 @@ const Settings = () => {
 	};
 
 	// handle state changes for all the widgets on this page
-	const handleChange = (propName, dataType) => (event) => {
+	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		// console.log('handleChange new');
 		// console.log(propName, dataType);
 		// console.log(event.target.value);
