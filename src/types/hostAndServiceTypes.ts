@@ -83,9 +83,3 @@ export interface AlertWrap {
 	response: Record<string, any>;
 	responseArray: Alert[]
 }
-
-export interface Comment {
-	author: string;
-	entry_time: number;
-	comment_data: string;
-}

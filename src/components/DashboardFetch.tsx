@@ -9,7 +9,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
 import { handleFetchFail } from "helpers/axios";
-import { Comment } from "types/hostAndServiceTypes";
+// Types
 import { CommentListObject, CommentListResponseObject } from "types/commentTypes";
 
 const DashboardFetch = () => {
