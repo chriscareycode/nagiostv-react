@@ -38,7 +38,7 @@ const DashboardFetch = () => {
 
 		let url = '';
 		if (useFakeSampleData) {
-			return;
+			url = './sample-data/commentlist.json';
 		} else if (clientSettings.dataSource === 'livestatus') {
 			url = clientSettings.livestatusPath + '?query=commentlist';
 		} else {
@@ -63,7 +63,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist: Record<string, CommentListResponseObject> = response.data.commentlist;
+			const commentlist: Record<string, CommentListResponseObject> = response.data.data.commentlist;
 
 			// Massage the commentlist so we have one key per hostname
 			const commentlistObject: CommentListObject = {

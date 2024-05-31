@@ -1,0 +1,63 @@
+{
+  "format_version": 0,
+  "result": {
+    "query_time": 1717133958000,
+    "cgi": "statusjson.cgi",
+    "user": "chris",
+    "query": "commentlist",
+    "query_status": "released",
+    "program_start": 1716746118000,
+    "last_data_update": 1717133958000,
+    "type_code": 0,
+    "type_text": "Success",
+    "message": ""
+  },
+  "data": {
+    "selectors": {
+    },
+    "commentlist": {
+      "770": {
+        "comment_id": 770,
+        "comment_type": 2,
+        "entry_type": 3,
+        "source": 0,
+        "persistent": false,
+        "entry_time": 1717133941000,
+        "expires": false,
+        "expire_time": 0,
+        "host_name": "camera-front",
+        "service_description": "",
+        "author": "Chris",
+        "comment_data": "Testing comments."
+      },
+      "771": {
+        "comment_id": 771,
+        "comment_type": 2,
+        "entry_type": 3,
+        "source": 0,
+        "persistent": false,
+        "entry_time": 1717133941000,
+        "expires": false,
+        "expire_time": 0,
+        "host_name": "camera-back-gate",
+        "service_description": "",
+        "author": "Chris",
+        "comment_data": "Testing comments 2."
+      },
+      "772": {
+        "comment_id": 772,
+        "comment_type": 2,
+        "entry_type": 3,
+        "source": 0,
+        "persistent": false,
+        "entry_time": 1717133941000,
+        "expires": false,
+        "expire_time": 0,
+        "host_name": "camera-front-car",
+        "service_description": "Check Something",
+        "author": "(Nagios Process)",
+        "comment_data": "Notifications for this service are being suppressed because it was detected as having been flapping between different states (24.2% change >= 20.0% threshold).  When the service state stabilizes and the flapping stops, notifications will be re-enabled."
+      }
+    }
+  }
+}
