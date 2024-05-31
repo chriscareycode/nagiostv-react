@@ -507,7 +507,7 @@ if ($query_string["query"] == "hostlist") {
 		}
 
 		$item["comment_type"] = $item["type"];
-		$item["host_name"] = $item["host_alias"];
+		$item["host_name"] = $item["host_display_name"];
 		$item["comment_data"] = $item["comment"];
 		$item["entry_time"] = $item["entry_time"] * 1000;       
 
