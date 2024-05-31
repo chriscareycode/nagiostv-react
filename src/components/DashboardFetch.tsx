@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 // State Management
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
@@ -10,7 +10,7 @@ import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
 import { handleFetchFail } from "helpers/axios";
 // Types
-import { CommentListObject, CommentListResponseObject } from "types/commentTypes";
+import { CommentListObject } from "types/commentTypes";
 
 const DashboardFetch = () => {
 
@@ -63,7 +63,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist: Record<string, CommentListResponseObject> = response.data.data.commentlist;
+			const commentlist = _.get(response.data.data, 'commentlist', {});
 
 			// Massage the commentlist so we have one key per hostname
 			const commentlistObject: CommentListObject = {
@@ -152,7 +152,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the hostgrouplist result
-			const hostgroup = _.get(response.data, 'hostgrouplist', {});
+			const hostgroup = _.get(response.data.data, 'hostgrouplist', {});
 
 			setHostgroup({
 				error: false,
@@ -195,8 +195,8 @@ const DashboardFetch = () => {
 				return;
 			}
 
-			// Pluck out the hostgrouplist result
-			const servicegroup = _.get(response.data, 'servicegrouplist', {});
+			// Pluck out the servicegrouplist result
+			const servicegroup = _.get(response.data.data, 'servicegrouplist', {});
 
 			setServicegroup({
 				error: false,
@@ -239,12 +239,15 @@ const DashboardFetch = () => {
 				return;
 			}
 
+			// Pluck out the programstatus result
+			const programstatus = _.get(response.data.data, 'programstatus', {});
+
 			setProgramStatus({
 				error: false,
 				errorCount: 0,
 				errorMessage: '',
 				lastUpdate: new Date().getTime(),
-				response: response.data,
+				response: programstatus,
 			});
 
 		}).catch(error => {

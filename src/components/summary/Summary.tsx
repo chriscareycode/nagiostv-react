@@ -25,8 +25,8 @@ export default function Summary() {
 	const programStatus = useAtomValue(programStatusAtom);
 	
 	// Extract a couple of fields out of programStatus that we are using: "program_start" and "version"
-	const programStart = programStatus?.response?.data?.programstatus?.program_start;
-	const programVersion = programStatus?.response?.data?.programstatus?.version;
+	const programStart = programStatus?.response?.program_start;
+	const programVersion = programStatus?.response?.version;
 
 	let quietForMs: number | null = null;
 	if (alertState && alertState.responseArray && alertState.responseArray.length > 0) {

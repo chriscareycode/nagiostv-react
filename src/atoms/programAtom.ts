@@ -2,12 +2,17 @@ import { atom } from 'jotai';
 
 export const programStatusIsFetchingAtom = atom(false);
 
+interface ProgramStatus {
+	program_start: number;
+	version: string;
+}
+
 export interface ProgramStatusWrap {
 	error: boolean;
 	errorCount: number;
 	errorMessage: string;
 	lastUpdate: number;
-	response: Record<string, any>;
+	response: ProgramStatus | null;
 }
 
 const initialState: ProgramStatusWrap = {
@@ -15,7 +20,7 @@ const initialState: ProgramStatusWrap = {
 	errorCount: 0,
 	errorMessage: '',
 	lastUpdate: 0,
-	response: {}
+	response: null
 };
 
 export const programStatusAtom = atom(initialState);
