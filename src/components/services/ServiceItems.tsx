@@ -58,7 +58,8 @@ const ServiceItems = ({
 	//commentlist
 }: ServiceItemsProps) => {
 
-	const nodeRef = useRef(null);
+	// For react-transition-group
+	// const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -142,7 +143,7 @@ const ServiceItems = ({
 							key={e.host_name + '-' + e.description}
 							classNames="example"
 							timeout={{ enter: 500, exit: 500 }}
-							nodeRef={nodeRef}
+							// nodeRef={nodeRef}
 						>
 							<ServiceItem
 								settings={settings}

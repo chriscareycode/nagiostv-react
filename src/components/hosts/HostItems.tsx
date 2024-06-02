@@ -51,7 +51,8 @@ const HostItems = ({
 	isDemoMode,
 }: HostItemsProps) => {
 
-	const nodeRef = useRef(null);
+	// For react-transition-group
+	// const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -133,7 +134,7 @@ const HostItems = ({
 							classNames="example"
 							timeout={{ enter: 500, exit: 500 }}
 							unmountOnExit
-							nodeRef={nodeRef}
+							// nodeRef={nodeRef}
 						>
 							<HostItem
 								settings={settings}
