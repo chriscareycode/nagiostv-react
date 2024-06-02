@@ -90,3 +90,15 @@
 .TopPanel>.hamburger-menu:hover {
 	color: orange;
 }
+
+.automatic-scroll-enabled {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	width: auto;
+	background-color: #333;
+	border: 1px solid #444;
+	border-radius: 5px;
+	padding: 5px 5px;
+	z-index: 10;
+}

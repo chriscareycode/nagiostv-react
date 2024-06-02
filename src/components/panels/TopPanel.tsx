@@ -25,16 +25,17 @@ import ReactTooltip from 'react-tooltip';
 // Import Widgets
 import Clock from '../widgets/Clock';
 import CustomLogo from '../widgets/CustomLogo';
+import { saveCookie } from 'helpers/nagiostv';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faVolumeUp, faBullhorn, faFilter, faSort, faChartSimple } from '@fortawesome/free-solid-svg-icons';
 
-import { saveCookie } from 'helpers/nagiostv';
+// Types
+import { ClientSettings } from 'types/settings';
 
 // Import CSS
 import './TopPanel.css';
-import { ClientSettings } from 'types/settings';
 
 const TopPanel = () => {
 
@@ -104,97 +105,107 @@ const TopPanel = () => {
 	};
 
 	return (
-		<div className="TopPanel top-panel-height">
-
-			<div className="header-right-float">
-
-				{/* filter icon */}
-				<div
-					data-tip="Show/Hide Filters"
-					className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
-					onClick={clickedFilter}
-				>
-					<FontAwesomeIcon icon={faFilter} /> Filters
+		<>
+			{/* Show the automatic scroll is enabled message */}
+			{automaticScroll && (
+				<div className="automatic-scroll-enabled">
+					Automatic scroll is enabled{' '}
+					<button onClick={() => toggleAndSaveCookie('automaticScroll')}>Disable</button>
 				</div>
+			)}
 
-				{/* automatic scroll icon */}
-				<div
-					data-tip="Automatic Scroll"
-					className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-					onClick={clickedAutomaticScroll}
-				>
-					<FontAwesomeIcon icon={faSort} />
-				</div>
+			{/* Top Panel */}
+			<div className="TopPanel top-panel-height">
+				<div className="header-right-float">
 
-				{/* chart icon */}
-				<div
-					data-tip="Show/Hide 24h Charts"
-					className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-					onClick={clickedCharts24h}
-				>
-					<FontAwesomeIcon icon={faChartSimple} /> 24h
-				</div>
+					{/* filter icon */}
+					<div
+						data-tip="Show/Hide Filters"
+						className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
+						onClick={clickedFilter}
+					>
+						<FontAwesomeIcon icon={faFilter} /> Filters
+					</div>
 
-				{/* chart icon */}
-				<div
-					data-tip="Show/Hide Long Charts"
-					className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-					onClick={clickedCharts}
-				>
-					<FontAwesomeIcon icon={faChartSimple} /> {alertDaysBack}d
-				</div>
+					{/* automatic scroll icon */}
+					<div
+						data-tip="Automatic Scroll"
+						className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+						onClick={clickedAutomaticScroll}
+					>
+						<FontAwesomeIcon icon={faSort} />
+					</div>
 
-				{/* sound effects icon */}
-				<div
-					data-tip="Sound Effects"
-					className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-					onClick={clickedSound}
-				>
-					<FontAwesomeIcon icon={faVolumeUp} />
-				</div>
+					{/* chart icon */}
+					<div
+						data-tip="Show/Hide 24h Charts"
+						className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+						onClick={clickedCharts24h}
+					>
+						<FontAwesomeIcon icon={faChartSimple} /> 24h
+					</div>
 
-				{/* speak items icon */}
-				<div
-					data-tip="Speak"
-					className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
-					onClick={clickedSpeak}
-				>
-					<FontAwesomeIcon icon={faBullhorn} />
-				</div>
+					{/* chart icon */}
+					<div
+						data-tip="Show/Hide Long Charts"
+						className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+						onClick={clickedCharts}
+					>
+						<FontAwesomeIcon icon={faChartSimple} /> {alertDaysBack}d
+					</div>
 
-				{/* clock */}
-				<Clock
-					locale={clientSettings.locale}
-					clockDateFormat={clientSettings.clockDateFormat}
-					clockTimeFormat={clientSettings.clockTimeFormat}
-				/>
+					{/* sound effects icon */}
+					<div
+						data-tip="Sound Effects"
+						className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+						onClick={clickedSound}
+					>
+						<FontAwesomeIcon icon={faVolumeUp} />
+					</div>
 
-				{/* custom logo */}
-				{clientSettings.customLogoEnabled &&
-					<CustomLogo
-						settings={clientSettings}
+					{/* speak items icon */}
+					<div
+						data-tip="Speak"
+						className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
+						onClick={clickedSpeak}
+					>
+						<FontAwesomeIcon icon={faBullhorn} />
+					</div>
+
+					{/* clock */}
+					<Clock
+						locale={clientSettings.locale}
+						clockDateFormat={clientSettings.clockDateFormat}
+						clockTimeFormat={clientSettings.clockTimeFormat}
 					/>
-				}
-			</div>
 
-			{/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
-			{/*<div className="header-left-spacer"></div>*/}
-
-			{/* hamburger menu */}
-			{clientSettings.hideHamburgerMenu === false && <div className={isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
-				<div className="hamburger-menu-center">
-					<FontAwesomeIcon icon={faBars} />
+					{/* custom logo */}
+					{clientSettings.customLogoEnabled &&
+						<CustomLogo
+							settings={clientSettings}
+						/>
+					}
 				</div>
-			</div>}
 
-			{/* title string */}
-			<div className="header-application-name">{clientSettings.titleString}</div>
+				{/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
+				{/*<div className="header-left-spacer"></div>*/}
 
-			{/* show the polling time */}
-			{/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+				{/* hamburger menu */}
+				{clientSettings.hideHamburgerMenu === false && <div className={isLeftPanelOpen ? "hamburger-menu hamburger-menu-active" : 'hamburger-menu'} onClick={clickedHamburgerMenu}>
+					<div className="hamburger-menu-center">
+						<FontAwesomeIcon icon={faBars} />
+					</div>
+				</div>}
 
-			<ReactTooltip place="bottom" type="dark" effect="solid" />
-		</div>
+				{/* title string */}
+				<div className="header-application-name">{clientSettings.titleString}</div>
+
+				{/* show the polling time */}
+				{/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
+
+				<ReactTooltip place="bottom" type="dark" effect="solid" />
+			</div>
+		</>
 	);
 
 }
