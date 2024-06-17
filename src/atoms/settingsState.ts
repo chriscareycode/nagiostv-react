@@ -39,7 +39,7 @@ const bigStateInitial: BigState = {
 	useFakeSampleData,
 
 	isRemoteSettingsLoaded: false,
-	isCookieLoaded: false, // I have this to render things only after cookie is loaded
+	isLocalSettingsLoaded: false, // I have this to render things only after cookie is loaded
 	isDoneLoading: false,
 
 	hideFilters: true,

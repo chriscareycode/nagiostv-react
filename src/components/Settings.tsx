@@ -243,7 +243,7 @@ const Settings = () => {
 					</table>}
 
 					{/* cookie settings */}
-					{bigState.isCookieLoaded && <table className="SettingsTable">
+					{bigState.isLocalSettingsLoaded && <table className="SettingsTable">
 						<thead>
 							<tr>
 								<td className="SettingsTableHeader">

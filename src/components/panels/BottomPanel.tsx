@@ -54,7 +54,7 @@ const BottomPanel = ({
 
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
+	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 
 	const history = useHistory();
 
@@ -107,7 +107,7 @@ const BottomPanel = ({
 				const skipVersionObj = JSON.parse(cookieString);
 				if (skipVersionObj) {
 					//console.log('Loaded skipVersion cookie', skipVersionObj);
-					setSkipVersionCookie({
+					setSkipVersion({
 						version: skipVersionObj.version,
 						version_string: skipVersionObj.version_string,
 					});
@@ -126,7 +126,7 @@ const BottomPanel = ({
 			version_string: latestVersionString
 		};
 		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-		setSkipVersionCookie({
+		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
 		});
@@ -155,7 +155,7 @@ const BottomPanel = ({
 						>NagiosTV <span className="">v{currentVersionString}</span></span>
 
 						{/* update available */}
-						{(isUpdateAvailable && skipVersionCookie.version !== latestVersion) && (
+						{(isUpdateAvailable && skipVersion.version !== latestVersion) && (
 							<span>
 								<span className="update-available">
 									<a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>

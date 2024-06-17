@@ -65,7 +65,7 @@ const Update = ({
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 	const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
-	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
+	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 	const [testPhpState, setTestPhpState] = useState<TestPhpState>({
 		loading: false,
 		error: false,
@@ -292,7 +292,7 @@ const Update = ({
 			version_string: latestVersionString
 		};
 		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-		setSkipVersionCookie({
+		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
 		});
@@ -300,7 +300,7 @@ const Update = ({
 
 	const clearSkipVersionCookie = () => {
 		Cookie.remove('skipVersion');
-		setSkipVersionCookie({
+		setSkipVersion({
 			version: 0,
 			version_string: '',
 		});
@@ -530,17 +530,17 @@ const Update = ({
 				<div style={{ marginTop: 10 }} className="update-help-message">
 
 					{bigState.latestVersionString && <div>
-						<button disabled={skipVersionCookie.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
+						<button disabled={skipVersion.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
 					</div>}
 
-					{!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div>
+					{!skipVersion.version_string && bigState.latestVersionString === '' && <div>
 						Need to "Check for Updates" first to know which version to skip
 					</div>}
 
-					{skipVersionCookie.version_string && <div style={{ color: 'yellow' }}>
-						You have chosen to skip version {skipVersionCookie.version_string}. This will hide the update message until the next version is released.
+					{skipVersion.version_string && <div style={{ color: 'yellow' }}>
+						You have chosen to skip version {skipVersion.version_string}. This will hide the update message until the next version is released.
 						&nbsp;
-						<button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersionCookie.version_string}</button>
+						<button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersion.version_string}</button>
 					</div>}
 
 				</div>
