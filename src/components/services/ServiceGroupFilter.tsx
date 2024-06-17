@@ -22,7 +22,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { servicegroupAtom } from '../../atoms/hostgroupAtom';
 import './ServiceGroupFilter.css';
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 
 // http://pi4.local/nagios/jsonquery.html
 // http://pi4.local/nagios/cgi-bin/objectjson.cgi?query=servicegrouplist&details=true
@@ -38,7 +38,7 @@ const ServiceGroupFilter = () => {
 
 	const onChangeServiceGroupFilter = (e: ChangeEvent<HTMLSelectElement>) => {
 		setClientSettings(curr => {
-			saveCookie('Service Group Filter', {
+			saveLocalStorage('Service Group Filter', {
 				...curr,
 				servicegroupFilter: e.target.value
 			});

@@ -1,20 +1,11 @@
 .summary-item {
 	position: relative;
-
-	/* border: 1px solid #003f5c; */
 	border: 1px solid #002232;
 	border-left: 3px solid #00adff;
-	/* background-color: #001a26;
-    background-color: #00151e; */
 	background-color: #051218;
 	font-size: 1.5em;
 	border-radius: 5px;
-	/* color: rgba(237, 237, 237, 0.88) */
-	/* overflow: hidden;
-    transition: max-height 250ms ease-in, opacity 250ms ease-in;
-    transition-delay: 0ms; */
 	margin-top: 15px;
-	/* padding-left: 5px; */
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
@@ -54,25 +45,19 @@
 .summary-box {
 	display: inline-block;
 	vertical-align: top;
-	/* height: 70px; */
-	/* width: 100px; */
-	border: 1px solid #002638;
 	border: 1px solid #001d2a;
-	background-color: #00151f;
 	background-color: #000c12;
 	border-radius: 10px;
 	text-align: center;
-	padding: 5px 10px 5px 10px;
-	/* margin: 10px;
-    margin-right: 0px; */
-	margin-left: 5px;
-	margin-top: 5px;
+	padding: 5px 5px 5px 5px;
+	margin-left: 1px;
+	margin-top: 1px;
 	margin-bottom: 5px;
 	font-size: 0.8em;
 }
 
 .summary-box-big-number {
-	font-size: 1.6em;
+	font-size: 1.5em;
 }
 
 .summary-box-text {
@@ -100,8 +85,10 @@
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
-
 	.summary-box.float-right {
+		display: none;
+	}
+	.summary-box.summary-box-text {
 		display: none;
 	}
 }

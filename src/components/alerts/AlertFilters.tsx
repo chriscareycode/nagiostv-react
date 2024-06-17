@@ -22,7 +22,7 @@ import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 // Helpers
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox';
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 // CSS
 import './AlertFilters.css';
 
@@ -67,7 +67,7 @@ const AlertFilters = ({
 
 		// Save to state
 		setClientSettings(settings => {
-			saveCookie('Alert Filters', {
+			saveLocalStorage('Alert Filters', {
 				...settings,
 				[propName]: val,
 			});

@@ -83,7 +83,7 @@
 	cursor: pointer;
 }
 
-.SettingsDeleteCookieButton {
+.SettingsDeleteLocalSettingsButton {
 	background-color: #333;
 	color: orange;
 	font-weight: bold;

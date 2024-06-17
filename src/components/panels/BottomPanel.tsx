@@ -28,7 +28,6 @@ import {
 	NavLink,
 	useHistory
 } from "react-router-dom";
-import Cookie from 'js-cookie';
 import './BottomPanel.css';
 
 // icons
@@ -100,20 +99,20 @@ const BottomPanel = ({
 		clickedUpdate(e);
 	};
 
-	const loadSkipVersionCookie = () => {
-		const cookieString = Cookie.get('skipVersion');
-		if (cookieString) {
+	const loadSkipVersion = () => {
+		const skipVersionString = localStorage.getItem('skipVersion');
+		if (skipVersionString) {
 			try {
-				const skipVersionObj = JSON.parse(cookieString);
+				const skipVersionObj = JSON.parse(skipVersionString);
 				if (skipVersionObj) {
-					//console.log('Loaded skipVersion cookie', skipVersionObj);
+					//console.log('Loaded skipVersion', skipVersionObj);
 					setSkipVersion({
 						version: skipVersionObj.version,
 						version_string: skipVersionObj.version_string,
 					});
 				}
 			} catch (e) {
-				console.log('Could not parse the skipVersion cookie');
+				console.log('Could not parse the skipVersion');
 			}
 		}
 	};
@@ -125,7 +124,7 @@ const BottomPanel = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
+		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
 		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
@@ -133,7 +132,7 @@ const BottomPanel = ({
 	};
 
 	useEffect(() => {
-		loadSkipVersionCookie();
+		loadSkipVersion();
 	}, []);
 
 	const isUpdateAvailable = latestVersion > currentVersion;

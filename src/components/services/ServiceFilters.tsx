@@ -24,7 +24,7 @@ import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
 
 const ServiceFilters = () => {
@@ -63,7 +63,7 @@ const ServiceFilters = () => {
 		}
 
 		setClientSettings(settings => {
-			saveCookie('Service Filters', {
+			saveLocalStorage('Service Filters', {
 				...settings,
 				[propName]: e.target.value
 			});
@@ -89,9 +89,9 @@ const ServiceFilters = () => {
 			val = e.target.value;
 		}
 
-		// Save to Cookie and to Recoil state
+		// Save to localStorage and to Recoil state
 		setClientSettings(settings => {
-			saveCookie('Service Filters', {
+			saveLocalStorage('Service Filters', {
 				...settings,
 				[propName]: val
 			});

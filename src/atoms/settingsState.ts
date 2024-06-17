@@ -39,7 +39,7 @@ const bigStateInitial: BigState = {
 	useFakeSampleData,
 
 	isRemoteSettingsLoaded: false,
-	isLocalSettingsLoaded: false, // I have this to render things only after cookie is loaded
+	isLocalSettingsLoaded: false, // I have this to render things only after local settings is loaded
 	isDoneLoading: false,
 
 	hideFilters: true,
@@ -47,7 +47,7 @@ const bigStateInitial: BigState = {
 };
 
 //**************************************************************************** */
-// state which is loaded and saved into client cookie / server settings
+// state which is loaded and saved into client settings / server settings
 //**************************************************************************** */
 export const clientSettingsInitial: ClientSettings = {
 

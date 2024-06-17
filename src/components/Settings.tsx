@@ -24,7 +24,7 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { Link } from "react-router-dom";
 // CSS
 import './Settings.css';
-import Cookie from 'js-cookie';
+
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 import { listLocales } from '../helpers/moment';
@@ -69,12 +69,13 @@ const Settings = () => {
 		setClientSettingsTemp(clientSettings);
 	}, [clientSettings]);
 
-	// Save Cookie
-	const saveCookie = () => {
+	// Save Local Settings
+	const saveLocalSettings = () => {
 
 		if (clientSettingsTemp) {
-			Cookie.set('settings', JSON.stringify(clientSettingsTemp));
-			console.log('TEST saved cookie', document.cookie);
+			// Save to localStorage
+			localStorage.setItem('settings', JSON.stringify(clientSettingsTemp));
+			console.log('TEST saved local settings', clientSettingsTemp);
 
 			setIsDirty(false);
 			setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
@@ -91,19 +92,13 @@ const Settings = () => {
 		}
 	};
 
-	const deleteCookie = () => {
-		Cookie.remove('settings');
+	const deleteLocalSettings = () => {
+		localStorage.removeItem('settings');
 
 		// show a message then clear the message
-		setSaveMessage('Cookie deleted. Refresh your browser.');
+		setSaveMessage('Local settings deleted. Refresh your browser.');
 
-		// flip the isCookieDetected boolean
-		setBigState(curr => ({
-			...curr,
-			isCookieDetected: false
-		}));
-
-		console.log('Cookie deleted.');
+		console.log('Local settings deleted.');
 	};
 
 	// handle state changes for all the widgets on this page
@@ -219,7 +214,7 @@ const Settings = () => {
 					</div>
 
 					<div className="settings-header-buttons">
-						<button className="SettingsSaveButton" onClick={saveCookie}>Save Settings</button>
+						<button className="SettingsSaveButton" onClick={saveLocalSettings}>Save Settings</button>
 						<Link to="/"><button className="SettingsCloseButton">Close Settings</button></Link>
 					</div>
 
@@ -242,12 +237,12 @@ const Settings = () => {
 						</thead>
 					</table>}
 
-					{/* cookie settings */}
+					{/* Local settings */}
 					{bigState.isLocalSettingsLoaded && <table className="SettingsTable">
 						<thead>
 							<tr>
 								<td className="SettingsTableHeader">
-									<span><span role="img" aria-label="cookie">🍪</span> <span className="color-primary">Cookie detected</span> - This browser has local custom settings saved to a cookie</span>
+									<span><span role="img" aria-label="localStorage">🍪</span> <span className="color-primary">Local settings detected</span> - This browser has local custom settings saved to localStorage</span>
 									&nbsp;
 								</td>
 							</tr>
@@ -255,10 +250,10 @@ const Settings = () => {
 						<tbody>
 							<tr>
 								<td className="">
-									{bigState.isRemoteSettingsLoaded && <div>A server settings file client-settings.json was detected, and this browser also has local settings saved to a cookie.<br />The local cookie settings are overriding the server settings.<br /><br />If you choose to delete the cookie, you will go back to the default settings configured on the server.<br />After you click the button, make sure to refresh the page.</div>}
-									{bigState.isRemoteSettingsLoaded === false && <div>If you choose to delete the cookie, you will go back to NagiosTV defaults since a client-settings.json file was not found on the server.<br />After you click the button, make sure to refresh the page.</div>}
+									{bigState.isRemoteSettingsLoaded && <div>A server settings file client-settings.json was detected, and this browser also has local settings saved to localStorage.<br />The local settings are overriding the server settings.<br /><br />If you choose to delete client settings, you will go back to the default settings configured on the server.<br />After you click the button, make sure to refresh the page.</div>}
+									{bigState.isRemoteSettingsLoaded === false && <div>If you choose to delete the local settings, you will go back to NagiosTV defaults since a client-settings.json file was not found on the server.<br />After you click the button, make sure to refresh the page.</div>}
 									<div>
-										<button className="SettingsDeleteCookieButton" onClick={deleteCookie}>Delete Cookie</button>
+										<button className="SettingsDeleteLocalSettingsButton" onClick={deleteLocalSettings}>Delete client settings</button>
 									</div>
 								</td>
 							</tr>
@@ -819,13 +814,13 @@ const Settings = () => {
 								<td>
 									<div className="font-size-0-8" style={{ margin: '5px' }}>
 										<div>
-											By default, settings are saved into a cookie in your browser. There is also the option to save these settings on the server
+											By default, settings are saved into localStorage in your browser. There is also the option to save these settings on the server
 											so they can be shared with all users of NagiosTV as defaults when they load the page.
 										</div>
 										<br />
 										<div>
-											Local cookie settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-											for all clients, but they can still be customized individually with settings saved in the cookie. Delete the cookie and refresh the page to fetch server setting defaults again.
+											Local client settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
+											for all clients, but they can still be customized individually with settings saved in client settings. Delete the client settings and refresh the page to fetch server setting defaults again.
 										</div>
 
 										<h4>Option 1: If you have PHP enabled on your server</h4>

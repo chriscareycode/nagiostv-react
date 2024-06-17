@@ -135,15 +135,15 @@ export default function Summary() {
 					{/* these are floating right */}
 
 	  				{/* Nagios Version */}
-					<div className="summary-box">
+					<div className="summary-box summary-box-text">
 						<div className="margin-top-5 font-size-0-6">Nagios</div>
-						<div className="margin-top-5 color-peach">v{programVersion}</div>
+						<div className="margin-top-5 color-peach font-size-0-8">v{programVersion}</div>
 					</div>
 
 	  				{/* Uptime */}
-					<div className="summary-box">
+					<div className="summary-box summary-box-text">
 						<div className="margin-top-5 font-size-0-6">Uptime</div>
-						<div className="margin-top-5 color-peach">{formatDateTimeAgo(programStart)}</div>
+						<div className="margin-top-5 color-peach font-size-0-8">{formatDateTimeAgo(programStart)}</div>
 					</div>
 
 					{/* Quiet For */}

@@ -23,9 +23,9 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 // React Router
 import { Link } from "react-router-dom";
-import Cookie from 'js-cookie';
-import './Update.css';
 import axios from 'axios';
+
+import './Update.css';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -291,15 +291,15 @@ const Update = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
+		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
 		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
 		});
 	};
 
-	const clearSkipVersionCookie = () => {
-		Cookie.remove('skipVersion');
+	const clearSkipVersion = () => {
+		localStorage.removeItem('skipVersion');
 		setSkipVersion({
 			version: 0,
 			version_string: '',
@@ -357,7 +357,7 @@ const Update = ({
 						<li>You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
 					</ul>
 				</ul>
-				Your custom settings in <strong>client-settings.json</strong> and/or cookie files will not be overwritten
+				Your custom settings in <strong>client-settings.json</strong> and/or localStorage will not be overwritten
 			</div>
 
 			{/* Manual Update */}
@@ -540,7 +540,7 @@ const Update = ({
 					{skipVersion.version_string && <div style={{ color: 'yellow' }}>
 						You have chosen to skip version {skipVersion.version_string}. This will hide the update message until the next version is released.
 						&nbsp;
-						<button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersion.version_string}</button>
+						<button onClick={clearSkipVersion}>Cancel skip version for {skipVersion.version_string}</button>
 					</div>}
 
 				</div>
