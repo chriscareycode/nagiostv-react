@@ -49,6 +49,8 @@ const Settings = () => {
 	const [isDirty, setIsDirty] = useState(false);
 	const [saveMessage, setSaveMessage] = useState('');
 
+	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
+
 	let isComponentMounted = false;
 	const hostlistError = false;
 
@@ -806,13 +808,13 @@ const Settings = () => {
 					<table className="SettingsTable">
 						<thead>
 							<tr>
-								<td className="SettingsTableHeader">Saving these settings on the server</td>
+								<td className="SettingsTableHeader">💾 Saving these settings on the server</td>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
 								<td>
-									<div className="font-size-0-8" style={{ margin: '5px' }}>
+									<div className="" style={{ margin: '5px' }}>
 										<div>
 											By default, settings are saved into localStorage in your browser. There is also the option to save these settings on the server
 											so they can be shared with all users of NagiosTV as defaults when they load the page.
@@ -846,10 +848,16 @@ const Settings = () => {
 
 										<div style={{ marginLeft: '30px' }}>
 											Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
+											
+											<div style={{ marginTop: 10 }}>
+												<button className="SettingsShowJsonButton" onClick={() => setShowClientSettingsJson(curr => !curr)}>
+													{showClientSettingsJson ? 'Hide' : 'Show'} JSON
+												</button>
+												<button className="SettingsSaveToServerButton" onClick={copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
+											</div>
+											
 
-											<button className="SettingsSaveToServerButton" onClick={copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
-
-											<div className="raw-json-settings">{JSON.stringify(clientSettingsTemp, null, 2)}</div>
+											{showClientSettingsJson && <div className="raw-json-settings">{JSON.stringify(clientSettingsTemp, null, 2)}</div>}
 										</div>
 									</div>
 								</td>
