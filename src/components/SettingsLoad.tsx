@@ -8,6 +8,7 @@ import { skipVersionAtom } from '../atoms/skipVersionAtom';
 import axios, { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
 import { ClientSettings, VersionCheck } from 'types/settings';
+import { doesLocalStorageSettingsExist, isLocalStorageEnabled } from 'helpers/nagiostv';
 
 const SettingsLoad = () => {
 
@@ -43,6 +44,12 @@ const SettingsLoad = () => {
 
 	const convertSettingsCookieToLocalStorage = () => {
 		console.log('convertCookieToLocalStorage()');
+
+		// If localStorage is not enabled then we skip this function
+		if (!isLocalStorageEnabled()) {
+			console.log('localStorage not enabled. Skipping convertCookieToLocalStorage()');
+			return;
+		}
 
 		const cookie = Cookie.get('settings');
 		if (cookie) {
@@ -121,7 +128,19 @@ const SettingsLoad = () => {
 			return;
 		}
 
-		const settingsString = localStorage.getItem('settings');
+		// Load settings from localStorage
+		//   If localStorage is not enabled then we instead load from Cookie
+		//   The localStorage.getItem() type is string | null
+		//   The Cookie.get() type is string | undefined
+		//   So we handle both types
+		let settingsString: string | null | undefined = null;
+		if (isLocalStorageEnabled()) {
+			console.log('getLocalSettings() localStorage enabled. Loading settings from localStorage');
+			settingsString = localStorage.getItem('settings');
+		} else {
+			console.log('getLocalSettings() localStorage not enabled. Loading settings from Cookie');
+			settingsString = Cookie.get('settings');
+		}
 
 		if (!settingsString) {
 			setBigState(curr => ({
@@ -199,9 +218,6 @@ const SettingsLoad = () => {
 			url, { timeout: 10 * 1000 }
 		).then((response: AxiosResponse<ClientSettings>) => {
 
-			console.log('SettingsLoad DEBUG response', response);
-
-			console.log('SettingsLoad DEBUG response', response);
 			// test that return data is json
 			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
@@ -317,7 +333,10 @@ const SettingsLoad = () => {
 	useEffect(() => {
 		//console.log('SettingsLoad useEffect()');
 
-		convertSettingsCookieToLocalStorage();
+		// Only convert from Cookie to LocalStorage if the LocalStorage settings does not exist already
+		if (!doesLocalStorageSettingsExist()) {
+			convertSettingsCookieToLocalStorage();
+		}
 
 		getRemoteSettings();
 
