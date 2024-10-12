@@ -16,11 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Host, Service } from "types/hostAndServiceTypes";
+import { Host, HostList, Service, ServiceList } from "types/hostAndServiceTypes";
 import { ClientSettings } from "types/settings";
-import Cookie from 'js-cookie';
 
-export function cleanDemoDataHostlist(hostlist) {
+export function cleanDemoDataHostlist(hostlist: HostList) {
 	//console.log(hostlist);
 	Object.keys(hostlist).forEach(key => {
 		//if (hostlist[key].status === 2) {
@@ -34,12 +33,12 @@ export function cleanDemoDataHostlist(hostlist) {
 	});
 	return hostlist;
 }
-export function cleanDemoDataServicelist(servicelist) {
+export function cleanDemoDataServicelist(servicelist: ServiceList) {
 	Object.keys(servicelist).forEach(hostkey => {
 		Object.keys(servicelist[hostkey]).forEach(key => {
 			//if (servicelist[hostkey][key].status === 2) {
 			servicelist[hostkey][key].status = 2;
-			servicelist[hostkey][key].last_time_up = new Date().getTime();
+			servicelist[hostkey][key].last_time_ok = new Date().getTime();
 			servicelist[hostkey][key].is_flapping = false;
 			servicelist[hostkey][key].problem_has_been_acknowledged = false;
 			servicelist[hostkey][key].scheduled_downtime_depth = 0;
@@ -92,9 +91,7 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 	return serviceProblemsArray;
 }
 
-export const saveCookie = (changeString: string, obj: ClientSettings) => {
-	//const cookieObject = {};
-	//this.settingsFields.forEach(field => cookieObject[field] = this.state[field]);
-	Cookie.set('settings', JSON.stringify(obj));
-	console.log('Saved cookie', changeString, obj);
+export const saveLocalStorage = (changeString: string, obj: ClientSettings) => {
+	localStorage.setItem('settings', JSON.stringify(obj));
+	console.log('Saved localStorage', changeString, obj);
 };

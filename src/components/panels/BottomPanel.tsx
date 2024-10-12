@@ -28,7 +28,6 @@ import {
 	NavLink,
 	useHistory
 } from "react-router-dom";
-import Cookie from 'js-cookie';
 import './BottomPanel.css';
 
 // icons
@@ -54,7 +53,7 @@ const BottomPanel = ({
 
 	const [isVisible, setIsVisible] = useState(false);
 
-	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
+	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 
 	const history = useHistory();
 
@@ -100,20 +99,20 @@ const BottomPanel = ({
 		clickedUpdate(e);
 	};
 
-	const loadSkipVersionCookie = () => {
-		const cookieString = Cookie.get('skipVersion');
-		if (cookieString) {
+	const loadSkipVersion = () => {
+		const skipVersionString = localStorage.getItem('skipVersion');
+		if (skipVersionString) {
 			try {
-				const skipVersionObj = JSON.parse(cookieString);
+				const skipVersionObj = JSON.parse(skipVersionString);
 				if (skipVersionObj) {
-					//console.log('Loaded skipVersion cookie', skipVersionObj);
-					setSkipVersionCookie({
+					//console.log('Loaded skipVersion', skipVersionObj);
+					setSkipVersion({
 						version: skipVersionObj.version,
 						version_string: skipVersionObj.version_string,
 					});
 				}
 			} catch (e) {
-				console.log('Could not parse the skipVersion cookie');
+				console.log('Could not parse the skipVersion');
 			}
 		}
 	};
@@ -125,15 +124,15 @@ const BottomPanel = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-		setSkipVersionCookie({
+		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
+		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
 		});
 	};
 
 	useEffect(() => {
-		loadSkipVersionCookie();
+		loadSkipVersion();
 	}, []);
 
 	const isUpdateAvailable = latestVersion > currentVersion;
@@ -155,7 +154,7 @@ const BottomPanel = ({
 						>NagiosTV <span className="">v{currentVersionString}</span></span>
 
 						{/* update available */}
-						{(isUpdateAvailable && skipVersionCookie.version !== latestVersion) && (
+						{(isUpdateAvailable && skipVersion.version !== latestVersion) && (
 							<span>
 								<span className="update-available">
 									<a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>

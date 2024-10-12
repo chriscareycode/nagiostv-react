@@ -6,7 +6,7 @@ import MiniMapCanvas from '../widgets/MiniMapCanvas';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 import "allotment/dist/style.css";
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 
 interface MiniMapWrapProps {
 	children?: JSX.Element;
@@ -33,8 +33,7 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 						...curr,
 						miniMapWidth: newMiniMapWidth,
 					};
-					//debouncedSaveCookie(o);
-					saveCookie('MiniMap', o);
+					saveLocalStorage('MiniMap', o);
 					return o;
 				});
 			}

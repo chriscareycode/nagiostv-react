@@ -11,7 +11,7 @@ export interface BigState {
 	useFakeSampleData: boolean;
 
 	isRemoteSettingsLoaded: boolean;
-	isCookieLoaded: boolean; // I have this to render things only after cookie is loaded
+	isLocalSettingsLoaded: boolean; // I have this to render things only after localSettings is loaded
 	isDoneLoading: boolean;
 
 	hideFilters: boolean;

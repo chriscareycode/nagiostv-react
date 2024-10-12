@@ -25,7 +25,7 @@ import ReactTooltip from 'react-tooltip';
 // Import Widgets
 import Clock from '../widgets/Clock';
 import CustomLogo from '../widgets/CustomLogo';
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -66,23 +66,23 @@ const TopPanel = () => {
 		}));
 	};
 
-	const toggleAndSaveCookie = (settingName: keyof ClientSettings) => {
+	const toggleAndSave = (settingName: keyof ClientSettings) => {
 		setClientSettings(curr => {
 			const s = {
 				...curr,
 				[settingName]: !curr[settingName]
 			};
-			saveCookie('TopPanel', s);
+			saveLocalStorage('TopPanel', s);
 			return s;
 		});
 	};
 
 	const clickedSound = () => {
-		toggleAndSaveCookie('playSoundEffects');
+		toggleAndSave('playSoundEffects');
 	};
 
 	const clickedSpeak = () => {
-		toggleAndSaveCookie('speakItems');
+		toggleAndSave('speakItems');
 	};
 
 	const clickedFilter = () => {
@@ -93,15 +93,15 @@ const TopPanel = () => {
 	};
 
 	const clickedCharts = () => {
-		toggleAndSaveCookie('hideHistoryChart');
+		toggleAndSave('hideHistoryChart');
 	};
 
 	const clickedCharts24h = () => {
-		toggleAndSaveCookie('hideHistory24hChart');
+		toggleAndSave('hideHistory24hChart');
 	};
 
 	const clickedAutomaticScroll = () => {
-		toggleAndSaveCookie('automaticScroll');
+		toggleAndSave('automaticScroll');
 	};
 
 	return (
@@ -110,7 +110,7 @@ const TopPanel = () => {
 			{automaticScroll && (
 				<div className="automatic-scroll-enabled">
 					Automatic scroll is enabled{' '}
-					<button onClick={() => toggleAndSaveCookie('automaticScroll')}>Disable</button>
+					<button onClick={() => toggleAndSave('automaticScroll')}>Disable</button>
 				</div>
 			)}
 

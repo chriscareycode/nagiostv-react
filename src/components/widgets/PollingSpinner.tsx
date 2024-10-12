@@ -6,8 +6,6 @@ import { clientSettingsAtom } from '../../atoms/settingsState';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import './PollingSpinner.css';
-import Cookie from 'js-cookie';
-import { ClientSettings } from 'types/settings';
 
 interface PollingSpinnerProps {
 	isFetching: boolean;
@@ -43,9 +41,9 @@ const PollingSpinner = ({
 				[fetchVariableName]: parseInt(e.target.value)
 			};
 
-			console.log('Saving Cookie', newSettings);
+			console.log('Saving client settings', newSettings);
 
-			Cookie.set('settings', JSON.stringify(newSettings)); // Save Cookie
+			localStorage.setItem('settings', JSON.stringify(newSettings)); // Save LocalStorage
 
 			return newSettings; // Save state
 		});

@@ -8,6 +8,7 @@ import { skipVersionAtom } from '../atoms/skipVersionAtom';
 import axios, { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
 import { ClientSettings, VersionCheck } from 'types/settings';
+import { doesLocalStorageSettingsExist, isLocalStorageEnabled } from 'helpers/nagiostv';
 
 const SettingsLoad = () => {
 
@@ -15,7 +16,7 @@ const SettingsLoad = () => {
 
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
-	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
+	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 
 	const {
 		isDemoMode,
@@ -31,15 +32,55 @@ const SettingsLoad = () => {
 	// } = clientSettings;
 
 	/* ************************************************************************************ */
-	/* settings related functions such as fetching settings from server, and loading cookie
+	/* settings related functions such as fetching settings from server, and loading client settings
 	/* ************************************************************************************ */
 
 	/* ************************************************************************************
 	 the approach I'm going to take with settings is to first load the settings from the server.
-	 either the settings load, or they fail. in either case I then check for cookie and apply 
-	 those over top. so cookie settings will override server settings. There will be a delete
-	 cookie button to help clear any local settings once server side settings become established. */
+	 either the settings load, or they fail. in either case I then check for client settings and apply 
+	 those over top. so client settings will override server settings. There will be a delete
+	 client settings button to help clear any client settings once server side settings become established. */
 	/* ************************************************************************************ */
+
+	const convertSettingsCookieToLocalStorage = () => {
+		console.log('convertCookieToLocalStorage()');
+
+		// If localStorage is not enabled then we skip this function
+		if (!isLocalStorageEnabled()) {
+			console.log('localStorage not enabled. Skipping convertCookieToLocalStorage()');
+			return;
+		}
+
+		const cookie = Cookie.get('settings');
+		if (cookie) {
+			//console.log('Found cookie. Loading settings:', cookie);
+
+			let cookieObject: ClientSettings | null = null;
+			try {
+				cookieObject = JSON.parse(cookie);
+				//console.log('Parsed cookie', cookieObject, typeof cookieObject);
+			} catch (e) {
+				//console.log('No cookie');
+			}
+
+			// If cookie is invalid, not an object, then console error and clear it out
+			if (typeof cookieObject !== 'object') {
+				console.log('Cookie is not an object. Skipping it');
+				return;
+			}
+
+			if (cookieObject) {
+				// Save the cookieObject to localStorage
+				localStorage.setItem('settings', JSON.stringify(cookieObject));
+				console.log('Saved settings cookie to localStorage', cookieObject);
+
+				// Now that we have converted the cookie to localStorage, delete the cookies
+				Cookie.remove('settings');
+				Cookie.remove('skipVersion');
+				Cookie.remove('lastVersionCheckTime');
+			}
+		}
+	};
 
 	const loadSettingsFromUrl = () => {
 
@@ -73,8 +114,8 @@ const SettingsLoad = () => {
 		}));
 	};
 
-	const getCookie = () => {
-		// Do not load the cookie in demo mode
+	const getLocalSettings = () => {
+		// Do not load the local settings in demo mode
 		if (isDemoMode) {
 			setBigState(curr => ({
 				...curr,
@@ -87,10 +128,21 @@ const SettingsLoad = () => {
 			return;
 		}
 
-		const cookie = Cookie.get('settings');
-		//console.log('Loaded Cookie string', cookie);
+		// Load settings from localStorage
+		//   If localStorage is not enabled then we instead load from Cookie
+		//   The localStorage.getItem() type is string | null
+		//   The Cookie.get() type is string | undefined
+		//   So we handle both types
+		let settingsString: string | null | undefined = null;
+		if (isLocalStorageEnabled()) {
+			console.log('getLocalSettings() localStorage enabled. Loading settings from localStorage');
+			settingsString = localStorage.getItem('settings');
+		} else {
+			console.log('getLocalSettings() localStorage not enabled. Loading settings from Cookie');
+			settingsString = Cookie.get('settings');
+		}
 
-		if (!cookie) {
+		if (!settingsString) {
 			setBigState(curr => ({
 				...curr,
 				isDoneLoading: true
@@ -99,17 +151,17 @@ const SettingsLoad = () => {
 			return;
 		}
 
-		let cookieObject: ClientSettings | null = null;
+		let settingsObject: ClientSettings | null = null;
 		try {
-			cookieObject = JSON.parse(cookie);
-			//console.log('Parsed cookie', cookieObject, typeof cookieObject);
+			settingsObject = JSON.parse(settingsString);
+			//console.log('Parsed settingsObject', settingsObject, typeof settingsObject);
 		} catch (e) {
-			//console.log('No cookie');
+			console.log('Failed parsing settingsObject from localStorage. Skipping it.');
 		}
 
-		// If cookie is invalid, not an object, then console error and clear it out
-		if (typeof cookieObject !== 'object') {
-			console.log('Cookie is not an object. Skipping it');
+		// If client settings is invalid, not an object, then console error and clear it out
+		if (typeof settingsObject !== 'object') {
+			console.log('settingsObject is not an object. Skipping it');
 			setBigState(curr => ({
 				...curr,
 				isDoneLoading: true
@@ -117,22 +169,22 @@ const SettingsLoad = () => {
 			return;
 		}
 
-		if (cookieObject) {
+		if (settingsObject) {
 
-			console.log('Found cookie. Loading settings:', cookieObject);
+			console.log('Found local settings. Loading settings:', settingsObject);
 
 			setClientSettings(curr => ({
 				...curr,
-				...cookieObject
+				...settingsObject
 			}));
 
-			// Now that we have loaded cookie, set the document.title from the title setting
-			if (cookieObject.titleString) { document.title = cookieObject.titleString; }
+			// Now that we have loaded client settings, set the document.title from the title setting
+			if (settingsObject.titleString) { document.title = settingsObject.titleString; }
 
-			// Set isCookieLoaded: true
+			// Set isLocalSettingsLoaded: true
 			setBigState(curr => ({
 				...curr,
-				isCookieLoaded: true
+				isLocalSettingsLoaded: true
 			}));
 
 			loadSettingsFromUrl();
@@ -140,20 +192,21 @@ const SettingsLoad = () => {
 
 	};
 
-	const loadSkipVersionCookie = () => {
-		const cookieString = Cookie.get('skipVersion');
-		if (cookieString) {
+	const loadSkipVersionSettings = () => {
+		// Load skipVersion from localStorage
+		const skipVersionString = localStorage.getItem('skipVersion');
+		if (skipVersionString) {
 			try {
-				const skipVersionObj = JSON.parse(cookieString);
+				const skipVersionObj = JSON.parse(skipVersionString);
 				if (skipVersionObj) {
-					//console.log('Loaded skipVersion cookie', skipVersionObj);
-					setSkipVersionCookie({
+					//console.log('Loaded skipVersion', skipVersionObj);
+					setSkipVersion({
 						version: skipVersionObj.version,
 						version_string: skipVersionObj.version_string,
 					});
 				}
 			} catch (e) {
-				console.log('Could not parse the skipVersion cookie');
+				console.log('Could not parse the skipVersion settings');
 			}
 		}
 	};
@@ -165,13 +218,10 @@ const SettingsLoad = () => {
 			url, { timeout: 10 * 1000 }
 		).then((response: AxiosResponse<ClientSettings>) => {
 
-			console.log('SettingsLoad DEBUG response', response);
-
-			console.log('SettingsLoad DEBUG response', response);
 			// test that return data is json
 			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
 				console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
-				getCookie();
+				getLocalSettings();
 				return;
 			}
 
@@ -194,13 +244,13 @@ const SettingsLoad = () => {
 			if (response.data.titleString) { document.title = response.data.titleString; }
 
 			// Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
-			// getCookie() is then going to call loadSettingsFromUrl()
-			getCookie();
+			// getLocalSettings() is then going to call loadSettingsFromUrl()
+			getLocalSettings();
 
 		}).catch((error) => {
 			console.log('getRemoteSettings() ajax ERROR:', error);
 			console.log('Skipping server settings.');
-			getCookie();
+			getLocalSettings();
 		});
 	};
 
@@ -213,32 +263,32 @@ const SettingsLoad = () => {
 		const nowTime = new Date().getTime();
 		const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
 
-		// PREVENT extra last version check time with cookie
+		// PREVENT extra last version check time
 		// if the last version check was recent then do not check again
 		// this prevents version checks if you refresh the UI over and over
 		// as is common on TV rotation
-		const lastVersionCheckTimeCookie = Cookie.get('lastVersionCheckTime');
+		const lastVersionCheckTimeString = localStorage.getItem('lastVersionCheckTime');
 
-		// If the cookie is set then we need to safely convert the string back into an integer
-		let lastVersionCheckTimeCookieInt = 0;
-		if (lastVersionCheckTimeCookie) {
+		// If the lastVersionCheckTime is set then we need to safely convert the string back into an integer
+		let lastVersionCheckTimeInt = 0;
+		if (lastVersionCheckTimeString) {
 			try {
-				lastVersionCheckTimeCookieInt = parseInt(lastVersionCheckTimeCookie, 10);
+				lastVersionCheckTimeInt = parseInt(lastVersionCheckTimeString, 10);
 			} catch (e) {
-				console.log('Could not parse the lastVersionCheckTime cookie');
+				console.log('Could not parse the lastVersionCheckTime');
 			}
 		}
 
-		if (lastVersionCheckTimeCookieInt !== 0) {
-			const diff = nowTime - lastVersionCheckTimeCookieInt;
+		if (lastVersionCheckTimeInt !== 0) {
+			const diff = nowTime - lastVersionCheckTimeInt;
 			if (diff < twentyThreeHoursInSeconds) {
-				console.log('Not performing version check since it was done ' + (diff / 1000).toFixed(0) + ' seconds ago (Cookie check)');
+				console.log('Not performing version check since it was done ' + (diff / 1000).toFixed(0) + ' seconds ago (Local settings check)');
 				return;
 			}
 		}
 
 		// PREVENT extra last version check time with local variable
-		// If for some reason the cookie check doesn't work
+		// If for some reason the localStorage check doesn't work
 		if (lastVersionCheckTime !== 0) {
 			const diff = nowTime - lastVersionCheckTime;
 			if (diff < twentyThreeHoursInSeconds) {
@@ -252,8 +302,9 @@ const SettingsLoad = () => {
 		// Set the last version check time in local variable
 		// I'm setting this one here not in the callback to prevent the rapid fire
 		lastVersionCheckTimeRef.current = nowTime;
-		// Set the last version check in the cookie (for page refresh)
-		Cookie.set('lastVersionCheckTime', nowTime.toString());
+
+		// Set the lastVersionCheckTime in localStorage (for page refresh)
+		localStorage.setItem('lastVersionCheckTime', nowTime.toString());
 
 		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
 
@@ -282,23 +333,28 @@ const SettingsLoad = () => {
 	useEffect(() => {
 		//console.log('SettingsLoad useEffect()');
 
+		// Only convert from Cookie to LocalStorage if the LocalStorage settings does not exist already
+		if (!doesLocalStorageSettingsExist()) {
+			convertSettingsCookieToLocalStorage();
+		}
+
 		getRemoteSettings();
 
-		loadSkipVersionCookie();
+		loadSkipVersionSettings();
 
-		// If a Cookie is set then run version check after 30s.
-		// If no Cookie is set then run version check after 30m.
-		// Cookie helps us prevent version check too often if NagiosTV is on a rotation
+		// If localStorage is set then run version check after 30s.
+		// If no localStorage is set then run version check after 30m.
+		// localStorage helps us prevent version check too often if NagiosTV is on a rotation
 		// where the page is loading over and over every few minutes.
 
 		let versionCheckTimeout = 30 * 1000; // 30s
-		if (!navigator.cookieEnabled) {
-			console.log('Cookie not enabled so delaying first version check by 30m');
+		if (!localStorage) {
+			console.log('localStorage not enabled so delaying first version check by 30m');
 			versionCheckTimeout = 1800 * 1000; // 30m
 		}
 
 		let intervalHandleVersionCheck: NodeJS.Timeout | null = null;
-		const cookieTimeoutHandle = setTimeout(() => {
+		const timeoutHandle = setTimeout(() => {
 			const versionCheckDays = clientSettings.versionCheckDays;
 			// if someone turns off the version check, it should never check
 			if (versionCheckDays && versionCheckDays > 0) {
@@ -325,7 +381,7 @@ const SettingsLoad = () => {
 
 		return () => {
 			//console.log('SettingsLoad useEffect() teardown');
-			clearTimeout(cookieTimeoutHandle);
+			clearTimeout(timeoutHandle);
 			if (intervalHandleVersionCheck) {
 				clearInterval(intervalHandleVersionCheck);
 			}

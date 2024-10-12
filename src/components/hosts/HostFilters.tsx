@@ -24,7 +24,7 @@ import { hostHowManyAtom } from '../../atoms/hostAtom';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
-import { saveCookie } from 'helpers/nagiostv';
+import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
 
 const HostFilters = () => {
@@ -57,7 +57,7 @@ const HostFilters = () => {
 		}
 
 		setClientSettings(settings => {
-			saveCookie('Host Filters', {
+			saveLocalStorage('Host Filters', {
 				...settings,
 				[propName]: e.target.value
 			});
@@ -80,9 +80,9 @@ const HostFilters = () => {
 			val = e.target.value;
 		}
 
-		// Save to Cookie and to Recoil state
+		// Save to localStorage and to Recoil state
 		setClientSettings(settings => {
-			saveCookie('Host Filters', {
+			saveLocalStorage('Host Filters', {
 				...settings,
 				[propName]: val
 			});

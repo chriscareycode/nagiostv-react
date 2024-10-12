@@ -23,9 +23,9 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 // React Router
 import { Link } from "react-router-dom";
-import Cookie from 'js-cookie';
-import './Update.css';
 import axios from 'axios';
+
+import './Update.css';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -65,7 +65,7 @@ const Update = ({
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 	const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
-	const [skipVersionCookie, setSkipVersionCookie] = useAtom(skipVersionAtom);
+	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 	const [testPhpState, setTestPhpState] = useState<TestPhpState>({
 		loading: false,
 		error: false,
@@ -291,16 +291,16 @@ const Update = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		Cookie.set('skipVersion', JSON.stringify(skipVersionObj));
-		setSkipVersionCookie({
+		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
+		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
 		});
 	};
 
-	const clearSkipVersionCookie = () => {
-		Cookie.remove('skipVersion');
-		setSkipVersionCookie({
+	const clearSkipVersion = () => {
+		localStorage.removeItem('skipVersion');
+		setSkipVersion({
 			version: 0,
 			version_string: '',
 		});
@@ -357,7 +357,7 @@ const Update = ({
 						<li>You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
 					</ul>
 				</ul>
-				Your custom settings in <strong>client-settings.json</strong> and/or cookie files will not be overwritten
+				Your custom settings in <strong>client-settings.json</strong> and/or localStorage will not be overwritten
 			</div>
 
 			{/* Manual Update */}
@@ -530,17 +530,17 @@ const Update = ({
 				<div style={{ marginTop: 10 }} className="update-help-message">
 
 					{bigState.latestVersionString && <div>
-						<button disabled={skipVersionCookie.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
+						<button disabled={skipVersion.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
 					</div>}
 
-					{!skipVersionCookie.version_string && bigState.latestVersionString === '' && <div>
+					{!skipVersion.version_string && bigState.latestVersionString === '' && <div>
 						Need to "Check for Updates" first to know which version to skip
 					</div>}
 
-					{skipVersionCookie.version_string && <div style={{ color: 'yellow' }}>
-						You have chosen to skip version {skipVersionCookie.version_string}. This will hide the update message until the next version is released.
+					{skipVersion.version_string && <div style={{ color: 'yellow' }}>
+						You have chosen to skip version {skipVersion.version_string}. This will hide the update message until the next version is released.
 						&nbsp;
-						<button onClick={clearSkipVersionCookie}>Cancel skip version for {skipVersionCookie.version_string}</button>
+						<button onClick={clearSkipVersion}>Cancel skip version for {skipVersion.version_string}</button>
 					</div>}
 
 				</div>
