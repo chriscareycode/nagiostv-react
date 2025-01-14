@@ -18,6 +18,7 @@
 
 import { Host, HostList, Service, ServiceList } from "types/hostAndServiceTypes";
 import { ClientSettings } from "types/settings";
+import Cookie from 'js-cookie';
 
 export function cleanDemoDataHostlist(hostlist: HostList) {
 	//console.log(hostlist);
@@ -91,7 +92,38 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 	return serviceProblemsArray;
 }
 
+
+// Utility functions to handle localStorage and cookies
+export const isLocalStorageEnabled = (): boolean => {
+	try {
+		const testKey = 'test';
+		localStorage.setItem(testKey, 'testValue');
+		localStorage.removeItem(testKey);
+		return true;
+	} catch (e) {
+		return false;
+	}
+};
+
+export const doesLocalStorageSettingsExist = (): boolean => {
+	if (isLocalStorageEnabled()) {
+		return localStorage.getItem('settings') !== null;
+	} else {
+		return false;
+	}
+}
+
+export const saveCookie = (changeString: string, obj: ClientSettings) => {
+	Cookie.set('settings', JSON.stringify(obj));
+	console.log('Saved cookie', changeString, obj);
+}
+
 export const saveLocalStorage = (changeString: string, obj: ClientSettings) => {
-	localStorage.setItem('settings', JSON.stringify(obj));
-	console.log('Saved localStorage', changeString, obj);
+	if (isLocalStorageEnabled()) {
+		localStorage.setItem('settings', JSON.stringify(obj));
+		console.log('Saved localStorage', changeString, obj);
+	} else {
+		console.error('LocalStorage is not enabled. Trying to save to cookie instead.');
+		saveCookie(changeString, obj);
+	}
 };
