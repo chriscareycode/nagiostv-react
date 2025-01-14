@@ -17,13 +17,7 @@
  */
 
 // React Router
-import {
-	HashRouter as Router,
-	//Switch,
-	//Route,
-	//Link,
-	NavLink
-} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import './LeftPanel.css';
 
@@ -55,58 +49,56 @@ const LeftPanel = ({
 
 	return (
 		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
-			<Router>
-				<div className="nav-sidebar-icon">
-					<span data-tip="Dashboard" data-place="right">
-						<NavLink exact={true} activeClassName='is-active' to="/">
-							<FontAwesomeIcon
-								className="nav-sidebar-icon-icon"
-								icon={faTachometerAlt}
-								onClick={clickedItem}
-							/>
-						</NavLink>
-					</span>
-				</div>
 
-				<div className="nav-sidebar-icon">
-					<span data-tip="Settings" data-place="right">
-						<NavLink activeClassName='is-active' to="/settings">
-							<FontAwesomeIcon
-								className="nav-sidebar-icon-icon"
-								icon={faTools}
-								onClick={clickedItem}
-							/>
-						</NavLink>
-					</span>
-				</div>
+			<div className="nav-sidebar-icon">
+				<span data-tip="Dashboard" data-place="right">
+					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/">
+						<FontAwesomeIcon
+							className="nav-sidebar-icon-icon"
+							icon={faTachometerAlt}
+							onClick={clickedItem}
+						/>
+					</NavLink>
+				</span>
+			</div>
 
-				<div className="nav-sidebar-icon">
-					<span data-tip="Update">
-						<NavLink activeClassName='is-active' to="/update">
-							<FontAwesomeIcon
-								className="nav-sidebar-icon-icon"
-								icon={faUpload}
-								onClick={clickedItem}
-							/>
-						</NavLink>
-					</span>
-				</div>
+			<div className="nav-sidebar-icon">
+				<span data-tip="Settings" data-place="right">
+					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/settings">
+						<FontAwesomeIcon
+							className="nav-sidebar-icon-icon"
+							icon={faTools}
+							onClick={clickedItem}
+						/>
+					</NavLink>
+				</span>
+			</div>
 
-				<div className="nav-sidebar-icon">
-					<span data-tip="Info and Help">
-						<NavLink activeClassName='is-active' to="/help">
-							<FontAwesomeIcon
-								className="nav-sidebar-icon-icon"
-								icon={faQuestionCircle}
-								onClick={clickedItem}
-							/>
-						</NavLink>
-					</span>
-				</div>
+			<div className="nav-sidebar-icon">
+				<span data-tip="Update">
+					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/update">
+						<FontAwesomeIcon
+							className="nav-sidebar-icon-icon"
+							icon={faUpload}
+							onClick={clickedItem}
+						/>
+					</NavLink>
+				</span>
+			</div>
 
-				<div className="nav-sidebar-bottom-float" />
+			<div className="nav-sidebar-icon">
+				<span data-tip="Info and Help">
+					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/help">
+						<FontAwesomeIcon
+							className="nav-sidebar-icon-icon"
+							icon={faQuestionCircle}
+							onClick={clickedItem}
+						/>
+					</NavLink>
+				</span>
+			</div>
 
-			</Router>
+			<div className="nav-sidebar-bottom-float" />
 
 		</div>
 	);

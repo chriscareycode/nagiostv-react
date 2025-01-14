@@ -24,9 +24,8 @@ import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 
 // React Router
 import {
-	HashRouter as Router,
 	NavLink,
-	useHistory
+	useNavigate,
 } from "react-router-dom";
 import './BottomPanel.css';
 
@@ -55,15 +54,13 @@ const BottomPanel = ({
 
 	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const navigateTo = (e: React.MouseEvent<HTMLElement>, pathname: string) => {
 		e.preventDefault();
 
-		history.push({
-			pathname,
-			//state: param
-		});
+		// React Router 6 navigate
+		navigate(pathname);
 
 		// Close menu
 		setTimeout(() => {
@@ -168,54 +165,53 @@ const BottomPanel = ({
 
 				<div className={isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 
-					<Router>
-						<div className="nav-sidebar-icon">
-							<span>
-								<NavLink exact={true} activeClassName='is-active' to="/" onClick={clickedDashboard}>
-									<FontAwesomeIcon
-										className="nav-sidebar-icon-icon"
-										icon={faTachometerAlt}
-									/>
-									<div className="nav-sidebar-icon-text">Dash</div>
-								</NavLink>
-							</span>
-						</div>
+					<div className="nav-sidebar-icon">
+						<span>
+							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/" onClick={clickedDashboard}>
+								<FontAwesomeIcon
+									className="nav-sidebar-icon-icon"
+									icon={faTachometerAlt}
+								/>
+								<div className="nav-sidebar-icon-text">Dash</div>
+							</NavLink>
+						</span>
+					</div>
 
-						<div className="nav-sidebar-icon" >
-							<span>
-								<NavLink activeClassName='is-active' to="/settings" onClick={clickedSettings}>
-									<FontAwesomeIcon
-										className="nav-sidebar-icon-icon"
-										icon={faTools}
-									/>
-									<div className="nav-sidebar-icon-text">Settings</div>
-								</NavLink>
-							</span>
-						</div>
+					<div className="nav-sidebar-icon" >
+						<span>
+							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/settings" onClick={clickedSettings}>
+								<FontAwesomeIcon
+									className="nav-sidebar-icon-icon"
+									icon={faTools}
+								/>
+								<div className="nav-sidebar-icon-text">Settings</div>
+							</NavLink>
+						</span>
+					</div>
 
-						<div className="nav-sidebar-icon">
-							<span>
-								<NavLink activeClassName='is-active' className={isUpdateAvailable ? 'update-available-button' : ''} to="/update" onClick={clickedUpdate}>
-									<FontAwesomeIcon
-										className="nav-sidebar-icon-icon"
-										icon={faUpload}
-									/>
-									<div className="nav-sidebar-icon-text">Update</div>
-								</NavLink>
-							</span>
-						</div>
+					<div className="nav-sidebar-icon">
+						<span>
+							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/update" onClick={clickedUpdate}>
+								<FontAwesomeIcon
+									className="nav-sidebar-icon-icon"
+									icon={faUpload}
+								/>
+								<div className="nav-sidebar-icon-text">Update</div>
+							</NavLink>
+						</span>
+					</div>
 
-						<div className="nav-sidebar-icon">
-							<span>
-								<NavLink activeClassName='is-active' to="/help" onClick={clickedInfo}>
-									<FontAwesomeIcon
-										className="nav-sidebar-icon-icon"
-										icon={faQuestionCircle}
-									/>
-									<div className="nav-sidebar-icon-text">Info</div>
-								</NavLink>
-							</span>
-						</div>
+					<div className="nav-sidebar-icon">
+						<span>
+							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/help" onClick={clickedInfo}>
+								<FontAwesomeIcon
+									className="nav-sidebar-icon-icon"
+									icon={faQuestionCircle}
+								/>
+								<div className="nav-sidebar-icon-text">Info</div>
+							</NavLink>
+						</span>
+					</div>
 
 						{/*
           <div className="nav-sidebar-icon-spacer"></div>
@@ -235,7 +231,7 @@ const BottomPanel = ({
           </div>
           */}
 
-					</Router>
+
 
 				</div>
 

@@ -32,8 +32,8 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import {
 	HashRouter as Router,
-	Switch,
 	Route,
+	Routes,
 } from "react-router-dom";
 // Import Various
 import SettingsLoad from './SettingsLoad';
@@ -46,9 +46,6 @@ import LeftPanel from './panels/LeftPanel';
 import BottomPanel from './panels/BottomPanel';
 import ScrollToTop from './widgets/ScrollToTop';
 import ScrollToSection from './widgets/ScrollToSection';
-// 3rd party
-
-import { PageTransition } from "@steveeeie/react-page-transition";
 
 // Import Polyfills
 import 'url-search-params-polyfill';
@@ -83,13 +80,51 @@ const Base = () => {
 	 ***************************************************************************/
 	//console.log('Base render()');
 
-	// const {
-	//   preset,
-	//   enterAnimation,
-	//   exitAnimation
-	// } = useContext(AppContext);
+	//=============================================================================
+	// Routes
+	//=============================================================================
+	
+	const settingsRoute = (
+		<div className="vertical-scroll">
+			<Settings />
+		</div>
+	);
 
-	//console.log('Base preset', preset);
+	const updateRoute = (
+		<div className="vertical-scroll">
+			<Update
+				//updateRootState={this.updateRootState}
+				currentVersion={bigState.currentVersion}
+				currentVersionString={bigState.currentVersionString}
+			/>
+		</div>
+	);
+
+	const helpRoute = (
+		<div className="vertical-scroll">
+			<Help />
+		</div>
+	);
+
+	const rootRoute = (
+		<div className="vertical-scroll vertical-scroll-dash">
+			{/* The main NagiosTV Dashboard */}
+			<Dashboard />
+
+			{/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
+			{automaticScroll === false && <ScrollToTop />}
+
+			{(isDoneLoading && automaticScroll) && (
+				<ScrollToSection
+					clientSettings={clientSettings}
+				/>
+			)}
+		</div>
+	);
+
+	//=============================================================================
+	// mainContent
+	//=============================================================================
 
 	const mainContent = (
 		<>
@@ -103,65 +138,12 @@ const Base = () => {
 					</div>
 				)}
 
-				<Route
-					render={({ location }) => {
-						let animation = 'moveToBottomScaleUp';
-						const enterAnimation = '';
-						const exitAnimation = '';
-
-						return (
-							<PageTransition
-								preset={animation}
-								transitionKey={location.pathname}
-								enterAnimation={enterAnimation}
-								exitAnimation={exitAnimation}
-							>
-								<Switch location={location}>
-
-									<Route path="/settings">
-										<div className="vertical-scroll">
-											<Settings />
-										</div>
-									</Route>
-
-									<Route path="/update">
-										<div className="vertical-scroll">
-											<Update
-												//updateRootState={this.updateRootState}
-												currentVersion={bigState.currentVersion}
-												currentVersionString={bigState.currentVersionString}
-											/>
-										</div>
-									</Route>
-
-									<Route path="/help">
-										<div className="vertical-scroll">
-											<Help />
-										</div>
-									</Route>
-
-									<Route exact path="/">
-										<div className="vertical-scroll vertical-scroll-dash">
-
-											{/* The main NagiosTV Dashboard */}
-											<Dashboard />
-
-											{/* This ScrollToTop really needs a debounce. Discovered it fires every pixel which creates a ton of work when using automatic scroll feature */}
-											{automaticScroll === false && <ScrollToTop />}
-
-											{(isDoneLoading && automaticScroll) && (
-												<ScrollToSection
-													clientSettings={clientSettings}
-												/>
-											)}
-										</div>
-									</Route>
-
-								</Switch>
-							</PageTransition>
-						);
-					}}
-				/>
+				<Routes>
+					<Route path="/settings" element={settingsRoute} />
+					<Route path="/update" element={updateRoute} />
+					<Route path="/help" element={helpRoute} />
+					<Route path="/" element={rootRoute} />
+				</Routes>
 
 			</div> {/* endwrapper around the main content */}
 		</>
