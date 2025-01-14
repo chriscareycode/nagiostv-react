@@ -169,26 +169,12 @@ input[type=text] {
 	font-size: 1.5em;
 	border-radius: 5px;
 	overflow: hidden;
-	max-height: 0px;
-	opacity: 0;
-	transition: max-height 250ms ease-in, opacity 250ms ease-in;
-	transition-delay: 0ms;
 }
 
 /* this creates the padding */
 .all-ok-item>div {
 	margin: 8px;
 	margin-left: 10px;
-}
-
-.all-ok-item.hidden {
-	opacity: 0;
-}
-
-.all-ok-item.visible {
-	max-height: 120px;
-	opacity: 1;
-	transition-delay: 250ms;
 }
 
 /* these some-down-items live inside HostItems and ServiceItems */

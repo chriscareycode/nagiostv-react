@@ -40,7 +40,7 @@ NagiosTV is a JavaScript single page application.
 - The frontend is using the React JavaScript framework
 - Vite build system
 - jotai for state management
-- react-transition-group for item animations
+- motion.dev for item animations
 - @steveeeie/react-page-transition for the page transitions
 - highcharts for the graphs
 

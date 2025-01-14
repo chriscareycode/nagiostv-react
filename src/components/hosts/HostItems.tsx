@@ -26,7 +26,6 @@ import {
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
 import { translate } from '../../helpers/language';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import HostItem from './HostItem';
 
 // icons
@@ -39,6 +38,9 @@ import { useRef } from 'react';
 import { Host } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 
+import { AnimatePresence } from "motion/react";
+import * as motion from "motion/react-client";
+
 interface HostItemsProps {
 	hostProblemsArray: Host[];
 	settings: ClientSettings;
@@ -50,9 +52,6 @@ const HostItems = ({
 	settings,
 	isDemoMode,
 }: HostItemsProps) => {
-
-	// For react-transition-group
-	// const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -112,9 +111,16 @@ const HostItems = ({
 	return (
 		<div className="HostItems ServiceItems">
 
-			<div className={`all-ok-item ${hostProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-				<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
-			</div>
+			<AnimatePresence initial={false}>
+				{hostProblemsArray.length === 0 && <motion.div
+					className={`all-ok-item`}
+					initial={{ opacity: 0, height: 0 }}
+					animate={{ opacity: 1, height: 'auto' }}
+					exit={{ opacity: 0, height: 0 }}
+				>
+					<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
+				</motion.div>}
+			</AnimatePresence>
 
 			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
 				<div>
@@ -123,31 +129,34 @@ const HostItems = ({
 				</div>
 			</div>
 
-			<TransitionGroup className="host-items-wrap">
-				{filteredHostProblemsArray.map((e, i) => {
-					//console.log('HostItem item');
-					//console.log(e, i);
+			<div className="host-items-wrap">
+				<AnimatePresence initial={false}>
+					{filteredHostProblemsArray.map((e, i) => {
+						//console.log('HostItem item');
+						//console.log(e, i);
 
-					return (
-						<CSSTransition
-							key={`host-${e.name}`}
-							classNames="example"
-							timeout={{ enter: 500, exit: 500 }}
-							unmountOnExit
-							// nodeRef={nodeRef}
-						>
-							<HostItem
-								settings={settings}
-								hostItem={e}
-								comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
-								howManyDown={filteredHostProblemsArray.length}
-								isDemoMode={isDemoMode}
-							/>
-						</CSSTransition>
-					);
+						return (
+							<motion.div
+								initial={{ opacity: 0, height: 0 }}
+								animate={{ opacity: 1, height: 'auto' }}
+								exit={{ opacity: 0, height: 0 }}
+								// style={box}
+								key={`host-${e.name}`}
+								className="HostItem"
+							>
+								<HostItem
+									settings={settings}
+									hostItem={e}
+									comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
+									howManyDown={filteredHostProblemsArray.length}
+									isDemoMode={isDemoMode}
+								/>
+							</motion.div>
+						);
 
-				})}
-			</TransitionGroup>
+					})}
+				</AnimatePresence>
+			</div>
 		</div>
 	);
 

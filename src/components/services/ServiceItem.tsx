@@ -126,7 +126,7 @@ class ServiceItem extends Component<ServiceItemProps> {
 
 		return (
 
-			<div className={`ServiceItem`} onClick={this.mouseClick}>
+			<div className={`ServiceItem2`} onClick={this.mouseClick}>
 				<div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
 					<div style={{ float: 'right', textAlign: 'right' }}>
 						{/* soft */}

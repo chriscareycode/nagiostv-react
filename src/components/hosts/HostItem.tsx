@@ -121,7 +121,7 @@ class HostItem extends Component<HostItemProps> {
 		const maxNumberToHideProgress = 40;
 
 		return (
-			<div className={`HostItem`} onClick={this.mouseClick}>
+			<div className={`HostItem2`} onClick={this.mouseClick}>
 				<div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
 					<div style={{ float: 'right', textAlign: 'right' }}>
 						{/* soft spinner */}

@@ -29,7 +29,6 @@ import {
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
 import { translate } from '../../helpers/language';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import ServiceItem from './ServiceItem';
 
 // icons
@@ -42,6 +41,9 @@ import { ClientSettings } from 'types/settings';
 
 // CSS
 import './ServiceItems.css';
+
+import { AnimatePresence } from "motion/react";
+import * as motion from "motion/react-client";
 
 interface ServiceItemsProps {
 	serviceProblemsArray: Service[];
@@ -57,9 +59,6 @@ const ServiceItems = ({
 	//howManyServices,
 	//commentlist
 }: ServiceItemsProps) => {
-
-	// For react-transition-group
-	// const nodeRef = useRef(null);
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -121,9 +120,16 @@ const ServiceItems = ({
 	return (
 		<div className="ServiceItems">
 
-			<div className={`all-ok-item ${serviceProblemsArray.length === 0 ? 'visible' : 'hidden'}`}>
-				<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
-			</div>
+			<AnimatePresence initial={false}>
+				{serviceProblemsArray.length === 0 && <motion.div
+					className={`all-ok-item`}
+					initial={{ opacity: 0, height: 0 }}
+					animate={{ opacity: 1, height: 'auto' }}
+					exit={{ opacity: 0, height: 0 }}
+				>
+					<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
+				</motion.div>}
+			</AnimatePresence>
 
 			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
 				<div>
@@ -132,30 +138,33 @@ const ServiceItems = ({
 				</div>
 			</div>
 
-			<TransitionGroup className="service-items-wrap">
+			<div className="service-items-wrap">
+				<AnimatePresence initial={false}>
+					{filteredServiceProblemsArray.map((e, i) => {
+						//console.log('ServiceItem item');
+						//console.log(e, i);
 
-				{filteredServiceProblemsArray.map((e, i) => {
-					//console.log('ServiceItem item');
-					//console.log(e, i);
-
-					return (
-						<CSSTransition
-							key={e.host_name + '-' + e.description}
-							classNames="example"
-							timeout={{ enter: 500, exit: 500 }}
-							// nodeRef={nodeRef}
-						>
-							<ServiceItem
-								settings={settings}
-								serviceItem={e}
-								comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
-								howManyDown={filteredServiceProblemsArray.length}
-								isDemoMode={isDemoMode}
-							/>
-						</CSSTransition>
-					);
-				})}
-			</TransitionGroup>
+						return (
+							<motion.div
+								initial={{ opacity: 0, height: 0 }}
+								animate={{ opacity: 1, height: 'auto' }}
+								exit={{ opacity: 0, height: 0 }}
+								// style={box}
+								key={e.host_name + '-' + e.description}
+								className="ServiceItem"
+							>
+								<ServiceItem
+									settings={settings}
+									serviceItem={e}
+									comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
+									howManyDown={filteredServiceProblemsArray.length}
+									isDemoMode={isDemoMode}
+								/>
+							</motion.div>
+						);
+					})}
+				</AnimatePresence>
+			</div>
 		</div>
 	);
 }
