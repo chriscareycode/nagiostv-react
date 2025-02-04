@@ -21,7 +21,7 @@
     "vite-plugin-pwa": "^0.21.1",
     "vite-plugin-svgr": "^4.3.0",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.1"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
