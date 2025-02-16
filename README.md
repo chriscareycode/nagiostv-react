@@ -151,5 +151,5 @@ Check out README-development.md for instructions to build and run in development
 Created by
 ------------
 NagiosTV by Chris Carey https://nagiostv.com
-Copyright (C) 2008-2024 Chris Carey https://chriscarey.com
+Copyright (C) 2008-2025 Chris Carey https://chriscarey.com
 
