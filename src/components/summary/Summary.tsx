@@ -135,16 +135,16 @@ export default function Summary() {
 					{/* these are floating right */}
 
 	  				{/* Nagios Version */}
-					<div className="summary-box summary-box-text">
-						<div className="margin-top-5 font-size-0-6">Nagios</div>
+					{/* <div className="summary-box">
+						<div className="margin-top-5 font-size-0-8">Nagios</div>
 						<div className="margin-top-5 color-peach font-size-0-8">v{programVersion}</div>
-					</div>
+					</div> */}
 
 	  				{/* Uptime */}
-					<div className="summary-box summary-box-text">
-						<div className="margin-top-5 font-size-0-6">Uptime</div>
+					{/* <div className="summary-box">
+						<div className="margin-top-5 font-size-0-8">Uptime</div>
 						<div className="margin-top-5 color-peach font-size-0-8">{formatDateTimeAgo(programStart)}</div>
-					</div>
+					</div> */}
 
 					{/* Quiet For */}
 					<div className="summary-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
@@ -159,7 +159,7 @@ export default function Summary() {
 					</div> */}
 
 					{/* Doomguy */}
-					{clientSettings.doomguyEnabled && <div className="summary-box float-right overflow-hidden">
+					{clientSettings.doomguyEnabled && <div className="summary-box float-right">
 						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
 							<Doomguy scaleCss={'1'} />
 						</div>

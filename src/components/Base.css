@@ -259,3 +259,7 @@ button {
 .settings-not-loaded {
 	margin: 10px;
 }
+
+.plugin-output {
+	font-size: 1.0em;
+}

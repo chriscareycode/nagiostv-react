@@ -1,9 +1,9 @@
 .summary .doomguy-wrap {
 	position: relative;
-    top: 3px;
-		right: 0px;
-    width: 48px;
-    height: 64px;
+	top: 3px;
+	right: 0px;
+	width: 48px;
+	height: 64px;
 }
 .TopPanel .doomguy-wrap {
 	display: inline-block;
@@ -16,16 +16,11 @@
 	position: absolute;
 	top: 5px;
 	right: 0px;
-
-
-	/*background-image: url('/doomguy/doomguy.png');*/
 	height: 64px;
 	width: 48px;
-
 	/*transform: scale(1);*/
 	transform-origin: 100% 0%;
 	cursor: pointer;
-	/*transition: transform 500ms linear;*/
 }
 
 .doomguy1 {

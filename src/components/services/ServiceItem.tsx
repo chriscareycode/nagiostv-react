@@ -157,12 +157,12 @@ class ServiceItem extends Component<ServiceItemProps> {
 						</div>}
 					</div>
 
-					<div>
+					<div className="service-item-left-first-line">
 						<div className="service-item-host-name">{e.host_name}</div>
 
 						<span className={serviceTextClass(e.status)}>
 							<span className="service-item-description">{e.description}</span>
-							{e.plugin_output}
+							<span className="plugin-output">{e.plugin_output}</span>
 						</span>
 					</div>
 

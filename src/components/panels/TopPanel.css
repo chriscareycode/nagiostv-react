@@ -31,6 +31,7 @@
 	margin-right: 10px;
 	display: inline-block;
 	color: #ddd;
+	-webkit-user-select: none;
 	user-select: none;
 }
 

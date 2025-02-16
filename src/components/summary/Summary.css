@@ -50,7 +50,7 @@
 	border-radius: 10px;
 	text-align: center;
 	padding: 5px 5px 5px 5px;
-	margin-left: 1px;
+	margin-left: 5px;
 	margin-top: 1px;
 	margin-bottom: 5px;
 	font-size: 0.8em;
@@ -85,10 +85,10 @@
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
-	.summary-box.float-right {
+	/* .summary-box.float-right {
 		display: none;
-	}
-	.summary-box.summary-box-text {
+	} */
+	/* .summary-box.summary-box-text {
 		display: none;
-	}
+	} */
 }

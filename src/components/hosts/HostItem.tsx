@@ -156,7 +156,7 @@ class HostItem extends Component<HostItemProps> {
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 
 						<span className={hostTextClass(e.status)} style={{ marginLeft: '8px' }}>
-							{e.plugin_output}
+							<span className="plugin-output">{e.plugin_output}</span>
 						</span>
 					</div>
 

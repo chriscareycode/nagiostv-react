@@ -113,7 +113,7 @@ const AlertItem = (props: AlertItemProps) => {
 					<div className="alert-item-right-date align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
 
 				</div>
-				<span style={{ textAlign: 'left' }}>
+				<span className="alert-item-left" style={{ textAlign: 'left' }}>
 
 					<div style={{ marginTop: '2px' }}>
 						{/* host */}
@@ -123,7 +123,7 @@ const AlertItem = (props: AlertItemProps) => {
 						{' '}
 						<span className={alertTextClass(e.object_type, e.state)}>
 							{e.object_type === 2 && <span className="alert-item-description alert-item-clickable" onClick={openNagiosServicePage}>{e.description}</span>}
-							{e.plugin_output}
+							<span className="plugin-output">{e.plugin_output}</span>
 						</span>
 					</div>
 				</span>
