@@ -41,7 +41,7 @@ NagiosTV is a JavaScript single page application.
 - Vite build system
 - jotai for state management
 - motion.dev for item animations
-- @steveeeie/react-page-transition for the page transitions
+- motion.dev for the page transitions
 - highcharts for the graphs
 
 Installing NagiosTV

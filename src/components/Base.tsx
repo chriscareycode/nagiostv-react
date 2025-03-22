@@ -34,6 +34,7 @@ import {
 	HashRouter as Router,
 	Route,
 	Routes,
+	useLocation,
 } from "react-router-dom";
 // Import Various
 import SettingsLoad from './SettingsLoad';
@@ -57,8 +58,25 @@ import './animation.css';
 import MiniMapWrap from './widgets/MiniMapWrap';
 import SettingsFakeData from './SettingsFakeData';
 import { BigState, ClientSettings } from 'types/settings';
+import { AnimatePresence, motion } from 'motion/react';
+import { ReactNode } from 'react';
 
-const Base = () => {
+const pageVariants = {
+	initial: { opacity: 0, x: 0 },
+	animate: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+	exit: { opacity: 0, x: 0, transition: { duration: 0.3 } }
+};
+
+// Wrapper for page transitions
+
+
+const PageWrapper = ({ children }: { children: ReactNode }) => (
+	<motion.div variants={pageVariants} initial="initial" animate="animate" exit="exit">
+	  {children}
+	</motion.div>
+);
+
+const AnimatedRoutes = () => {
 
 	//lets move as much state as possible up and out of this component
 	const bigState = useAtomValue<BigState>(bigStateAtom);
@@ -126,6 +144,8 @@ const Base = () => {
 	// mainContent
 	//=============================================================================
 
+	const location = useLocation();
+
 	const mainContent = (
 		<>
 			{/* wrapper around the main content */}
@@ -138,17 +158,55 @@ const Base = () => {
 					</div>
 				)}
 
-				<Routes>
-					<Route path="/settings" element={settingsRoute} />
-					<Route path="/update" element={updateRoute} />
-					<Route path="/help" element={helpRoute} />
-					<Route path="/" element={rootRoute} />
-				</Routes>
+				<AnimatePresence mode="wait">
+					<Routes location={location} key={location.pathname}>
+						<Route path="/settings" element={<PageWrapper>{settingsRoute}</PageWrapper>} />
+						<Route path="/update" element={<PageWrapper>{updateRoute}</PageWrapper>} />
+						<Route path="/help" element={<PageWrapper>{helpRoute}</PageWrapper>} />
+						<Route path="/" element={<PageWrapper>{rootRoute}</PageWrapper>} />
+					</Routes>
+				</AnimatePresence>
 
 			</div> {/* endwrapper around the main content */}
 		</>
 	);
 
+	return (
+		<>
+			<TopPanel />
+
+			<LeftPanel
+				isLeftPanelOpen={bigState.isLeftPanelOpen}
+			/>
+
+			<BottomPanel
+				settingsObject={clientSettings}
+				currentVersion={bigState.currentVersion}
+				currentVersionString={bigState.currentVersionString}
+				latestVersion={bigState.latestVersion}
+				latestVersionString={bigState.latestVersionString}
+			/>
+
+			{/*  Spacer to counteract the floating TopPanel header */}
+			<div className="top-panel-height" />
+
+			{/* minimap enabled, mainContent gets wrapped */}
+			{clientSettings.showMiniMap && (
+			<MiniMapWrap>
+				{mainContent}
+			</MiniMapWrap>
+			)}
+
+			{/* minimap disabled */}
+			{!clientSettings.showMiniMap && (<>
+				<div className="spacer-top" />
+				{mainContent}
+			</>)}
+		</>
+	);
+};
+
+const Base = () => {
 	return (
 		<div id="Base" data-testid="Base" className="Base">
 
@@ -156,41 +214,10 @@ const Base = () => {
 			<SettingsFakeData />
 
 			<Router>
-
-				<TopPanel />
-
-				<LeftPanel
-					isLeftPanelOpen={bigState.isLeftPanelOpen}
-				/>
-
-				<BottomPanel
-					settingsObject={clientSettings}
-					currentVersion={bigState.currentVersion}
-					currentVersionString={bigState.currentVersionString}
-					latestVersion={bigState.latestVersion}
-					latestVersionString={bigState.latestVersionString}
-				/>
-
-				{/*  Spacer to counteract the floating TopPanel header */}
-				<div className="top-panel-height" />
-
-				{/* minimap enabled, mainContent gets wrapped */}
-				{clientSettings.showMiniMap && (
-				<MiniMapWrap>
-					{mainContent}
-				</MiniMapWrap>
-				)}
-
-				{/* minimap disabled */}
-				{!clientSettings.showMiniMap && (<>
-					<div className="spacer-top" />
-					{mainContent}
-				</>)}
-
+				<AnimatedRoutes />
 			</Router>
 		</div>
 	);
-
 };
 
 export default Base;
