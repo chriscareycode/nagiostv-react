@@ -131,6 +131,8 @@ I have done a writeup on how to bypass authentication over on the NagiosTV.com w
 
 History
 ------------
+This project is the latest in many rewrites of NagiosTV over the years using different tech stacks. This version uses React, and TypeScript, and connecting to Nagios with the Nagios CGI APIs. Later, MK Livestatus API connector was added as an alternative to the Nagios CGIs APIs.
+
 NagiosTV was started around 2008. Originally it was called ajax-monitor-for-nagios. Over the years I have continued to run it at home to monitor my own network.
 
 Originally it was written in PHP for Nagios 3 and used the ndoutils package to get status. ndoutils would write the statuses into a MySQL database, and the UI would read the statuses from the database.
@@ -141,8 +143,6 @@ Later I released vanilla JavaScript and Ember.js versions which used "MK livesta
 In 2014 with the release of Nagios Core 4.0.7, we got [new JSON CGI's built-in](https://labs.nagios.com/2014/06/19/exploring-the-new-json-cgis-in-nagios-core-4-0-7-part-1/). This allows NagiosTV (and other third-party apps) to read status data from Nagios with no external dependencies. 
 
 In 2018, with the increased popularity of the React JavaScript ecosystem, I started this new project to replace the previous version written in Ember.js.
-
-This project is the latest in many rewrites of NagiosTV over the years using different tech stacks. This one uses React, and TypeScript, and connecting to Nagios with the Nagios CGIs. More recently, MK Livestatus connector was added.
 
 Development
 -------------
