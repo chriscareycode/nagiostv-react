@@ -21,20 +21,10 @@ export default defineConfig({
     },
   },
 	plugins: [
-		{
-      name: 'treat-js-files-as-jsx',
-      async transform(code, id) {
-        if (!id.match(/src\/.*\.js$/))  return null
-
-        // Use the exposed transform from vite, instead of directly
-        // transforming with esbuild
-        return transformWithEsbuild(code, id, {
-          loader: 'jsx',
-          jsx: 'automatic',
-        })
-      },
-		},
-		react(), 
+		react({
+			// Enable JSX in .js files
+			include: /\.(jsx|js|tsx|ts)$/,
+		}), 
 		viteTsconfigPaths(),
 		svgr({
 			include: '**/*.svg?react',
@@ -61,7 +51,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
-		setupFiles: './src/setupTests.ts',
+		setupFiles: ['./src/setupTests.ts'],
 		coverage: {
 		  reporter: ['text', 'html'],
 		  exclude: [
