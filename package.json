@@ -28,7 +28,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "allotment": "^1.20.2",
-    "axios": "^0.29.0",
+    "axios": "^1.8.2",
     "clipboard-polyfill": "^3.0.3",
     "highcharts": "^10.3.3",
     "highcharts-react-official": "^3.2.1",
