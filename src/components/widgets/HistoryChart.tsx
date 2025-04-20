@@ -131,22 +131,26 @@ const HistoryChart = ({
 				{
 					type: 'column',
 					name: 'UP/OK',
-					color: 'lime'
+					color: 'lime',
+					pointPlacement: 'on',
 				},
 				{
 					type: 'column',
 					name: 'WARNING',
-					color: 'yellow'
+					color: 'yellow',
+					pointPlacement: 'on',
 				},
 				{
 					type: 'column',
 					name: 'UNKNOWN',
-					color: 'orange'
+					color: 'orange',
+					pointPlacement: 'on',
 				},
 				{
 					type: 'column',
 					name: 'CRITICAL',
-					color: '#FD7272'
+					color: '#FD7272',
+					pointPlacement: 'on',
 				}
 			]
 		};
