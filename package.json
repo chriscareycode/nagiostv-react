@@ -30,7 +30,7 @@
     "allotment": "^1.20.3",
     "axios": "^1.8.4",
     "clipboard-polyfill": "^3.0.3",
-    "highcharts": "^10.3.3",
+    "highcharts": "^12.2.0",
     "highcharts-react-official": "^3.2.1",
     "html2canvas": "^1.4.1",
     "jotai": "^2.12.2",

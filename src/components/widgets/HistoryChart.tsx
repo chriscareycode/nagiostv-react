@@ -79,7 +79,7 @@ const HistoryChart = ({
 			chart: {
 				backgroundColor: 'transparent',
 				height: '170px',
-				type: 'column'
+				type: 'column',
 			},
 
 			time: {
@@ -94,14 +94,25 @@ const HistoryChart = ({
 			},
 
 			legend: {
-				enabled: true
+				enabled: true,
+				itemStyle: {
+					fontSize: '10px', // Reduce legend font size to match previous version
+					fontWeight: 'normal'
+				},
 			},
 
 			xAxis: {
 				type: 'datetime',
 				lineColor: '#222',
 				startOnTick: false,
-				endOnTick: false
+				endOnTick: false,
+				labels: {
+					style: {
+						fontSize: '9px',
+						color: '#666666',
+					},
+					format: groupBy === 'hour' ? '{value:%H:%M}' : undefined,
+				},
 			},
 			yAxis: {
 				title: { text: '' },
@@ -154,11 +165,11 @@ const HistoryChart = ({
 				}
 			]
 		};
-	}, []);
+	}, [groupBy]);
 
 	useEffect(() => {
 
-		const massageGroupByDataIntoHighchartsData = (groupByData: GroupByData, min: number, max: number) => {
+		const massageGroupByDataIntoHighchartsData = (groupByData: GroupByData) => {
 
 			let returnArray: HighChartsSeriesData[] = [];
 
@@ -169,11 +180,6 @@ const HistoryChart = ({
 					xNice: new Date(parseInt(group)).toString() // extra data for debugging
 				});
 			});
-
-			// Sort the array in descending order by the x value
-			// (WTF.. this causes a Highchart 15 bug but fixes the Highcharts margin bug that has been plaguing me for ages)
-			// www.highcharts.com/errors/15/ 
-			//returnArray.sort((a, b) => b.x - a.x);
 
 			// Sort the array in ascending order by the x value
 			returnArray.sort((a, b) => a.x - b.x);
@@ -200,14 +206,21 @@ const HistoryChart = ({
 			//console.log('updateSeriesFromProps() groupedOks', groupBy, groupedOks);
 
 			// WARNING
+			// Filter for only warning states
+			// 16 = WARNING
 			const alertWarnings = alertlist.filter(alert => alert.state === 16);
 			const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
 			// UNKNOWN
+			// Filter for only unknown states
+			// 64 = UNKNOWN
 			const alertUnknowns = alertlist.filter(alert => alert.state === 64);
 			const groupedUnknowns = _.groupBy(alertUnknowns, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
 			// CRITICAL
+			// Filter for only critical states
+			// 2 = CRITICAL
+			// 32 = ?
 			const alertCriticals = alertlist.filter(alert => alert.state === 2 || alert.state === 32);
 			const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
 
@@ -223,74 +236,95 @@ const HistoryChart = ({
 			//   console.log('groupedCriticals', groupedCriticals);
 			// }
 
-			var d = new Date();
-			d.setMinutes(0);
-			d.setSeconds(0);
-			d.setMilliseconds(0);
-
-			// calculate min and max for hourly chart XAxis configuration
-			const aDay = 86400 * 1000;
-			const min = d.getTime() - aDay - (15 * 60 * 1000); // 15m
-			const max = d.getTime() + (15 * 60 * 1000); // 15m
-			if (debug) {
-				console.log('min max', min, max, new Date(max));
-			}
+			
 
 			// HighCharts setData
 			// https://api.highcharts.com/class-reference/Highcharts.Series.html#setData
 
 			// OK
 			if (Object.keys(groupedOks).length > 0) {
-				let okData = massageGroupByDataIntoHighchartsData(groupedOks, min, max);
+				let okData = massageGroupByDataIntoHighchartsData(groupedOks);
 				if (debug) {
-					console.log('Setting 0 okData', groupBy, JSON.stringify(okData));
+					console.log('Setting 0 okData', groupBy, okData);
 				}
-				chart.series[0].setData(okData, true);
+				chart.series[0].setData(okData, false, false, false);
 			} else {
-				chart.series[0].setData([], true);
+				chart.series[0].setData([], false, false, false);
 			}
 
 			// WARNING
 			if (Object.keys(groupedWarnings).length > 0) {
-				let warningData = massageGroupByDataIntoHighchartsData(groupedWarnings, min, max);
+				let warningData = massageGroupByDataIntoHighchartsData(groupedWarnings);
 				if (debug) {
-					console.log('Setting 1 warningData', warningData);
+					console.log('Setting 1 warningData', groupBy, warningData);
 					console.log('chart.series', chart.series);
 				}
-				chart.series[1].setData(warningData, true);
+				chart.series[1].setData(warningData, false, false, false);
 			} else {
-				chart.series[1].setData([], true);
+				chart.series[1].setData([], false, false, false);
 			}
 
 			// UNKNOWN
 			if (Object.keys(groupedUnknowns).length > 0) {
-				let unknownData = massageGroupByDataIntoHighchartsData(groupedUnknowns, min, max);
+				let unknownData = massageGroupByDataIntoHighchartsData(groupedUnknowns);
 				if (debug) {
-					console.log('Setting 2 unknownData', JSON.stringify(unknownData));
+					console.log('Setting 2 unknownData', groupBy, unknownData);
 				}
-				chart.series[2].setData(unknownData, true);
+				chart.series[2].setData(unknownData, false, false, false);
 			} else {
-				chart.series[2].setData([], true);
+				chart.series[2].setData([], false, false, false);
 			}
 
 			// CRITICAL
 			if (Object.keys(groupedCriticals).length > 0) {
-				let criticalData = massageGroupByDataIntoHighchartsData(groupedCriticals, min, max);
+				let criticalData = massageGroupByDataIntoHighchartsData(groupedCriticals);
 				if (debug) {
-					console.log('Setting 3 criticalData', JSON.stringify(criticalData));
+					console.log('Setting 3 criticalData', groupBy, criticalData);
 				}
-				chart.series[3].setData(criticalData, true);
+				chart.series[3].setData(criticalData, false, false, false);
 			} else {
-				chart.series[3].setData([], true);
+				chart.series[3].setData([], false, false, false);
 			}
 
 			if (groupBy === 'hour' && alertHoursBack) {
+
+				// calculate min and max for hourly chart XAxis configuration
+				// If it is 10:12, this will return 10:00
+				const currentHour = new Date();
+				currentHour.setMinutes(0);
+				currentHour.setSeconds(0);
+				currentHour.setMilliseconds(0);
+
+				// Go back 24 hours from the current hour to get the same hour yesterday
+				// If currentHour is 10:00, this will return 10:00 yesterday
+				const sameHourYesterday = moment(currentHour).subtract(24, 'hours').toDate();
+				// If sameHourYesterday is 10:00 yesterday, this will return 9:30 yesterday
+				const sameHourYesterdayMinusSome = moment(sameHourYesterday).subtract(30, 'minutes').toDate();
+				// Set min to 30 minutes before the same hour yesterday (to add some spacing)
+				const min = sameHourYesterdayMinusSome.getTime();
+				;
+				// Set max to 30 minutes after the current hour: ex: 10:30
+				const max = currentHour.getTime() + 30 * 60 * 1000;
+
+				if (debug) {
+					console.log('min max', min, max);
+					console.log(new Date(min));
+					console.log(new Date(max));
+				}
+
+				// Calculate exactly 25 tick positions (one per hour)
+				const tickPositions = [];
+				for (let i = 0; i < 25; i++) {
+					tickPositions.push(sameHourYesterday.getTime() + (i * 3600 * 1000));
+				}
+
 				chart.update({
 					xAxis: {
 						type: 'datetime',
 						tickInterval: 3600 * 1000,
 						min: min,
-						max: max
+						max: max,
+						tickPositions: tickPositions,
 						// show 1 hr ago instead of time
 						// labels: {
 						//   formatter: (e) => {
@@ -362,7 +396,7 @@ const HistoryChart = ({
 		return () => {
 			clearInterval(intervalHandle);
 		};
-	}, [alertlistLastUpdate]);
+	}, [alertlistLastUpdate, alertlist, hideAlertSoft, locale, groupBy, alertHoursBack, alertDaysBack]);
 
 	useEffect(() => {
 		// Handler to call on window resize
