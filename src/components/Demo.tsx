@@ -100,8 +100,8 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through hostProblemsArray, set one to down, and set state
-		Object.keys(hostlist).some(key => {
+		// loop through hostProblemsArray backwards, set one to up, and set state
+		Object.keys(hostlist).reverse().some(key => {
 			// If status is "DOWN"
 			if (hostlist[key].status === 4) {
 				// Set status to "UP"
@@ -191,10 +191,10 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through serviceProblemsArray, set one to down, and set state
+		// loop through serviceProblemsArray backwards, set one to up, and set state
 		let done = false;
-		Object.keys(servicelist).some(hostkey => {
-			Object.keys(servicelist[hostkey]).some(key => {
+		Object.keys(servicelist).reverse().some(hostkey => {
+			Object.keys(servicelist[hostkey]).reverse().some(key => {
 				if (servicelist[hostkey][key].status === status) {
 					servicelist[hostkey][key].status = 2;
 					servicelist[hostkey][key].last_time_up = new Date().getTime();
