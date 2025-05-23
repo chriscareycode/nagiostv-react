@@ -28,7 +28,7 @@ import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../widgets/Progress';
 // Types
 import { ClientSettings } from 'types/settings';
-import { Comment, Service } from 'types/hostAndServiceTypes';
+import { Service } from 'types/hostAndServiceTypes';
 import { CommentListResponseObject } from 'types/commentTypes';
 
 interface ServiceItemProps {
@@ -47,10 +47,17 @@ class ServiceItem extends Component<ServiceItemProps> {
 	}
 
 	componentWillUnmount() {
-		if (this.props.settings.playSoundEffects) {
+		// Only play sound effects or speak if the component is unmounting due to
+		// the service being resolved (OK), not when navigating away or other cases
+		const isServiceOk = this.props.serviceItem.status === 2; // 2 is the OK status
+		
+		if (this.props.settings.playSoundEffects && isServiceOk) {
 			playSoundEffectDebounced('service', 'ok', this.props.settings);
 		}
-		if (this.props.settings.speakItems) { this.doSpeakOutro(); }
+		
+		if (this.props.settings.speakItems && isServiceOk) {
+			this.doSpeakOutro();
+		}
 	}
 
 	doSoundEffect() {

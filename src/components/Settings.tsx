@@ -342,7 +342,7 @@ const Settings = () => {
 										<option value={600}>10m</option>
 									</select>
 									&nbsp;
-									Affects server CPU. Slower interval = less CPU
+									Affects server CPU. Larger interval = less CPU
 								</td>
 							</tr>
 							<tr>
@@ -356,7 +356,7 @@ const Settings = () => {
 										<option value={600}>10m</option>
 									</select>
 									&nbsp;
-									Affects server CPU. Slower interval = less CPU
+									Affects server CPU. Larger interval = less CPU
 								</td>
 							</tr>
 							<tr>
@@ -370,7 +370,7 @@ const Settings = () => {
 										<option value={600}>10m</option>
 									</select>
 									&nbsp;
-									Affects server CPU. Slower interval = less CPU
+									Affects server CPU. Larger interval = less CPU
 								</td>
 							</tr>
 
