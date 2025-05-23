@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import $ from 'jquery';
+import React, { useEffect, useState, useRef } from 'react';
 import { ClientSettings } from 'types/settings';
 
 const debug = false;
@@ -12,10 +11,45 @@ interface ScrollToSectionProps {
 }
 
 const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
-
+	const animationFrameIdRef = useRef<number | null>(null);
 	const scrollAreaElement = document.querySelector<HTMLElement>(scrollAreaSelector);
 
+	const smoothScrollTo = (element: HTMLElement, to: number, duration: number) => {
+		if (animationFrameIdRef.current) {
+			cancelAnimationFrame(animationFrameIdRef.current);
+		}
+
+		if (duration <= 0) {
+			element.scrollTop = to;
+			animationFrameIdRef.current = null;
+			return;
+		}
+
+		const start = element.scrollTop;
+		const change = to - start;
+		const startTime = performance.now();
+
+		const animateScroll = (timestamp: number) => {
+			const currentTime = timestamp;
+			let elapsedTime = currentTime - startTime;
+			elapsedTime = Math.min(elapsedTime, duration); // Cap elapsedTime at duration
+
+			// Linear easing
+			const newScrollTop = start + change * (elapsedTime / duration);
+			element.scrollTop = newScrollTop;
+
+			if (elapsedTime < duration) {
+				animationFrameIdRef.current = requestAnimationFrame(animateScroll);
+			} else {
+				animationFrameIdRef.current = null; // Animation finished
+			}
+		};
+
+		animationFrameIdRef.current = requestAnimationFrame(animateScroll);
+	};
+
 	const scrollToNextSection = (currentSection: string, animateSpeed: number) => {
+		if (!scrollAreaElement) return;
 
 		if (debug) console.log('ScrollToSection() scrollToNextSection() moving to', currentSection, animateSpeed);
 		/**
@@ -37,44 +71,44 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 				// If we are already not at the top, then move to the top
 
-				if (scrollAreaElement && scrollAreaElement.scrollTop > 0) {
+				if (scrollAreaElement.scrollTop > 0) {
 					if (debug) console.log('ScrollToSection() scrollToNextSection() isAboveAlertScroll is visible. scrolling to top', scrollAreaElement.scrollTop);
-					$(scrollAreaSelector).animate({ scrollTop: 0 }, animateSpeed);
+					smoothScrollTo(scrollAreaElement, 0, animateSpeed);
 				}
 				return;
 			}
 		}
 
 		if (currentSection === 'top') {
-			$(scrollAreaSelector)?.animate({ scrollTop: 0 }, animateSpeed);
+			smoothScrollTo(scrollAreaElement, 0, animateSpeed);
 		}
 
 		if (currentSection === 'host') {
 			const sectionEl = document.querySelector<HTMLElement>('.HostSection');
 			//if (debug) console.log('sectionEl', sectionEl);
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
+				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'service') {
 			const sectionEl = document.querySelector<HTMLElement>('.ServiceSection');
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop }, animateSpeed);
+				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'above-alert') {
 			const sectionEl = document.querySelector<HTMLElement>('.AboveAlertScroll');
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight - 60 }, animateSpeed);
+				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop - window.innerHeight - 60, animateSpeed);
 			}
 		}
 
 		if (currentSection === 'alert') {
 			const sectionEl = document.querySelector<HTMLElement>('.AlertSection');
 			if (sectionEl) {
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - sectionBufferSubtract }, animateSpeed);
+				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop - sectionBufferSubtract, animateSpeed);
 			}
 		}
 
@@ -83,15 +117,16 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 			if (sectionEl) {
 				// When we are scrolling to the bottom, we need to subtract the height of the page from the calculation
 				// Since it's scrollTop not scrollBottom
-				$(scrollAreaSelector).animate({ scrollTop: sectionEl.offsetTop - window.innerHeight + topBuffer }, animateSpeed);
+				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop - window.innerHeight + topBuffer, animateSpeed);
 			}
 		}
 	};
 
 	const stopAllAnimation = () => {
 		if (debug) console.log('ScrollToSection() stopAllAnimation');
-		if (scrollAreaElement) {
-			$(scrollAreaSelector).stop(true);
+		if (animationFrameIdRef.current) {
+			cancelAnimationFrame(animationFrameIdRef.current);
+			animationFrameIdRef.current = null;
 		}
 	};
 
