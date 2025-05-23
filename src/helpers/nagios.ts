@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function nagiosHostStatus(status) {
+export function nagiosHostStatus(status: number) {
 	switch (status) {
 		case 1:
 			return 'pending';
@@ -34,7 +34,7 @@ export function nagiosHostStatus(status) {
 	return 'Unknown host status ' + status;
 }
 
-export function nagiosStateType(state_type) {
+export function nagiosStateType(state_type: number) {
 	switch (state_type) {
 		case 0:
 			return 'soft';
@@ -46,7 +46,7 @@ export function nagiosStateType(state_type) {
 	return 'Unknown state_type ' + state_type;
 }
 
-export function nagiosServiceStatus(status) {
+export function nagiosServiceStatus(status: number) {
 	switch (status) {
 		case 1:
 			return 'pending';
@@ -64,7 +64,7 @@ export function nagiosServiceStatus(status) {
 	return 'Unknown service status ' + status;
 }
 
-export function nagiosAlertState(state) {
+export function nagiosAlertState(state: number) {
 	switch (state) {
 		case 1:
 			return 'host up';
@@ -81,12 +81,12 @@ export function nagiosAlertState(state) {
 		case 64:
 			return 'service unknown';
 		default:
-			return 'Unknown state ' + state;
+			return 'Unknown alert state ' + state;
 	}
 	return 'Unknown alert state ' + state;
 }
 
-export function nagiosAlertStateType(state_type) {
+export function nagiosAlertStateType(state_type: number) {
 	switch (state_type) {
 		case 1:
 			return 'hard';

@@ -111,14 +111,20 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 		// Detect which sections we have
 		const sections: string[] = [];
+
 		// stop at top
 		sections.push('top');
-		// stop at host
+
+		// stop at host (disabled)
 		//if (clientSettings.hideHostSection === false) { sections.push('host'); }
-		// stop above service
+		
+		// stop above service (disabled)
 		//if (clientSettings.hideServiceSection === false) { sections.push('service'); }
-		// stop below host and service
+
+		// stop below host and service.
+		// this is above the charts as well, as they are part of the alerts section
 		if (clientSettings.hideServiceSection === false) { sections.push('above-alert'); }
+
 		// stop at the top of alert
 		if (clientSettings.hideHistory === false) { sections.push('alert'); }
 		
@@ -130,7 +136,8 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		// if (clientSettings.hideHistory) {
 		// 	sections.push('bottom');
 		// }
-		//console.log('ScrollToSection useEffect() Got sections', sections);
+
+		if (debug) { console.log('ScrollToSection useEffect() Got sections', sections); }
 
 		let myCurrentSection = sections[currentIndex]; // start with the first section we have
 		if (debug) console.log('ScrollToSection() myCurrentSection', myCurrentSection);
@@ -146,6 +153,11 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		if (serviceItemsWrapEl) {
 			howManyServiceDown = serviceItemsWrapEl.childNodes.length;
 		}
+
+		// If there are 0 hosts and 0 services down, then we should just scroll to the top.
+		// This happens naturally with how the code is written at this time.
+		// If this condition is true, we don't want to simply exit the routine here,
+		// since we may encounter this condition when the page is currently scrolled down.
 
 		if (debug) console.log('ScrollToSection() how many', howManyHostDown, howManyServiceDown);
 
@@ -171,14 +183,17 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
 		}
 		if (animateSpeed <= defaultAnimateSpeed) {
-			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
+			// fallback and safety net to 1s if we have a value too small
+			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier;
 		} else {
 			// add a multiplier to change the overall speed
 			animateSpeed = animateSpeed * clientSettings.automaticScrollTimeMultiplier;
 		}
 
+		// fallback and safety net to 1s if we have a value too small
+		// this will happen a lot since if there are 0 hosts down and 0 series down, then the animateSpeed will be 0
 		if (animateSpeed <= 0) {
-			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier; // fallback and safety net to 1s if we have a value too small
+			animateSpeed = defaultAnimateSpeed * clientSettings.automaticScrollTimeMultiplier;
 		}
 
 		// scroll to the next section		
