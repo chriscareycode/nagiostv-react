@@ -180,7 +180,6 @@ const AnimatedRoutes = () => {
 			/>
 
 			<BottomPanel
-				settingsObject={clientSettings}
 				currentVersion={bigState.currentVersion}
 				currentVersionString={bigState.currentVersionString}
 				latestVersion={bigState.latestVersion}

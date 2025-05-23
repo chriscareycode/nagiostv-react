@@ -19,7 +19,7 @@
 import { memo, useEffect, useState } from 'react';
 
 // State Management
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 
 // React Router
@@ -33,9 +33,9 @@ import './BottomPanel.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from '../../types/settings';
+import { clientSettingsAtom } from 'atoms/settingsState';
 
 interface BottomPanelProps {
-	settingsObject: ClientSettings;
 	latestVersion: number;
 	latestVersionString: string;
 	currentVersion: number;
@@ -43,13 +43,14 @@ interface BottomPanelProps {
 }
 
 const BottomPanel = ({
-	settingsObject,
 	latestVersion,
 	latestVersionString,
 	currentVersion,
 	currentVersionString,
 }: BottomPanelProps) => {
 
+	const clientSettings = useAtomValue<ClientSettings>(clientSettingsAtom);
+	
 	const [isVisible, setIsVisible] = useState(false);
 
 	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
@@ -140,9 +141,9 @@ const BottomPanel = ({
 		<>
 			<div className="BottomPanel">
 
-				{settingsObject.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
+				{clientSettings.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
 
-				{settingsObject.hideBottomMenu === false && <div className="bottom-panel-area">
+				{clientSettings.hideBottomMenu === false && <div className="bottom-panel-area">
 					<div className="bottom-panel-area-text">
 						{/* current version */}
 						<span
