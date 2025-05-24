@@ -17,7 +17,7 @@
  */
 
 import { translate } from '../../helpers/language';
-import { momentFormatDateTime } from '../../helpers/moment';
+import { formatDateTimeLocale } from '../../helpers/dates';
 import { ifQuietFor } from '../../helpers/date-math';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios';
@@ -110,7 +110,7 @@ const AlertItem = (props: AlertItemProps) => {
 					{/* {1 === 2 && <span>({e.object_type})</span>} */}
 					<span className={`uppercase ${alertTextClass(e.object_type, e.state)}`}>{translate(nagiosAlertState(e.state), language)}{' '}</span>
 
-					<div className="alert-item-right-date align-right">{momentFormatDateTime(e.timestamp, locale, dateFormat)}</div>
+					<div className="alert-item-right-date align-right">{formatDateTimeLocale(e.timestamp, locale, dateFormat)}</div>
 
 				</div>
 				<span className="alert-item-left" style={{ textAlign: 'left' }}>

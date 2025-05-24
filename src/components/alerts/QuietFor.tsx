@@ -18,7 +18,6 @@
 
 import { Component } from 'react';
 import { translate } from '../../helpers/language';
-import moment from 'moment';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
@@ -89,8 +88,8 @@ class QuietFor extends Component<QuietForProps> {
 
 		const date_future = this.props.prevtime;
 		const date_now = this.props.nowtime;
-		const duration = moment.duration(date_future - date_now);
-		const hours = Math.abs(Math.floor(duration.asHours()));
+		const durationMs = Math.abs(date_future - date_now);
+		const hours = Math.floor(durationMs / (1000 * 60 * 60));
 
 		let icon = '';
 		let color = 'color-white';

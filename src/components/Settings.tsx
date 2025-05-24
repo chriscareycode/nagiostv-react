@@ -27,7 +27,7 @@ import './Settings.css';
 
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
-import { listLocales } from '../helpers/moment';
+import { listLocales } from '../helpers/dates';
 import { languages } from '../helpers/language';
 // clipboard
 import * as clipboard from "clipboard-polyfill/text";
@@ -417,7 +417,7 @@ const Settings = () => {
 								<th>Date Format:</th>
 								<td>
 									<input type="text" value={clientSettingsTemp.dateFormat} onChange={handleChange('dateFormat', 'string')} />
-									<div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a> under "Localized formats"</div>
+									<div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://github.com/moment/luxon/blob/master/docs/formatting.md">https://github.com/moment/luxon/blob/master/docs/formatting.md</a> under "Localized formats"</div>
 								</td>
 							</tr>
 						</tbody>

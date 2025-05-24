@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { momentFormatDateTime } from '../../helpers/moment';
+import { formatDateTimeLocale } from '../../helpers/dates';
 import './Clock.css';
 
 // icons
@@ -39,9 +39,9 @@ const Clock = ({
 			const timer = setInterval(() => {
 				if (dateRef && dateRef.current) {
 					dateRef.current.innerHTML =
-						momentFormatDateTime('now', locale, clockDateFormat) +
+						formatDateTimeLocale('now', locale, clockDateFormat) +
 						'&nbsp;' +
-						momentFormatDateTime('now', locale, clockTimeFormat);
+						formatDateTimeLocale('now', locale, clockTimeFormat);
 				}
 			}, 1000);
 

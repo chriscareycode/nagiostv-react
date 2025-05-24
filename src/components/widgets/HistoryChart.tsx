@@ -21,7 +21,7 @@ import './HistoryChart.css';
 import Highcharts, { PlotOptions } from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import _ from 'lodash';
-import moment from 'moment';
+import { DateTime } from 'luxon';
 // Types
 import { Alert } from 'types/hostAndServiceTypes';
 
@@ -32,7 +32,7 @@ interface HistoryChartProps {
 	alertlist: Alert[];
 	hideAlertSoft: boolean;
 	locale: string;
-	groupBy: moment.unitOfTime.Base;
+	groupBy: "day" | "hour";
 	alertHoursBack?: number;
 	alertDaysBack?: number;
 	triggerReflow: number;
@@ -202,27 +202,27 @@ const HistoryChart = ({
 
 			// OK
 			const alertOks = alertlist.filter(alert => alert.state === 1 || alert.state === 8);
-			const groupedOks = _.groupBy(alertOks, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+			const groupedOks = _.groupBy(alertOks, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
 			//console.log('updateSeriesFromProps() groupedOks', groupBy, groupedOks);
 
 			// WARNING
 			// Filter for only warning states
 			// 16 = WARNING
 			const alertWarnings = alertlist.filter(alert => alert.state === 16);
-			const groupedWarnings = _.groupBy(alertWarnings, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+			const groupedWarnings = _.groupBy(alertWarnings, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
 
 			// UNKNOWN
 			// Filter for only unknown states
 			// 64 = UNKNOWN
 			const alertUnknowns = alertlist.filter(alert => alert.state === 64);
-			const groupedUnknowns = _.groupBy(alertUnknowns, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+			const groupedUnknowns = _.groupBy(alertUnknowns, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
 
 			// CRITICAL
 			// Filter for only critical states
 			// 2 = CRITICAL
 			// 32 = ?
 			const alertCriticals = alertlist.filter(alert => alert.state === 2 || alert.state === 32);
-			const groupedCriticals = _.groupBy(alertCriticals, (result) => moment(result.timestamp).startOf(groupBy).format('x'));
+			const groupedCriticals = _.groupBy(alertCriticals, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
 
 			// if (debug) {
 			//   console.log('alertOks', alertOks);
@@ -297,9 +297,9 @@ const HistoryChart = ({
 
 				// Go back 24 hours from the current hour to get the same hour yesterday
 				// If currentHour is 10:00, this will return 10:00 yesterday
-				const sameHourYesterday = moment(currentHour).subtract(24, 'hours').toDate();
+				const sameHourYesterday = DateTime.fromJSDate(currentHour).minus({ hours: 24 }).toJSDate();
 				// If sameHourYesterday is 10:00 yesterday, this will return 9:30 yesterday
-				const sameHourYesterdayMinusSome = moment(sameHourYesterday).subtract(30, 'minutes').toDate();
+				const sameHourYesterdayMinusSome = DateTime.fromJSDate(sameHourYesterday).minus({ minutes: 30 }).toJSDate();
 				// Set min to 30 minutes before the same hour yesterday (to add some spacing)
 				const min = sameHourYesterdayMinusSome.getTime();
 				;
@@ -337,7 +337,7 @@ const HistoryChart = ({
 					},
 					tooltip: {
 						formatter: function () {
-							return moment(this.x).locale(locale).format('llll') + `<br />` +
+							return DateTime.fromMillis(this.x).setLocale(locale).toLocaleString(DateTime.DATETIME_FULL) + `<br />` +
 								`<span style="color:${this.color}">\u25CF</span> ${this.series.name}: <b>${this.y}</b>`;
 						}
 					}
@@ -418,7 +418,7 @@ const HistoryChart = ({
 	// const debugMode = document.location.search.indexOf('debug=true') !== -1;
 	// const alertlistDebug = alertlist.map((al, i) => {
 	//   //if (this.props.groupBy === 'hour') { console.log(al); }
-	//   return (<div key={i}>{al.timestamp} - {moment(al.timestamp).locale(locale).format('llll')} - {al.description} - {al.plugin_output}</div>);
+	//   return (<div key={i}>{al.timestamp} - {DateTime.fromJSDate(new Date(al.timestamp)).setLocale(locale).toLocaleString(DateTime.DATETIME_FULL)} - {al.description} - {al.plugin_output}</div>);
 	// });
 
 	return (

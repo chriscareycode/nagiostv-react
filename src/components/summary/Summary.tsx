@@ -10,7 +10,7 @@ import { clientSettingsAtom } from 'atoms/settingsState';
 import { programStatusAtom } from 'atoms/programAtom';
 
 // Helpers
-import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers/moment';
+import { formatDateTimeAgo, formatDateTimeAgoColorQuietFor } from '../../helpers/dates';
 // CSS
 import './Summary.css';
 import Doomguy from 'components/Doomguy/Doomguy';
