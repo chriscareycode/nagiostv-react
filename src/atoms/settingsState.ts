@@ -102,7 +102,7 @@ export const clientSettingsInitial: ClientSettings = {
 	hostgroupFilter: '',
 	servicegroupFilter: '',
 
-	versionCheckDays: 1,
+	versionCheckDays: 7,
 
 	language: 'English',
 	locale: 'en',
