@@ -16,6 +16,7 @@ import Demo from './Demo';
 
 // CSS
 import './Dashboard.css';
+import MostRecentAlert from './summary/MostRecentAlert';
 
 const Dashboard = () => {
 
@@ -33,6 +34,7 @@ const Dashboard = () => {
 	const {
 		fontSizeEm,
 		hideSummarySection,
+		hideMostRecentAlertSection,
 		hideHistory,
 		hideHostSection,
 		hideServiceSection,
@@ -58,6 +60,9 @@ const Dashboard = () => {
 
 				{/* Summary Section */}
 				{!hideSummarySection && <Summary />}
+
+				{/* Most Recent Alert Section */}
+				{!hideMostRecentAlertSection && <MostRecentAlert />}
 
 				{/* Hosts and Services Side by Side Enabled */}
 				{hostsAndServicesSideBySide && (

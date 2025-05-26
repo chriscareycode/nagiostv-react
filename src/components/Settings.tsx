@@ -442,6 +442,16 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>Most Recent Alert:</th>
+								<td>
+									<select value={clientSettingsTemp.hideMostRecentAlertSection.toString()} onChange={handleChange('hideMostRecentAlertSection', 'boolean')}>
+										<option value={'true'}>Hide</option>
+										<option value={'false'}>Show</option>
+									</select>
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
 								<th>Hosts and Services layout:</th>
 								<td>
 									<select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
