@@ -31,7 +31,6 @@ import ServiceItems from './ServiceItems';
 import ServiceFilters from './ServiceFilters';
 
 // 3rd party addons
-import moment from 'moment';
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -223,8 +222,8 @@ const ServiceSection = () => {
 			const myArray = convertServiceObjectToArray(my_list);
 
 			// check for old stale data (detect if nagios is down)
-			const duration = moment.duration(new Date().getTime() - response.data.result.last_data_update);
-			const hours = duration.asHours().toFixed(1);
+			const durationMs = new Date().getTime() - response.data.result.last_data_update;
+			const hours = (durationMs / (1000 * 60 * 60)).toFixed(1);
 
 			// we disable the stale check if in demo mode since the demo data is always stale
 			if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {

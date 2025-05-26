@@ -27,7 +27,7 @@ import './Settings.css';
 
 import axios from 'axios';
 import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
-import { listLocales } from '../helpers/moment';
+import { listLocales } from '../helpers/dates';
 import { languages } from '../helpers/language';
 // clipboard
 import * as clipboard from "clipboard-polyfill/text";
@@ -196,6 +196,30 @@ const Settings = () => {
 			<option key={'locale-' + i} value={locale}>{locale}</option>
 		);
 	});
+
+	// A routine to fix the date format used from the migration of "moment" to "luxon".
+	// We will change the dateFormat from 'llll' to 'fff' which is the new equivalent in luxon.
+	const setDefaultDate = () => {
+		setClientSettingsTemp(curr => ({
+			...curr,
+			dateFormat: 'fff'
+		}));
+		setIsDirty(true);
+	};
+	const setDefaultClockDate = () => {
+		setClientSettingsTemp(curr => ({
+			...curr,
+			clockDateFormat: 'DD'
+		}));
+		setIsDirty(true);
+	};
+	const setDefaultClockTime = () => {
+		setClientSettingsTemp(curr => ({
+			...curr,
+			clockTimeFormat: 'ttt'
+		}));
+		setIsDirty(true);
+	};
 
 
 	return (
@@ -416,8 +440,77 @@ const Settings = () => {
 							<tr>
 								<th>Date Format:</th>
 								<td>
-									<input type="text" value={clientSettingsTemp.dateFormat} onChange={handleChange('dateFormat', 'string')} />
-									<div>Format options are on this page: <a style={{ color: 'white' }} target="_blank" rel="noopener noreferrer" href="https://momentjs.com/docs/#/displaying/format/">https://momentjs.com/docs/#/displaying/format/</a> under "Localized formats"</div>
+									<input
+										type="text"
+										value={clientSettingsTemp.dateFormat}
+										onChange={handleChange('dateFormat', 'string')}
+										style={{
+											width: '200px',
+											border: clientSettingsTemp.dateFormat === 'llll' ? '2px solid red' : '0px solid transparent',
+										}}
+									/>
+									{' '}<button onClick={setDefaultDate}>Set to default</button>
+									{clientSettingsTemp.dateFormat === 'llll' && (
+										<div style={{ color: 'red' }}>
+											We migrated from using the "moment" date library to "luxon". If you used the default value 'llll' before when we were using "moment" library, we suggest 'fff' now.
+										</div>
+									)}
+									<div>
+										Format options are on this page:{' '}
+										<a
+											style={{
+												color: 'white',
+											}}
+											target="_blank"
+											rel="noopener noreferrer"
+											href="https://github.com/moment/luxon/blob/master/docs/formatting.md#table-of-tokens"
+										>
+											https://github.com/moment/luxon/blob/master/docs/formatting.md#table-of-tokens
+										</a>
+										{' '}under "Table of tokens". 
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>Clock Date Format:</th>
+								<td>
+									<input
+										type="text"
+										value={clientSettingsTemp.clockDateFormat}
+										onChange={handleChange('clockDateFormat', 'string')}
+										style={{
+											width: '200px',
+											border: clientSettingsTemp.clockDateFormat === 'll' ? '2px solid red' : '0px solid transparent',
+										}}
+									/>
+									{' '}<button onClick={setDefaultClockDate}>Set to default</button>
+									{clientSettingsTemp.clockDateFormat === 'll' && (
+										<div style={{ color: 'red' }}>
+											We migrated from using the "moment" date library to "luxon". If you used the default value 'll' before when we were using "moment" library, we suggest 'DD' now.
+											{' '}
+										</div>
+									)}
+								</td>
+							</tr>
+							<tr>
+								<th>Clock Time Format:</th>
+								<td>
+									<input
+										type="text"
+										value={clientSettingsTemp.clockTimeFormat}
+										onChange={handleChange('clockTimeFormat', 'string')}
+										style={{
+											width: '200px',
+											border: clientSettingsTemp.clockTimeFormat === 'LTS' ? '2px solid red' : '0px solid transparent',
+										}}
+									/>
+									{' '}<button onClick={setDefaultClockTime}>Set to default</button>
+									{clientSettingsTemp.clockTimeFormat === 'LTS' && (
+										<div style={{ color: 'red' }}>
+											We migrated from using the "moment" date library to "luxon". If you used the default value 'LTS' before when we were using "moment" library, we suggest 'ttt' for 12 hour or 'TTT' for 24 hour.
+											{' '}
+										</div>
+									)}
 								</td>
 							</tr>
 						</tbody>
@@ -435,6 +528,16 @@ const Settings = () => {
 								<th>Summary:</th>
 								<td>
 									<select value={clientSettingsTemp.hideSummarySection.toString()} onChange={handleChange('hideSummarySection', 'boolean')}>
+										<option value={'true'}>Hide</option>
+										<option value={'false'}>Show</option>
+									</select>
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
+								<th>Most Recent Alert:</th>
+								<td>
+									<select value={clientSettingsTemp.hideMostRecentAlertSection.toString()} onChange={handleChange('hideMostRecentAlertSection', 'boolean')}>
 										<option value={'true'}>Hide</option>
 										<option value={'false'}>Show</option>
 									</select>

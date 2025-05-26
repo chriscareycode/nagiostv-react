@@ -37,6 +37,7 @@ export interface ClientSettings {
 
 	hostsAndServicesSideBySide: boolean;
 	hideSummarySection: boolean;
+	hideMostRecentAlertSection: boolean;
 	hideServiceSection: boolean;
 	hideServicePending: boolean;
 	hideServiceWarning: boolean;

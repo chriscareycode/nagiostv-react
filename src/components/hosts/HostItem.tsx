@@ -17,7 +17,7 @@
  */
 
 import { Component } from 'react';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/moment';
+import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
 import { translate } from '../../helpers/language';

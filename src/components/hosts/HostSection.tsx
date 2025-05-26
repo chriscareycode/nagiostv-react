@@ -31,7 +31,7 @@ import HostItems from './HostItems';
 import HostFilters from './HostFilters';
 
 // 3rd party addons
-import moment from 'moment';
+import { DateTime } from 'luxon';
 import axios from 'axios';
 import _ from 'lodash';
 import { Host, HostList } from 'types/hostAndServiceTypes';
@@ -229,8 +229,9 @@ const HostSection = () => {
 			const myArray = convertHostObjectToArray(my_list);
 
 			// check for old data (nagios down?)
-			const duration = moment.duration(new Date().getTime() - response.data.result.last_data_update);
-			const hours = duration.asHours().toFixed(1);
+			const now = DateTime.now();
+			const lastUpdate = DateTime.fromMillis(response.data.result.last_data_update);
+			const hours = now.diff(lastUpdate, 'hours').hours.toFixed(1);
 
 			if (isDemoMode === false && useFakeSampleData === false && parseFloat(hours) >= 1) {
 				// Data is stale
