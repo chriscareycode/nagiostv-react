@@ -48,17 +48,17 @@ Installing NagiosTV
 -------------
 - Download the latest NagiosTV tar.gz release from https://github.com/chriscareycode/nagiostv-react/releases or you can just copy and paste the command below to get it:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.9.3/nagiostv-0.9.3.tar.gz
+wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.9.4/nagiostv-0.9.4.tar.gz
 ```
 - Extract the NagiosTV release using tar. This will create a nagiostv/ folder.
 ```console
-$ tar xvfz nagiostv-0.9.3.tar.gz
+tar xvfz nagiostv-0.9.4.tar.gz
 ```
 - We're going to host the NagiosTV folder from the built-in Nagios web ui. Copy/Move the nagiostv/ folder into your Nagios web ui folder. For Nagios Core 4 the Nagios web ui folder might be at `/usr/local/nagios/share/` or `/usr/nagios/share/`. Nagios XI might be at `/var/www/html/` or `/usr/local/nagiosxi/html/`.
 
 Below is an example command to move NagiosTV into place, but you need to change /usr/local/nagios/share/ to the correct path for your Nagios install:
 ```console
-$ sudo mv nagiostv /usr/local/nagios/share/
+sudo mv nagiostv /usr/local/nagios/share/
 ```
 
 Install is all done!
@@ -72,13 +72,13 @@ Preparing the client settings file (optional)
 By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. We do not include this file in the NagiosTV release so it will not be overwritten when you upgrade. NagiosTV will read this client-settings file when the app loads. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set permissions on that file. In the example below, I show the two options below, first chown and second with chmod. Change the www-data to your own apache user, which is often different depending on white Linux distro you are running:
 
 ```console
-$ sudo touch client-settings.json
-$ sudo chown www-data:www-data client-settings.json 
+sudo touch client-settings.json
+sudo chown www-data:www-data client-settings.json 
 ```
 or
 ```console
-$ sudo touch client-settings.json
-$ sudo chmod 777 client-settings.json 
+sudo touch client-settings.json
+sudo chmod 777 client-settings.json 
 ```
 
 One click updates
@@ -94,7 +94,7 @@ Preparing NagiosTV for one click update
 For one click upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
 
 ```console
-$ sudo chown -R www-data:www-data /usr/local/nagios/share/nagiostv
+sudo chown -R www-data:www-data /usr/local/nagios/share/nagiostv
 ```
 Then inside the application, navigate to the Update page, and read more instructions there.
 
@@ -106,9 +106,9 @@ Then pretty much the same process as above. Download and overwrite the nagiostv 
 Remember your web ui destination folder `/usr/local/nagios/share/nagiostv/` may vary depending on your Nagios install.
 You can do it on the box with:
 ```console
-$ wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.9.3/nagiostv-0.9.3.tar.gz
-$ tar xvfz nagiostv-0.9.3.tar.gz
-$ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
+wget https://github.com/chriscareycode/nagiostv-react/releases/download/v0.9.4/nagiostv-0.9.4.tar.gz
+tar xvfz nagiostv-0.9.4.tar.gz
+sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 ```
 
 Update CLI script
@@ -117,7 +117,7 @@ This command line autoupdate script can be used to upgrade or downgrade to any v
 This has been superceded by the one click within the NagiosTV UI. (see above)
 To update this way, go into your nagiostv/ folder and run this command for more instructions:
 ```
-$ sh autoupdate.sh
+sh autoupdate.sh
 ```
 
 FAQ - Bypassing Authentication
