@@ -106,9 +106,9 @@ export const clientSettingsInitial: ClientSettings = {
 
 	language: 'English',
 	locale: 'en',
-	dateFormat: 'llll',
-	clockDateFormat: 'll',
-	clockTimeFormat: 'LTS',
+	dateFormat: 'fff',
+	clockDateFormat: 'DD',
+	clockTimeFormat: 'ttt',
 
 	// audio and visual
 	fontSizeEm: '1em',
