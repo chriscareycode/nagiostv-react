@@ -48,7 +48,7 @@ export function formatDateTimeLocale(date: number | string, locale?: string, for
 // TODO: rename this to formatDateTimeDHMS
 export function formatDateTime(date: number): string {
 	const dt = DateTime.fromMillis(date);
-	const diff = dt.diff(DateTime.now());
+	const diff = dt.diff(DateTime.now(), ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
 	
 	let ret = '';
 	if (diff.years) { ret += diff.years + 'y '; }
@@ -57,12 +57,12 @@ export function formatDateTime(date: number): string {
 	if (diff.hours) { ret += diff.hours + 'h '; }
 	if (diff.minutes) { ret += diff.minutes + 'm '; }
 
-	return ret + diff.seconds + 's';
+	return ret + Math.floor(diff.seconds) + 's';
 }
 
 export function formatDateTimeAgo(date: number): string {
 	const dt = DateTime.fromMillis(date);
-	const diff = DateTime.now().diff(dt);
+	const diff = DateTime.now().diff(dt, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
 	
 	let ret = '';
 	if (diff.years) { ret += diff.years + 'y '; }
@@ -79,7 +79,7 @@ export function formatDateTimeAgo(date: number): string {
 
 export function formatDateTimeAgoLong(date: number): string {
 	const dt = DateTime.fromMillis(date);
-	const diff = DateTime.now().diff(dt);
+	const diff = DateTime.now().diff(dt, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
 	
 	let ret = '';
 	if (diff.years) { ret += diff.years + 'y '; }
@@ -98,7 +98,7 @@ export function formatDateTimeAgoLong(date: number): string {
 // The idea is a recent issue it will show red, green means quiet for a while, nothin happening.
 export function formatDateTimeAgoColorQuietFor(date: number): JSX.Element {
 	const dt = DateTime.fromMillis(date);
-	const diff = DateTime.now().diff(dt);
+	const diff = DateTime.now().diff(dt, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
 	
 	let ret = '';
 	if (diff.years) { ret += diff.years + 'y '; }
@@ -120,8 +120,8 @@ export function formatDateTimeAgoColorQuietFor(date: number): JSX.Element {
 
 export function formatDateTimeAgoColor(date: number): JSX.Element {
 	const dt = DateTime.fromMillis(date);
-	const diff = DateTime.now().diff(dt);
-	
+	const diff = DateTime.now().diff(dt, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
+
 	let ret = '';
 	if (diff.years) { ret += diff.years + 'y '; }
 	if (diff.months) { ret += diff.months + 'm '; }
