@@ -688,17 +688,23 @@ const Settings = () => {
 									Dashboard Font Size
 								</th>
 								<td>
-									<select value={clientSettingsTemp.fontSizeEm} onChange={handleChange('fontSizeEm', 'string')}>
-										<option value={'0.8em'}>0.8em</option>
-										<option value={'0.9em'}>0.9em</option>
-										<option value={'1em'}>1em</option>
-										<option value={'1.1em'}>1.1em</option>
-										<option value={'1.2em'}>1.2em</option>
-										<option value={'1.5em'}>1.5em</option>
-										<option value={'2em'}>2em</option>
-										<option value={'3em'}>3em</option>
-										<option value={'4em'}>4em</option>
-									</select>
+									<input
+										type="range"
+										min="0.5"
+										max="4"
+										step="0.1"
+										value={parseFloat(clientSettingsTemp.fontSizeEm)}
+										onChange={(e) => {
+											const val = `${e.target.value}em`;
+											setClientSettingsTemp(curr => ({
+												...curr,
+												fontSizeEm: val
+											}));
+											setIsDirty(true);
+										}}
+										style={{ width: '200px', marginRight: '10px' }}
+									/>
+									<div style={{ fontSize: clientSettingsTemp.fontSizeEm }}>Example text at {clientSettingsTemp.fontSizeEm}</div>
 								</td>
 							</tr>
 
