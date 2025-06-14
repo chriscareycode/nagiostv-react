@@ -131,6 +131,10 @@ class ServiceItem extends Component<ServiceItemProps> {
 
 		const maxNumberToHideProgress = 40;
 
+		/*
+		 This gets renamed to ServiceItem2 since we applied ServiceItem className
+		 to the wrapping div in ServiceItems.tsx. Clean this up later.
+		*/
 		return (
 
 			<div className={`ServiceItem2`} onClick={this.mouseClick}>
