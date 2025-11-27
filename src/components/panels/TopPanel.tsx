@@ -179,12 +179,6 @@ const TopPanel = () => {
 						clockTimeFormat={clientSettings.clockTimeFormat}
 					/>
 
-					{/* custom logo */}
-					{clientSettings.customLogoEnabled &&
-						<CustomLogo
-							settings={clientSettings}
-						/>
-					}
 				</div>
 
 				{/* header-left-spacer - this will provide left hand spacing to the menu or title string */}
@@ -196,6 +190,13 @@ const TopPanel = () => {
 						<FontAwesomeIcon icon={faBars} />
 					</div>
 				</div>}
+
+				{/* custom logo */}
+				{clientSettings.customLogoEnabled &&
+					<CustomLogo
+						settings={clientSettings}
+					/>
+				}
 
 				{/* title string */}
 				<div className="header-application-name">{clientSettings.titleString}</div>
