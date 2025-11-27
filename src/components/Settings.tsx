@@ -593,7 +593,7 @@ const Settings = () => {
 										<option value={'true'}>Show</option>
 									</select>
 									&nbsp;
-									Show a "MiniMap" on the right side of the screen (Experimental, may cause memory leak)
+									Show a "MiniMap" on the right side of the screen (Experimental)
 								</td>
 							</tr>
 							<tr>

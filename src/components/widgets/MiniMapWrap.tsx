@@ -41,7 +41,8 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 		return undefined;
 	};
 
-	const debouncedResizeMiniMap = debounce((e: number[]) => onResizeMiniMap(e), 1000);
+	// Wrap debounce in useMemo to prevent memory leaks and ensure proper cleanup
+	const debouncedResizeMiniMap = useMemo(() => debounce((e: number[]) => onResizeMiniMap(e), 1000), [bigState.isDoneLoading, clientSettings.miniMapWidth]);
 
 	// React router location
 	const location = useLocation();
