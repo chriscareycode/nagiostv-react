@@ -1,5 +1,5 @@
 import html2canvas from "html2canvas";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import './MiniMapCanvas.css';
 import { hostAtom } from 'atoms/hostAtom';
 import { serviceAtom } from 'atoms/serviceAtom';
@@ -19,24 +19,33 @@ export default function MiniMapCanvas({
 
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
+	
+	// Use ref to store the last scroll position to avoid rapid fire with same value
+	const scrollToYLastNumberRef = useRef<number>(0);
 
 	// The function that uses html2canvas to take a snapshot of the area
 	const snap = () => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
-		if (myElement) {
-			html2canvas(myElement, {
-				backgroundColor: '#111111',
-				scale: 0.25,
-				logging: false,
-			}).then(function (canvas) {
-				const mmi = document.querySelector('#mmimg');
-				const imgDataUrl = canvas.toDataURL();
-				mmi?.setAttribute('src', imgDataUrl);
-			}).catch(err => {
-				console.log('error doing html2canvas');
-				console.log(err);
-			});
+		if (!myElement) {
+			return;
 		}
+		
+		html2canvas(myElement, {
+			backgroundColor: '#111111',
+			scale: 0.25,
+			logging: false,
+		}).then(function (canvas) {
+			const mmi = document.querySelector('#mmimg') as HTMLImageElement | null;
+			if (mmi) {
+				const imgDataUrl = canvas.toDataURL();
+				mmi.src = imgDataUrl;
+				// Clean up canvas to prevent memory leaks
+				canvas.width = 0;
+				canvas.height = 0;
+			}
+		}).catch(err => {
+			console.log('error doing html2canvas', err);
+		});
 	};
 
 	// Trigger an update right after host or service updates are fetched
@@ -78,7 +87,7 @@ export default function MiniMapCanvas({
 		const mainWidth = window.innerWidth - miniMapWidth;
 		const scale = miniMapWidth / mainWidth;
 		return t * scale;
-	}, [elementToSnapshot, miniMapWidth]);
+	}, [miniMapWidth]);
 
 	const scaleSmallToBigFn = (t: number) => {
 		const mainWidth = window.innerWidth - miniMapWidth;
@@ -121,13 +130,13 @@ export default function MiniMapCanvas({
 			}
 		};
 
-	}, [elementToSnapshot, miniMapWidth]);
+	}, [elementToSnapshot, miniMapWidth, scaleBigToSmallFn]);
 
-	let scrollToYLastNumber = 0; // temp store old number to decrease rapid fire with previous number
 	const scrollToY = (y: number, dragging: boolean) => {
-		if (scrollToYLastNumber === y) {
+		if (scrollToYLastNumberRef.current === y) {
 			return;
 		}
+		scrollToYLastNumberRef.current = y;
 		//console.log('scrollToY', y);
 		const headerHeight = 41; // TODO: get rid of this
 		const scrollHeight = window.innerHeight - headerHeight;
@@ -178,7 +187,7 @@ export default function MiniMapCanvas({
 				className="mmborder"
 			/>
 			{/* the snapshotted image */}
-			<img id="mmimg" src="" />
+			<img id="mmimg" src="" alt="Minimap preview" />
 		</div>
 	);
 }
