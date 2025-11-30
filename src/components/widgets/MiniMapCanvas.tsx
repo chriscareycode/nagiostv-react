@@ -1,5 +1,6 @@
-import html2canvas from "html2canvas";
+import html2canvas from "html2canvas-pro";
 import { useCallback, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import './MiniMapCanvas.css';
 import { hostAtom } from 'atoms/hostAtom';
 import { serviceAtom } from 'atoms/serviceAtom';
@@ -22,8 +23,10 @@ export default function MiniMapCanvas({
 	
 	// Use ref to store the last scroll position to avoid rapid fire with same value
 	const scrollToYLastNumberRef = useRef<number>(0);
+	// Track route changes to trigger minimap updates
+	const location = useLocation();
 
-	// The function that uses html2canvas to take a snapshot of the area
+	// The function that uses html2canvas-pro to take a snapshot of the area
 	const snap = () => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
 		if (!myElement) {
@@ -78,7 +81,7 @@ export default function MiniMapCanvas({
 			clearTimeout(th2);
 			clearInterval(int);
 		};
-	}, [elementToSnapshot]);
+	}, [elementToSnapshot, location.pathname]);
 
 	/**
 	 * Takes in a number (width) and converts it to the width of the minimap
@@ -97,11 +100,17 @@ export default function MiniMapCanvas({
 
 	// Capture scroll for the mmborder movement
 	useEffect(() => {
-		const verticalScrollEl = document.getElementsByClassName('vertical-scroll');
-		const vs = verticalScrollEl[0];
-		const mmb = document.querySelector('#mmborder') as HTMLElement;
-
 		const handleScroll = () => {
+			// Query for the scroll element inside the handler to ensure we get the correct one
+			// This is important when multiple route elements exist during transitions
+			const verticalScrollEl = document.getElementsByClassName('vertical-scroll');
+			const vs = verticalScrollEl[0] as HTMLElement;
+			
+			if (!vs) {
+				return;
+			}
+			
+			const mmb = document.querySelector('#mmborder') as HTMLElement;
 			const headerHeight = 41;
 			const scrollHeight = window.innerHeight - headerHeight;
 			if (mmb) {
@@ -113,8 +122,13 @@ export default function MiniMapCanvas({
 		// Fire one to get it to process on page load
 		handleScroll();
 
-		// Watch scroll for scroll handler
-		vs.addEventListener('scroll', handleScroll, { passive: true });
+		// Watch scroll for scroll handler on the document or window level
+		// We need to listen to all scroll events and handle them dynamically
+		const scrollHandler = () => {
+			handleScroll();
+		};
+		
+		window.addEventListener('scroll', scrollHandler, { passive: true, capture: true });
 
 		// Also trigger on an interval to help resize the minimap box when browser size changes
 		const h = setInterval(() => {
@@ -123,14 +137,14 @@ export default function MiniMapCanvas({
 
 		return () => {
 			// Remove scroll handler on cleanup
-			vs.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('scroll', scrollHandler, { capture: true });
 			// Remove timer on cleanup
 			if (h) {
 				clearInterval(h);
 			}
 		};
 
-	}, [elementToSnapshot, miniMapWidth, scaleBigToSmallFn]);
+	}, [elementToSnapshot, miniMapWidth, scaleBigToSmallFn, location.pathname]);
 
 	const scrollToY = (y: number, dragging: boolean) => {
 		if (scrollToYLastNumberRef.current === y) {
