@@ -16,6 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+@import "tailwindcss";
+
+@theme {
+	--color-lime: lime;
+}
+
 body {
 	margin: 0;
 	padding: 0;
