@@ -9,7 +9,7 @@ export default function NextCheckIn({ nextCheckTime, language }: { nextCheckTime
 	useEffect(() => {
 		const updateDisplay = () => {
 			if (divRef.current) {
-				if (nextCheckTime < Date.now() + 2000) {
+				if (nextCheckTime < Date.now() + 1000) {
 					divRef.current.innerHTML = 'Checking now...';
 					setIsCheckingNow(true);
 					return;
@@ -32,9 +32,10 @@ export default function NextCheckIn({ nextCheckTime, language }: { nextCheckTime
 
 	return (
 		<span className="NextCheckIn">
-      <span>
-        {!isCheckingNow && <span>{translate('Next check in', language)}:</span>} <span ref={divRef} className="color-peach">{formatDateTime(nextCheckTime)}</span>
-      </span>
+			{isCheckingNow && <span className="color-peach">Checking now...</span>}
+			<span className={isCheckingNow ? 'hidden' : ''}>
+				<span>{translate('Next check in', language)}:</span> <span ref={divRef} className="color-peach">{formatDateTime(nextCheckTime)}</span>
+			</span>
 		</span>
 	);
 }
