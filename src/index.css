@@ -63,3 +63,19 @@ body {
 ::-webkit-scrollbar-thumb:hover {
 	background: #555;
 }
+
+select {
+	background-color: #1b1b1b;
+	color: #ddd;
+	border: 1px solid #001d2a;
+	border-radius: 4px;
+	padding: 2px;
+}
+
+input[type="text"], input[type="password"], input[type="number"], textarea {
+	background-color: #1b1b1b;
+	color: #ddd;
+	border: 1px solid #5d5d5d;
+	border-radius: 4px;
+	padding: 2px;
+}
