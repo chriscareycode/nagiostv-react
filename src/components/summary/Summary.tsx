@@ -14,6 +14,30 @@ import Doomguy from 'components/Doomguy/Doomguy';
 // CSS
 import './Summary.css';
 
+function CornerEmoji({ type, howManyProblems }: { type: 'warning' | 'critical' | 'unknown', howManyProblems: number }) {
+	// show a green heart emoji if there are no problems
+	// let emoji = '💚';
+	let emoji = '';
+	if (type === 'warning' && howManyProblems > 0) {
+		// show a caution sign emoji for warning problems
+		emoji = '⚠️';
+	}
+	if (type === 'critical' && howManyProblems > 0) {
+		// show a fire emoji for critical problems
+		emoji = '🔥';
+	}
+	if (type === 'unknown' && howManyProblems > 0) {
+		// show a question emoji for unknown problems
+		emoji = '❓';
+	}
+		
+	return (
+		<div className="corner-emoji absolute -top-0 -right-0 m-1 text-xs">
+			<span role="img" aria-label="emoji">{emoji}</span>
+		</div>
+	);
+}
+
 export default function Summary() {
 
 	// State Management state (this section)
@@ -67,6 +91,7 @@ export default function Summary() {
 
 					{/** Hosts Down */}
 					<div className="summary-box">
+						<CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostDown} />
 						<div className="summary-box-big-number">
 							<span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
 						</div>
@@ -75,6 +100,7 @@ export default function Summary() {
 
 					{/** Hosts Unreachable */}
 					<div className="summary-box">
+						<CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostUnreachable} />
 						<div className="summary-box-big-number">
 							<span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
 						</div>
@@ -84,7 +110,7 @@ export default function Summary() {
 					{/** Hosts Total */}
 					<div className="summary-box">
 						<div className="summary-box-big-number">
-							<span className={'color-green'}>{hostHowManyState.howManyHosts}</span>
+							<span className={'color-gray'}>{hostHowManyState.howManyHosts}</span>
 						</div>
 						<div className="summary-box-text"><span className={hostHowManyState.howManyHosts > 0 ? 'color-white' : 'color-white'}>hosts<br />total</span></div>
 					</div>
@@ -95,6 +121,7 @@ export default function Summary() {
 
 					{/** Service Critical */}
 					<div className="summary-box">
+						<CornerEmoji type="critical" howManyProblems={serviceHowManyState.howManyServiceCritical} />
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-red' : 'color-green'}>{serviceHowManyState.howManyServiceCritical}</span>
 						</div>
@@ -103,6 +130,7 @@ export default function Summary() {
 
 					{/** Service Warning */}
 					<div className="summary-box">
+						<CornerEmoji type="warning" howManyProblems={serviceHowManyState.howManyServiceWarning} />
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
 						</div>
@@ -111,6 +139,7 @@ export default function Summary() {
 
 					{/** Service Unknown */}
 					<div className="summary-box">
+						<CornerEmoji type="unknown" howManyProblems={serviceHowManyState.howManyServiceUnknown} />
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
 						</div>
@@ -120,7 +149,7 @@ export default function Summary() {
 					{/** Service Total */}
 					<div className="summary-box">
 						<div className="summary-box-big-number">
-							<span className={'color-green'}>{serviceHowManyState.howManyServices}</span>
+							<span className={'color-gray'}>{serviceHowManyState.howManyServices}</span>
 						</div>
 						<div className="summary-box-text"><span className={serviceHowManyState.howManyServices > 0 ? 'color-white' : 'color-white'}>services<br />total</span></div>
 					</div>

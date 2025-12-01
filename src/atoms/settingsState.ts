@@ -64,7 +64,7 @@ export const clientSettingsInitial: ClientSettings = {
 
 	alertDaysBack: 30,
 	alertHoursBack: 24,
-	alertMaxItems: 5000,
+	alertMaxItems: 1000,
 
 	hostsAndServicesSideBySide: false,
 	hideSummarySection: true,
@@ -113,7 +113,7 @@ export const clientSettingsInitial: ClientSettings = {
 	// audio and visual
 	fontSizeEm: '1em',
 	customLogoEnabled: false,
-	customLogoUrl: './sample-image/resedit.png',
+	customLogoUrl: './icon-256.png',
 	doomguyEnabled: false,
 	doomguyConcernedAt: 1,
 	doomguyAngryAt: 2,

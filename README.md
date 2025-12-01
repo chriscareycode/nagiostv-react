@@ -4,8 +4,6 @@ Homepage at [NagiosTV.com](https://nagiostv.com)
 
 ![Display](https://nagiostv.com/images/nagiostv-0.9.0-short.png)
 
-Monitor your infrastructure with style.
-
 NagiosTV is a user interface add-on for the Nagios monitoring system https://www.nagios.org
 
 Compatible with Nagios Core 4, Nagios XI, and MK Livestatus.
@@ -22,11 +20,11 @@ This is not meant to be a replacement for the entire Nagios web interface, but a
 
 Some of the features:
 
-- New items slide in and out of place with smooth animations which looks really cool when things are happening.
-- Sorting - Ability to order items newest or oldest first
-- Filters - so you can hide WARNING, CRITICAL, UNREACHABLE, UNKNOWN, PENDING, ACKED, SCHEDULED, FLAPPING, or NOTIFICATIONS DISABLED states
-- Multi language support - English, Spanish and French so far
-- One-click update to latest version within the app
+- New items slide in and out of place with smooth animations.
+- Sorting - Ability to order items newest or oldest first.
+- Filters - so you can hide WARNING, CRITICAL, UNREACHABLE, UNKNOWN, PENDING, ACKED, SCHEDULED, FLAPPING, or NOTIFICATIONS DISABLED states.
+- Multi language support - English, Spanish and French.
+- One-click update to latest version within the app.
 
 NagiosTV also has some fun addons:
 

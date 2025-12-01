@@ -28,6 +28,7 @@ import Progress from '../widgets/Progress';
 import './HostItem.css';
 import { ClientSettings } from 'types/settings.js';
 import { Comment, Host } from 'types/hostAndServiceTypes.js';
+import NextCheckIn from 'components/widgets/NextCheckIn';
 
 interface HostItemProps {
 	settings: ClientSettings;
@@ -164,11 +165,8 @@ class HostItem extends Component<HostItemProps> {
 						{/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
 
 						{/* active checks get "Next check in 5m 22s" */}
-						{(e.checks_enabled && e.check_type === 0 && e.next_check > nowTime) && <span>
-							{translate('Next check in', language)}: <span className="color-peach"> {formatDateTime(e.next_check)}</span>
-						</span>}
-						{(e.checks_enabled && e.check_type === 0 && e.next_check <= nowTime) && <span className="checking-now">
-							{/*<FontAwesomeIcon icon={faCircleNotch} spin /> */}Checking now...
+						{(e.checks_enabled && e.check_type === 0) && <span>
+							<NextCheckIn nextCheckTime={e.next_check} language={language} />
 						</span>}
 
 						{/* passive checks get "Last check 5m ago" */}
