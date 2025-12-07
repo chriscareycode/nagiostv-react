@@ -32,7 +32,7 @@ function CornerEmoji({ type, howManyProblems }: { type: 'warning' | 'critical' |
 	}
 		
 	return (
-		<div className="corner-emoji absolute -top-0 -right-0 m-1 text-xs">
+		<div className="corner-emoji absolute -top-0 -right-1 m-1 text-sm">
 			<span role="img" aria-label="emoji">{emoji}</span>
 		</div>
 	);
