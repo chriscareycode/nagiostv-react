@@ -13,7 +13,6 @@ import { formatDateTimeAgoColorQuietFor } from '../../helpers/dates';
 import Doomguy from 'components/Doomguy/Doomguy';
 // CSS
 import './Summary.css';
-import LocalLLM from './LocalLLM';
 
 function CornerEmoji({ type, howManyProblems }: { type: 'warning' | 'critical' | 'unknown', howManyProblems: number }) {
 	// show a green heart emoji if there are no problems
@@ -193,8 +192,6 @@ export default function Summary() {
 					</div>}
 				</div>
 			</div>
-
-			<LocalLLM />
 
 		</div>
 	);

@@ -17,6 +17,7 @@ import Demo from './Demo';
 // CSS
 import './Dashboard.css';
 import MostRecentAlert from './summary/MostRecentAlert';
+import LocalLLM from './llm/LocalLLM';
 
 const Dashboard = () => {
 
@@ -35,6 +36,7 @@ const Dashboard = () => {
 		fontSizeEm,
 		hideSummarySection,
 		hideMostRecentAlertSection,
+		hideLocalLLMSection,
 		hideHistory,
 		hideHostSection,
 		hideServiceSection,
@@ -60,6 +62,9 @@ const Dashboard = () => {
 
 				{/* Summary Section */}
 				{!hideSummarySection && <Summary />}
+
+				{/* Local LLM Section */}
+				{!hideLocalLLMSection && <LocalLLM />}
 
 				{/* Most Recent Alert Section */}
 				{!hideMostRecentAlertSection && <MostRecentAlert />}

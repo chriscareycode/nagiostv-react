@@ -545,6 +545,16 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>Local LLM:</th>
+								<td>
+									<select value={clientSettingsTemp.hideLocalLLMSection.toString()} onChange={handleChange('hideLocalLLMSection', 'boolean')}>
+										<option value={'true'}>Hide</option>
+										<option value={'false'}>Show</option>
+									</select>
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
 								<th>Hosts and Services layout:</th>
 								<td>
 									<select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>

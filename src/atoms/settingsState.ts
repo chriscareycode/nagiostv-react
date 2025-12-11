@@ -69,6 +69,7 @@ export const clientSettingsInitial: ClientSettings = {
 	hostsAndServicesSideBySide: false,
 	hideSummarySection: true,
 	hideMostRecentAlertSection: true,
+	hideLocalLLMSection: true,
 	hideServiceSection: false,
 	hideServicePending: false,
 	hideServiceWarning: false,
