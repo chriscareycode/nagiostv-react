@@ -104,6 +104,12 @@ export interface ClientSettings {
 	automaticScrollWaitSeconds: number;
 	showMiniMap: boolean;
 	miniMapWidth: number;
+
+	// LLM integration
+	llmServerHost: string;
+	llmServerPort: number;
+	llmModel: string;
+	llmApiKey: string;
 }
 
 export interface VersionCheck {

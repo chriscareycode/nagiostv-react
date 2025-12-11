@@ -133,6 +133,12 @@ export const clientSettingsInitial: ClientSettings = {
 	automaticScrollWaitSeconds: 10,
 	showMiniMap: false,
 	miniMapWidth: 120,
+
+	// LLM integration
+	llmServerHost: 'localhost',
+	llmServerPort: 1234,
+	llmModel: 'openai/gpt-oss-20b',
+	llmApiKey: '',
 };
 
 export const bigStateAtom = atom(bigStateInitial);

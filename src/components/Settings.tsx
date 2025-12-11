@@ -910,9 +910,105 @@ const Settings = () => {
 						</tbody>
 					</table>
 
-
-
-
+					{/* LLM Settings */}
+					<table className="SettingsTable">
+						<thead>
+							<tr>
+								<td colSpan={2} className="SettingsTableHeader">🤖 AI / LLM Integration Settings</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th style={{ padding: '0px', height: '3px' }}></th>
+								<td style={{ padding: '0px', height: '3px' }}></td>
+							</tr>
+							<tr>
+								<th>LLM Server Host:</th>
+								<td>
+									<input 
+										type="text" 
+										value={clientSettingsTemp.llmServerHost} 
+										onChange={handleChange('llmServerHost', 'string')}
+										placeholder="localhost or 10.0.0.1" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Hostname or IP address of your OpenAI-compatible LLM server (e.g., Ollama, LM Studio, LocalAI)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Server Port:</th>
+								<td>
+									<input 
+										type="number" 
+										min="1" 
+										max="65535" 
+										value={clientSettingsTemp.llmServerPort} 
+										onChange={handleChange('llmServerPort', 'number')}
+										placeholder="11434" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Port number (Ollama: 11434, LM Studio: 1234, LocalAI: 8080)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Model:</th>
+								<td>
+									<input 
+										type="text" 
+										value={clientSettingsTemp.llmModel} 
+										onChange={handleChange('llmModel', 'string')}
+										placeholder="llama2 or gpt-3.5-turbo" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Model name to use (e.g., llama2, mistral, gpt-3.5-turbo)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM API Key:</th>
+								<td>
+									<input 
+										type="password" 
+										value={clientSettingsTemp.llmApiKey} 
+										onChange={handleChange('llmApiKey', 'string')}
+										placeholder="Optional - leave empty for local servers" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										API key for authentication (optional for most local LLM servers)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td colSpan={2} style={{ paddingLeft: '20px', paddingTop: '10px', paddingBottom: '10px' }}>
+									<div style={{ backgroundColor: '#2a2a2a', padding: '15px', borderRadius: '5px', border: '1px solid #444' }}>
+										<strong>ℹ️ Setup Instructions:</strong>
+										<ul style={{ marginTop: '10px', marginBottom: '5px', paddingLeft: '20px' }}>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>Ollama:</strong> Install from <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>ollama.com</a>, 
+												run <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>ollama serve</code> (default port: 11434)
+											</li>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>LM Studio:</strong> Download from <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>lmstudio.ai</a>, 
+												load a model, and start the local server (default port: 1234)
+											</li>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>LocalAI:</strong> Run via Docker: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>docker run -p 8080:8080 localai/localai:latest</code>
+											</li>
+										</ul>
+										<div style={{ marginTop: '10px', fontSize: '0.9em', color: '#999' }}>
+											The AI Analysis component will use these settings to connect to your local LLM server and provide insights on monitoring issues.
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
 					<table className="SettingsTable">
 						<thead>
