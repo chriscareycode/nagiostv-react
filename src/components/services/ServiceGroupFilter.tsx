@@ -66,9 +66,9 @@ const ServiceGroupFilter = () => {
 
 	return (
 		<div className="HostGroupFilter">
-			ServiceGroup Filter: {' '}
+			Servicegroup: {' '}
 			<select onChange={onChangeServiceGroupFilter} value={servicegroupFilter}>
-				<option value="">no filter</option>
+				<option value="">ALL (no filter)</option>
 				{options}
 			</select>
 		</div>

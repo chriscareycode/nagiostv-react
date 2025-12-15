@@ -66,9 +66,9 @@ const HostGroupFilter = () => {
 
 	return (
 		<div className="HostGroupFilter">
-			HostGroup Filter: {' '}
+			Hostgroup: {' '}
 			<select onChange={onChangeHostGroupFilter} value={hostgroupFilter}>
-				<option value="">no filter</option>
+				<option value="">ALL (no filter)</option>
 				{options}
 			</select>
 		</div>

@@ -50,24 +50,27 @@ const Dashboard = () => {
 	return (
 		<div className="Dashboard" style={{ fontSize: fontSizeEm }}>
 
-			{isDoneLoading && <div>
+			{isDoneLoading && <div className="pt-2.5">
 
 				<DashboardFetch />
 
-				{/* Hostgroup Filter Section */}
-				{!hideFilters && <HostGroupFilter />}
+				<div className="flex">
+					{/* Hostgroup Filter Section */}
+					<HostGroupFilter />
 
-				{/* Servicegroup Filter Section */}
-				{!hideFilters && <ServiceGroupFilter />}
+					{/* Servicegroup Filter Section */}
+					<ServiceGroupFilter />
+				</div>
+
 
 				{/* Summary Section */}
 				{!hideSummarySection && <Summary />}
 
-				{/* Local LLM Section */}
-				{!hideLocalLLMSection && <LocalLLM />}
-
 				{/* Most Recent Alert Section */}
 				{!hideMostRecentAlertSection && <MostRecentAlert />}
+
+				{/* Local LLM Section */}
+				{!hideLocalLLMSection && <LocalLLM />}
 
 				{/* Hosts and Services Side by Side Enabled */}
 				{hostsAndServicesSideBySide && (

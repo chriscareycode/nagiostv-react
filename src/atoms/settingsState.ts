@@ -113,7 +113,7 @@ export const clientSettingsInitial: ClientSettings = {
 
 	// audio and visual
 	fontSizeEm: '1em',
-	customLogoEnabled: false,
+	customLogoEnabled: true,
 	customLogoUrl: './icon-256.png',
 	doomguyEnabled: false,
 	doomguyConcernedAt: 1,
@@ -140,6 +140,9 @@ export const clientSettingsInitial: ClientSettings = {
 	llmServerPort: 1234,
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
+	llmSpeakResponse: false,
+	llmPromptAllOk: 'All systems are operating normally with no detected issues. Please provide a brief, encouraging message. Make it funny or professional, and make it no more than 2-3 sentences. Do not reference an orchestra.',
+	llmPromptNotOk: 'Provide a brief summary of the current situation, prioritize the most critical issues, and suggest what should be addressed first.',
 };
 
 export const bigStateAtom = atom(bigStateInitial);

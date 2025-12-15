@@ -98,6 +98,8 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 			}
 		};
 
+		let firstParagraphRendered = false;
+
 		const parseInlineMarkdown = (text: string): (string | JSX.Element)[] => {
 			// Parse bold/italic first, then handle inline code within those
 			return parseTextWithBoldItalic(text, 0);
@@ -243,7 +245,7 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 				
 				// Add the status word with appropriate color (preserve original case)
 				parts.push(
-					<span key={`status-${partIndex}`} className={colorClass} style={{ fontWeight: 'bold' }}>
+					<span key={`status-${elements.length}-${startIndex}-${partIndex}-${match.index}`} className={colorClass} style={{ fontWeight: 'bold' }}>
 						{match[1]}
 					</span>
 				);
@@ -340,8 +342,12 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 			flushList();
 			flushTable();
 			if (line.trim()) {
+				const isFirstParagraph = !firstParagraphRendered;
+				if (isFirstParagraph) {
+					firstParagraphRendered = true;
+				}
 				elements.push(
-					<p key={`p-${index}`} className="llm-paragraph">
+					<p key={`p-${index}`} className={isFirstParagraph ? "llm-paragraph llm-first-paragraph" : "llm-paragraph"}>
 						{parseInlineMarkdown(line)}
 					</p>
 				);

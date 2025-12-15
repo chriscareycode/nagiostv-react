@@ -159,6 +159,9 @@
 
 .SettingsTestButton {
 	margin-left: 10px;
+	border: 1px solid #555;
+	padding: 2px 6px;
+	cursor: pointer;
 }
 
 table.SettingsTable {

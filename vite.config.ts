@@ -1,14 +1,26 @@
 /// <reference types="vitest" />
-import { defineConfig, transformWithEsbuild } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
-import { VitePWA } from 'vite-plugin-pwa';
+// import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
 import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	// PWA is intentionally disabled.
+	//
+	// Why:
+	// - Historically, SW/PWA caching can make it hard for users to pick up updates.
+	// - This project is typically used as a dashboard where "always fresh" is preferred.
+	//
+	// How to re-enable:
+	// - Uncomment the `vite-plugin-pwa` import above
+	// - Uncomment the `VitePWA({ ... })` plugin block below
+	// - Restore the `<link rel="manifest" ...>` in `index.html`
+	// - Then rebuild.
+
 	base: './', // needed to work in subdirectories
 	build: {
 		outDir: 'build',
@@ -31,9 +43,10 @@ export default defineConfig({
 		svgr({
 			include: '**/*.svg?react',
 		}),
-		VitePWA({
-			injectRegister: 'auto'
-		}),
+		// PWA plugin (disabled)
+		// VitePWA({
+		// 	injectRegister: 'auto',
+		// }),
 	],
 	resolve: {
 		// alias. These also need to be set up in tsconfig.json

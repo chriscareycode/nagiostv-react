@@ -111,6 +111,9 @@ export interface ClientSettings {
 	llmServerPort: number;
 	llmModel: string;
 	llmApiKey: string;
+	llmSpeakResponse: boolean;
+	llmPromptAllOk: string;
+	llmPromptNotOk: string;
 }
 
 export interface VersionCheck {

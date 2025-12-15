@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import './Settings.css';
 
 import axios from 'axios';
-import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
+import { getVoices, playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 import { listLocales } from '../helpers/dates';
 import { languages } from '../helpers/language';
 // clipboard
@@ -50,6 +50,7 @@ const Settings = () => {
 	const [saveMessage, setSaveMessage] = useState('');
 
 	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
+	const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
 	let isComponentMounted = false;
 	const hostlistError = false;
@@ -70,6 +71,13 @@ const Settings = () => {
 	useEffect(() => {
 		setClientSettingsTemp(clientSettings);
 	}, [clientSettings]);
+
+	// Load speech synthesis voices asynchronously
+	useEffect(() => {
+		getVoices().then(loadedVoices => {
+			setVoices(loadedVoices);
+		});
+	}, []);
 
 	// Save Local Settings
 	const saveLocalSettings = () => {
@@ -104,7 +112,7 @@ const Settings = () => {
 	};
 
 	// handle state changes for all the widgets on this page
-	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		// console.log('handleChange new');
 		// console.log(propName, dataType);
 		// console.log(event.target.value);
@@ -172,9 +180,7 @@ const Settings = () => {
 		}
 	}
 
-	// voices
-	const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-
+	// Voice options are populated from state (loaded asynchronously in useEffect)
 	const voiceOptions = voices.map((voice, i) => {
 		return (
 			<option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
@@ -545,16 +551,6 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
-								<th>Local LLM:</th>
-								<td>
-									<select value={clientSettingsTemp.hideLocalLLMSection.toString()} onChange={handleChange('hideLocalLLMSection', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
 								<th>Hosts and Services layout:</th>
 								<td>
 									<select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
@@ -763,15 +759,15 @@ const Settings = () => {
 									</select>
 								</td>
 							</tr>
-							{clientSettingsTemp.speakItems && <tr>
-								<th>Choose Voice:</th>
+							<tr>
+								<th>Speaking Voice:</th>
 								<td>
 									<select value={clientSettingsTemp.speakItemsVoice} onChange={handleChange('speakItemsVoice', 'string')}>
 										{voiceOptions}
 									</select>
-									<button className="SettingsTestButton" onClick={playVoice}>Test</button>
+									<button className="SettingsTestButton" onClick={playVoice}>Test Speaking Voice</button>
 								</td>
-							</tr>}
+							</tr>
 							<tr>
 								<th>Animated progress bar for "Next Check In":</th>
 								<td>
@@ -933,6 +929,16 @@ const Settings = () => {
 								<td style={{ padding: '0px', height: '3px' }}></td>
 							</tr>
 							<tr>
+								<th>Local LLM:</th>
+								<td>
+									<select value={clientSettingsTemp.hideLocalLLMSection.toString()} onChange={handleChange('hideLocalLLMSection', 'boolean')}>
+										<option value={'true'}>Hide (Disabled)</option>
+										<option value={'false'}>Show (Enabled)</option>
+									</select>
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
 								<th>LLM Server Host:</th>
 								<td>
 									<input 
@@ -991,6 +997,51 @@ const Settings = () => {
 									<br />
 									<span style={{ fontSize: '0.9em', color: '#888' }}>
 										API key for authentication (optional for most local LLM servers)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Speak LLM Response:</th>
+								<td>
+									<select value={clientSettingsTemp.llmSpeakResponse.toString()} onChange={handleChange('llmSpeakResponse', 'boolean')}>
+										<option value={'false'}>Off</option>
+										<option value={'true'}>On</option>
+									</select>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										When enabled, the AI response will be spoken aloud using your browser's text-to-speech.
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Prompt (All OK):</th>
+								<td>
+									<textarea 
+										value={clientSettingsTemp.llmPromptAllOk} 
+										onChange={handleChange('llmPromptAllOk', 'string')}
+										placeholder="Additional instructions when 0 items are down"
+										rows={5}
+										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when all services/hosts are OK (0 items down)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Prompt (Issues):</th>
+								<td>
+									<textarea 
+										value={clientSettingsTemp.llmPromptNotOk} 
+										onChange={handleChange('llmPromptNotOk', 'string')}
+										placeholder="Additional instructions when 1 or more items are down"
+										rows={5}
+										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when there are issues (1 or more items down)
 									</span>
 								</td>
 							</tr>
