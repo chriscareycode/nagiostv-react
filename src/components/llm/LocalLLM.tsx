@@ -35,6 +35,10 @@ import { faArrowsRotate, faChevronLeft, faChevronRight } from '@fortawesome/free
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
 
+// Configurable limit for maximum problems to send to LLM
+const MAX_HOST_PROBLEMS_FOR_LLM = 20;
+const MAX_SERVICE_PROBLEMS_FOR_LLM = 20;
+
 interface LLMMessage {
 	role: 'system' | 'user' | 'assistant';
 	content: string;
@@ -161,13 +165,45 @@ export default function LocalLLM() {
 			const hostProblems = hostState.problemsArray || [];
 			const serviceProblems = serviceState.problemsArray || [];
 
+			// Check if there are too many problems to analyze
+			const tooManyHostProblems = hostProblems.length > MAX_HOST_PROBLEMS_FOR_LLM;
+			const tooManyServiceProblems = serviceProblems.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
+
 			// Check if there are no issues
 			const noIssues = hostProblems.length === 0 && serviceProblems.length === 0;
 
 			// Prepare the messages for the LLM
 			let messages: LLMMessage[];
 
-			if (noIssues) {
+			if (tooManyHostProblems || tooManyServiceProblems) {
+				// Too many problems - inform the LLM without sending the full payload
+				let overloadMessage = 'The monitoring system is experiencing a high volume of issues:\n\n';
+				
+				if (tooManyHostProblems) {
+					overloadMessage += `- There are ${hostProblems.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
+				} else {
+					overloadMessage += `- There are ${hostProblems.length} host problems\n`;
+				}
+				
+				if (tooManyServiceProblems) {
+					overloadMessage += `- There are ${serviceProblems.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
+				} else {
+					overloadMessage += `- There are ${serviceProblems.length} service problems\n`;
+				}
+				
+				overloadMessage += '\nThe detailed analysis cannot be performed due to the high volume. Please investigate the monitoring dashboard directly.';
+
+				messages = [
+					{
+						role: 'system',
+						content: `You are a helpful assistant analyzing Nagios monitoring data. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Use an appropriate warning/alert emoji given the severity of the situation.`
+					},
+					{
+						role: 'user',
+						content: `${overloadMessage}\n\nPlease provide a brief response acknowledging this situation and suggesting immediate steps the operator should take.`
+					},
+				];
+			} else if (noIssues) {
 				// No issues - ask for a compliment
 				messages = [
 					{
