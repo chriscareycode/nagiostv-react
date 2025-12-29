@@ -167,7 +167,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a friendly assistant that celebrates IT team achievements and system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. `
+						content: `You are a friendly assistant that celebrates IT team achievements and system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Do not output a table. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. `
 					},
 					{
 						role: 'user',
