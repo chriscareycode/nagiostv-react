@@ -246,6 +246,8 @@ const AlertSection = () => {
 				{!hideHistoryTitle && <span className="service-summary-title">
 					<strong>{alertlistFilteredCount}</strong> alerts{' '}
 					{clientSettings.hostgroupFilter && <span>({clientSettings.hostgroupFilter})</span>}
+					{clientSettings.hostgroupFilter && clientSettings.servicegroupFilter && <span> </span>}
+					{clientSettings.servicegroupFilter && <span>({clientSettings.servicegroupFilter})</span>}
 				</span>}
 
 				{/* alert history filters */}

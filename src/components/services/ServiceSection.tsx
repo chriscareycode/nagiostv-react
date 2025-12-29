@@ -298,7 +298,7 @@ const ServiceSection = () => {
 
 				<span className="service-summary-title">
 					<strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
-					{hostgroupFilter && <span>({hostgroupFilter})</span>}
+					{servicegroupFilter && <span>({servicegroupFilter})</span>}
 				</span>
 
 				{/* service filters */}
