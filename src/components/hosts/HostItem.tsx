@@ -113,10 +113,15 @@ class HostItem extends Component<HostItemProps> {
 
 		// When passive freshold check is done, this is reported as an active check (check_type=0)
 		// So we need another reliable way to determine if this is a stale passive alert.
+		//
+		// check_type === 0 is active check
+		// check_type === 1 is passive check
+		//
 		// Some options we can use:
 		// check_type === 1
 		// checks_enabled === false
 		const isPassive = e.check_type === 1;
+		const nextCheckInTheFuture = e.next_check > nowTime;
 		const isDown = e.status !== 2;
 
 		const maxNumberToHideProgress = 40;
@@ -164,13 +169,13 @@ class HostItem extends Component<HostItemProps> {
 					<div className="next-check-in">
 						{/*{translate('Last check was', language)}: <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> {translate('ago', language)}{' - '}*/}
 
+						{/* passive checks get "Last check 5m ago" */}
+						{isPassive && <span className="mr-1">Passive - Last check [nc:{e.next_check}] <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
+
 						{/* active checks get "Next check in 5m 22s" */}
-						{(e.checks_enabled && e.check_type === 0) && <span>
+						{(e.checks_enabled) && <span className="mr-1">
 							<NextCheckIn nextCheckTime={e.next_check} language={language} />
 						</span>}
-
-						{/* passive checks get "Last check 5m ago" */}
-						{isPassive && <span>Passive - Last check <span className="color-peach">{formatDateTimeAgo(e.last_check)}</span> ago</span>}
 					</div>
 
 					{/* comments */}
@@ -183,7 +188,7 @@ class HostItem extends Component<HostItemProps> {
 						))}
 					</div>}
 
-					{(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={hostTextClass(e.status)}></Progress>}
+					{(nextCheckInTheFuture && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={hostTextClass(e.status)}></Progress>}
 
 				</div>
 			</div>
