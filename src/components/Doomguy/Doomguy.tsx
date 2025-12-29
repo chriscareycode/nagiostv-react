@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // State Management
 import { useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
+import { llmIsLoadingAtom } from '../../atoms/llmAtom';
 
 import './Doomguy.css';
 // @ts-ignore-next-line
@@ -42,12 +43,29 @@ const Doomguy = ({ scaleCss, style }: {
 	const happyClasses = ['doomguy1', 'doomguy6', 'doomguy11'];
 	const angryClasses = ['doomguy2', 'doomguy3', 'doomguy7', 'doomguy8', 'doomguy12', 'doomguy13', 'doomguy16', 'doomguy17', 'doomguy18', 'doomguy19'];
 	const bloodyClasses = ['doomguy4', 'doomguy5', 'doomguy9', 'doomguy10', 'doomguy14', 'doomguy15', 'doomguy24', 'doomguy25'];
+	const thinkingClasses = ['doomguy1', 'doomguy6', 'doomguy7', 'doomguy8', 'doomguy11', 'doomguy12'];
+	const thinkingAnimation = [6,6,6,6,11,11,11,6,6,6,6,11,11,11,11,6,6,6,6,11,11];
 
 	const clientSettings = useAtomValue(clientSettingsAtom);
 	const hostHowManyState = useAtomValue(hostHowManyAtom);
 	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
+	const llmIsLoading = useAtomValue(llmIsLoadingAtom);
 
 	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
+	const [thinkingFrame, setThinkingFrame] = useState(thinkingAnimation[0]);
+
+	// Animate Doomguy while thinking
+	useEffect(() => {
+		if (!llmIsLoading) {
+			return;
+		}
+		let index = 0;
+		const interval = setInterval(() => {
+			index = (index + 1) % thinkingAnimation.length;
+			setThinkingFrame(thinkingAnimation[index]);
+		}, 200);
+		return () => clearInterval(interval);
+	}, [llmIsLoading]);
 
 	const howManyDown =
 		hostHowManyState.howManyHostDown +
@@ -76,6 +94,11 @@ const Doomguy = ({ scaleCss, style }: {
 		item = 'doomguy23';
 	}
 
+	// If thinking, animate through frames
+	if (llmIsLoading) {
+		item = 'doomguy' + thinkingFrame;
+	}
+
 	// Get the class name and scale
 	doomguyClass = 'doomguy ' + item;
 	//const transformCss = 'scale(' + clientSettings.doomguyCssScale + ')';
@@ -99,6 +122,7 @@ const Doomguy = ({ scaleCss, style }: {
 		<div className="doomguy-wrap" style={style}>
 			<div style={transformCss} className={doomguyClass} onClick={clickedDoomguy}>
 			</div>
+			{llmIsLoading && <div className="doomguy-thinking">thinking</div>}
 		</div>
 	);
 

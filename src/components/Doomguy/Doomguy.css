@@ -131,3 +131,14 @@
 .doomguy26 {
 	background-position: 0px -1664px;
 }
+
+.doomguy-thinking {
+	position: absolute;
+	bottom: -20px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 11px;
+	color: #888;
+	opacity: 0.7;
+	white-space: nowrap;
+}
