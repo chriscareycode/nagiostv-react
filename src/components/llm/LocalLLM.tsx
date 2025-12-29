@@ -461,12 +461,13 @@ export default function LocalLLM() {
 
 	// Measure content height for smooth animation using ResizeObserver
 	useEffect(() => {
+		const SCOOCH_DOWN = 30; // Padding/margin adjustment
 		const content = contentRef.current;
 		if (!content) return;
 
 		const resizeObserver = new ResizeObserver((entries) => {
 			for (const entry of entries) {
-				setContentHeight(entry.contentRect.height + 28);
+				setContentHeight(entry.contentRect.height + SCOOCH_DOWN);
 			}
 		});
 
