@@ -102,7 +102,7 @@
 }
 
 .local-llm-response-inner {
-	padding: 10px;
+	padding: 5px;
 	display: grid;
 	grid-template-columns: auto 1fr;
 	grid-template-rows: auto 1fr;

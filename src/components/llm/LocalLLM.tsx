@@ -497,7 +497,7 @@ export default function LocalLLM() {
 
 	// Measure content height for smooth animation using ResizeObserver
 	useEffect(() => {
-		const SCOOCH_DOWN = 30; // Padding/margin adjustment
+		const SCOOCH_DOWN = 25; // Padding/margin adjustment
 		const content = contentRef.current;
 		if (!content) return;
 
@@ -550,7 +550,6 @@ export default function LocalLLM() {
 					{isLoading && (
 						<div className="flex items-center gap-2.5 text-[#444] text-[0.8em]">
 							<div className="local-llm-spinner"></div>
-							<span>Analyzing...</span>
 						</div>
 					)}
 					
@@ -587,7 +586,7 @@ export default function LocalLLM() {
 						</div>
 					)}
 					
-					<FontAwesomeIcon icon={faArrowsRotate} className="text-[0.8em] text-[#444]" />
+					{/* <FontAwesomeIcon icon={faArrowsRotate} className="text-[0.8em] text-[#444]" /> */}
 					<button
 						className="local-llm-button"
 						onClick={handleManualAnalyze}
@@ -599,8 +598,8 @@ export default function LocalLLM() {
 			</div>
 
 			{history.length === 0 && !llmResponse && (
-				<div className="all-ok-item mt-2.5">
-					<span className="m-[5px_10px] ml-2.5 inline-block text-lime">
+				<div className="ServiceItemBorder border-green mt-2.5 pb-1.5!">
+					<span className="m-[5px_5px] inline-block text-lime">
 						All systems operating normally. No issues to analyze.
 					</span>
 				</div>
