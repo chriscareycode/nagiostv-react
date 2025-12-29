@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { motion } from 'motion/react';
 
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
@@ -78,6 +79,10 @@ export default function LocalLLM() {
 
 	// Tracks whether we've already triggered an analysis this page load (manual or auto)
 	const hasTriggeredAnalysisRef = useRef<boolean>(false);
+
+	// Ref and state for measuring content height for smooth animation
+	const contentRef = useRef<HTMLDivElement>(null);
+	const [contentHeight, setContentHeight] = useState<number>(0);
 
 	// Helper function to format host issues
 	const formatHostIssues = (hosts: Host[]): string => {
@@ -167,7 +172,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a friendly assistant that celebrates IT team achievements and system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Do not output a table. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. `
+						content: `You are a friendly assistant that celebrates system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Do not output tables in the response, use plain text only.`
 					},
 					{
 						role: 'user',
@@ -454,6 +459,24 @@ export default function LocalLLM() {
 		};
 	}, []);
 
+	// Measure content height for smooth animation using ResizeObserver
+	useEffect(() => {
+		const content = contentRef.current;
+		if (!content) return;
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				setContentHeight(entry.contentRect.height + 28);
+			}
+		});
+
+		resizeObserver.observe(content);
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, [llmResponse]);
+
 	// Border color based on hosts and services warning or critical status from current history item
 	const currentHistoryItem = history[currentHistoryIndex];
 	const historyHostHowMany = currentHistoryItem?.hostHowMany;
@@ -553,20 +576,31 @@ export default function LocalLLM() {
 			)}
 
 			{llmResponse && (
-				<div className={`local-llm-response ServiceItemBorder ${borderClasses} ${isLoading ? 'local-llm-response-loading' : ''} relative`}>
-					<div className="text-4xl leading-none row-span-2 col-start-1 flex items-start">{responseEmoji}</div>
+				<motion.div 
+					className={`local-llm-response ServiceItemBorder ${borderClasses} ${isLoading ? 'local-llm-response-loading' : ''} relative`}
+					initial={false}
+					animate={{ height: contentHeight }}
+					transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+					style={{ overflow: 'hidden' }}
+				>
+					<div 
+						ref={contentRef}
+						className="local-llm-response-inner"
+					>
+						<div className="text-4xl leading-none row-span-2 col-start-1 flex items-start">{responseEmoji}</div>
 
-					<div className="local-llm-response-content">
-						<LLMMarkup content={llmResponse} />
-					</div>
-
-					{/* Display the model used for this response */}
-					{currentHistoryItem?.model && (
-						<div className="absolute bottom-1 right-2 text-[12px] text-gray-500 opacity-60">
-							{currentHistoryItem.model}
+						<div className="local-llm-response-content">
+							<LLMMarkup content={llmResponse} />
 						</div>
-					)}
-				</div>
+
+						{/* Display the model used for this response */}
+						{currentHistoryItem?.model && (
+							<div className="absolute bottom-1 right-2 text-[12px] text-gray-500 opacity-60">
+								{currentHistoryItem.model}
+							</div>
+						)}
+					</div>
+				</motion.div>
 			)}
 		</div>
 	);

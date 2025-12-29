@@ -95,13 +95,14 @@
 }
 
 .local-llm-response {
-	
-
-	padding: 10px;
 	margin-top: 2px;
 	max-height: 500px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+.local-llm-response-inner {
+	padding: 10px;
 	display: grid;
 	grid-template-columns: auto 1fr;
 	grid-template-rows: auto 1fr;
@@ -123,6 +124,8 @@
 	font-size: 1.1em;
 	grid-column: 2;
 	grid-row: 1;
+	/* Smooth content fade transition */
+	animation: fadeInContent 0.3s ease-out;
 }
 
 .local-llm-response-content p {
