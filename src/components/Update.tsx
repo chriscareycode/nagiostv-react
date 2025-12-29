@@ -332,8 +332,8 @@ const Update = ({
 		<div className="Update">
 			<h2>NagiosTV Update Center</h2>
 
-			<div style={{ position: 'absolute', top: 20, right: 20 }}>
-				<Link to="/"><button>Back to Dashboard</button></Link>
+			<div style={{ position: 'absolute', top: 40, right: 30 }}>
+				<Link to="/"><button className="border border-[#6fbbf3] rounded py-[2px] px-[6px]">Back to Dashboard</button></Link>
 			</div>
 
 			<div className="update-help-message">

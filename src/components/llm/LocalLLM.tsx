@@ -1,12 +1,21 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { debounce } from 'lodash';
 
 // State Management
-import { useAtomValue } from 'jotai';
-import { hostAtom } from '../../atoms/hostAtom';
-import { serviceAtom } from '../../atoms/serviceAtom';
+import { useAtom, useAtomValue } from 'jotai';
+import { hostAtom, hostHowManyAtom } from '../../atoms/hostAtom';
+import { serviceAtom, serviceHowManyAtom } from '../../atoms/serviceAtom';
 import { clientSettingsAtom } from '../../atoms/settingsState';
+import { 
+	llmHistoryAtom, 
+	llmCurrentHistoryIndexAtom, 
+	LLMHistoryItem,
+	llmIsLoadingAtom,
+	llmResponseAtom,
+	llmErrorAtom,
+	llmLastResponseTimeAtom,
+	llmResponseEmojiAtom
+} from '../../atoms/llmAtom';
 
 // Types
 import { Host, Service } from '../../types/hostAndServiceTypes';
@@ -16,24 +25,18 @@ import LLMMarkup from './LLMMarkup';
 
 // Helpers
 import { speakAudio } from '../../helpers/audio';
-import { formatDateTimeAgo } from '../../helpers/dates';
+import { formatDateTimeAgo, formatDateTimeLocale } from '../../helpers/dates';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowsRotate, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-// CSS
+// CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
 
 interface LLMMessage {
 	role: 'system' | 'user' | 'assistant';
 	content: string;
-}
-
-interface LLMHistoryItem {
-	content: string;
-	timestamp: number; // Unix timestamp
-	emoji: string;
 }
 
 interface LLMResponse {
@@ -60,18 +63,21 @@ export default function LocalLLM() {
 	// State Management
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
+	const hostHowManyState = useAtomValue(hostHowManyAtom);
+	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 
-	// Local state
-	const [isLoading, setIsLoading] = useState(false);
-	const [llmResponse, setLlmResponse] = useState<string>('');
-	const [error, setError] = useState<string>('');
-	const [lastResponseTime, setLastResponseTime] = useState<Date | null>(null);
-	const [responseEmoji, setResponseEmoji] = useState<string>('✅');
-	
-	// History state
-	const [history, setHistory] = useState<LLMHistoryItem[]>([]);
-	const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(-1);
+	// All state persisted in atoms
+	const [isLoading, setIsLoading] = useAtom(llmIsLoadingAtom);
+	const [llmResponse, setLlmResponse] = useAtom(llmResponseAtom);
+	const [error, setError] = useAtom(llmErrorAtom);
+	const [lastResponseTime, setLastResponseTime] = useAtom(llmLastResponseTimeAtom);
+	const [responseEmoji, setResponseEmoji] = useAtom(llmResponseEmojiAtom);
+	const [history, setHistory] = useAtom(llmHistoryAtom);
+	const [currentHistoryIndex, setCurrentHistoryIndex] = useAtom(llmCurrentHistoryIndexAtom);
+
+	// Tracks whether we've already triggered an analysis this page load (manual or auto)
+	const hasTriggeredAnalysisRef = useRef<boolean>(false);
 
 	// Helper function to format host issues
 	const formatHostIssues = (hosts: Host[]): string => {
@@ -133,6 +139,8 @@ export default function LocalLLM() {
 			return;
 		}
 
+		hasTriggeredAnalysisRef.current = true;
+
 		setIsLoading(true);
 		setError('');
 		// Don't clear llmResponse - keep previous results visible while loading
@@ -159,7 +167,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a friendly assistant that celebrates IT team achievements and system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}.`
+						content: `You are a friendly assistant that celebrates IT team achievements and system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. `
 					},
 					{
 						role: 'user',
@@ -174,7 +182,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}.`
+						content: `You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. If you mention "flapping", capitalize it as "FLAPPING".`
 					},
 					// Default
 					{
@@ -212,7 +220,7 @@ export default function LocalLLM() {
 					model: clientSettings.llmModel || 'openai/gpt-oss-20b',
 					messages: messages,
 					temperature: 0.7,
-					max_tokens: 500
+					max_tokens: 50000
 				},
 				{
 					headers: {
@@ -225,24 +233,31 @@ export default function LocalLLM() {
 
 			// Extract the response
 			if (response.data.choices && response.data.choices.length > 0) {
-				const content = response.data.choices[0].message.content;
+				const rawContent = response.data.choices[0].message.content;
 				const timestamp = Date.now();
 				
-				// Extract all emojis from the response and randomly select one
-				// Regex to match emojis (including multi-codepoint emojis)
-				const emojiRegex = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2300}-\u{23FF}\u{2B50}\u{2B55}\u{203C}\u{2049}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2139}\u{2194}-\u{2199}\u{21A9}-\u{21AA}\u{231A}-\u{231B}\u{2328}\u{23CF}\u{23E9}-\u{23F3}\u{23F8}-\u{23FA}\u{24C2}\u{25AA}-\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2600}-\u{2604}\u{260E}\u{2611}\u{2614}-\u{2615}\u{2618}\u{261D}\u{2620}\u{2622}-\u{2623}\u{2626}\u{262A}\u{262E}-\u{262F}\u{2638}-\u{263A}\u{2640}\u{2642}\u{2648}-\u{2653}\u{265F}-\u{2660}\u{2663}\u{2665}-\u{2666}\u{2668}\u{267B}\u{267E}-\u{267F}\u{2692}-\u{2697}\u{2699}\u{269B}-\u{269C}\u{26A0}-\u{26A1}\u{26A7}\u{26AA}-\u{26AB}\u{26B0}-\u{26B1}\u{26BD}-\u{26BE}\u{26C4}-\u{26C5}\u{26C8}\u{26CE}-\u{26CF}\u{26D1}\u{26D3}-\u{26D4}\u{26E9}-\u{26EA}\u{26F0}-\u{26F5}\u{26F7}-\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}-\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}-\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}-\u{2935}\u{2B05}-\u{2B07}\u{2B1B}-\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}][\u{FE00}-\u{FE0F}\u{E0100}-\u{E01EF}\u{1F3FB}-\u{1F3FF}]?(?:\u{200D}[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}][\u{FE00}-\u{FE0F}\u{E0100}-\u{E01EF}\u{1F3FB}-\u{1F3FF}]?)*/gu;
-				const emojisInResponse = content.match(emojiRegex);
+				// Check if response starts with an emoji and extract it
+				// Emoji regex pattern to match emojis at the start of the string
+				const emojiRegex = /^([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2300}-\u{23FF}\u{2B50}\u{2B55}\u{2934}\u{2935}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2614}\u{2615}\u{2648}-\u{2653}\u{267F}\u{2693}\u{26A1}\u{26AA}\u{26AB}\u{26BD}\u{26BE}\u{26C4}\u{26C5}\u{26CE}\u{26D4}\u{26EA}\u{26F2}\u{26F3}\u{26F5}\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}\u{2935}\u{2B05}-\u{2B07}\u{2B1B}\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}][\u{FE00}-\u{FE0F}]?)\s*/u;
+				const emojiMatch = rawContent.match(emojiRegex);
 				
-				let selectedEmoji = '✅';
-				if (emojisInResponse && emojisInResponse.length > 0) {
-					// Randomly select one emoji from the response
-					selectedEmoji = emojisInResponse[Math.floor(Math.random() * emojisInResponse.length)];
+				let content: string;
+				let selectedEmoji: string;
+				
+				if (emojiMatch) {
+					// Found an emoji at the start - use it and strip it from content
+					selectedEmoji = emojiMatch[1];
+					content = rawContent.slice(emojiMatch[0].length);
 				} else {
-					// Fall back to default based on issue count if no emojis found
-					if (totalIssues > 10) {
+					// No leading emoji - fall back to issue count based selection
+					content = rawContent;
+					const issueCount = hostProblems.length + serviceProblems.length;
+					if (issueCount > 10) {
 						selectedEmoji = '🚨';
-					} else if (totalIssues > 5) {
+					} else if (issueCount > 0) {
 						selectedEmoji = '⚠️';
+					} else {
+						selectedEmoji = '✅';
 					}
 				}
 				
@@ -250,17 +265,30 @@ export default function LocalLLM() {
 				const newHistoryItem: LLMHistoryItem = {
 					content,
 					timestamp,
-					emoji: selectedEmoji
+					emoji: selectedEmoji,
+					model: response.data.model || clientSettings.llmModel || 'unknown',
+					hostHowMany: { ...hostHowManyState },
+					serviceHowMany: { ...serviceHowManyState }
 				};
 				
 				// Check if user is currently viewing the most recent response
 				const isViewingMostRecent = currentHistoryIndex === history.length - 1 || currentHistoryIndex === -1;
 				
-				setHistory(prev => [...prev, newHistoryItem]);
+				// Set item into history, keeping max 10 items
+				setHistory(prev => {
+					const newHistory = [...prev, newHistoryItem];
+					if (newHistory.length > 10) {
+						return newHistory.slice(-10); // Keep only the last 10 items
+					}
+					return newHistory;
+				});
 				
 				// Only jump to new response if user was viewing the most recent one
+				// Note: We clamp to 9 (max index) because history is limited to 10 items
+				// and the state update is asynchronous, so history.length may not reflect the new size yet
+				const newIndex = Math.min(history.length, 9);
 				if (isViewingMostRecent) {
-					setCurrentHistoryIndex(history.length); // Will be the index of the new item
+					setCurrentHistoryIndex(newIndex);
 					setLlmResponse(content);
 					setLastResponseTime(new Date(timestamp));
 					setResponseEmoji(selectedEmoji);
@@ -268,6 +296,10 @@ export default function LocalLLM() {
 					// Just update the index to account for the new item being added
 					// but don't change what the user is viewing
 					// (the setHistory will add it, but we don't navigate to it)
+					setCurrentHistoryIndex(newIndex);
+					setLlmResponse(content);
+					setLastResponseTime(new Date(timestamp));
+					setResponseEmoji(selectedEmoji);
 				}
 				
 				// Speak the response if speakItems is enabled
@@ -295,15 +327,20 @@ export default function LocalLLM() {
 			if (axios.isAxiosError(err)) {
 				if (err.code === 'ECONNABORTED') {
 					setError('Request timeout. The LLM server took too long to respond.');
+					console.error('LocalLLM ECONNABORTED:', err);
 				} else if (err.response) {
 					setError(`LLM server error: ${err.response.status} - ${err.response.statusText}`);
+					console.error('LocalLLM response error:', err.response.status, err.response.statusText, err.response.data);
 				} else if (err.request) {
 					setError(`Cannot connect to LLM server at ${clientSettings.llmServerHost}:${clientSettings.llmServerPort}. Please check the hostname and port.`);
+					console.error('LocalLLM request error (no response):', err.request);
 				} else {
 					setError(`Error: ${err.message}`);
+					console.error('LocalLLM axios error:', err.message, err);
 				}
 			} else {
 				setError('An unexpected error occurred.');
+				console.error('LocalLLM unexpected error:', err);
 			}
 			console.error('LocalLLM error:', err);
 		} finally {
@@ -334,67 +371,124 @@ export default function LocalLLM() {
 		}
 	};
 
-	const totalIssues = (hostState.problemsArray?.length || 0) + (serviceState.problemsArray?.length || 0);
+	const hostProblems = hostState.problemsArray || [];
+	const serviceProblems = serviceState.problemsArray || [];
 
-	// Track the previous totalIssues count
-	const prevTotalIssuesRef = useRef<number>(totalIssues);
-	const isInitialMountRef = useRef<boolean>(true);
+	// Build a simple signature: sorted list of problem identifiers
+	// Only triggers on actual problem additions/removals, not status changes
+	const buildSignature = (): string => {
+		const hostIds = hostProblems.map(h => h.name).sort().join(',');
+		const serviceIds = serviceProblems.map(s => `${s.host_name}:${s.description}`).sort().join(',');
+		return `${hostProblems.length}|${serviceProblems.length}|${hostIds}|${serviceIds}`;
+	};
 
-	// Create a debounced version of queryLLM
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debouncedQueryLLM = useCallback(
-		debounce(() => {
-			queryLLM();
-		}, 2000), // Wait 2 seconds after the last change before running
-		[hostState.problemsArray, serviceState.problemsArray, clientSettings]
-	);
+	const currentSignature = buildSignature();
+	const prevSignatureRef = useRef<string | null>(null);
+	const debounceTimerRef = useRef<number | null>(null);
+	const initialLoadTimerRef = useRef<number | null>(null);
 
-	// Automatically run analysis when totalIssues changes
+	const handleManualAnalyze = () => {
+		hasTriggeredAnalysisRef.current = true;
+		queryLLM();
+	};
+
+	// Trigger LLM when problems change
 	useEffect(() => {
-		// Skip the very first render
-		if (isInitialMountRef.current) {
-			isInitialMountRef.current = false;
-			prevTotalIssuesRef.current = totalIssues; // Initialize the ref on first render
+		// Skip if LLM not configured
+		if (!clientSettings.llmServerHost || !clientSettings.llmServerPort) {
 			return;
 		}
 
-		// Only run if the count actually changed
-		if (prevTotalIssuesRef.current !== totalIssues) {
-			// Store the previous value before updating
-			const previousCount = prevTotalIssuesRef.current;
+		// On first render, just store the signature and set up initial load timer
+		if (prevSignatureRef.current === null) {
+			prevSignatureRef.current = currentSignature;
 			
-			// Update the ref with the new count
-			prevTotalIssuesRef.current = totalIssues;
-
-			// Only auto-run if LLM is configured
-			if (clientSettings.llmServerHost && clientSettings.llmServerPort) {
-				console.log(`[LocalLLM] Issue count changed: ${previousCount} → ${totalIssues}. Triggering analysis...`);
-				debouncedQueryLLM();
-			}
+			// Initial load: trigger after 5 seconds if no analysis has run and history is empty
+			initialLoadTimerRef.current = window.setTimeout(() => {
+				if (!hasTriggeredAnalysisRef.current && !isLoading && history.length === 0) {
+					console.log('[LocalLLM] Initial load trigger');
+					hasTriggeredAnalysisRef.current = true;
+					queryLLM();
+				}
+			}, 5000);
+			return;
 		}
 
-		// Cleanup function to cancel pending debounced calls
-		return () => {
-			debouncedQueryLLM.cancel();
-		};
-	}, [totalIssues, clientSettings.llmServerHost, clientSettings.llmServerPort, debouncedQueryLLM]);
+		// Check if signature changed
+		if (prevSignatureRef.current === currentSignature) {
+			return;
+		}
 
-	
+		console.log('[LocalLLM] Problems changed:', { 
+			prev: prevSignatureRef.current, 
+			current: currentSignature 
+		});
+		prevSignatureRef.current = currentSignature;
+
+		// Clear any pending debounce timer
+		if (debounceTimerRef.current) {
+			window.clearTimeout(debounceTimerRef.current);
+		}
+
+		// Debounce: wait 2 seconds before triggering
+		debounceTimerRef.current = window.setTimeout(() => {
+			console.log('[LocalLLM] Debounce complete, triggering analysis');
+			hasTriggeredAnalysisRef.current = true;
+			queryLLM();
+		}, 2000);
+
+		// Cleanup
+		return () => {
+			if (debounceTimerRef.current) {
+				window.clearTimeout(debounceTimerRef.current);
+			}
+		};
+	}, [currentSignature, clientSettings.llmServerHost, clientSettings.llmServerPort, isLoading]);
+
+	// Cleanup initial load timer on unmount
+	useEffect(() => {
+		return () => {
+			if (initialLoadTimerRef.current) {
+				window.clearTimeout(initialLoadTimerRef.current);
+			}
+		};
+	}, []);
+
+	// Border color based on hosts and services warning or critical status from current history item
+	const currentHistoryItem = history[currentHistoryIndex];
+	const historyHostHowMany = currentHistoryItem?.hostHowMany;
+	const historyServiceHowMany = currentHistoryItem?.serviceHowMany;
+
+	const hasCritical = (historyHostHowMany?.howManyHostDown ?? 0) > 0 || 
+		(historyServiceHowMany?.howManyServiceCritical ?? 0) > 0;
+	const hasUnknown = (historyHostHowMany?.howManyHostUnreachable ?? 0) > 0 || 
+		(historyServiceHowMany?.howManyServiceUnknown ?? 0) > 0;
+	const hasWarning = (historyServiceHowMany?.howManyServiceWarning ?? 0) > 0;
+
+	let borderClasses = 'border-green border-[#003400]';
+	if (hasCritical) {
+		borderClasses = 'border-red';
+	} else if (hasUnknown) {
+		borderClasses = 'border-orange';
+	} else if (hasWarning) {
+		borderClasses = 'border-yellow';
+	}
+
 	return (
-		<div className="local-llm">
-			<div className="local-llm-header">
-				<h3 className="local-llm-title">
+		<div className={`my-2.5`}>
+			<div className="flex justify-between items-center flex-wrap gap-2.5 mb-1.5">
+				<h3 className="mr-2 mb-0 text-[#bbb]">
 					AI Analysis
 					{lastResponseTime && (
-						<span className="local-llm-timestamp">
-							@ {lastResponseTime.toLocaleString()}
-							{' '}({formatDateTimeAgo(lastResponseTime.getTime())}ago)
+						<span className="ml-1">
+							@ {formatDateTimeLocale(lastResponseTime.getTime(), clientSettings.locale, clientSettings.clockTimeFormat)}
+							{' '}({formatDateTimeAgo(lastResponseTime.getTime())} ago)
 						</span>
 					)}
 				</h3>
-				<div className="local-llm-header-right">
+				<div className={`flex items-center gap-1.5`}>
 					{isLoading && (
-						<div className="local-llm-loading-inline">
+						<div className="flex items-center gap-2.5 text-[#444] text-[0.8em]">
 							<div className="local-llm-spinner"></div>
 							<span>Analyzing...</span>
 						</div>
@@ -402,7 +496,7 @@ export default function LocalLLM() {
 					
 					{/* History navigation controls */}
 					{history.length > 0 && (
-						<div className="flex items-center gap-2 mr-3 text-sm">
+						<div className="flex items-center gap-0 mr-0 text-sm">
 							<button
 								onClick={navigateToPrevious}
 								disabled={currentHistoryIndex <= 0}
@@ -415,7 +509,7 @@ export default function LocalLLM() {
 							>
 								<FontAwesomeIcon icon={faChevronLeft} />
 							</button>
-							<span className="text-xs text-gray-300 font-medium min-w-[45px] text-center tabular-nums">
+							<span className="text-xs text-gray-300 font-medium min-w-[30px] text-center tabular-nums">
 								{currentHistoryIndex + 1} / {history.length}
 							</span>
 							<button
@@ -433,10 +527,10 @@ export default function LocalLLM() {
 						</div>
 					)}
 					
-					<FontAwesomeIcon icon={faArrowsRotate} style={{ fontSize: '0.8em' }} className="text-[#444]" />
+					<FontAwesomeIcon icon={faArrowsRotate} className="text-[0.8em] text-[#444]" />
 					<button
 						className="local-llm-button"
-						onClick={queryLLM}
+						onClick={handleManualAnalyze}
 						disabled={isLoading}
 					>
 						Analyze
@@ -444,27 +538,34 @@ export default function LocalLLM() {
 				</div>
 			</div>
 
-			{totalIssues === 0 && !llmResponse && (
+			{history.length === 0 && !llmResponse && (
 				<div className="all-ok-item mt-2.5">
-					<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">
+					<span className="m-[5px_10px] ml-2.5 inline-block text-lime">
 						All systems operating normally. No issues to analyze.
 					</span>
 				</div>
 			)}
 
 			{error && (
-				<div className="local-llm-error">
+				<div className="bg-[#4d1e1e] border border-[#7a2d2d] rounded px-2 py-1 text-[#e6a8a8] flex items-start gap-2.5 mb-2.5">
 					<span role="img" aria-label="error">⚠️</span> {error}
 				</div>
 			)}
 
 			{llmResponse && (
-				<div className={`local-llm-response ${isLoading ? 'local-llm-response-loading' : ''}`}>
-					<div className="local-llm-response-emoji">{responseEmoji}</div>
+				<div className={`local-llm-response ServiceItemBorder ${borderClasses} ${isLoading ? 'local-llm-response-loading' : ''} relative`}>
+					<div className="text-4xl leading-none row-span-2 col-start-1 flex items-start">{responseEmoji}</div>
 
 					<div className="local-llm-response-content">
 						<LLMMarkup content={llmResponse} />
 					</div>
+
+					{/* Display the model used for this response */}
+					{currentHistoryItem?.model && (
+						<div className="absolute bottom-1 right-2 text-[12px] text-gray-500 opacity-60">
+							{currentHistoryItem.model}
+						</div>
+					)}
 				</div>
 			)}
 		</div>

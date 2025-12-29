@@ -220,8 +220,8 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 		const highlightStatusWords = (text: string, startIndex: number): (string | JSX.Element)[] => {
 			const parts: (string | JSX.Element)[] = [];
 			
-			// Match DOWN, CRITICAL, WARNING, or UNKNOWN as whole words (case-insensitive)
-			const statusRegex = /\b(DOWN|CRITICAL|WARNING|UNKNOWN)\b/gi;
+			// Match DOWN, CRITICAL, WARNING, UNKNOWN, or FLAPPING as whole words (case-insensitive)
+			const statusRegex = /\b(DOWN|CRITICAL|WARNING|UNKNOWN|FLAPPING)\b/gi;
 			let lastIndex = 0;
 			let match;
 			let partIndex = startIndex;
@@ -234,12 +234,12 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 				
 				// Determine the color class based on the status word (case-insensitive)
 				let colorClass = '';
-				const word = match[1].toUpperCase();
+				const word = match[1];
 				if (word === 'DOWN' || word === 'CRITICAL') {
 					colorClass = 'color-red';
 				} else if (word === 'WARNING' || word === 'Warning') {
 					colorClass = 'color-yellow';
-				} else if (word === 'UNKNOWN') {
+				} else if (word === 'UNKNOWN' || word === 'FLAPPING') {
 					colorClass = 'color-orange';
 				}
 				

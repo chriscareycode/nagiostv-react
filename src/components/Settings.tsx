@@ -1020,7 +1020,7 @@ const Settings = () => {
 										value={clientSettingsTemp.llmPromptAllOk} 
 										onChange={handleChange('llmPromptAllOk', 'string')}
 										placeholder="Additional instructions when 0 items are down"
-										rows={5}
+										rows={12}
 										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
 									/>
 									<br />
@@ -1036,7 +1036,7 @@ const Settings = () => {
 										value={clientSettingsTemp.llmPromptNotOk} 
 										onChange={handleChange('llmPromptNotOk', 'string')}
 										placeholder="Additional instructions when 1 or more items are down"
-										rows={5}
+										rows={12}
 										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
 									/>
 									<br />
@@ -1048,7 +1048,7 @@ const Settings = () => {
 							<tr>
 								<td colSpan={2} style={{ paddingLeft: '20px', paddingTop: '10px', paddingBottom: '10px' }}>
 									<div style={{ backgroundColor: '#2a2a2a', padding: '15px', borderRadius: '5px', border: '1px solid #444' }}>
-										<strong>ℹ️ Setup Instructions:</strong>
+										<strong>ℹ️ LLM Server Setup Instructions:</strong>
 										<ul style={{ marginTop: '10px', marginBottom: '5px', paddingLeft: '20px' }}>
 											<li style={{ marginBottom: '5px' }}>
 												<strong>Ollama:</strong> Install from <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>ollama.com</a>, 

@@ -6,7 +6,7 @@
 - Node.js
 
 
-### Setup Instruxtions
+### Setup Instructions
 ```console
 $ git clone https://github.com/chriscareycode/nagiostv-react.git
 $ cd nagiostv-react
