@@ -107,7 +107,7 @@ const HostSection = () => {
 			}
 			isComponentMounted = false;
 		};
-	}, [clientSettings.fetchHostFrequency, hostgroupFilter, servicegroupFilter]);
+	}, [clientSettings.fetchHostFrequency, clientSettings.hideHostUp, hostgroupFilter, servicegroupFilter]);
 
 	const howManyCounter = useCallback((hostlist: HostList) => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
@@ -188,7 +188,9 @@ const HostSection = () => {
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
 			// add filter for hoststatus "not up" only
-			url += '&hoststatus=down+unreachable+pending';
+			if (clientSettings.hideHostUp) {
+				url += '&hoststatus=down+unreachable+pending';
+			}
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}

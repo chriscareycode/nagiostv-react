@@ -86,6 +86,9 @@ const ServiceItems = ({
 		if (settings.hideServicePending) {
 			if (item.status === 1) { return false; }
 		}
+		if (settings.hideServiceOk) {
+			if (item.status === 2) { return false; }
+		}
 		if (settings.hideServiceWarning) {
 			if (item.status === 4) { return false; }
 		}

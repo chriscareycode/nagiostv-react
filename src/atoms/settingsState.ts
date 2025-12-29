@@ -72,6 +72,7 @@ export const clientSettingsInitial: ClientSettings = {
 	hideLocalLLMSection: true,
 	hideServiceSection: false,
 	hideServicePending: false,
+	hideServiceOk: true,
 	hideServiceWarning: false,
 	hideServiceUnknown: false,
 	hideServiceCritical: false,
@@ -84,6 +85,7 @@ export const clientSettingsInitial: ClientSettings = {
 
 	hideHostSection: false,
 	hideHostPending: false,
+	hideHostUp: true,
 	hideHostDown: false,
 	hideHostUnreachable: false,
 	hideHostAcked: false,

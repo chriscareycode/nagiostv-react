@@ -97,7 +97,7 @@ const ServiceSection = () => {
 			}
 			isComponentMounted = false;
 		};
-	}, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
+	}, [clientSettings.fetchServiceFrequency, clientSettings.hideServiceOk, hostgroupFilter, servicegroupFilter]);
 
 	const howManyCounter = useCallback((servicelist: ServiceList) => {
 		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
@@ -182,7 +182,9 @@ const ServiceSection = () => {
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 			// add filter for servicestatus "not ok" only
-			url += '&servicestatus=warning+critical+unknown+pending';
+			if (clientSettings.hideServiceOk) {
+				url += '&servicestatus=warning+critical+unknown+pending';
+			}
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}

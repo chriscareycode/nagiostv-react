@@ -56,13 +56,13 @@ export function convertHostObjectToArray(hostlist: Record<string, Host>) {
 
 	if (hostlist) {
 		Object.keys(hostlist).forEach((k) => {
-			// if host status is NOT UP
+			// if host status is NOT UP (hostlist[k].status !== 2)
 			// or host is flapping,
 			// or host is scheduled downtime
 			// we add it to the array
-			if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
+			// if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
 				hostProblemsArray.push(hostlist[k]);
-			}
+			// }
 		});
 	}
 
@@ -75,16 +75,16 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 	if (servicelist) {
 		Object.keys(servicelist).forEach((k) => {
 			Object.keys(servicelist[k]).forEach((l) => {
-				// if service status is NOT OK
+				// if service status is NOT OK (servicelist[k][l].status !== 2)
 				// or service is flapping,
 				// or host is scheduled downtime
 				// we add it to the array
-				if (servicelist[k][l].status !== 2 ||
-					servicelist[k][l].is_flapping ||
-					servicelist[k][l].scheduled_downtime_depth > 0) {
+				// if (servicelist[k][l].status !== 2 ||
+				// 	servicelist[k][l].is_flapping ||
+				// 	servicelist[k][l].scheduled_downtime_depth > 0) {
 					// add it to the array of service problems
 					serviceProblemsArray.push(servicelist[k][l]);
-				}
+				// }
 			});
 		});
 	}

@@ -80,6 +80,9 @@ const HostItems = ({
 		if (settings.hideHostPending) {
 			if (item.status === 1) { return false; }
 		}
+		if (settings.hideHostUp) {
+			if (item.status === 2) { return false; }
+		}
 		if (settings.hideHostDown) {
 			if (item.status === 4) { return false; }
 		}

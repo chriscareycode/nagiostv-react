@@ -119,15 +119,35 @@ const ServiceFilters = () => {
 
 	return (
 		<>
-
 			{!hideFilters && <select value={serviceSortOrder} data-varname={'serviceSortOrder'} onChange={handleSelectChange}>
 				<option value="newest">{translate('newest first', language)}</option>
 				<option value="oldest">{translate('oldest first', language)}</option>
 			</select>}
 
-			{(howManyServiceWarning !== 9 || howManyServiceCritical !== 0) && <span>
-				&nbsp;
-				<span className="filter-ok-label filter-ok-label-green"><strong>{howManyServiceOk}</strong> OK</span>
+			<span>
+				{' '}
+				<FilterCheckbox
+					filterName="ok"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideServiceOk'}
+					defaultChecked={!settingsObject.hideServiceOk}
+					howMany={howManyServiceOk}
+					howManyText={translate('ok', language)}
+				/>
+			</span>
+
+			{(!hideFilters || howManyServiceWarning !== 0) && <span>
+				{' '}
+				<FilterCheckbox
+					filterName="warning"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideServiceWarning'}
+					defaultChecked={!settingsObject.hideServiceWarning}
+					howMany={howManyServiceWarning}
+					howManyText={translate('warning', language)}
+				/>
 			</span>}
 
 			{(!hideFilters || howManyServiceCritical !== 0) && <span>
@@ -140,19 +160,6 @@ const ServiceFilters = () => {
 					defaultChecked={!settingsObject.hideServiceCritical}
 					howMany={howManyServiceCritical}
 					howManyText={translate('critical', language)}
-				/>
-			</span>}
-
-			{(!hideFilters || howManyServiceWarning !== 0) && <span>
-				{' '}
-				<FilterCheckbox
-					filterName="warning"
-					hideFilters={hideFilters}
-					handleCheckboxChange={handleCheckboxChange}
-					stateName={'hideServiceWarning'}
-					defaultChecked={!settingsObject.hideServiceWarning}
-					howMany={howManyServiceWarning}
-					howManyText={translate('warning', language)}
 				/>
 			</span>}
 

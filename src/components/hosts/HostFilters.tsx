@@ -115,10 +115,18 @@ const HostFilters = () => {
 				<option value="oldest">{translate('oldest first', language)}</option>
 			</select>}
 
-			{(howManyHostDown !== 9) && <span>
-				&nbsp;
-				<span className="filter-ok-label filter-ok-label-green"><strong>{howManyHostUp}</strong> UP</span>
-			</span>}
+			<span>
+				{' '}
+				<FilterCheckbox
+					filterName="up"
+					hideFilters={hideFilters}
+					handleCheckboxChange={handleCheckboxChange}
+					stateName={'hideHostUp'}
+					defaultChecked={!clientSettings.hideHostUp}
+					howMany={howManyHostUp}
+					howManyText={translate('up', language)}
+				/>
+			</span>
 
 			{(!hideFilters || howManyHostDown !== 0) && <span>
 				{' '}

@@ -41,6 +41,7 @@ export interface ClientSettings {
 	hideLocalLLMSection: boolean;
 	hideServiceSection: boolean;
 	hideServicePending: boolean;
+	hideServiceOk: boolean;
 	hideServiceWarning: boolean;
 	hideServiceUnknown: boolean;
 	hideServiceCritical: boolean;
@@ -53,6 +54,7 @@ export interface ClientSettings {
 
 	hideHostSection: boolean;
 	hideHostPending: boolean;
+	hideHostUp: boolean;
 	hideHostDown: boolean;
 	hideHostUnreachable: boolean;
 	hideHostAcked: boolean;
