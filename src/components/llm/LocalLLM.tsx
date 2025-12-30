@@ -175,7 +175,7 @@ export default function LocalLLM() {
 			const tooManyServiceProblems = filteredServiceProblems.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
 
 			// Check if there are no issues
-			const noIssues = hostProblems.length === 0 && filteredServiceProblems.length === 0;
+			const noIssues = filteredHostProblems.length === 0 && filteredServiceProblems.length === 0;
 
 			// Prepare the messages for the LLM
 			let messages: LLMMessage[];
