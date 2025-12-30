@@ -34,8 +34,6 @@ export interface LLMHistoryItem {
 	timestamp: number; // Unix timestamp
 	emoji: string;
 	model: string; // The LLM model used for this response
-	hostHowMany: HostHowManyState;
-	serviceHowMany: ServiceHowManyState;
 	color: LLMHistoryColor;
 }
 

@@ -4,8 +4,8 @@ import { motion } from 'motion/react';
 
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
-import { hostAtom, hostHowManyAtom } from '../../atoms/hostAtom';
-import { serviceAtom, serviceHowManyAtom } from '../../atoms/serviceAtom';
+import { hostAtom } from '../../atoms/hostAtom';
+import { serviceAtom } from '../../atoms/serviceAtom';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { 
 	llmHistoryAtom, 
@@ -70,8 +70,6 @@ export default function LocalLLM() {
 	// State Management
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
-	const hostHowManyState = useAtomValue(hostHowManyAtom);
-	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	// All state persisted in atoms
@@ -308,27 +306,34 @@ export default function LocalLLM() {
 						selectedEmoji = '✅';
 					}
 				}
-				// Based on the current host and service state, and the current filters,
-				// determine the color to use for this response
+				// Based on the filtered host and service problems, determine the color to use for this response
 				let color: LLMHistoryColor = 'green'; // Default to green
+				
+				// Count issues from filtered arrays
+				const hasServiceWarning = filteredServiceProblems.some(s => s.status === 4);  // 4 = WARNING
+				const hasServiceCritical = filteredServiceProblems.some(s => s.status === 16); // 16 = CRITICAL
+				const hasServiceUnknown = filteredServiceProblems.some(s => s.status === 8);  // 8 = UNKNOWN
+				const hasHostDown = filteredHostProblems.some(h => h.status === 4);           // 4 = DOWN
+				const hasHostUnreachable = filteredHostProblems.some(h => h.status === 8);    // 8 = UNREACHABLE
+				
 				// Service warning
-				if (clientSettings.hideServiceWarning === false && serviceHowManyState.howManyServiceWarning > 0) {
+				if (hasServiceWarning) {
 					color = 'yellow';
 				}
-				// Service critical
-				if (clientSettings.hideServiceCritical === false && serviceHowManyState.howManyServiceCritical > 0) {
-					color = 'red';
-				}
 				// Service unknown
-				if (clientSettings.hideServiceUnknown === false && serviceHowManyState.howManyServiceUnknown > 0) {
+				if (hasServiceUnknown) {
 					color = 'orange';
 				}
+				// Service critical
+				if (hasServiceCritical) {
+					color = 'red';
+				}
 				// Host down
-				if (clientSettings.hideHostDown === false && hostHowManyState.howManyHostDown > 0) {
+				if (hasHostDown) {
 					color = 'red';
 				}
 				// Host unreachable
-				if (clientSettings.hideHostUnreachable === false && hostHowManyState.howManyHostUnreachable > 0) {
+				if (hasHostUnreachable) {
 					color = 'red';
 				}
 				
@@ -338,8 +343,6 @@ export default function LocalLLM() {
 					timestamp,
 					emoji: selectedEmoji,
 					model: response.data.model || clientSettings.llmModel || 'unknown',
-					hostHowMany: { ...hostHowManyState },
-					serviceHowMany: { ...serviceHowManyState },
 					color,
 				};
 				
