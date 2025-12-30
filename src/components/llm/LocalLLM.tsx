@@ -15,7 +15,8 @@ import {
 	llmResponseAtom,
 	llmErrorAtom,
 	llmLastResponseTimeAtom,
-	llmResponseEmojiAtom
+	llmResponseEmojiAtom,
+	LLMHistoryColor
 } from '../../atoms/llmAtom';
 
 // Types
@@ -34,6 +35,7 @@ import { faArrowsRotate, faChevronLeft, faChevronRight } from '@fortawesome/free
 
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
+import { filterHostProblemsArray, filterServiceProblemsArray } from 'helpers/nagiostv';
 
 // Configurable limit for maximum problems to send to LLM
 const MAX_HOST_PROBLEMS_FOR_LLM = 20;
@@ -165,12 +167,17 @@ export default function LocalLLM() {
 			const hostProblems = hostState.problemsArray || [];
 			const serviceProblems = serviceState.problemsArray || [];
 
+			// Filter the problems according to the client settings for filters
+			// use filterHostProblemsArray and filterServiceProblemsArray from nagiostv.ts
+			const filteredHostProblems = filterHostProblemsArray(hostProblems, clientSettings);
+			const filteredServiceProblems = filterServiceProblemsArray(serviceProblems, clientSettings);
+
 			// Check if there are too many problems to analyze
-			const tooManyHostProblems = hostProblems.length > MAX_HOST_PROBLEMS_FOR_LLM;
-			const tooManyServiceProblems = serviceProblems.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
+			const tooManyHostProblems = filteredHostProblems.length > MAX_HOST_PROBLEMS_FOR_LLM;
+			const tooManyServiceProblems = filteredServiceProblems.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
 
 			// Check if there are no issues
-			const noIssues = hostProblems.length === 0 && serviceProblems.length === 0;
+			const noIssues = hostProblems.length === 0 && filteredServiceProblems.length === 0;
 
 			// Prepare the messages for the LLM
 			let messages: LLMMessage[];
@@ -180,15 +187,15 @@ export default function LocalLLM() {
 				let overloadMessage = 'The monitoring system is experiencing a high volume of issues:\n\n';
 				
 				if (tooManyHostProblems) {
-					overloadMessage += `- There are ${hostProblems.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
+					overloadMessage += `- There are ${filteredHostProblems.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
 				} else {
-					overloadMessage += `- There are ${hostProblems.length} host problems\n`;
+					overloadMessage += `- There are ${filteredHostProblems.length} host problems\n`;
 				}
 				
 				if (tooManyServiceProblems) {
-					overloadMessage += `- There are ${serviceProblems.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
+					overloadMessage += `- There are ${filteredServiceProblems.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
 				} else {
-					overloadMessage += `- There are ${serviceProblems.length} service problems\n`;
+					overloadMessage += `- There are ${filteredServiceProblems.length} service problems\n`;
 				}
 				
 				overloadMessage += '\nThe detailed analysis cannot be performed due to the high volume. Please investigate the monitoring dashboard directly.';
@@ -217,8 +224,8 @@ export default function LocalLLM() {
 				];
 			} else {
 				// Format the issues for the LLM
-				const hostIssuesText = formatHostIssues(hostProblems);
-				const serviceIssuesText = formatServiceIssues(serviceProblems);
+				const hostIssuesText = formatHostIssues(filteredHostProblems);
+				const serviceIssuesText = formatServiceIssues(filteredServiceProblems);
 
 				messages = [
 					{
@@ -301,6 +308,29 @@ export default function LocalLLM() {
 						selectedEmoji = '✅';
 					}
 				}
+				// Based on the current host and service state, and the current filters,
+				// determine the color to use for this response
+				let color: LLMHistoryColor = 'green'; // Default to green
+				// Service warning
+				if (clientSettings.hideServiceWarning === false && serviceHowManyState.howManyServiceWarning > 0) {
+					color = 'yellow';
+				}
+				// Service critical
+				if (clientSettings.hideServiceCritical === false && serviceHowManyState.howManyServiceCritical > 0) {
+					color = 'red';
+				}
+				// Service unknown
+				if (clientSettings.hideServiceUnknown === false && serviceHowManyState.howManyServiceUnknown > 0) {
+					color = 'orange';
+				}
+				// Host down
+				if (clientSettings.hideHostDown === false && hostHowManyState.howManyHostDown > 0) {
+					color = 'red';
+				}
+				// Host unreachable
+				if (clientSettings.hideHostUnreachable === false && hostHowManyState.howManyHostUnreachable > 0) {
+					color = 'red';
+				}
 				
 				// Add to history
 				const newHistoryItem: LLMHistoryItem = {
@@ -309,7 +339,8 @@ export default function LocalLLM() {
 					emoji: selectedEmoji,
 					model: response.data.model || clientSettings.llmModel || 'unknown',
 					hostHowMany: { ...hostHowManyState },
-					serviceHowMany: { ...serviceHowManyState }
+					serviceHowMany: { ...serviceHowManyState },
+					color,
 				};
 				
 				// Check if user is currently viewing the most recent response
@@ -516,23 +547,9 @@ export default function LocalLLM() {
 
 	// Border color based on hosts and services warning or critical status from current history item
 	const currentHistoryItem = history[currentHistoryIndex];
-	const historyHostHowMany = currentHistoryItem?.hostHowMany;
-	const historyServiceHowMany = currentHistoryItem?.serviceHowMany;
 
-	const hasCritical = (historyHostHowMany?.howManyHostDown ?? 0) > 0 || 
-		(historyServiceHowMany?.howManyServiceCritical ?? 0) > 0;
-	const hasUnknown = (historyHostHowMany?.howManyHostUnreachable ?? 0) > 0 || 
-		(historyServiceHowMany?.howManyServiceUnknown ?? 0) > 0;
-	const hasWarning = (historyServiceHowMany?.howManyServiceWarning ?? 0) > 0;
-
-	let borderClasses = 'border-green border-[#003400]';
-	if (hasCritical) {
-		borderClasses = 'border-red';
-	} else if (hasUnknown) {
-		borderClasses = 'border-orange';
-	} else if (hasWarning) {
-		borderClasses = 'border-yellow';
-	}
+	const color = currentHistoryItem?.color || 'green';
+	const borderClasses = `border-${color}`;
 
 	return (
 		<div className={`my-2.5`}>

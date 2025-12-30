@@ -16,14 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 // State Management
 import { useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
-import { hostHowManyAtom } from '../../atoms/hostAtom';
-import { serviceHowManyAtom } from '../../atoms/serviceAtom';
+import { hostAtom } from '../../atoms/hostAtom';
+import { serviceAtom } from '../../atoms/serviceAtom';
 import { llmIsLoadingAtom } from '../../atoms/llmAtom';
+
+// Helpers
+import {
+	filterHostProblemsArray,
+	filterServiceProblemsArray,
+	countFilteredHostProblems,
+	countFilteredServiceProblems
+} from '../../helpers/nagiostv';
 
 import './Doomguy.css';
 // @ts-ignore-next-line
@@ -47,12 +55,23 @@ const Doomguy = ({ scaleCss, style }: {
 	const thinkingAnimation = [6,6,6,6,11,11,11,6,6,6,6,11,11,11,11,6,6,6,6,11,11];
 
 	const clientSettings = useAtomValue(clientSettingsAtom);
-	const hostHowManyState = useAtomValue(hostHowManyAtom);
-	const serviceHowManyState = useAtomValue(serviceHowManyAtom);
+	const hostState = useAtomValue(hostAtom);
+	const serviceState = useAtomValue(serviceAtom);
 	const llmIsLoading = useAtomValue(llmIsLoadingAtom);
 
 	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
 	const [thinkingFrame, setThinkingFrame] = useState(thinkingAnimation[0]);
+
+	// Calculate filtered counts using useMemo for performance
+	const howManyDown = useMemo(() => {
+		const filteredHosts = filterHostProblemsArray(hostState.problemsArray, clientSettings);
+		const filteredServices = filterServiceProblemsArray(serviceState.problemsArray, clientSettings);
+		
+		const hostDownCount = countFilteredHostProblems(filteredHosts);
+		const serviceProblems = countFilteredServiceProblems(filteredServices);
+		
+		return hostDownCount + serviceProblems.warning + serviceProblems.critical;
+	}, [hostState.problemsArray, serviceState.problemsArray, clientSettings]);
 
 	// Animate Doomguy while thinking
 	useEffect(() => {
@@ -66,11 +85,6 @@ const Doomguy = ({ scaleCss, style }: {
 		}, 200);
 		return () => clearInterval(interval);
 	}, [llmIsLoading]);
-
-	const howManyDown =
-		hostHowManyState.howManyHostDown +
-		serviceHowManyState.howManyServiceWarning +
-		serviceHowManyState.howManyServiceCritical;
 
 	let doomguyClass = 'doomguy';
 	let classes: any[] = [];

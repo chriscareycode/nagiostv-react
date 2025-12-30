@@ -27,6 +27,8 @@ export interface ServiceHowManyState {
 	howManyServiceNotificationsDisabled: number;
 }
 
+export type LLMHistoryColor = 'green' | 'yellow' | 'orange' | 'red' | 'gray';
+
 export interface LLMHistoryItem {
 	content: string;
 	timestamp: number; // Unix timestamp
@@ -34,6 +36,7 @@ export interface LLMHistoryItem {
 	model: string; // The LLM model used for this response
 	hostHowMany: HostHowManyState;
 	serviceHowMany: ServiceHowManyState;
+	color: LLMHistoryColor;
 }
 
 // History state
