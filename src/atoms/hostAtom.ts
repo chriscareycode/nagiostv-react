@@ -11,7 +11,7 @@ const initialState: HostWrap = {
 	errorMessage: '',
 	lastUpdate: 0,
 	response: {},
-	problemsArray: []
+	stateArray: []
 };
 
 export const hostAtom = atom(initialState);
