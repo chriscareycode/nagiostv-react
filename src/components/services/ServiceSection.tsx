@@ -97,7 +97,7 @@ const ServiceSection = () => {
 			}
 			isComponentMounted = false;
 		};
-	}, [clientSettings.fetchServiceFrequency, hostgroupFilter, servicegroupFilter]);
+	}, [clientSettings.fetchServiceFrequency, clientSettings.hideServiceOk, hostgroupFilter, servicegroupFilter]);
 
 	const howManyCounter = useCallback((servicelist: ServiceList) => {
 		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
@@ -182,7 +182,9 @@ const ServiceSection = () => {
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
 			// add filter for servicestatus "not ok" only
-			url += '&servicestatus=warning+critical+unknown+pending';
+			if (clientSettings.hideServiceOk) {
+				url += '&servicestatus=warning+critical+unknown+pending';
+			}
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
@@ -220,6 +222,7 @@ const ServiceSection = () => {
 
 			// convert the service object into an array (and sort it)
 			const myArray = convertServiceObjectToArray(my_list);
+			// console.log('ServiceSection myArray:', myArray);
 
 			// check for old stale data (detect if nagios is down)
 			const durationMs = new Date().getTime() - response.data.result.last_data_update;
@@ -236,7 +239,7 @@ const ServiceSection = () => {
 						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 				}
 			} else {
@@ -249,7 +252,7 @@ const ServiceSection = () => {
 						errorMessage: '',
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 
 					setServiceIsFakeDataSet(useFakeSampleData);
@@ -267,11 +270,11 @@ const ServiceSection = () => {
 		});
 	}
 
-	// Mutating state on serviceState.problemsArray is not allowed (the sort below)
+	// Mutating state on serviceState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something
-	let sortedServiceProblemsArray: Service[] = [];
-	if (Array.isArray(serviceState.problemsArray)) {
-		sortedServiceProblemsArray = [...serviceState.problemsArray];
+	let sortedServiceStateArray: Service[] = [];
+	if (Array.isArray(serviceState.stateArray)) {
+		sortedServiceStateArray = [...serviceState.stateArray];
 	}
 	
 	// let howManyServices = 0;
@@ -283,7 +286,7 @@ const ServiceSection = () => {
 
 	let sort = 1;
 	if (serviceSortOrder === 'oldest') { sort = -1; }
-	sortedServiceProblemsArray.sort((a, b) => {
+	sortedServiceStateArray.sort((a, b) => {
 		if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
 		if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
 		return 0;
@@ -296,7 +299,7 @@ const ServiceSection = () => {
 
 				<span className="service-summary-title">
 					<strong>{howManyServices}</strong> {howManyServices === 1 ? translate('service', language) : translate('services', language)}{' '}
-					{hostgroupFilter && <span>({hostgroupFilter})</span>}
+					{servicegroupFilter && <span>({servicegroupFilter})</span>}
 				</span>
 
 				{/* service filters */}
@@ -308,7 +311,7 @@ const ServiceSection = () => {
           howMany={howManyServices}
           howManyWarning={howManyServiceWarning}
           howManyCritical={howManyServiceCritical}
-          howManyDown={serviceProblemsArray.length}
+          howManyDown={serviceStateArray.length}
         />}
         */}
 
@@ -328,7 +331,7 @@ const ServiceSection = () => {
 			{(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
 			<ServiceItems
-				serviceProblemsArray={sortedServiceProblemsArray}
+				serviceStateArray={sortedServiceStateArray}
 				settings={clientSettings}
 				//servicelistError={serviceState.error}
 				isDemoMode={isDemoMode}

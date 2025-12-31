@@ -24,6 +24,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 //import registerServiceWorker from './registerServiceWorker';
+import { disablePwaOnClient } from './pwaCleanup';
 
 // Delete caches caused by the registerServiceWorker.
 // TODO: remove this from the project after a few versions.
@@ -60,3 +61,8 @@ const root = createRoot(container); // createRoot(container!) if you use TypeScr
 root.render(<App />);
 
 //registerServiceWorker();
+
+// PWA is intentionally disabled. This will help remove old client installs that
+// may still have a SW registered from previous versions.
+// Note: don't await this; we want initial render to stay fast.
+disablePwaOnClient({ verbose: false });

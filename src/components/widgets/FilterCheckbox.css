@@ -29,6 +29,12 @@
 	font-size: 1.1em;
 }
 
+.Checkbox.ok {
+	border: 1px solid #004c00;
+	background-color: #006700;
+	color: lime;
+}
+
 .Checkbox.warning {
 	border: 0px solid yellow;
 	background-color: #585804;
@@ -76,6 +82,12 @@
 }
 
 /* host */
+
+.Checkbox.up {
+	border: 1px solid #004c00;
+	background-color: #006700;
+	color: lime;
+}
 
 .Checkbox.down {
 	border: 0px solid red;

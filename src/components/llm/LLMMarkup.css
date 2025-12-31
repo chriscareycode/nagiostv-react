@@ -1,0 +1,250 @@
+.llm-markup {
+	color: #e0e0e0;
+	line-height: 1.0;
+	font-size: 0.95em;
+}
+
+/* Headings */
+.llm-heading {
+	margin: 0.8em 0 0.5em 0;
+	font-weight: 600;
+	line-height: 1.0;
+}
+
+.llm-heading:first-child {
+	margin-top: 0;
+}
+
+.llm-heading-1 {
+	font-size: 1.8em;
+	color: #4a90e2;
+	border-bottom: 2px solid #3a3a3a;
+	padding-bottom: 0.3em;
+}
+
+.llm-heading-2 {
+	font-size: 1.5em;
+	color: #5ba3f5;
+}
+
+.llm-heading-3 {
+	font-size: 1.3em;
+	color: #6bb6ff;
+}
+
+.llm-heading-4 {
+	font-size: 1.1em;
+	color: #7dc8ff;
+}
+
+.llm-heading-5 {
+	font-size: 1em;
+	color: #8ed9ff;
+}
+
+.llm-heading-6 {
+	font-size: 0.9em;
+	color: #9fe5ff;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Paragraphs */
+.llm-paragraph {
+	margin: 0.5em 0;
+	line-height: 1.3;
+}
+
+.llm-first-paragraph {
+	/* font-size: 1.2em;
+	font-weight: 500;
+	color: #f0f0f0; */
+}
+
+.llm-paragraph:first-child {
+	margin-top: 0;
+}
+
+.llm-paragraph:last-child {
+	margin-bottom: 0;
+}
+
+/* Lists */
+.llm-list {
+	margin: 0.5em 0;
+	padding-left: 1.5em;
+	list-style-type: disc;
+}
+
+.llm-list-item {
+	margin: 0.3em 0;
+	line-height: 1.0;
+}
+
+.llm-list-item::marker {
+	color: #4a90e2;
+}
+
+/* Inline formatting */
+.llm-bold {
+	font-weight: 700;
+	color: #ffffff;
+}
+
+.llm-italic {
+	font-style: italic;
+	color: #d0d0d0;
+}
+
+/* Inline code */
+.llm-inline-code {
+	background-color: #2a2a2a;
+	border: 1px solid #3a3a3a;
+	border-radius: 3px;
+	padding: 0.15em 0.4em;
+	font-family: 'Monaco', 'Courier New', monospace;
+	font-size: 0.9em;
+	color: #e6b450;
+	white-space: nowrap;
+}
+
+/* Code blocks */
+.llm-code-block {
+	background-color: #1e1e1e;
+	border: 1px solid #3a3a3a;
+	border-radius: 4px;
+	padding: 1em;
+	margin: 1em 0;
+	overflow-x: auto;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.llm-code-block code {
+	font-family: 'Monaco', 'Courier New', monospace;
+	font-size: 0.9em;
+	color: #d4d4d4;
+	line-height: 1.0;
+	display: block;
+}
+
+/* Language-specific code highlighting hints */
+.llm-code-block code.language-json,
+.llm-code-block code.language-javascript,
+.llm-code-block code.language-python,
+.llm-code-block code.language-bash,
+.llm-code-block code.language-shell {
+	color: #9cdcfe;
+}
+
+/* Break elements */
+.llm-markup br {
+	display: block;
+	content: "";
+	margin: 0.1em 0;
+}
+
+/* Nested lists */
+.llm-list .llm-list {
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+}
+
+/* Links (if LLM includes them) */
+.llm-markup a {
+	color: #4a90e2;
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color 0.2s ease;
+}
+
+.llm-markup a:hover {
+	border-bottom-color: #4a90e2;
+}
+
+/* Blockquotes (if needed) */
+.llm-markup blockquote {
+	border-left: 3px solid #4a90e2;
+	padding-left: 1em;
+	margin: 1em 0;
+	color: #b0b0b0;
+	font-style: italic;
+}
+
+/* Horizontal rules */
+.llm-markup hr {
+	border: none;
+	border-top: 1px solid #3a3a3a;
+	margin: 1.5em 0;
+}
+
+/* Tables */
+.llm-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0 0;
+	background-color: rgba(0, 0, 0, 0.2);
+	border: 1px solid #3a3a3a;
+}
+
+.llm-table thead {
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.llm-table th {
+	padding: 0.75em 1em;
+	text-align: left;
+	font-weight: 600;
+	color: #4a90e2;
+	border-bottom: 2px solid #4a90e2;
+	border-right: 1px solid #3a3a3a;
+}
+
+.llm-table th:last-child {
+	border-right: none;
+}
+
+.llm-table td {
+	padding: 0.75em 1em;
+	border-bottom: 1px solid #2a2a2a;
+	border-right: 1px solid #2a2a2a;
+	color: #e0e0e0;
+}
+
+.llm-table td:last-child {
+	border-right: none;
+}
+
+.llm-table tbody tr:hover {
+	background-color: #252525;
+}
+
+.llm-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.llm-markup {
+		font-size: 0.9em;
+	}
+
+	.llm-heading-1 {
+		font-size: 1.5em;
+	}
+
+	.llm-heading-2 {
+		font-size: 1.3em;
+	}
+
+	.llm-heading-3 {
+		font-size: 1.2em;
+	}
+
+	.llm-code-block {
+		padding: 0.75em;
+	}
+
+	.llm-list {
+		padding-left: 1.2em;
+	}
+}

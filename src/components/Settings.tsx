@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import './Settings.css';
 
 import axios from 'axios';
-import { playSoundEffectDebounced, speakAudio } from '../helpers/audio';
+import { getVoices, playSoundEffectDebounced, speakAudio } from '../helpers/audio';
 import { listLocales } from '../helpers/dates';
 import { languages } from '../helpers/language';
 // clipboard
@@ -50,6 +50,7 @@ const Settings = () => {
 	const [saveMessage, setSaveMessage] = useState('');
 
 	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
+	const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
 	let isComponentMounted = false;
 	const hostlistError = false;
@@ -70,6 +71,13 @@ const Settings = () => {
 	useEffect(() => {
 		setClientSettingsTemp(clientSettings);
 	}, [clientSettings]);
+
+	// Load speech synthesis voices asynchronously
+	useEffect(() => {
+		getVoices().then(loadedVoices => {
+			setVoices(loadedVoices);
+		});
+	}, []);
 
 	// Save Local Settings
 	const saveLocalSettings = () => {
@@ -104,7 +112,7 @@ const Settings = () => {
 	};
 
 	// handle state changes for all the widgets on this page
-	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		// console.log('handleChange new');
 		// console.log(propName, dataType);
 		// console.log(event.target.value);
@@ -172,9 +180,7 @@ const Settings = () => {
 		}
 	}
 
-	// voices
-	const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-
+	// Voice options are populated from state (loaded asynchronously in useEffect)
 	const voiceOptions = voices.map((voice, i) => {
 		return (
 			<option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
@@ -753,15 +759,15 @@ const Settings = () => {
 									</select>
 								</td>
 							</tr>
-							{clientSettingsTemp.speakItems && <tr>
-								<th>Choose Voice:</th>
+							<tr>
+								<th>Speaking Voice:</th>
 								<td>
 									<select value={clientSettingsTemp.speakItemsVoice} onChange={handleChange('speakItemsVoice', 'string')}>
 										{voiceOptions}
 									</select>
-									<button className="SettingsTestButton" onClick={playVoice}>Test</button>
+									<button className="SettingsTestButton" onClick={playVoice}>Test Speaking Voice</button>
 								</td>
-							</tr>}
+							</tr>
 							<tr>
 								<th>Animated progress bar for "Next Check In":</th>
 								<td>
@@ -910,9 +916,160 @@ const Settings = () => {
 						</tbody>
 					</table>
 
-
-
-
+					{/* LLM Settings */}
+					<table className="SettingsTable">
+						<thead>
+							<tr>
+								<td colSpan={2} className="SettingsTableHeader">🤖 AI / LLM Integration Settings</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th style={{ padding: '0px', height: '3px' }}></th>
+								<td style={{ padding: '0px', height: '3px' }}></td>
+							</tr>
+							<tr>
+								<th>Local LLM:</th>
+								<td>
+									<select value={clientSettingsTemp.hideLocalLLMSection.toString()} onChange={handleChange('hideLocalLLMSection', 'boolean')}>
+										<option value={'true'}>Hide (Disabled)</option>
+										<option value={'false'}>Show (Enabled)</option>
+									</select>
+									&nbsp;
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Server Host:</th>
+								<td>
+									<input 
+										type="text" 
+										value={clientSettingsTemp.llmServerHost} 
+										onChange={handleChange('llmServerHost', 'string')}
+										placeholder="localhost or 10.0.0.1" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Hostname or IP address of your OpenAI-compatible LLM server (e.g., Ollama, LM Studio, LocalAI)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Server Port:</th>
+								<td>
+									<input 
+										type="number" 
+										min="1" 
+										max="65535" 
+										value={clientSettingsTemp.llmServerPort} 
+										onChange={handleChange('llmServerPort', 'number')}
+										placeholder="11434" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Port number (Ollama: 11434, LM Studio: 1234, LocalAI: 8080)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Model:</th>
+								<td>
+									<input 
+										type="text" 
+										value={clientSettingsTemp.llmModel} 
+										onChange={handleChange('llmModel', 'string')}
+										placeholder="llama2 or gpt-3.5-turbo" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Model name to use (e.g., llama2, mistral, gpt-3.5-turbo)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM API Key:</th>
+								<td>
+									<input 
+										type="password" 
+										value={clientSettingsTemp.llmApiKey} 
+										onChange={handleChange('llmApiKey', 'string')}
+										placeholder="Optional - leave empty for local servers" 
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										API key for authentication (optional for most local LLM servers)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Speak LLM Response:</th>
+								<td>
+									<select value={clientSettingsTemp.llmSpeakResponse.toString()} onChange={handleChange('llmSpeakResponse', 'boolean')}>
+										<option value={'false'}>Off</option>
+										<option value={'true'}>On</option>
+									</select>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										When enabled, the AI response will be spoken aloud using your browser's text-to-speech.
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Prompt (All OK):</th>
+								<td>
+									<textarea 
+										value={clientSettingsTemp.llmPromptAllOk} 
+										onChange={handleChange('llmPromptAllOk', 'string')}
+										placeholder="Additional instructions when 0 items are down"
+										rows={12}
+										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when all services/hosts are OK (0 items down)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>Prompt (Issues):</th>
+								<td>
+									<textarea 
+										value={clientSettingsTemp.llmPromptNotOk} 
+										onChange={handleChange('llmPromptNotOk', 'string')}
+										placeholder="Additional instructions when 1 or more items are down"
+										rows={12}
+										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when there are issues (1 or more items down)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td colSpan={2} style={{ paddingLeft: '20px', paddingTop: '10px', paddingBottom: '10px' }}>
+									<div style={{ backgroundColor: '#2a2a2a', padding: '15px', borderRadius: '5px', border: '1px solid #444' }}>
+										<strong>ℹ️ LLM Server Setup Instructions:</strong>
+										<ul style={{ marginTop: '10px', marginBottom: '5px', paddingLeft: '20px' }}>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>Ollama:</strong> Install from <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>ollama.com</a>, 
+												run <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>ollama serve</code> (default port: 11434)
+											</li>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>LM Studio:</strong> Download from <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>lmstudio.ai</a>, 
+												load a model, and start the local server (default port: 1234)
+											</li>
+											<li style={{ marginBottom: '5px' }}>
+												<strong>LocalAI:</strong> Run via Docker: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>docker run -p 8080:8080 localai/localai:latest</code>
+											</li>
+										</ul>
+										<div style={{ marginTop: '10px', fontSize: '0.9em', color: '#999' }}>
+											The AI Analysis component will use these settings to connect to your local LLM server and provide insights on monitoring issues.
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
 					<table className="SettingsTable">
 						<thead>

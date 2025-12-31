@@ -6,7 +6,7 @@
 - Node.js
 
 
-### Setup Instruxtions
+### Setup Instructions
 ```console
 $ git clone https://github.com/chriscareycode/nagiostv-react.git
 $ cd nagiostv-react
@@ -58,3 +58,20 @@ and switching some state management to Recoil.
 As of the time of writing 2021-10-03, when in development mode, Recoil will leak memory
 into `window.$recoilDebugStates`. You can set window.$recoilDebugStates = [] before memory profiling to try to get around this
 https://github.com/facebookexperimental/Recoil/issues/471#issuecomment-685217406
+
+
+## PWA / Service Worker status
+
+The PWA (service worker + offline caching) is currently **disabled on purpose**.
+
+### What we did
+
+- `vite.config.ts`: `vite-plugin-pwa` import and `VitePWA(...)` plugin block are commented out.
+- `index.html`: the `<link rel="manifest" ...>` tag is commented out.
+- `src/pwaCleanup.ts`: on app startup we unregister any existing service workers and clear SW caches to help users who previously installed the PWA.
+
+### Re-enable later (if desired)
+
+1. Uncomment `VitePWA` import + plugin block in `vite.config.ts`.
+2. Uncomment the manifest link in `index.html`.
+3. Remove (or disable) the startup call to `disablePwaOnClient()` in `src/index.tsx`.

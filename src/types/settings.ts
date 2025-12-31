@@ -38,8 +38,10 @@ export interface ClientSettings {
 	hostsAndServicesSideBySide: boolean;
 	hideSummarySection: boolean;
 	hideMostRecentAlertSection: boolean;
+	hideLocalLLMSection: boolean;
 	hideServiceSection: boolean;
 	hideServicePending: boolean;
+	hideServiceOk: boolean;
 	hideServiceWarning: boolean;
 	hideServiceUnknown: boolean;
 	hideServiceCritical: boolean;
@@ -52,6 +54,7 @@ export interface ClientSettings {
 
 	hideHostSection: boolean;
 	hideHostPending: boolean;
+	hideHostUp: boolean;
 	hideHostDown: boolean;
 	hideHostUnreachable: boolean;
 	hideHostAcked: boolean;
@@ -104,6 +107,15 @@ export interface ClientSettings {
 	automaticScrollWaitSeconds: number;
 	showMiniMap: boolean;
 	miniMapWidth: number;
+
+	// LLM integration
+	llmServerHost: string;
+	llmServerPort: number;
+	llmModel: string;
+	llmApiKey: string;
+	llmSpeakResponse: boolean;
+	llmPromptAllOk: string;
+	llmPromptNotOk: string;
 }
 
 export interface VersionCheck {

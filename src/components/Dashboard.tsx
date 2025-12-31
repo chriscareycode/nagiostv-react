@@ -17,6 +17,7 @@ import Demo from './Demo';
 // CSS
 import './Dashboard.css';
 import MostRecentAlert from './summary/MostRecentAlert';
+import LocalLLM from './llm/LocalLLM';
 
 const Dashboard = () => {
 
@@ -35,6 +36,7 @@ const Dashboard = () => {
 		fontSizeEm,
 		hideSummarySection,
 		hideMostRecentAlertSection,
+		hideLocalLLMSection,
 		hideHistory,
 		hideHostSection,
 		hideServiceSection,
@@ -48,21 +50,27 @@ const Dashboard = () => {
 	return (
 		<div className="Dashboard" style={{ fontSize: fontSizeEm }}>
 
-			{isDoneLoading && <div>
+			{isDoneLoading && <div className="pt-2.5">
 
 				<DashboardFetch />
 
-				{/* Hostgroup Filter Section */}
-				{!hideFilters && <HostGroupFilter />}
+				<div className="flex">
+					{/* Hostgroup Filter Section */}
+					<HostGroupFilter />
 
-				{/* Servicegroup Filter Section */}
-				{!hideFilters && <ServiceGroupFilter />}
+					{/* Servicegroup Filter Section */}
+					<ServiceGroupFilter />
+				</div>
+
 
 				{/* Summary Section */}
 				{!hideSummarySection && <Summary />}
 
 				{/* Most Recent Alert Section */}
 				{!hideMostRecentAlertSection && <MostRecentAlert />}
+
+				{/* Local LLM Section */}
+				{!hideLocalLLMSection && <LocalLLM />}
 
 				{/* Hosts and Services Side by Side Enabled */}
 				{hostsAndServicesSideBySide && (

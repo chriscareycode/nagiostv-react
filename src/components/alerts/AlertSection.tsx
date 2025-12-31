@@ -128,6 +128,7 @@ const AlertSection = () => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
 
 		let url = '';
+		// let endtime = '0';
 		// let endtime = '%2B0'; // +0
 		let endtime = '%2D0'; // -0
 
@@ -246,6 +247,8 @@ const AlertSection = () => {
 				{!hideHistoryTitle && <span className="service-summary-title">
 					<strong>{alertlistFilteredCount}</strong> alerts{' '}
 					{clientSettings.hostgroupFilter && <span>({clientSettings.hostgroupFilter})</span>}
+					{clientSettings.hostgroupFilter && clientSettings.servicegroupFilter && <span> </span>}
+					{clientSettings.servicegroupFilter && <span>({clientSettings.servicegroupFilter})</span>}
 				</span>}
 
 				{/* alert history filters */}

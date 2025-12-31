@@ -170,7 +170,6 @@ const SettingsLoad = () => {
 		}
 
 		if (settingsObject) {
-
 			console.log('Found local settings. Loading settings:', settingsObject);
 
 			setClientSettings(curr => ({

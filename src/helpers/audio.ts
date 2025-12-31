@@ -96,7 +96,43 @@ function massageSpeakingWords(words: string) {
 	return newWords;
 }
 
-export function speakAudio(words: string, voice: string) {
+/**
+ * Get available speech synthesis voices with proper async handling
+ * Some browsers (Chrome) don't populate voices until after the first call or voiceschanged event
+ */
+export function getVoices(): Promise<SpeechSynthesisVoice[]> {
+	return new Promise((resolve) => {
+		if (!window.speechSynthesis) {
+			resolve([]);
+			return;
+		}
+
+		let voices = window.speechSynthesis.getVoices();
+		
+		// If voices are already loaded, return them
+		if (voices.length > 0) {
+			resolve(voices);
+			return;
+		}
+
+		// Otherwise, wait for the voiceschanged event
+		const voicesChangedHandler = () => {
+			voices = window.speechSynthesis.getVoices();
+			window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedHandler);
+			resolve(voices);
+		};
+
+		window.speechSynthesis.addEventListener('voiceschanged', voicesChangedHandler);
+		
+		// Fallback: resolve with empty array after timeout if voices never load
+		setTimeout(() => {
+			window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedHandler);
+			resolve(window.speechSynthesis.getVoices());
+		}, 1000);
+	});
+}
+
+export async function speakAudio(words: string, voice: string) {
 
 	//console.log('speakAudio', words, voice);
 	const massagedWords = massageSpeakingWords(words);
@@ -115,8 +151,16 @@ export function speakAudio(words: string, voice: string) {
 		return;
 	}
 
+	// Cancel any currently speaking audio and clear the queue
+	// This prevents audio from piling up when tab is backgrounded or laptop sleeps
+	if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+		window.speechSynthesis.cancel();
+	}
+
 	if (voice) {
-		let mySpeechSynthesisVoice = window.speechSynthesis.getVoices().filter(v => v.name === voice);
+		// Wait for voices to be loaded before trying to match
+		const voices = await getVoices();
+		const mySpeechSynthesisVoice = voices.filter(v => v.name === voice);
 		if (mySpeechSynthesisVoice.length > 0) {
 			sayWhat.voice = mySpeechSynthesisVoice[0];
 		}

@@ -52,44 +52,44 @@ export function cleanDemoDataServicelist(servicelist: ServiceList) {
 }
 
 export function convertHostObjectToArray(hostlist: Record<string, Host>) {
-	let hostProblemsArray: Host[] = [];
+	let hostStateArray: Host[] = [];
 
 	if (hostlist) {
 		Object.keys(hostlist).forEach((k) => {
-			// if host status is NOT UP
+			// if host status is NOT UP (hostlist[k].status !== 2)
 			// or host is flapping,
 			// or host is scheduled downtime
 			// we add it to the array
-			if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
-				hostProblemsArray.push(hostlist[k]);
-			}
+			// if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
+				hostStateArray.push(hostlist[k]);
+			// }
 		});
 	}
 
-	return hostProblemsArray;
+	return hostStateArray;
 }
 
 export function convertServiceObjectToArray(servicelist: Record<string, Record<string, Service>>) {
-	let serviceProblemsArray: Service[] = [];
+	let serviceStateArray: Service[] = [];
 
 	if (servicelist) {
 		Object.keys(servicelist).forEach((k) => {
 			Object.keys(servicelist[k]).forEach((l) => {
-				// if service status is NOT OK
+				// if service status is NOT OK (servicelist[k][l].status !== 2)
 				// or service is flapping,
 				// or host is scheduled downtime
 				// we add it to the array
-				if (servicelist[k][l].status !== 2 ||
-					servicelist[k][l].is_flapping ||
-					servicelist[k][l].scheduled_downtime_depth > 0) {
+				// if (servicelist[k][l].status !== 2 ||
+				// 	servicelist[k][l].is_flapping ||
+				// 	servicelist[k][l].scheduled_downtime_depth > 0) {
 					// add it to the array of service problems
-					serviceProblemsArray.push(servicelist[k][l]);
-				}
+					serviceStateArray.push(servicelist[k][l]);
+				// }
 			});
 		});
 	}
 
-	return serviceProblemsArray;
+	return serviceStateArray;
 }
 
 
@@ -127,3 +127,79 @@ export const saveLocalStorage = (changeString: string, obj: ClientSettings) => {
 		saveCookie(changeString, obj);
 	}
 };
+
+
+export const filterHostStateArray = (hostStateArray: Host[], settings: ClientSettings): Host[] => {
+	return hostStateArray.filter(host => {
+		// Filter by status
+		if (settings.hideHostPending && host.status === 1) return false;
+		if (settings.hideHostUp && host.status === 2) return false;
+		if (settings.hideHostDown && host.status === 4) return false;
+		if (settings.hideHostUnreachable && host.status === 8) return false;
+
+		// Filter by acknowledged
+		if (settings.hideHostAcked && host.problem_has_been_acknowledged) return false;
+
+		// Filter by scheduled downtime
+		if (settings.hideHostScheduled && host.scheduled_downtime_depth > 0) return false;
+
+		// Filter by flapping
+		if (settings.hideHostFlapping && host.is_flapping) return false;
+
+		// Filter by soft state (state_type 0 = soft, 1 = hard)
+		if (settings.hideHostSoft && host.state_type === 0) return false;
+
+		// Filter by notifications disabled
+		if (settings.hideHostNotificationsDisabled && !host.notifications_enabled) return false;
+
+		return true;
+	});
+};
+
+export const filterServiceStateArray = (serviceStateArray: Service[], settings: ClientSettings): Service[] => {
+	return serviceStateArray.filter(service => {
+		// Filter by status
+		if (settings.hideServicePending && service.status === 1) return false;
+		if (settings.hideServiceOk && service.status === 2) return false;
+		if (settings.hideServiceWarning && service.status === 4) return false;
+		if (settings.hideServiceUnknown && service.status === 8) return false;
+		if (settings.hideServiceCritical && service.status === 16) return false;
+
+		// Filter by acknowledged
+		if (settings.hideServiceAcked && service.problem_has_been_acknowledged) return false;
+
+		// Filter by scheduled downtime
+		if (settings.hideServiceScheduled && service.scheduled_downtime_depth > 0) return false;
+
+		// Filter by flapping
+		if (settings.hideServiceFlapping && service.is_flapping) return false;
+
+		// Filter by soft state (state_type 0 = soft, 1 = hard)
+		if (settings.hideServiceSoft && service.state_type === 0) return false;
+
+		// Filter by notifications disabled
+		if (settings.hideServiceNotificationsDisabled && !service.notifications_enabled) return false;
+
+		return true;
+	});
+}
+
+/**
+ * Count how many hosts are in a down state from a filtered array
+ */
+export const countFilteredHostStates = (filteredHostArray: Host[]): number => {
+	return filteredHostArray.filter(host => host.status === 4).length; // 4 = DOWN
+}
+
+/**
+ * Count how many services are in warning or critical state from a filtered array
+ */
+export const countFilteredServiceStates = (filteredServiceArray: Service[]): { warning: number; critical: number } => {
+	let warning = 0;
+	let critical = 0;
+	filteredServiceArray.forEach(service => {
+		if (service.status === 4) warning++;   // 4 = WARNING
+		if (service.status === 16) critical++; // 16 = CRITICAL
+	});
+	return { warning, critical };
+}

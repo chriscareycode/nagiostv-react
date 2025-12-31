@@ -46,13 +46,13 @@ import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 
 interface ServiceItemsProps {
-	serviceProblemsArray: Service[];
+	serviceStateArray: Service[];
 	settings: ClientSettings;
 	isDemoMode: boolean;
 }
 
 const ServiceItems = ({
-	serviceProblemsArray,
+	serviceStateArray,
 	settings,
 	isDemoMode,
 	//servicelistError,
@@ -79,12 +79,15 @@ const ServiceItems = ({
 		// howManyServiceNotificationsDisabled,
 	} = serviceHowManyState;
 
-	//console.log('this.props.serviceProblemsArray is', this.props.serviceProblemsArray);
-	//console.log(Object.keys(this.props.serviceProblemsArray));
+	//console.log('this.props.serviceStateArray is', this.props.serviceStateArray);
+	//console.log(Object.keys(this.props.serviceStateArray));
 
-	const filteredServiceProblemsArray = serviceProblemsArray.filter(item => {
+	const filteredServiceStateArray = serviceStateArray.filter(item => {
 		if (settings.hideServicePending) {
 			if (item.status === 1) { return false; }
+		}
+		if (settings.hideServiceOk) {
+			if (item.status === 2) { return false; }
 		}
 		if (settings.hideServiceWarning) {
 			if (item.status === 4) { return false; }
@@ -113,15 +116,15 @@ const ServiceItems = ({
 		return true;
 	});
 
-	const howManyHidden = serviceProblemsArray.length - filteredServiceProblemsArray.length;
-	const showSomeDownItems = serviceProblemsArray.length > 0 && filteredServiceProblemsArray.length === 0;
+	const howManyHidden = serviceStateArray.length - filteredServiceStateArray.length;
+	const showSomeDownItems = serviceStateArray.length > 0 && filteredServiceStateArray.length === 0;
 	const { language } = settings;
 
 	return (
 		<div className="ServiceItems">
 
 			<AnimatePresence initial={false}>
-				{serviceProblemsArray.length === 0 && <motion.div
+				{serviceStateArray.length === 0 && <motion.div
 					className={`all-ok-item`}
 					initial={{ opacity: 0, height: 0 }}
 					animate={{ opacity: 1, height: 'auto' }}
@@ -133,14 +136,14 @@ const ServiceItems = ({
 
 			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
 				<div>
-					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceProblemsArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
+					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceStateArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
 					<span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
 				</div>
 			</div>
 
 			<div className="service-items-wrap">
 				<AnimatePresence initial={false}>
-					{filteredServiceProblemsArray.map((e, i) => {
+					{filteredServiceStateArray.map((e, i) => {
 						//console.log('ServiceItem item');
 						//console.log(e, i);
 
@@ -157,7 +160,7 @@ const ServiceItems = ({
 									settings={settings}
 									serviceItem={e}
 									comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
-									howManyDown={filteredServiceProblemsArray.length}
+									howManyDown={filteredServiceStateArray.length}
 									isDemoMode={isDemoMode}
 								/>
 							</motion.div>

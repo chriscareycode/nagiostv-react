@@ -27,7 +27,7 @@ export interface HostWrap {
 	errorMessage: string;
 	lastUpdate: number;
 	response: Record<string, any>;
-	problemsArray: Host[]
+	stateArray: Host[]
 }
 
 export type ServiceList = {
@@ -62,7 +62,7 @@ export interface ServiceWrap {
 	errorMessage: string;
 	lastUpdate: number;
 	response: Record<string, any>;
-	problemsArray: Service[]
+	stateArray: Service[]
 }
 
 export interface Alert {

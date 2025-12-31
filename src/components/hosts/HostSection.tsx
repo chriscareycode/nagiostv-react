@@ -107,7 +107,7 @@ const HostSection = () => {
 			}
 			isComponentMounted = false;
 		};
-	}, [clientSettings.fetchHostFrequency, hostgroupFilter, servicegroupFilter]);
+	}, [clientSettings.fetchHostFrequency, clientSettings.hideHostUp, hostgroupFilter, servicegroupFilter]);
 
 	const howManyCounter = useCallback((hostlist: HostList) => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
@@ -188,7 +188,9 @@ const HostSection = () => {
 		} else {
 			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
 			// add filter for hoststatus "not up" only
-			url += '&hoststatus=down+unreachable+pending';
+			if (clientSettings.hideHostUp) {
+				url += '&hoststatus=down+unreachable+pending';
+			}
 			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
 			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
 		}
@@ -217,6 +219,7 @@ const HostSection = () => {
 
 			// Make an array from the object
 			let my_list: Record<string, Host> = _.get(response.data.data, 'hostlist', {});
+			// console.log('HostSection response.data.data', response.data.data);
 
 			// If we are in demo mode then clean the fake data
 			// The fake data has a bunch of dates of hosts and services being down.
@@ -227,6 +230,7 @@ const HostSection = () => {
 
 			// convert the host object into an array
 			const myArray = convertHostObjectToArray(my_list);
+			// console.log('HostSection myArray:', myArray);
 
 			// check for old data (nagios down?)
 			const now = DateTime.now();
@@ -245,7 +249,7 @@ const HostSection = () => {
 						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 				}
 			} else {
@@ -260,7 +264,7 @@ const HostSection = () => {
 						errorMessage: '',
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 
 					setHostIsFakeDataSet(useFakeSampleData);
@@ -279,11 +283,11 @@ const HostSection = () => {
 	};
 
 	
-	// Mutating state on hostState.problemsArray is not allowed (the sort below)
+	// Mutating state on hostState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something
-	let sortedHostProblemsArray: Host[] = [];
-	if (Array.isArray(hostState.problemsArray)) {
-		sortedHostProblemsArray = [...hostState.problemsArray];
+	let sortedHostStateArray: Host[] = [];
+	if (Array.isArray(hostState.stateArray)) {
+		sortedHostStateArray = [...hostState.stateArray];
 	}
 	
 	// const hostlist = hostState.response;
@@ -292,13 +296,13 @@ const HostSection = () => {
 	// Sort the data based on the hostSortOrder value
 	let sort = 1;
 	if (hostSortOrder === 'oldest') { sort = -1; }
-	//console.log('sortedHostProblemsArray before', sortedHostProblemsArray);
-	sortedHostProblemsArray.sort((a, b) => {
+	//console.log('sortedHostStateArray before', sortedHostStateArray);
+	sortedHostStateArray.sort((a, b) => {
 		if (a.last_time_up < b.last_time_up) { return 1 * sort; }
 		if (a.last_time_up > b.last_time_up) { return -1 * sort; }
 		return 0;
 	});
-	//console.log('sortedHostProblemsArray after', sortedHostProblemsArray);
+	//console.log('sortedHostStateArray after', sortedHostStateArray);
 
 	return (
 		<div className="HostSection">
@@ -330,7 +334,7 @@ const HostSection = () => {
 
 			{/* hostitems list */}
 			<HostItems
-				hostProblemsArray={sortedHostProblemsArray}
+				hostStateArray={sortedHostStateArray}
 				settings={clientSettings}
 				isDemoMode={isDemoMode}
 			/>
