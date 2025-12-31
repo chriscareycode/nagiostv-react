@@ -64,7 +64,7 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through hostProblemsArray, set one to down, and set state
+		// loop through hostStateArray, set one to down, and set state
 		Object.keys(hostlist).some(key => {
 			// "UP" and "not SOFT"
 			if (hostlist[key].status === 2) {
@@ -80,13 +80,13 @@ const Demo = () => {
 		hostlistRef.current = hostlist;
 
 		// convert object to array
-		const hostProblemsArray = convertHostObjectToArray(hostlist);
+		const hostStateArray = convertHostObjectToArray(hostlist);
 
 		// set state
 		setHostState(curr => ({
 			...curr,
 			response: hostlist,
-			problemsArray: hostProblemsArray
+			stateArray: hostStateArray
 		}));
 
 	};
@@ -100,7 +100,7 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through hostProblemsArray backwards, set one to up, and set state
+		// loop through hostStateArray backwards, set one to up, and set state
 		Object.keys(hostlist).reverse().some(key => {
 			// If status is "DOWN"
 			if (hostlist[key].status === 4) {
@@ -116,13 +116,13 @@ const Demo = () => {
 		hostlistRef.current = hostlist;
 
 		// convert object to array
-		const hostProblemsArray = convertHostObjectToArray(hostlist);
+		const hostStateArray = convertHostObjectToArray(hostlist);
 
 		// set state
 		setHostState(curr => ({
 			...curr,
 			response: hostlist,
-			problemsArray: hostProblemsArray
+			stateArray: hostStateArray
 		}));
 	};
 
@@ -153,7 +153,7 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through serviceProblemsArray, set one to down, and set state
+		// loop through serviceStateArray, set one to down, and set state
 		let done = false;
 		Object.keys(servicelist).some(hostkey => {
 			Object.keys(servicelist[hostkey]).some(key => {
@@ -172,13 +172,13 @@ const Demo = () => {
 		// set back into ref
 		servicelistRef.current = servicelist;
 
-		const serviceProblemsArray = convertServiceObjectToArray(servicelist);
+		const serviceStateArray = convertServiceObjectToArray(servicelist);
 
 		// set state
 		setServiceState(curr => ({
 			...curr,
 			response: servicelist,
-			problemsArray: serviceProblemsArray
+			stateArray: serviceStateArray
 		}));
 	};
 
@@ -191,7 +191,7 @@ const Demo = () => {
 			return;
 		}
 
-		// loop through serviceProblemsArray backwards, set one to up, and set state
+		// loop through serviceStateArray backwards, set one to up, and set state
 		let done = false;
 		Object.keys(servicelist).reverse().some(hostkey => {
 			Object.keys(servicelist[hostkey]).reverse().some(key => {
@@ -210,13 +210,13 @@ const Demo = () => {
 		// set back into ref
 		servicelistRef.current = servicelist;
 
-		const serviceProblemsArray = convertServiceObjectToArray(servicelist);
+		const serviceStateArray = convertServiceObjectToArray(servicelist);
 
 		// set state
 		setServiceState(curr => ({
 			...curr,
 			response: servicelist,
-			problemsArray: serviceProblemsArray
+			stateArray: serviceStateArray
 		}));
 	};
 

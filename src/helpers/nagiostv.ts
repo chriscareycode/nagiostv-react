@@ -52,7 +52,7 @@ export function cleanDemoDataServicelist(servicelist: ServiceList) {
 }
 
 export function convertHostObjectToArray(hostlist: Record<string, Host>) {
-	let hostProblemsArray: Host[] = [];
+	let hostStateArray: Host[] = [];
 
 	if (hostlist) {
 		Object.keys(hostlist).forEach((k) => {
@@ -61,16 +61,16 @@ export function convertHostObjectToArray(hostlist: Record<string, Host>) {
 			// or host is scheduled downtime
 			// we add it to the array
 			// if (hostlist[k].status !== 2 || hostlist[k].is_flapping || hostlist[k].scheduled_downtime_depth > 0) {
-				hostProblemsArray.push(hostlist[k]);
+				hostStateArray.push(hostlist[k]);
 			// }
 		});
 	}
 
-	return hostProblemsArray;
+	return hostStateArray;
 }
 
 export function convertServiceObjectToArray(servicelist: Record<string, Record<string, Service>>) {
-	let serviceProblemsArray: Service[] = [];
+	let serviceStateArray: Service[] = [];
 
 	if (servicelist) {
 		Object.keys(servicelist).forEach((k) => {
@@ -83,13 +83,13 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 				// 	servicelist[k][l].is_flapping ||
 				// 	servicelist[k][l].scheduled_downtime_depth > 0) {
 					// add it to the array of service problems
-					serviceProblemsArray.push(servicelist[k][l]);
+					serviceStateArray.push(servicelist[k][l]);
 				// }
 			});
 		});
 	}
 
-	return serviceProblemsArray;
+	return serviceStateArray;
 }
 
 
@@ -129,8 +129,8 @@ export const saveLocalStorage = (changeString: string, obj: ClientSettings) => {
 };
 
 
-export const filterHostProblemsArray = (hostProblemsArray: Host[], settings: ClientSettings): Host[] => {
-	return hostProblemsArray.filter(host => {
+export const filterHostStateArray = (hostStateArray: Host[], settings: ClientSettings): Host[] => {
+	return hostStateArray.filter(host => {
 		// Filter by status
 		if (settings.hideHostPending && host.status === 1) return false;
 		if (settings.hideHostUp && host.status === 2) return false;
@@ -156,8 +156,8 @@ export const filterHostProblemsArray = (hostProblemsArray: Host[], settings: Cli
 	});
 };
 
-export const filterServiceProblemsArray = (serviceProblemsArray: Service[], settings: ClientSettings): Service[] => {
-	return serviceProblemsArray.filter(service => {
+export const filterServiceStateArray = (serviceStateArray: Service[], settings: ClientSettings): Service[] => {
+	return serviceStateArray.filter(service => {
 		// Filter by status
 		if (settings.hideServicePending && service.status === 1) return false;
 		if (settings.hideServiceOk && service.status === 2) return false;
@@ -187,14 +187,14 @@ export const filterServiceProblemsArray = (serviceProblemsArray: Service[], sett
 /**
  * Count how many hosts are in a down state from a filtered array
  */
-export const countFilteredHostProblems = (filteredHostArray: Host[]): number => {
+export const countFilteredHostStates = (filteredHostArray: Host[]): number => {
 	return filteredHostArray.filter(host => host.status === 4).length; // 4 = DOWN
 }
 
 /**
  * Count how many services are in warning or critical state from a filtered array
  */
-export const countFilteredServiceProblems = (filteredServiceArray: Service[]): { warning: number; critical: number } => {
+export const countFilteredServiceStates = (filteredServiceArray: Service[]): { warning: number; critical: number } => {
 	let warning = 0;
 	let critical = 0;
 	filteredServiceArray.forEach(service => {

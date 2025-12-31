@@ -238,7 +238,7 @@ const ServiceSection = () => {
 						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 				}
 			} else {
@@ -251,7 +251,7 @@ const ServiceSection = () => {
 						errorMessage: '',
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 
 					setServiceIsFakeDataSet(useFakeSampleData);
@@ -269,11 +269,11 @@ const ServiceSection = () => {
 		});
 	}
 
-	// Mutating state on serviceState.problemsArray is not allowed (the sort below)
+	// Mutating state on serviceState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something
-	let sortedServiceProblemsArray: Service[] = [];
-	if (Array.isArray(serviceState.problemsArray)) {
-		sortedServiceProblemsArray = [...serviceState.problemsArray];
+	let sortedServiceStateArray: Service[] = [];
+	if (Array.isArray(serviceState.stateArray)) {
+		sortedServiceStateArray = [...serviceState.stateArray];
 	}
 	
 	// let howManyServices = 0;
@@ -285,7 +285,7 @@ const ServiceSection = () => {
 
 	let sort = 1;
 	if (serviceSortOrder === 'oldest') { sort = -1; }
-	sortedServiceProblemsArray.sort((a, b) => {
+	sortedServiceStateArray.sort((a, b) => {
 		if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
 		if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
 		return 0;
@@ -310,7 +310,7 @@ const ServiceSection = () => {
           howMany={howManyServices}
           howManyWarning={howManyServiceWarning}
           howManyCritical={howManyServiceCritical}
-          howManyDown={serviceProblemsArray.length}
+          howManyDown={serviceStateArray.length}
         />}
         */}
 
@@ -330,7 +330,7 @@ const ServiceSection = () => {
 			{(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
 
 			<ServiceItems
-				serviceProblemsArray={sortedServiceProblemsArray}
+				serviceStateArray={sortedServiceStateArray}
 				settings={clientSettings}
 				//servicelistError={serviceState.error}
 				isDemoMode={isDemoMode}

@@ -42,13 +42,13 @@ import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 
 interface HostItemsProps {
-	hostProblemsArray: Host[];
+	hostStateArray: Host[];
 	settings: ClientSettings;
 	isDemoMode: boolean;
 }
 
 const HostItems = ({
-	hostProblemsArray,
+	hostStateArray,
 	settings,
 	isDemoMode,
 }: HostItemsProps) => {
@@ -73,10 +73,10 @@ const HostItems = ({
 
 
 
-	//console.log('hostProblemsArray is', hostProblemsArray);
-	//console.log(Object.keys(hostProblemsArray));
+	//console.log('hostStateArray is', hostStateArray);
+	//console.log(Object.keys(hostStateArray));
 
-	const filteredHostProblemsArray = hostProblemsArray.filter(item => {
+	const filteredHostStateArray = hostStateArray.filter(item => {
 		if (settings.hideHostPending) {
 			if (item.status === 1) { return false; }
 		}
@@ -107,15 +107,15 @@ const HostItems = ({
 		return true;
 	});
 
-	const howManyHidden = hostProblemsArray.length - filteredHostProblemsArray.length;
-	const showSomeDownItems = hostProblemsArray.length > 0 && filteredHostProblemsArray.length === 0;
+	const howManyHidden = hostStateArray.length - filteredHostStateArray.length;
+	const showSomeDownItems = hostStateArray.length > 0 && filteredHostStateArray.length === 0;
 	const { language } = settings;
 
 	return (
 		<div className="HostItems ServiceItems">
 
 			<AnimatePresence initial={false}>
-				{hostProblemsArray.length === 0 && <motion.div
+				{hostStateArray.length === 0 && <motion.div
 					className={`all-ok-item`}
 					initial={{ opacity: 0, height: 0 }}
 					animate={{ opacity: 1, height: 'auto' }}
@@ -127,14 +127,14 @@ const HostItems = ({
 
 			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
 				<div>
-					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyHosts - hostProblemsArray.length} of {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
+					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyHosts - hostStateArray.length} of {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
 					<span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
 				</div>
 			</div>
 
 			<div className="host-items-wrap">
 				<AnimatePresence initial={false}>
-					{filteredHostProblemsArray.map((e, i) => {
+					{filteredHostStateArray.map((e, i) => {
 						//console.log('HostItem item');
 						//console.log(e, i);
 
@@ -151,7 +151,7 @@ const HostItems = ({
 									settings={settings}
 									hostItem={e}
 									comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
-									howManyDown={filteredHostProblemsArray.length}
+									howManyDown={filteredHostStateArray.length}
 									isDemoMode={isDemoMode}
 								/>
 							</motion.div>

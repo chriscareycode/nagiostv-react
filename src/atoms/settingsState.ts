@@ -143,8 +143,39 @@ export const clientSettingsInitial: ClientSettings = {
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
 	llmSpeakResponse: false,
-	llmPromptAllOk: 'All systems are operating normally with no detected issues. Please provide a brief, encouraging message. Make it funny or professional, and make it no more than 2-3 sentences. Do not reference an orchestra.',
-	llmPromptNotOk: 'Provide a brief summary of the current situation, prioritize the most critical issues, and suggest what should be addressed first.',
+	llmPromptAllOk: `
+You are an expert IT and Networking admin and know how to diagnose issues.
+
+All systems are operating normally with no detected issues. 
+
+Please start by announcing the time in plain language, and saying the following:
+"All systems OK". 
+
+If the current day is significant, like a major holiday, mention it.
+
+Optionally append a single happy or network or server related emoji on the end of the response, be creative with your choice.
+`,
+	llmPromptNotOk: `
+You are an expert IT and Networking admin and know how to diagnose issues.
+
+Provide a brief summary of the current situation. 
+
+- If you mention a host name, service name, or check name, put backticks around the name so it will emphasize in the markup.
+
+- If there are no host issues, then do not mention there are no host issues; only focus on the service issues.
+- If no services are critical, then do not mention there are no critical. Only focus on communicating the state of the items listed, and not on what state they are not in.
+- If we are not acknowledged, not scheduled downtime, or not flapping, do not mention these states in the response.
+- If we have flapping, put a emoji related to flapping, next to the where you call it out.
+
+Do not provide recommendations unless they are explicitly called out below:
+
+======================================
+RECOMMENDATIONS if the service is not in OK state:
+
+- Check APT: Update the packages at your earliest convenience.
+======================================
+
+`,
 };
 
 export const bigStateAtom = atom(bigStateInitial);

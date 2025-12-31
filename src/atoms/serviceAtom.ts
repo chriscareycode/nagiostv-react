@@ -11,7 +11,7 @@ const initialState: ServiceWrap = {
 	errorMessage: '',
 	lastUpdate: 0,
 	response: {},
-	problemsArray: []
+	stateArray: []
 };
 
 export const serviceAtom = atom(initialState);

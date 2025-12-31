@@ -30,23 +30,23 @@ const SettingsFakeData = () => {
 		const fakeOutTheData = () => {
 			setHostState(prev => {
 				// Loop over all hosts
-				const newArr = [...prev.problemsArray];
+				const newArr = [...prev.stateArray];
 				newArr.forEach((host) => {
 					if (host.next_check < Date.now()) {
 						host.next_check = Date.now() + Math.floor(Math.random() * 500000);
 					}
 				});
-				return { ...prev, problemsArray: newArr };
+				return { ...prev, stateArray: newArr };
 			});
 			setServiceState(prev => {
 				// Loop over all services
-				const newArr = [...prev.problemsArray];
+				const newArr = [...prev.stateArray];
 				newArr.forEach((service) => {
 					if (service.next_check < Date.now()) {
 						service.next_check = Date.now() + Math.floor(Math.random() * 500000);
 					}
 				});
-				return { ...prev, problemsArray: newArr };
+				return { ...prev, stateArray: newArr };
 			});
 		}
 

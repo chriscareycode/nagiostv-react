@@ -27,10 +27,10 @@ import { llmIsLoadingAtom } from '../../atoms/llmAtom';
 
 // Helpers
 import {
-	filterHostProblemsArray,
-	filterServiceProblemsArray,
-	countFilteredHostProblems,
-	countFilteredServiceProblems
+	filterHostStateArray,
+	filterServiceStateArray,
+	countFilteredHostStates,
+	countFilteredServiceStates
 } from '../../helpers/nagiostv';
 
 import './Doomguy.css';
@@ -64,14 +64,14 @@ const Doomguy = ({ scaleCss, style }: {
 
 	// Calculate filtered counts using useMemo for performance
 	const howManyDown = useMemo(() => {
-		const filteredHosts = filterHostProblemsArray(hostState.problemsArray, clientSettings);
-		const filteredServices = filterServiceProblemsArray(serviceState.problemsArray, clientSettings);
+		const filteredHosts = filterHostStateArray(hostState.stateArray, clientSettings);
+		const filteredServices = filterServiceStateArray(serviceState.stateArray, clientSettings);
 		
-		const hostDownCount = countFilteredHostProblems(filteredHosts);
-		const serviceProblems = countFilteredServiceProblems(filteredServices);
+		const hostDownCount = countFilteredHostStates(filteredHosts);
+		const serviceDownCount = countFilteredServiceStates(filteredServices);
 		
-		return hostDownCount + serviceProblems.warning + serviceProblems.critical;
-	}, [hostState.problemsArray, serviceState.problemsArray, clientSettings]);
+		return hostDownCount + serviceDownCount.warning + serviceDownCount.critical;
+	}, [hostState.stateArray, serviceState.stateArray, clientSettings]);
 
 	// Animate Doomguy while thinking
 	useEffect(() => {

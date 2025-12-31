@@ -247,7 +247,7 @@ const HostSection = () => {
 						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 				}
 			} else {
@@ -262,7 +262,7 @@ const HostSection = () => {
 						errorMessage: '',
 						lastUpdate: new Date().getTime(),
 						response: my_list,
-						problemsArray: myArray
+						stateArray: myArray
 					}));
 
 					setHostIsFakeDataSet(useFakeSampleData);
@@ -281,11 +281,11 @@ const HostSection = () => {
 	};
 
 	
-	// Mutating state on hostState.problemsArray is not allowed (the sort below)
+	// Mutating state on hostState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something
-	let sortedHostProblemsArray: Host[] = [];
-	if (Array.isArray(hostState.problemsArray)) {
-		sortedHostProblemsArray = [...hostState.problemsArray];
+	let sortedHostStateArray: Host[] = [];
+	if (Array.isArray(hostState.stateArray)) {
+		sortedHostStateArray = [...hostState.stateArray];
 	}
 	
 	// const hostlist = hostState.response;
@@ -294,13 +294,13 @@ const HostSection = () => {
 	// Sort the data based on the hostSortOrder value
 	let sort = 1;
 	if (hostSortOrder === 'oldest') { sort = -1; }
-	//console.log('sortedHostProblemsArray before', sortedHostProblemsArray);
-	sortedHostProblemsArray.sort((a, b) => {
+	//console.log('sortedHostStateArray before', sortedHostStateArray);
+	sortedHostStateArray.sort((a, b) => {
 		if (a.last_time_up < b.last_time_up) { return 1 * sort; }
 		if (a.last_time_up > b.last_time_up) { return -1 * sort; }
 		return 0;
 	});
-	//console.log('sortedHostProblemsArray after', sortedHostProblemsArray);
+	//console.log('sortedHostStateArray after', sortedHostStateArray);
 
 	return (
 		<div className="HostSection">
@@ -332,7 +332,7 @@ const HostSection = () => {
 
 			{/* hostitems list */}
 			<HostItems
-				hostProblemsArray={sortedHostProblemsArray}
+				hostStateArray={sortedHostStateArray}
 				settings={clientSettings}
 				isDemoMode={isDemoMode}
 			/>

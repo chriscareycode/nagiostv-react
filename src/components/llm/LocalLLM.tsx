@@ -35,7 +35,7 @@ import { faArrowsRotate, faChevronLeft, faChevronRight } from '@fortawesome/free
 
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
-import { filterHostProblemsArray, filterServiceProblemsArray } from 'helpers/nagiostv';
+import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv';
 
 // Configurable limit for maximum problems to send to LLM
 const MAX_HOST_PROBLEMS_FOR_LLM = 20;
@@ -105,6 +105,7 @@ export default function LocalLLM() {
 			return `- Host: ${host.name}
   Status: ${statusMap[host.status] || 'UNKNOWN'}
   Plugin Output: ${host.plugin_output || 'N/A'}
+  Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, clientSettings.locale, clientSettings.dateFormat) : 'N/A'}
   Acknowledged: ${host.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${host.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
   Flapping: ${host.is_flapping ? 'Yes' : 'No'}`;
@@ -131,6 +132,7 @@ export default function LocalLLM() {
 			return `- Host: ${service.host_name}
   Service: ${service.description}
   Status: ${statusMap[service.status] || 'UNKNOWN'}
+  Last Time OK: ${service.last_time_ok ? formatDateTimeLocale(service.last_time_ok, clientSettings.locale, clientSettings.dateFormat) : 'N/A'}
   Plugin Output: ${service.plugin_output || 'N/A'}
   Acknowledged: ${service.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${service.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
@@ -162,41 +164,41 @@ export default function LocalLLM() {
 
 		try {
 			// Get the host and service problems
-			const hostProblems = hostState.problemsArray || [];
-			const serviceProblems = serviceState.problemsArray || [];
+			const hostStateArray = hostState.stateArray || [];
+			const serviceStateArray = serviceState.stateArray || [];
 
 			// Filter the problems according to the client settings for filters
-			// use filterHostProblemsArray and filterServiceProblemsArray from nagiostv.ts
-			const filteredHostProblems = filterHostProblemsArray(hostProblems, clientSettings);
-			const filteredServiceProblems = filterServiceProblemsArray(serviceProblems, clientSettings);
+			// use filterHostStateArray and filterServiceStateArray from nagiostv.ts
+			const filteredHostStates = filterHostStateArray(hostStateArray, clientSettings);
+			const filteredServiceStates = filterServiceStateArray(serviceStateArray, clientSettings);
 
 			// Check if there are too many problems to analyze
-			const tooManyHostProblems = filteredHostProblems.length > MAX_HOST_PROBLEMS_FOR_LLM;
-			const tooManyServiceProblems = filteredServiceProblems.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
+			const tooManyHostStates = filteredHostStates.length > MAX_HOST_PROBLEMS_FOR_LLM;
+			const tooManyServiceStates = filteredServiceStates.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
 
 			// Check if there are no issues
-			const noIssues = filteredHostProblems.length === 0 && filteredServiceProblems.length === 0;
+			const noIssues = filteredHostStates.length === 0 && filteredServiceStates.length === 0;
 
 			// Prepare the messages for the LLM
 			let messages: LLMMessage[];
 
-			if (tooManyHostProblems || tooManyServiceProblems) {
+			if (tooManyHostStates || tooManyServiceStates) {
 				// Too many problems - inform the LLM without sending the full payload
-				let overloadMessage = 'The monitoring system is experiencing a high volume of issues:\n\n';
+				let overloadMessage = 'The monitoring system is reporting a large number of states to the LLM:\n\n';
 				
-				if (tooManyHostProblems) {
-					overloadMessage += `- There are ${filteredHostProblems.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
+				if (tooManyHostStates) {
+					overloadMessage += `- There are ${filteredHostStates.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
 				} else {
-					overloadMessage += `- There are ${filteredHostProblems.length} host problems\n`;
+					overloadMessage += `- There are ${filteredHostStates.length} host problems\n`;
 				}
 				
-				if (tooManyServiceProblems) {
-					overloadMessage += `- There are ${filteredServiceProblems.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
+				if (tooManyServiceStates) {
+					overloadMessage += `- There are ${filteredServiceStates.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
 				} else {
-					overloadMessage += `- There are ${filteredServiceProblems.length} service problems\n`;
+					overloadMessage += `- There are ${filteredServiceStates.length} service problems\n`;
 				}
 				
-				overloadMessage += '\nThe detailed analysis cannot be performed due to the high volume. Please investigate the monitoring dashboard directly.';
+				overloadMessage += '\nThe detailed analysis cannot be performed due to context size protections. Increase the maximums in settings if you wish to allow larger analyses.';
 
 				messages = [
 					{
@@ -222,8 +224,8 @@ export default function LocalLLM() {
 				];
 			} else {
 				// Format the issues for the LLM
-				const hostIssuesText = formatHostIssues(filteredHostProblems);
-				const serviceIssuesText = formatServiceIssues(filteredServiceProblems);
+				const hostIssuesText = formatHostIssues(filteredHostStates);
+				const serviceIssuesText = formatServiceIssues(filteredServiceStates);
 
 				messages = [
 					{
@@ -297,7 +299,7 @@ export default function LocalLLM() {
 				} else {
 					// No leading emoji - fall back to issue count based selection
 					content = rawContent;
-					const issueCount = hostProblems.length + serviceProblems.length;
+					const issueCount = hostStateArray.length + serviceStateArray.length;
 					if (issueCount > 10) {
 						selectedEmoji = '🚨';
 					} else if (issueCount > 0) {
@@ -310,11 +312,11 @@ export default function LocalLLM() {
 				let color: LLMHistoryColor = 'green'; // Default to green
 				
 				// Count issues from filtered arrays
-				const hasServiceWarning = filteredServiceProblems.some(s => s.status === 4);  // 4 = WARNING
-				const hasServiceCritical = filteredServiceProblems.some(s => s.status === 16); // 16 = CRITICAL
-				const hasServiceUnknown = filteredServiceProblems.some(s => s.status === 8);  // 8 = UNKNOWN
-				const hasHostDown = filteredHostProblems.some(h => h.status === 4);           // 4 = DOWN
-				const hasHostUnreachable = filteredHostProblems.some(h => h.status === 8);    // 8 = UNREACHABLE
+				const hasServiceWarning = filteredServiceStates.some(s => s.status === 4);  // 4 = WARNING
+				const hasServiceCritical = filteredServiceStates.some(s => s.status === 16); // 16 = CRITICAL
+				const hasServiceUnknown = filteredServiceStates.some(s => s.status === 8);  // 8 = UNKNOWN
+				const hasHostDown = filteredHostStates.some(h => h.status === 4);           // 4 = DOWN
+				const hasHostUnreachable = filteredHostStates.some(h => h.status === 8);    // 8 = UNREACHABLE
 				
 				// Service warning
 				if (hasServiceWarning) {
@@ -446,15 +448,39 @@ export default function LocalLLM() {
 		}
 	};
 
-	const hostProblems = hostState.problemsArray || [];
-	const serviceProblems = serviceState.problemsArray || [];
+	const hostStateArray = hostState.stateArray || [];
+	const serviceStateArray = serviceState.stateArray || [];
 
-	// Build a simple signature: sorted list of problem identifiers
-	// Only triggers on actual problem additions/removals, not status changes
+	// Build a simple signature: sorted list of problem identifiers plus filter settings
+	// Triggers on actual problem additions/removals and filter changes
 	const buildSignature = (): string => {
-		const hostIds = hostProblems.map(h => h.name).sort().join(',');
-		const serviceIds = serviceProblems.map(s => `${s.host_name}:${s.description}`).sort().join(',');
-		return `${hostProblems.length}|${serviceProblems.length}|${hostIds}|${serviceIds}`;
+		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
+		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
+		
+		// Include filter settings in signature so changes trigger re-analysis
+		const filterSignature = [
+			clientSettings.hideHostPending,
+			clientSettings.hideHostUp,
+			clientSettings.hideHostDown,
+			clientSettings.hideHostUnreachable,
+			clientSettings.hideHostAcked,
+			clientSettings.hideHostScheduled,
+			clientSettings.hideHostFlapping,
+			clientSettings.hideHostSoft,
+			clientSettings.hideHostNotificationsDisabled,
+			clientSettings.hideServicePending,
+			clientSettings.hideServiceOk,
+			clientSettings.hideServiceWarning,
+			clientSettings.hideServiceUnknown,
+			clientSettings.hideServiceCritical,
+			clientSettings.hideServiceAcked,
+			clientSettings.hideServiceScheduled,
+			clientSettings.hideServiceFlapping,
+			clientSettings.hideServiceSoft,
+			clientSettings.hideServiceNotificationsDisabled,
+		].map(v => v ? '1' : '0').join('');
+		
+		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
 	};
 
 	const currentSignature = buildSignature();
@@ -531,7 +557,7 @@ export default function LocalLLM() {
 
 	// Measure content height for smooth animation using ResizeObserver
 	useEffect(() => {
-		const SCOOCH_DOWN = 25; // Padding/margin adjustment
+		const SCOOCH_DOWN = 20; // Padding/margin adjustment
 		const content = contentRef.current;
 		if (!content) return;
 
@@ -619,7 +645,7 @@ export default function LocalLLM() {
 
 			{history.length === 0 && !llmResponse && (
 				<div className="ServiceItemBorder border-green mt-2.5 pb-1.5!">
-					<span className="m-[5px_5px] inline-block text-lime">
+					<span className="m-[5px_5px] inline-block text-white">
 						All systems operating normally. No issues to analyze.
 					</span>
 				</div>
