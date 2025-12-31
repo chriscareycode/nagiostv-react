@@ -261,6 +261,9 @@ export default function LocalLLM() {
 			// Construct the API URL
 			const apiUrl = `http://${clientSettings.llmServerHost}:${clientSettings.llmServerPort}/v1/chat/completions`;
 
+			// Output the messages to console for debugging
+			// console.log('LocalLLM - Sending messages to LLM:', messages);
+
 			// Make the API call
 			const response = await axios.post<LLMResponse>(
 				apiUrl,

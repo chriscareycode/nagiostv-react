@@ -222,6 +222,7 @@ const ServiceSection = () => {
 
 			// convert the service object into an array (and sort it)
 			const myArray = convertServiceObjectToArray(my_list);
+			// console.log('ServiceSection myArray:', myArray);
 
 			// check for old stale data (detect if nagios is down)
 			const durationMs = new Date().getTime() - response.data.result.last_data_update;

@@ -128,6 +128,7 @@ const AlertSection = () => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
 
 		let url = '';
+		// let endtime = '0';
 		// let endtime = '%2B0'; // +0
 		let endtime = '%2D0'; // -0
 

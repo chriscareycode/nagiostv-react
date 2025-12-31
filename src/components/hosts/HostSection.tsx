@@ -219,6 +219,7 @@ const HostSection = () => {
 
 			// Make an array from the object
 			let my_list: Record<string, Host> = _.get(response.data.data, 'hostlist', {});
+			// console.log('HostSection response.data.data', response.data.data);
 
 			// If we are in demo mode then clean the fake data
 			// The fake data has a bunch of dates of hosts and services being down.
@@ -229,6 +230,7 @@ const HostSection = () => {
 
 			// convert the host object into an array
 			const myArray = convertHostObjectToArray(my_list);
+			// console.log('HostSection myArray:', myArray);
 
 			// check for old data (nagios down?)
 			const now = DateTime.now();
