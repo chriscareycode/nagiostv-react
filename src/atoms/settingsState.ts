@@ -142,7 +142,9 @@ export const clientSettingsInitial: ClientSettings = {
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
 	llmSpeakResponse: false,
-	llmSystemPrompt: `You are a helpful computer networking and IT expert analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is {{DATE}}. The time is {{TIME}}. Day of the week is {{DAY_OF_WEEK}}. If you mention "flapping", capitalize it as "FLAPPING". Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response.`,
+	llmSystemPrompt: `
+You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is {{DATE}}. The time is {{TIME}}. Day of the week is {{DAY_OF_WEEK}}. If you mention "flapping", capitalize it as "FLAPPING". Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response.
+`,
 	llmPromptAllOk: `
 All systems are operating normally with no detected issues. 
 
@@ -155,6 +157,8 @@ Optionally append a single happy or network or server related emoji on the end o
 `,
 	llmPromptNotOk: `
 Provide a brief summary of the current situation. 
+
+Alerts are always in the past, and I like to measure how long since the last alert. If it happened recently then it's worth mentioning. If it happened > 1 hour ago then not as interesting.
 
 - If you mention a host name, service name, or check name, put backticks around the name so it will emphasize in the markup.
 

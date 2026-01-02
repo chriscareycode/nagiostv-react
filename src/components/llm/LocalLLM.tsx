@@ -86,6 +86,11 @@ export default function LocalLLM() {
 	// Tracks whether we've already triggered an analysis this page load (manual or auto)
 	const hasTriggeredAnalysisRef = useRef<boolean>(false);
 
+	// Tracks if a change occurred while we were loading - if so, we need to re-analyze after loading completes
+	const pendingReanalysisRef = useRef<boolean>(false);
+	// Store the signature that was used when we started loading, to compare against when done
+	const loadingSignatureRef = useRef<string | null>(null);
+
 	// Ref and state for measuring content height for smooth animation
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [contentHeight, setContentHeight] = useState<number>(0);
@@ -189,6 +194,42 @@ export default function LocalLLM() {
 		return `Recent Alerts (${alerts.length}):\n\n${formattedAlerts}`;
 	};
 
+	// Define state arrays early so they can be used by buildSignature and queryLLM
+	const hostStateArray = hostState.stateArray || [];
+	const serviceStateArray = serviceState.stateArray || [];
+
+	// Build a simple signature: sorted list of problem identifiers plus filter settings
+	// Triggers on actual problem additions/removals and filter changes
+	const buildSignature = (): string => {
+		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
+		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
+		
+		// Include filter settings in signature so changes trigger re-analysis
+		const filterSignature = [
+			clientSettings.hideHostPending,
+			clientSettings.hideHostUp,
+			clientSettings.hideHostDown,
+			clientSettings.hideHostUnreachable,
+			clientSettings.hideHostAcked,
+			clientSettings.hideHostScheduled,
+			clientSettings.hideHostFlapping,
+			clientSettings.hideHostSoft,
+			clientSettings.hideHostNotificationsDisabled,
+			clientSettings.hideServicePending,
+			clientSettings.hideServiceOk,
+			clientSettings.hideServiceWarning,
+			clientSettings.hideServiceUnknown,
+			clientSettings.hideServiceCritical,
+			clientSettings.hideServiceAcked,
+			clientSettings.hideServiceScheduled,
+			clientSettings.hideServiceFlapping,
+			clientSettings.hideServiceSoft,
+			clientSettings.hideServiceNotificationsDisabled,
+		].map(v => v ? '1' : '0').join('');
+		
+		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
+	};
+
 	// Function to query the LLM
 	const queryLLM = async () => {
 		// Check if LLM settings are configured
@@ -198,6 +239,11 @@ export default function LocalLLM() {
 		}
 
 		hasTriggeredAnalysisRef.current = true;
+		
+		// Capture the signature at the moment we start loading
+		// This allows us to detect if data changed while we were loading
+		loadingSignatureRef.current = buildSignature();
+		pendingReanalysisRef.current = false; // Reset pending flag
 
 		setIsLoading(true);
 		setError('');
@@ -324,7 +370,8 @@ export default function LocalLLM() {
 			const apiUrl = `${clientSettings.llmServerBaseUrl}/v1/chat/completions`;
 
 			// Output the messages to console for debugging
-			// console.log('LocalLLM - Sending messages to LLM:', messages);
+			console.log('LocalLLM - Sending messages to LLM:', messages);
+			console.log(messages[1].content);
 
 			// Make the API call
 			const response = await axios.post<LLMResponse>(
@@ -487,6 +534,16 @@ export default function LocalLLM() {
 			console.error('LocalLLM error:', err);
 		} finally {
 			setIsLoading(false);
+			
+			// Check if data changed while we were loading and we need to re-analyze
+			if (pendingReanalysisRef.current) {
+				console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+				pendingReanalysisRef.current = false;
+				// Use a small delay to allow state to settle and avoid tight loops
+				setTimeout(() => {
+					queryLLM();
+				}, 500);
+			}
 		}
 	};
 
@@ -511,41 +568,6 @@ export default function LocalLLM() {
 			setLastResponseTime(new Date(item.timestamp));
 			setResponseEmoji(item.emoji);
 		}
-	};
-
-	const hostStateArray = hostState.stateArray || [];
-	const serviceStateArray = serviceState.stateArray || [];
-
-	// Build a simple signature: sorted list of problem identifiers plus filter settings
-	// Triggers on actual problem additions/removals and filter changes
-	const buildSignature = (): string => {
-		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
-		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
-		
-		// Include filter settings in signature so changes trigger re-analysis
-		const filterSignature = [
-			clientSettings.hideHostPending,
-			clientSettings.hideHostUp,
-			clientSettings.hideHostDown,
-			clientSettings.hideHostUnreachable,
-			clientSettings.hideHostAcked,
-			clientSettings.hideHostScheduled,
-			clientSettings.hideHostFlapping,
-			clientSettings.hideHostSoft,
-			clientSettings.hideHostNotificationsDisabled,
-			clientSettings.hideServicePending,
-			clientSettings.hideServiceOk,
-			clientSettings.hideServiceWarning,
-			clientSettings.hideServiceUnknown,
-			clientSettings.hideServiceCritical,
-			clientSettings.hideServiceAcked,
-			clientSettings.hideServiceScheduled,
-			clientSettings.hideServiceFlapping,
-			clientSettings.hideServiceSoft,
-			clientSettings.hideServiceNotificationsDisabled,
-		].map(v => v ? '1' : '0').join('');
-		
-		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
 	};
 
 	const currentSignature = buildSignature();
@@ -590,6 +612,19 @@ export default function LocalLLM() {
 			current: currentSignature 
 		});
 		prevSignatureRef.current = currentSignature;
+
+		// If we're currently loading, mark that we need to re-analyze after loading completes
+		// This handles the case where data changes while an LLM request is in-flight
+		if (isLoading) {
+			console.log('[LocalLLM] Data changed while loading - marking for re-analysis');
+			pendingReanalysisRef.current = true;
+			// Clear any pending debounce timer since we'll re-analyze after loading
+			if (debounceTimerRef.current) {
+				window.clearTimeout(debounceTimerRef.current);
+				debounceTimerRef.current = null;
+			}
+			return;
+		}
 
 		// Clear any pending debounce timer
 		if (debounceTimerRef.current) {
