@@ -3,10 +3,23 @@ import { Allotment } from "allotment";
 import { debounce } from 'lodash';
 import { useLocation } from "react-router-dom";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
+import MiniMapMozilla from '../widgets/MiniMapMozilla';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 import "allotment/dist/style.css";
 import { saveLocalStorage } from 'helpers/nagiostv';
+
+/**
+ * Detect if the browser is Firefox and supports -moz-element()
+ * This CSS function allows for a more performant minimap implementation
+ */
+const isFirefox = (): boolean => {
+	if (typeof window === 'undefined' || typeof CSS === 'undefined') {
+		return false;
+	}
+	// Check if browser supports -moz-element() CSS function
+	return CSS.supports('background', '-moz-element(#test)');
+};
 
 interface MiniMapWrapProps {
 	children?: JSX.Element;
@@ -47,16 +60,23 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 	// React router location
 	const location = useLocation();
 
-	let whichElementToSnapshot = '.Dashboard';
+	// Check once if we're on Firefox with -moz-element() support
+	const useFirefoxMinimap = useMemo(() => isFirefox(), []);
+
+	// Select the appropriate content element based on current route
+	let elementToSnapshot = '.Dashboard';
 	if (location.pathname === '/settings') {
-		whichElementToSnapshot = '.Settings';
+		elementToSnapshot = '.Settings';
 	}
 	if (location.pathname === '/update') {
-		whichElementToSnapshot = '.Update';
+		elementToSnapshot = '.Update';
 	}
 	if (location.pathname === '/help') {
-		whichElementToSnapshot = '.Help';
+		elementToSnapshot = '.Help';
 	}
+
+	// Choose the appropriate minimap component based on browser support
+	const MiniMapComponent = useFirefoxMinimap ? MiniMapMozilla : MiniMapCanvas;
 
 	return (
 		<>
@@ -73,8 +93,8 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 						minSize={0}
 						preferredSize={clientSettings.miniMapWidth}
 					>
-						<MiniMapCanvas
-							elementToSnapshot={whichElementToSnapshot}
+						<MiniMapComponent
+							elementToSnapshot={elementToSnapshot}
 							miniMapWidth={clientSettings.miniMapWidth}
 						/>
 					</Allotment.Pane>

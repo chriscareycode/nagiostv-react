@@ -1,0 +1,66 @@
+.MiniMapMozilla {
+	cursor: pointer;
+	user-select: none;
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+
+.MiniMapMozilla .minimap-preview {
+	width: calc(100% - 4px);
+	margin-top: 2px;
+	margin-left: 2px;
+	margin-right: 2px;
+	/* Height will be calculated dynamically based on content aspect ratio */
+	min-height: 200px;
+	height: auto;
+	position: relative;
+	overflow: hidden;
+	/* background is set via JavaScript to avoid CSS parser errors with -moz-element() */
+}
+
+/* Range slider - rotated to vertical orientation */
+.MiniMapMozilla .minimap-range {
+	/* Position absolutely within the preview */
+	position: absolute;
+	left: 0;
+	top: 0;
+	/* Width is set via inline style to match preview height */
+	margin: 0;
+	padding: 0;
+	/* Make the track transparent */
+	background-color: transparent;
+	-webkit-appearance: none;
+	appearance: none;
+	cursor: pointer;
+	/* Writing mode makes the slider vertical */
+	writing-mode: vertical-lr;
+	/* Make it fill the preview area */
+	height: 100%;
+	width: 100%;
+}
+
+/* Firefox range track styling */
+.MiniMapMozilla .minimap-range::-moz-range-track {
+	background-color: transparent;
+	border: none;
+}
+
+/* Firefox range thumb styling */
+.MiniMapMozilla .minimap-range::-moz-range-thumb {
+	background-color: rgba(0, 255, 0, 0.05);
+	border: 2px solid #00ff008a;
+	border-radius: 4px;
+	cursor: pointer;
+	/* The thumb represents the viewport - height is set via CSS custom property */
+	/* Extend thumb beyond preview edges with negative margin */
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	width: calc(100% - 4px);
+	height: var(--thumb-height, 40px);
+}
+
+.MiniMapMozilla .minimap-range::-moz-range-thumb:hover {
+	background-color: rgba(0, 255, 0, 0.1);
+}
