@@ -138,8 +138,7 @@ export const clientSettingsInitial: ClientSettings = {
 	miniMapWidth: 120,
 
 	// LLM integration
-	llmServerHost: 'localhost',
-	llmServerPort: 1234,
+	llmServerBaseUrl: 'http://localhost:1234',
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
 	llmSpeakResponse: false,

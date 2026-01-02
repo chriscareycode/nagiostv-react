@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
+import { alertAtom } from '../../atoms/alertAtom';
 import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
 import { clientSettingsAtom } from '../../atoms/settingsState';
@@ -20,7 +21,7 @@ import {
 } from '../../atoms/llmAtom';
 
 // Types
-import { Host, Service } from '../../types/hostAndServiceTypes';
+import { Alert, Host, Service } from '../../types/hostAndServiceTypes';
 
 // Components
 import LLMMarkup from './LLMMarkup';
@@ -68,6 +69,7 @@ interface LLMResponse {
 
 export default function LocalLLM() {
 	// State Management
+	const alertState = useAtomValue(alertAtom);
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -111,7 +113,7 @@ export default function LocalLLM() {
   Flapping: ${host.is_flapping ? 'Yes' : 'No'}`;
 		}).join('\n\n');
 
-		return `Host Issues (${hosts.length}):\n${issues}`;
+		return `Host Issues (${hosts.length}):\n\n${issues}`;
 	};
 
 	// Helper function to format service issues
@@ -139,14 +141,59 @@ export default function LocalLLM() {
   Flapping: ${service.is_flapping ? 'Yes' : 'No'}`;
 		}).join('\n\n');
 
-		return `Service Issues (${services.length}):\n${issues}`;
+		return `Service Issues (${services.length}):\n\n${issues}`;
+	};
+
+	// Helper function to format recent alerts
+	const formatRecentAlerts = (alerts: Alert[]): string => {
+		if (alerts.length === 0) {
+			return 'No recent alerts.';
+		}
+
+		const alertStateMap: Record<number, string> = {
+			1: 'HOST UP',
+			2: 'HOST DOWN',
+			4: 'HOST UNREACHABLE',
+			8: 'SERVICE OK',
+			16: 'SERVICE WARNING',
+			32: 'SERVICE CRITICAL',
+			64: 'SERVICE UNKNOWN'
+		};
+
+		const stateTypeMap: Record<number, string> = {
+			1: 'HARD',
+			2: 'SOFT'
+		};
+
+		const formattedAlerts = alerts.map(alert => {
+			const isHostAlert = alert.object_type === 1;
+			const timestampFormatted = formatDateTimeLocale(alert.timestamp, clientSettings.locale, clientSettings.dateFormat);
+			const timestampAgo = formatDateTimeAgo(alert.timestamp);
+
+			if (isHostAlert) {
+				return `- Host: ${alert.name}
+  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
+  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
+  Time: ${timestampFormatted} (${timestampAgo} ago)
+  Plugin Output: ${alert.plugin_output || 'N/A'}`;
+			} else {
+				return `- Host: ${alert.host_name}
+  Service: ${alert.description}
+  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
+  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
+  Time: ${timestampFormatted} (${timestampAgo} ago)
+  Plugin Output: ${alert.plugin_output || 'N/A'}`;
+			}
+		}).join('\n\n');
+
+		return `Recent Alerts (${alerts.length}):\n\n${formattedAlerts}`;
 	};
 
 	// Function to query the LLM
 	const queryLLM = async () => {
 		// Check if LLM settings are configured
-		if (!clientSettings.llmServerHost || !clientSettings.llmServerPort) {
-			setError('LLM server hostname and port are not configured. Please configure them in settings.');
+		if (!clientSettings.llmServerBaseUrl) {
+			setError('LLM server base URL is not configured. Please configure it in settings.');
 			return;
 		}
 
@@ -182,6 +229,9 @@ export default function LocalLLM() {
 			// use filterHostStateArray and filterServiceStateArray from nagiostv.ts
 			const filteredHostStates = filterHostStateArray(hostStateArray, clientSettings);
 			const filteredServiceStates = filterServiceStateArray(serviceStateArray, clientSettings);
+
+			// Get the most recent 2 alerts
+			const recentAlerts = (alertState.responseArray || []).slice(0, 2);
 
 			// Check if there are too many problems to analyze
 			const tooManyHostStates = filteredHostStates.length > MAX_HOST_PROBLEMS_FOR_LLM;
@@ -237,6 +287,7 @@ export default function LocalLLM() {
 				// Format the issues for the LLM
 				const hostIssuesText = formatHostIssues(filteredHostStates);
 				const serviceIssuesText = formatServiceIssues(filteredServiceStates);
+				const recentAlertsText = formatRecentAlerts(recentAlerts);
 
 				messages = [
 					{
@@ -246,7 +297,7 @@ export default function LocalLLM() {
 					// Default
 					{
 						role: 'user',
-						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\n ${clientSettings.llmPromptNotOk}`
+						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\n${recentAlertsText}\n\n ${clientSettings.llmPromptNotOk}`
 					},
 
 					// Middle of the road
@@ -270,7 +321,7 @@ export default function LocalLLM() {
 			}
 
 			// Construct the API URL
-			const apiUrl = `http://${clientSettings.llmServerHost}:${clientSettings.llmServerPort}/v1/chat/completions`;
+			const apiUrl = `${clientSettings.llmServerBaseUrl}/v1/chat/completions`;
 
 			// Output the messages to console for debugging
 			// console.log('LocalLLM - Sending messages to LLM:', messages);
@@ -332,13 +383,13 @@ export default function LocalLLM() {
 				const hasHostDown = filteredHostStates.some(h => h.status === 4);           // 4 = DOWN
 				const hasHostUnreachable = filteredHostStates.some(h => h.status === 8);    // 8 = UNREACHABLE
 				
-				// Service warning
-				if (hasServiceWarning) {
-					color = 'yellow';
-				}
 				// Service unknown
 				if (hasServiceUnknown) {
 					color = 'orange';
+				}
+				// Service warning
+				if (hasServiceWarning) {
+					color = 'yellow';
 				}
 				// Service critical
 				if (hasServiceCritical) {
@@ -423,7 +474,7 @@ export default function LocalLLM() {
 					setError(`LLM server error: ${err.response.status} - ${err.response.statusText}`);
 					console.error('LocalLLM response error:', err.response.status, err.response.statusText, err.response.data);
 				} else if (err.request) {
-					setError(`Cannot connect to LLM server at ${clientSettings.llmServerHost}:${clientSettings.llmServerPort}. Please check the hostname and port.`);
+					setError(`Cannot connect to LLM server at ${clientSettings.llmServerBaseUrl}. Please check the URL.`);
 					console.error('LocalLLM request error (no response):', err.request);
 				} else {
 					setError(`Error: ${err.message}`);
@@ -510,7 +561,7 @@ export default function LocalLLM() {
 	// Trigger LLM when problems change
 	useEffect(() => {
 		// Skip if LLM not configured
-		if (!clientSettings.llmServerHost || !clientSettings.llmServerPort) {
+		if (!clientSettings.llmServerBaseUrl) {
 			return;
 		}
 
@@ -558,7 +609,7 @@ export default function LocalLLM() {
 				window.clearTimeout(debounceTimerRef.current);
 			}
 		};
-	}, [currentSignature, clientSettings.llmServerHost, clientSettings.llmServerPort, isLoading]);
+	}, [currentSignature, clientSettings.llmServerBaseUrl, isLoading]);
 
 	// Cleanup initial load timer on unmount
 	useEffect(() => {

@@ -26,8 +26,7 @@ import LocalLLM from './summary/LocalLLM';
 ### 2. Configure LLM Server
 The component uses the following settings from `clientSettings`:
 
-- `llmServerHost`: Hostname of the LLM server (default: 'localhost')
-- `llmServerPort`: Port number of the LLM server (default: 11434)
+- `llmServerBaseUrl`: Base URL to the OpenAI-compatible LLM server (default: 'http://localhost:1234'). The path /v1/chat/completions is added automatically.
 - `llmModel`: Model name to use (default: 'gpt-3.5-turbo')
 - `llmApiKey`: Optional API key for authentication (default: '')
 
@@ -46,8 +45,7 @@ ollama serve
 ```
 
 Configure in NagiosTV:
-- Host: `localhost`
-- Port: `11434`
+- Base URL: `http://localhost:11434`
 - Model: `llama2`
 
 #### Using LM Studio
@@ -56,8 +54,7 @@ Configure in NagiosTV:
 3. Start the local server (typically on port 1234)
 
 Configure in NagiosTV:
-- Host: `localhost`
-- Port: `1234`
+- Base URL: `http://localhost:1234`
 - Model: Name of the loaded model
 
 #### Using LocalAI
@@ -66,8 +63,7 @@ docker run -p 8080:8080 localai/localai:latest
 ```
 
 Configure in NagiosTV:
-- Host: `localhost`
-- Port: `8080`
+- Base URL: `http://localhost:8080`
 - Model: Available model name
 
 ## API Compatibility
