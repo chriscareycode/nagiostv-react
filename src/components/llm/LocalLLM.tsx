@@ -159,8 +159,19 @@ export default function LocalLLM() {
 
 		// Let the LLM know what today's date is
 		const todaysDate = new Date().toISOString().split('T')[0];
-		const todaysTime = new Date().toLocaleTimeString();
+		const todaysTime = new Date().toLocaleTimeString(undefined, { hour12: false });
 		const dayOfTheWeek = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+
+		// Helper function to replace template variables in system prompt
+		const replacePromptVariables = (prompt: string): string => {
+			return prompt
+				.replace(/\{\{DATE\}\}/g, todaysDate)
+				.replace(/\{\{TIME\}\}/g, todaysTime)
+				.replace(/\{\{DAY_OF_WEEK\}\}/g, dayOfTheWeek);
+		};
+
+		// Get the system prompt from settings and replace variables
+		const systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
 
 		try {
 			// Get the host and service problems
@@ -203,7 +214,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a helpful assistant analyzing Nagios monitoring data. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Use an appropriate warning/alert emoji given the severity of the situation.`
+						content: systemPrompt
 					},
 					{
 						role: 'user',
@@ -215,7 +226,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a friendly assistant that celebrates system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Do not output tables in the response, use plain text only.`
+						content: systemPrompt
 					},
 					{
 						role: 'user',
@@ -230,7 +241,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. If you mention "flapping", capitalize it as "FLAPPING".`
+						content: systemPrompt
 					},
 					// Default
 					{

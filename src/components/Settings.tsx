@@ -1014,6 +1014,25 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>System Prompt:</th>
+								<td>
+									<div className="text-[0.9em] text-[#888]">
+										The system prompt sent to the LLM. Available variables:<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{DATE}}`}</code> - Current date (e.g., 2026-01-01)<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{TIME}}`}</code> - Current time (e.g., 14:30:45)<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{DAY_OF_WEEK}}`}</code> - Day of the week (e.g., Thursday)
+									</div>
+									<textarea 
+										value={clientSettingsTemp.llmSystemPrompt} 
+										onChange={handleChange('llmSystemPrompt', 'string')}
+										placeholder="System prompt for the LLM"
+										rows={8}
+										className="w-full font-mono text-[0.9em]"
+										style={{ fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+								</td>
+							</tr>
+							<tr>
 								<th>Prompt (All OK):</th>
 								<td>
 									<textarea 
