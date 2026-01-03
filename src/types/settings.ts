@@ -116,6 +116,9 @@ export interface ClientSettings {
 	llmSystemPrompt: string;
 	llmPromptAllOk: string;
 	llmPromptNotOk: string;
+
+	// Server settings
+	serverSettingsTakePrecedence: boolean;
 }
 
 export interface VersionCheck {
