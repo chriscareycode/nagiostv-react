@@ -242,6 +242,18 @@ const SettingsLoad = () => {
 			// Now that we have loaded server settings, set the document.title from the title setting
 			if (response.data.titleString) { document.title = response.data.titleString; }
 
+			// If serverSettingsTakePrecedence is true, skip loading local settings
+			// This means server settings will not be overwritten by local settings
+			if (response.data.serverSettingsTakePrecedence) {
+				console.log('serverSettingsTakePrecedence is true - skipping local settings');
+				setBigState(curr => ({
+					...curr,
+					isDoneLoading: true
+				}));
+				loadSettingsFromUrl();
+				return;
+			}
+
 			// Now that we have loaded remote settings, load the cookie and overwrite settings with cookie
 			// getLocalSettings() is then going to call loadSettingsFromUrl()
 			getLocalSettings();

@@ -67,10 +67,13 @@ export const clientSettingsInitial: ClientSettings = {
 	alertMaxItems: 1000,
 
 	hostsAndServicesSideBySide: false,
-	hideSummarySection: true,
+
+	hideSummarySection: false,
 	hideMostRecentAlertSection: true,
 	hideLocalLLMSection: true,
+
 	hideServiceSection: false,
+
 	hideServicePending: false,
 	hideServiceOk: true,
 	hideServiceWarning: false,
@@ -84,6 +87,7 @@ export const clientSettingsInitial: ClientSettings = {
 	serviceSortOrder: 'newest',
 
 	hideHostSection: false,
+
 	hideHostPending: false,
 	hideHostUp: true,
 	hideHostDown: false,
@@ -151,9 +155,7 @@ All systems are operating normally with no detected issues.
 Please start by announcing the time in plain language, and saying the following:
 "All systems OK". 
 
-If the current day is significant, like a major holiday, mention it.
-
-Optionally append a single happy or network or server related emoji on the end of the response, be creative with your choice.
+If the current day is significant, like a major holiday, mention it. If it is not, don't mention it and be more brief.
 `,
 	llmPromptNotOk: `
 Provide a brief summary of the current situation. 
@@ -176,6 +178,9 @@ RECOMMENDATIONS if the service is not in OK state:
 ======================================
 
 `,
+
+	// Server settings
+	serverSettingsTakePrecedence: false,
 };
 
 export const bigStateAtom = atom(bigStateInitial);

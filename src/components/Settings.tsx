@@ -1099,6 +1099,22 @@ const Settings = () => {
 											Local client settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
 											for all clients, but they can still be customized individually with settings saved in client settings. Delete the client settings and refresh the page to fetch server setting defaults again.
 										</div>
+										<br />
+										<div>
+											<label>
+												<input
+													type="checkbox"
+													checked={clientSettingsTemp.serverSettingsTakePrecedence}
+													onChange={(e: ChangeEvent<HTMLInputElement>) => {
+														setClientSettingsTemp(curr => ({ ...curr, serverSettingsTakePrecedence: e.target.checked }));
+														setIsDirty(true);
+													}}
+												/>
+												{' '}Server settings take precedence (when enabled, local settings will not override server settings)
+											</label>
+										</div>
+
+										<br />
 
 										<h4>Option 1: If you have PHP enabled on your server</h4>
 

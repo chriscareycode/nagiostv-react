@@ -337,7 +337,8 @@ export default function LocalLLM() {
 				// Format the issues for the LLM
 				const hostIssuesText = formatHostIssues(filteredHostStates);
 				const serviceIssuesText = formatServiceIssues(filteredServiceStates);
-				const recentAlertsText = formatRecentAlerts(recentAlerts);
+				// Only include recent alerts if the Most Recent Alert section is visible
+				const recentAlertsText = !clientSettings.hideMostRecentAlertSection ? formatRecentAlerts(recentAlerts) : '';
 
 				messages = [
 					{
@@ -347,7 +348,7 @@ export default function LocalLLM() {
 					// Default
 					{
 						role: 'user',
-						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\n${recentAlertsText}\n\n ${clientSettings.llmPromptNotOk}`
+						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}${recentAlertsText ? `\n\n${recentAlertsText}` : ''}\n\n ${clientSettings.llmPromptNotOk}`
 					},
 
 					// Middle of the road
