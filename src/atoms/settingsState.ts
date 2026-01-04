@@ -26,8 +26,8 @@ const useFakeSampleData = urlParams.get('fakedata') === 'true' || urlParams.get(
 
 const bigStateInitial: BigState = {
 
-	currentVersion: 85, // This gets incremented with each new release (manually)
-	currentVersionString: '0.9.7', // This gets incremented with each new release (manually)
+	currentVersion: 86, // This gets incremented with each new release (manually)
+	currentVersionString: '0.9.8', // This gets incremented with each new release (manually)
 
 	latestVersion: 0,
 	latestVersionString: '',
@@ -67,10 +67,13 @@ export const clientSettingsInitial: ClientSettings = {
 	alertMaxItems: 1000,
 
 	hostsAndServicesSideBySide: false,
-	hideSummarySection: true,
+
+	hideSummarySection: false,
 	hideMostRecentAlertSection: true,
 	hideLocalLLMSection: true,
+
 	hideServiceSection: false,
+
 	hideServicePending: false,
 	hideServiceOk: true,
 	hideServiceWarning: false,
@@ -84,6 +87,7 @@ export const clientSettingsInitial: ClientSettings = {
 	serviceSortOrder: 'newest',
 
 	hideHostSection: false,
+
 	hideHostPending: false,
 	hideHostUp: true,
 	hideHostDown: false,
@@ -138,27 +142,25 @@ export const clientSettingsInitial: ClientSettings = {
 	miniMapWidth: 120,
 
 	// LLM integration
-	llmServerHost: 'localhost',
-	llmServerPort: 1234,
+	llmServerBaseUrl: 'http://localhost:1234',
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
 	llmSpeakResponse: false,
+	llmSystemPrompt: `
+You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is {{DATE}}. The time is {{TIME}}. Day of the week is {{DAY_OF_WEEK}}. If you mention "flapping", capitalize it as "FLAPPING". Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response.
+`,
 	llmPromptAllOk: `
-You are an expert IT and Networking admin and know how to diagnose issues.
-
 All systems are operating normally with no detected issues. 
 
 Please start by announcing the time in plain language, and saying the following:
 "All systems OK". 
 
-If the current day is significant, like a major holiday, mention it.
-
-Optionally append a single happy or network or server related emoji on the end of the response, be creative with your choice.
+If the current day is significant, like a major holiday, mention it. If it is not, don't mention it and be more brief.
 `,
 	llmPromptNotOk: `
-You are an expert IT and Networking admin and know how to diagnose issues.
-
 Provide a brief summary of the current situation. 
+
+Alerts are always in the past, and I like to measure how long since the last alert. If it happened recently then it's worth mentioning. If it happened > 1 hour ago then not as interesting.
 
 - If you mention a host name, service name, or check name, put backticks around the name so it will emphasize in the markup.
 
@@ -176,6 +178,9 @@ RECOMMENDATIONS if the service is not in OK state:
 ======================================
 
 `,
+
+	// Server settings
+	serverSettingsTakePrecedence: false,
 };
 
 export const bigStateAtom = atom(bigStateInitial);

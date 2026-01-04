@@ -74,7 +74,7 @@ export function formatDateTimeAgo(date: number): string {
 	if (ret.length === 0 && diff.seconds) { ret += Math.floor(diff.seconds) + 's '; }
 	if (ret.length === 0) { ret = '0s'; }
 
-	return ret;
+	return ret.trim();
 }
 
 export function formatDateTimeAgoLong(date: number): string {
@@ -91,7 +91,7 @@ export function formatDateTimeAgoLong(date: number): string {
 	if (ret.length === 0 && diff.seconds) { ret += Math.floor(diff.seconds) + 's '; }
 	if (ret.length === 0) { ret = '0s'; }
 
-	return ret;
+	return ret.trim();
 }
 
 // This one starts red and moves to green over time (used for quiet for)
@@ -115,7 +115,7 @@ export function formatDateTimeAgoColorQuietFor(date: number): JSX.Element {
 	if (diff.days === 0 && diff.hours === 0 && diff.minutes > 5) { wrapperClass = 'color-yellow'; }
 	if (diff.minutes >= 10) { wrapperClass = 'color-green'; }
 
-	return <span className={wrapperClass}>{ret}</span>;
+	return <span className={wrapperClass}>{ret.trim()}</span>;
 }
 
 export function formatDateTimeAgoColor(date: number): JSX.Element {
@@ -136,5 +136,5 @@ export function formatDateTimeAgoColor(date: number): JSX.Element {
 	if (diff.days === 0 && diff.hours >= 1) { wrapperClass = 'color-orange'; }
 	if (diff.days >= 1) { wrapperClass = 'color-red'; }
 
-	return <span className={wrapperClass}>{ret}</span>;
+	return <span className={wrapperClass}>{ret.trim()}</span>;
 }

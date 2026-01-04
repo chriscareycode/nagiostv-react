@@ -939,34 +939,21 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
-								<th>LLM Server Host:</th>
+								<th>LLM Server Base URL:</th>
 								<td>
 									<input 
 										type="text" 
-										value={clientSettingsTemp.llmServerHost} 
-										onChange={handleChange('llmServerHost', 'string')}
-										placeholder="localhost or 10.0.0.1" 
+										value={clientSettingsTemp.llmServerBaseUrl} 
+										onChange={handleChange('llmServerBaseUrl', 'string')}
+										placeholder="http://localhost:1234"
 									/>
 									<br />
 									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Hostname or IP address of your OpenAI-compatible LLM server (e.g., Ollama, LM Studio, LocalAI)
-									</span>
-								</td>
-							</tr>
-							<tr>
-								<th>LLM Server Port:</th>
-								<td>
-									<input 
-										type="number" 
-										min="1" 
-										max="65535" 
-										value={clientSettingsTemp.llmServerPort} 
-										onChange={handleChange('llmServerPort', 'number')}
-										placeholder="11434" 
-									/>
-									<br />
-									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Port number (Ollama: 11434, LM Studio: 1234, LocalAI: 8080)
+										Base URL to your OpenAI-compatible LLM server (the path /v1/chat/completions is added automatically)<br />
+										Examples:<br />
+										• Ollama: <code>http://localhost:11434</code><br />
+										• LM Studio: <code>http://localhost:1234</code><br />
+										• LocalAI: <code>http://localhost:8080</code>
 									</span>
 								</td>
 							</tr>
@@ -1014,6 +1001,25 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>System Prompt:</th>
+								<td>
+									<div className="text-[0.9em] text-[#888]">
+										The system prompt sent to the LLM. Available variables:<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{DATE}}`}</code> - Current date (e.g., 2026-01-01)<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{TIME}}`}</code> - Current time (e.g., 14:30:45)<br />
+										<code className="bg-[#1e1e1e] px-1.5 py-0.5 rounded">{`{{DAY_OF_WEEK}}`}</code> - Day of the week (e.g., Thursday)
+									</div>
+									<textarea 
+										value={clientSettingsTemp.llmSystemPrompt} 
+										onChange={handleChange('llmSystemPrompt', 'string')}
+										placeholder="System prompt for the LLM"
+										rows={8}
+										className="w-full font-mono text-[0.9em]"
+										style={{ fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+								</td>
+							</tr>
+							<tr>
 								<th>Prompt (All OK):</th>
 								<td>
 									<textarea 
@@ -1052,14 +1058,17 @@ const Settings = () => {
 										<ul style={{ marginTop: '10px', marginBottom: '5px', paddingLeft: '20px' }}>
 											<li style={{ marginBottom: '5px' }}>
 												<strong>Ollama:</strong> Install from <a href="https://ollama.com" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>ollama.com</a>, 
-												run <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>ollama serve</code> (default port: 11434)
+												run <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>ollama serve</code>
+												<br />Base URL: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>http://localhost:11434</code>
 											</li>
 											<li style={{ marginBottom: '5px' }}>
 												<strong>LM Studio:</strong> Download from <a href="https://lmstudio.ai" target="_blank" rel="noopener noreferrer" style={{ color: '#4a90e2' }}>lmstudio.ai</a>, 
-												load a model, and start the local server (default port: 1234)
+												load a model, and start the local server
+												<br />Base URL: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>http://localhost:1234</code>
 											</li>
 											<li style={{ marginBottom: '5px' }}>
 												<strong>LocalAI:</strong> Run via Docker: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>docker run -p 8080:8080 localai/localai:latest</code>
+												<br />Base URL: <code style={{ backgroundColor: '#1e1e1e', padding: '2px 6px', borderRadius: '3px' }}>http://localhost:8080</code>
 											</li>
 										</ul>
 										<div style={{ marginTop: '10px', fontSize: '0.9em', color: '#999' }}>
@@ -1090,6 +1099,22 @@ const Settings = () => {
 											Local client settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
 											for all clients, but they can still be customized individually with settings saved in client settings. Delete the client settings and refresh the page to fetch server setting defaults again.
 										</div>
+										<br />
+										<div>
+											<label>
+												<input
+													type="checkbox"
+													checked={clientSettingsTemp.serverSettingsTakePrecedence}
+													onChange={(e: ChangeEvent<HTMLInputElement>) => {
+														setClientSettingsTemp(curr => ({ ...curr, serverSettingsTakePrecedence: e.target.checked }));
+														setIsDirty(true);
+													}}
+												/>
+												{' '}Server settings take precedence (when enabled, local settings will not override server settings)
+											</label>
+										</div>
+
+										<br />
 
 										<h4>Option 1: If you have PHP enabled on your server</h4>
 

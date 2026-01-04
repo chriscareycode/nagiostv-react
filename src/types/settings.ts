@@ -109,13 +109,16 @@ export interface ClientSettings {
 	miniMapWidth: number;
 
 	// LLM integration
-	llmServerHost: string;
-	llmServerPort: number;
+	llmServerBaseUrl: string;
 	llmModel: string;
 	llmApiKey: string;
 	llmSpeakResponse: boolean;
+	llmSystemPrompt: string;
 	llmPromptAllOk: string;
 	llmPromptNotOk: string;
+
+	// Server settings
+	serverSettingsTakePrecedence: boolean;
 }
 
 export interface VersionCheck {

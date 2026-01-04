@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
+import { alertAtom } from '../../atoms/alertAtom';
 import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
 import { clientSettingsAtom } from '../../atoms/settingsState';
@@ -20,7 +21,7 @@ import {
 } from '../../atoms/llmAtom';
 
 // Types
-import { Host, Service } from '../../types/hostAndServiceTypes';
+import { Alert, Host, Service } from '../../types/hostAndServiceTypes';
 
 // Components
 import LLMMarkup from './LLMMarkup';
@@ -40,6 +41,8 @@ import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv'
 // Configurable limit for maximum problems to send to LLM
 const MAX_HOST_PROBLEMS_FOR_LLM = 20;
 const MAX_SERVICE_PROBLEMS_FOR_LLM = 20;
+
+const CONSOLE_DEBUG = false;
 
 interface LLMMessage {
 	role: 'system' | 'user' | 'assistant';
@@ -68,6 +71,7 @@ interface LLMResponse {
 
 export default function LocalLLM() {
 	// State Management
+	const alertState = useAtomValue(alertAtom);
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -83,6 +87,11 @@ export default function LocalLLM() {
 
 	// Tracks whether we've already triggered an analysis this page load (manual or auto)
 	const hasTriggeredAnalysisRef = useRef<boolean>(false);
+
+	// Tracks if a change occurred while we were loading - if so, we need to re-analyze after loading completes
+	const pendingReanalysisRef = useRef<boolean>(false);
+	// Store the signature that was used when we started loading, to compare against when done
+	const loadingSignatureRef = useRef<string | null>(null);
 
 	// Ref and state for measuring content height for smooth animation
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -102,16 +111,18 @@ export default function LocalLLM() {
 				8: 'UNREACHABLE'
 			};
 
+			const timestampAgo = formatDateTimeAgo(host.last_time_up);
+
 			return `- Host: ${host.name}
   Status: ${statusMap[host.status] || 'UNKNOWN'}
   Plugin Output: ${host.plugin_output || 'N/A'}
-  Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, clientSettings.locale, clientSettings.dateFormat) : 'N/A'}
+  Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
   Acknowledged: ${host.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${host.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
   Flapping: ${host.is_flapping ? 'Yes' : 'No'}`;
 		}).join('\n\n');
 
-		return `Host Issues (${hosts.length}):\n${issues}`;
+		return `Host Issues (${hosts.length}):\n\n${issues}`;
 	};
 
 	// Helper function to format service issues
@@ -129,28 +140,116 @@ export default function LocalLLM() {
 				16: 'CRITICAL'
 			};
 
+			const timestampAgo = formatDateTimeAgo(service.last_time_ok);
+
 			return `- Host: ${service.host_name}
   Service: ${service.description}
   Status: ${statusMap[service.status] || 'UNKNOWN'}
-  Last Time OK: ${service.last_time_ok ? formatDateTimeLocale(service.last_time_ok, clientSettings.locale, clientSettings.dateFormat) : 'N/A'}
+  Last Time OK: ${service.last_time_ok ? formatDateTimeLocale(service.last_time_ok, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
   Plugin Output: ${service.plugin_output || 'N/A'}
   Acknowledged: ${service.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${service.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
   Flapping: ${service.is_flapping ? 'Yes' : 'No'}`;
 		}).join('\n\n');
 
-		return `Service Issues (${services.length}):\n${issues}`;
+		return `Service Issues (${services.length}):\n\n${issues}`;
+	};
+
+	// Helper function to format recent alerts
+	const formatRecentAlerts = (alerts: Alert[]): string => {
+		if (alerts.length === 0) {
+			return 'No recent alerts.';
+		}
+
+		const alertStateMap: Record<number, string> = {
+			1: 'HOST UP',
+			2: 'HOST DOWN',
+			4: 'HOST UNREACHABLE',
+			8: 'SERVICE OK',
+			16: 'SERVICE WARNING',
+			32: 'SERVICE CRITICAL',
+			64: 'SERVICE UNKNOWN'
+		};
+
+		const stateTypeMap: Record<number, string> = {
+			1: 'HARD',
+			2: 'SOFT'
+		};
+
+		const formattedAlerts = alerts.map(alert => {
+			const isHostAlert = alert.object_type === 1;
+			const timestampFormatted = formatDateTimeLocale(alert.timestamp, clientSettings.locale, clientSettings.dateFormat);
+			const timestampAgo = formatDateTimeAgo(alert.timestamp);
+
+			if (isHostAlert) {
+				return `- Host: ${alert.name}
+  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
+  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
+  Time: ${timestampFormatted} (${timestampAgo} ago)
+  Plugin Output: ${alert.plugin_output || 'N/A'}`;
+			} else {
+				return `- Host: ${alert.host_name}
+  Service: ${alert.description}
+  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
+  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
+  Time: ${timestampFormatted} (${timestampAgo} ago)
+  Plugin Output: ${alert.plugin_output || 'N/A'}`;
+			}
+		}).join('\n\n');
+
+		return `Recent Alerts (${alerts.length}):\n\n${formattedAlerts}`;
+	};
+
+	// Define state arrays early so they can be used by buildSignature and queryLLM
+	const hostStateArray = hostState.stateArray || [];
+	const serviceStateArray = serviceState.stateArray || [];
+
+	// Build a simple signature: sorted list of problem identifiers plus filter settings
+	// Triggers on actual problem additions/removals and filter changes
+	const buildSignature = (): string => {
+		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
+		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
+		
+		// Include filter settings in signature so changes trigger re-analysis
+		const filterSignature = [
+			clientSettings.hideHostPending,
+			clientSettings.hideHostUp,
+			clientSettings.hideHostDown,
+			clientSettings.hideHostUnreachable,
+			clientSettings.hideHostAcked,
+			clientSettings.hideHostScheduled,
+			clientSettings.hideHostFlapping,
+			clientSettings.hideHostSoft,
+			clientSettings.hideHostNotificationsDisabled,
+			clientSettings.hideServicePending,
+			clientSettings.hideServiceOk,
+			clientSettings.hideServiceWarning,
+			clientSettings.hideServiceUnknown,
+			clientSettings.hideServiceCritical,
+			clientSettings.hideServiceAcked,
+			clientSettings.hideServiceScheduled,
+			clientSettings.hideServiceFlapping,
+			clientSettings.hideServiceSoft,
+			clientSettings.hideServiceNotificationsDisabled,
+		].map(v => v ? '1' : '0').join('');
+		
+		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
 	};
 
 	// Function to query the LLM
 	const queryLLM = async () => {
 		// Check if LLM settings are configured
-		if (!clientSettings.llmServerHost || !clientSettings.llmServerPort) {
-			setError('LLM server hostname and port are not configured. Please configure them in settings.');
+		if (!clientSettings.llmServerBaseUrl) {
+			setError('LLM server base URL is not configured. Please configure it in settings.');
 			return;
 		}
 
 		hasTriggeredAnalysisRef.current = true;
+		
+		// Capture the signature at the moment we start loading
+		// This allows us to detect if data changed while we were loading
+		loadingSignatureRef.current = buildSignature();
+		pendingReanalysisRef.current = false; // Reset pending flag
 
 		setIsLoading(true);
 		setError('');
@@ -159,8 +258,19 @@ export default function LocalLLM() {
 
 		// Let the LLM know what today's date is
 		const todaysDate = new Date().toISOString().split('T')[0];
-		const todaysTime = new Date().toLocaleTimeString();
+		const todaysTime = new Date().toLocaleTimeString(undefined, { hour12: false });
 		const dayOfTheWeek = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+
+		// Helper function to replace template variables in system prompt
+		const replacePromptVariables = (prompt: string): string => {
+			return prompt
+				.replace(/\{\{DATE\}\}/g, todaysDate)
+				.replace(/\{\{TIME\}\}/g, todaysTime)
+				.replace(/\{\{DAY_OF_WEEK\}\}/g, dayOfTheWeek);
+		};
+
+		// Get the system prompt from settings and replace variables
+		const systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
 
 		try {
 			// Get the host and service problems
@@ -171,6 +281,9 @@ export default function LocalLLM() {
 			// use filterHostStateArray and filterServiceStateArray from nagiostv.ts
 			const filteredHostStates = filterHostStateArray(hostStateArray, clientSettings);
 			const filteredServiceStates = filterServiceStateArray(serviceStateArray, clientSettings);
+
+			// Get the most recent 2 alerts
+			const recentAlerts = (alertState.responseArray || []).slice(0, 2);
 
 			// Check if there are too many problems to analyze
 			const tooManyHostStates = filteredHostStates.length > MAX_HOST_PROBLEMS_FOR_LLM;
@@ -203,7 +316,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a helpful assistant analyzing Nagios monitoring data. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Use an appropriate warning/alert emoji given the severity of the situation.`
+						content: systemPrompt
 					},
 					{
 						role: 'user',
@@ -215,7 +328,7 @@ export default function LocalLLM() {
 				messages = [
 					{
 						role: 'system',
-						content: `You are a friendly assistant that celebrates system reliability. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. Always add a emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response. Do not output tables in the response, use plain text only.`
+						content: systemPrompt
 					},
 					{
 						role: 'user',
@@ -226,16 +339,18 @@ export default function LocalLLM() {
 				// Format the issues for the LLM
 				const hostIssuesText = formatHostIssues(filteredHostStates);
 				const serviceIssuesText = formatServiceIssues(filteredServiceStates);
+				// Only include recent alerts if the Most Recent Alert section is visible
+				const recentAlertsText = !clientSettings.hideMostRecentAlertSection ? formatRecentAlerts(recentAlerts) : '';
 
 				messages = [
 					{
 						role: 'system',
-						content: `You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is ${todaysDate}. The time is ${todaysTime}. Day of the week is ${dayOfTheWeek}. If you mention "flapping", capitalize it as "FLAPPING".`
+						content: systemPrompt
 					},
 					// Default
 					{
 						role: 'user',
-						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\n ${clientSettings.llmPromptNotOk}`
+						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}${recentAlertsText ? `\n\n${recentAlertsText}` : ''}\n\n ${clientSettings.llmPromptNotOk}`
 					},
 
 					// Middle of the road
@@ -259,10 +374,13 @@ export default function LocalLLM() {
 			}
 
 			// Construct the API URL
-			const apiUrl = `http://${clientSettings.llmServerHost}:${clientSettings.llmServerPort}/v1/chat/completions`;
+			const apiUrl = `${clientSettings.llmServerBaseUrl}/v1/chat/completions`;
 
 			// Output the messages to console for debugging
-			// console.log('LocalLLM - Sending messages to LLM:', messages);
+			if (CONSOLE_DEBUG) {
+				console.log('LocalLLM - Sending messages to LLM:', messages);
+				console.log(messages[1].content);
+			}
 
 			// Make the API call
 			const response = await axios.post<LLMResponse>(
@@ -321,13 +439,13 @@ export default function LocalLLM() {
 				const hasHostDown = filteredHostStates.some(h => h.status === 4);           // 4 = DOWN
 				const hasHostUnreachable = filteredHostStates.some(h => h.status === 8);    // 8 = UNREACHABLE
 				
-				// Service warning
-				if (hasServiceWarning) {
-					color = 'yellow';
-				}
 				// Service unknown
 				if (hasServiceUnknown) {
 					color = 'orange';
+				}
+				// Service warning
+				if (hasServiceWarning) {
+					color = 'yellow';
 				}
 				// Service critical
 				if (hasServiceCritical) {
@@ -412,7 +530,7 @@ export default function LocalLLM() {
 					setError(`LLM server error: ${err.response.status} - ${err.response.statusText}`);
 					console.error('LocalLLM response error:', err.response.status, err.response.statusText, err.response.data);
 				} else if (err.request) {
-					setError(`Cannot connect to LLM server at ${clientSettings.llmServerHost}:${clientSettings.llmServerPort}. Please check the hostname and port.`);
+					setError(`Cannot connect to LLM server at ${clientSettings.llmServerBaseUrl}. Please check the URL.`);
 					console.error('LocalLLM request error (no response):', err.request);
 				} else {
 					setError(`Error: ${err.message}`);
@@ -425,6 +543,18 @@ export default function LocalLLM() {
 			console.error('LocalLLM error:', err);
 		} finally {
 			setIsLoading(false);
+			
+			// Check if data changed while we were loading and we need to re-analyze
+			if (pendingReanalysisRef.current) {
+				if (CONSOLE_DEBUG) {
+					console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+				}
+				pendingReanalysisRef.current = false;
+				// Use a small delay to allow state to settle and avoid tight loops
+				setTimeout(() => {
+					queryLLM();
+				}, 500);
+			}
 		}
 	};
 
@@ -451,41 +581,6 @@ export default function LocalLLM() {
 		}
 	};
 
-	const hostStateArray = hostState.stateArray || [];
-	const serviceStateArray = serviceState.stateArray || [];
-
-	// Build a simple signature: sorted list of problem identifiers plus filter settings
-	// Triggers on actual problem additions/removals and filter changes
-	const buildSignature = (): string => {
-		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
-		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
-		
-		// Include filter settings in signature so changes trigger re-analysis
-		const filterSignature = [
-			clientSettings.hideHostPending,
-			clientSettings.hideHostUp,
-			clientSettings.hideHostDown,
-			clientSettings.hideHostUnreachable,
-			clientSettings.hideHostAcked,
-			clientSettings.hideHostScheduled,
-			clientSettings.hideHostFlapping,
-			clientSettings.hideHostSoft,
-			clientSettings.hideHostNotificationsDisabled,
-			clientSettings.hideServicePending,
-			clientSettings.hideServiceOk,
-			clientSettings.hideServiceWarning,
-			clientSettings.hideServiceUnknown,
-			clientSettings.hideServiceCritical,
-			clientSettings.hideServiceAcked,
-			clientSettings.hideServiceScheduled,
-			clientSettings.hideServiceFlapping,
-			clientSettings.hideServiceSoft,
-			clientSettings.hideServiceNotificationsDisabled,
-		].map(v => v ? '1' : '0').join('');
-		
-		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
-	};
-
 	const currentSignature = buildSignature();
 	const prevSignatureRef = useRef<string | null>(null);
 	const debounceTimerRef = useRef<number | null>(null);
@@ -499,7 +594,7 @@ export default function LocalLLM() {
 	// Trigger LLM when problems change
 	useEffect(() => {
 		// Skip if LLM not configured
-		if (!clientSettings.llmServerHost || !clientSettings.llmServerPort) {
+		if (!clientSettings.llmServerBaseUrl) {
 			return;
 		}
 
@@ -510,7 +605,9 @@ export default function LocalLLM() {
 			// Initial load: trigger after 5 seconds if no analysis has run and history is empty
 			initialLoadTimerRef.current = window.setTimeout(() => {
 				if (!hasTriggeredAnalysisRef.current && !isLoading && history.length === 0) {
-					console.log('[LocalLLM] Initial load trigger');
+					if (CONSOLE_DEBUG) {
+						console.log('[LocalLLM] Initial load trigger');
+					}
 					hasTriggeredAnalysisRef.current = true;
 					queryLLM();
 				}
@@ -523,11 +620,28 @@ export default function LocalLLM() {
 			return;
 		}
 
-		console.log('[LocalLLM] Problems changed:', { 
-			prev: prevSignatureRef.current, 
-			current: currentSignature 
-		});
+		if (CONSOLE_DEBUG) {
+			console.log('[LocalLLM] Problems changed:', { 
+				prev: prevSignatureRef.current, 
+				current: currentSignature 
+			});
+		}
 		prevSignatureRef.current = currentSignature;
+
+		// If we're currently loading, mark that we need to re-analyze after loading completes
+		// This handles the case where data changes while an LLM request is in-flight
+		if (isLoading) {
+			if (CONSOLE_DEBUG) {
+				console.log('[LocalLLM] Data changed while loading - marking for re-analysis');
+			}
+			pendingReanalysisRef.current = true;
+			// Clear any pending debounce timer since we'll re-analyze after loading
+			if (debounceTimerRef.current) {
+				window.clearTimeout(debounceTimerRef.current);
+				debounceTimerRef.current = null;
+			}
+			return;
+		}
 
 		// Clear any pending debounce timer
 		if (debounceTimerRef.current) {
@@ -536,7 +650,9 @@ export default function LocalLLM() {
 
 		// Debounce: wait 2 seconds before triggering
 		debounceTimerRef.current = window.setTimeout(() => {
-			console.log('[LocalLLM] Debounce complete, triggering analysis');
+			if (CONSOLE_DEBUG) {
+				console.log('[LocalLLM] Debounce complete, triggering analysis');
+			}
 			hasTriggeredAnalysisRef.current = true;
 			queryLLM();
 		}, 2000);
@@ -547,7 +663,7 @@ export default function LocalLLM() {
 				window.clearTimeout(debounceTimerRef.current);
 			}
 		};
-	}, [currentSignature, clientSettings.llmServerHost, clientSettings.llmServerPort, isLoading]);
+	}, [currentSignature, clientSettings.llmServerBaseUrl, isLoading]);
 
 	// Cleanup initial load timer on unmount
 	useEffect(() => {

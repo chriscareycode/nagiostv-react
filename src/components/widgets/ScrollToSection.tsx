@@ -12,7 +12,8 @@ interface ScrollToSectionProps {
 
 const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 	const animationFrameIdRef = useRef<number | null>(null);
-	const scrollAreaElement = document.querySelector<HTMLElement>(scrollAreaSelector);
+
+	const getScrollAreaElement = () => document.querySelector<HTMLElement>(scrollAreaSelector);
 
 	const smoothScrollTo = (element: HTMLElement, to: number, duration: number) => {
 		if (animationFrameIdRef.current) {
@@ -49,6 +50,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 	};
 
 	const scrollToNextSection = (currentSection: string, animateSpeed: number) => {
+		const scrollAreaElement = getScrollAreaElement();
 		if (!scrollAreaElement) return;
 
 		if (debug) console.log('ScrollToSection() scrollToNextSection() moving to', currentSection, animateSpeed);

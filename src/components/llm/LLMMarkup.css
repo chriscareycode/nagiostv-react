@@ -1,6 +1,6 @@
 .llm-markup {
 	color: #e0e0e0;
-	line-height: 1.0;
+	line-height: 130%;
 	font-size: 0.95em;
 }
 
@@ -8,7 +8,6 @@
 .llm-heading {
 	margin: 0.8em 0 0.5em 0;
 	font-weight: 600;
-	line-height: 1.0;
 }
 
 .llm-heading:first-child {
@@ -52,7 +51,6 @@
 /* Paragraphs */
 .llm-paragraph {
 	margin: 0.5em 0;
-	line-height: 1.3;
 }
 
 .llm-first-paragraph {
@@ -78,7 +76,6 @@
 
 .llm-list-item {
 	margin: 0.3em 0;
-	line-height: 1.0;
 }
 
 .llm-list-item::marker {
@@ -123,7 +120,6 @@
 	font-family: 'Monaco', 'Courier New', monospace;
 	font-size: 0.9em;
 	color: #d4d4d4;
-	line-height: 1.0;
 	display: block;
 }
 
