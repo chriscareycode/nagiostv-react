@@ -42,6 +42,8 @@ import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv'
 const MAX_HOST_PROBLEMS_FOR_LLM = 20;
 const MAX_SERVICE_PROBLEMS_FOR_LLM = 20;
 
+const CONSOLE_DEBUG = false;
+
 interface LLMMessage {
 	role: 'system' | 'user' | 'assistant';
 	content: string;
@@ -375,8 +377,10 @@ export default function LocalLLM() {
 			const apiUrl = `${clientSettings.llmServerBaseUrl}/v1/chat/completions`;
 
 			// Output the messages to console for debugging
-			console.log('LocalLLM - Sending messages to LLM:', messages);
-			console.log(messages[1].content);
+			if (CONSOLE_DEBUG) {
+				console.log('LocalLLM - Sending messages to LLM:', messages);
+				console.log(messages[1].content);
+			}
 
 			// Make the API call
 			const response = await axios.post<LLMResponse>(
@@ -542,7 +546,9 @@ export default function LocalLLM() {
 			
 			// Check if data changed while we were loading and we need to re-analyze
 			if (pendingReanalysisRef.current) {
-				console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+				if (CONSOLE_DEBUG) {
+					console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+				}
 				pendingReanalysisRef.current = false;
 				// Use a small delay to allow state to settle and avoid tight loops
 				setTimeout(() => {
@@ -599,7 +605,9 @@ export default function LocalLLM() {
 			// Initial load: trigger after 5 seconds if no analysis has run and history is empty
 			initialLoadTimerRef.current = window.setTimeout(() => {
 				if (!hasTriggeredAnalysisRef.current && !isLoading && history.length === 0) {
-					console.log('[LocalLLM] Initial load trigger');
+					if (CONSOLE_DEBUG) {
+						console.log('[LocalLLM] Initial load trigger');
+					}
 					hasTriggeredAnalysisRef.current = true;
 					queryLLM();
 				}
@@ -612,16 +620,20 @@ export default function LocalLLM() {
 			return;
 		}
 
-		console.log('[LocalLLM] Problems changed:', { 
-			prev: prevSignatureRef.current, 
-			current: currentSignature 
-		});
+		if (CONSOLE_DEBUG) {
+			console.log('[LocalLLM] Problems changed:', { 
+				prev: prevSignatureRef.current, 
+				current: currentSignature 
+			});
+		}
 		prevSignatureRef.current = currentSignature;
 
 		// If we're currently loading, mark that we need to re-analyze after loading completes
 		// This handles the case where data changes while an LLM request is in-flight
 		if (isLoading) {
-			console.log('[LocalLLM] Data changed while loading - marking for re-analysis');
+			if (CONSOLE_DEBUG) {
+				console.log('[LocalLLM] Data changed while loading - marking for re-analysis');
+			}
 			pendingReanalysisRef.current = true;
 			// Clear any pending debounce timer since we'll re-analyze after loading
 			if (debounceTimerRef.current) {
@@ -638,7 +650,9 @@ export default function LocalLLM() {
 
 		// Debounce: wait 2 seconds before triggering
 		debounceTimerRef.current = window.setTimeout(() => {
-			console.log('[LocalLLM] Debounce complete, triggering analysis');
+			if (CONSOLE_DEBUG) {
+				console.log('[LocalLLM] Debounce complete, triggering analysis');
+			}
 			hasTriggeredAnalysisRef.current = true;
 			queryLLM();
 		}, 2000);

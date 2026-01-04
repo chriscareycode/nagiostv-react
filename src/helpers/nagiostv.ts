@@ -121,7 +121,7 @@ export const saveCookie = (changeString: string, obj: ClientSettings) => {
 export const saveLocalStorage = (changeString: string, obj: ClientSettings) => {
 	if (isLocalStorageEnabled()) {
 		localStorage.setItem('settings', JSON.stringify(obj));
-		console.log('Saved localStorage', changeString, obj);
+		// console.log('Saved localStorage', changeString, obj);
 	} else {
 		console.error('LocalStorage is not enabled. Trying to save to cookie instead.');
 		saveCookie(changeString, obj);
