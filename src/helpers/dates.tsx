@@ -111,11 +111,12 @@ export function formatDateTimeAgoColorQuietFor(date: number): JSX.Element {
 	if (ret.length === 0) { ret = '0s'; }
 
 	const now = Date.now();
+	const elapsed = now - date;
 	let wrapperClass = 'color-green';
-	// red is within 2 minutes, orange within 5 minutes, yellow within 10 minutes
-	if (now - date <= 2 * 60 * 1000) { wrapperClass = 'color-red'; }
-	if (now - date <= 5 * 60 * 1000) { wrapperClass = 'color-orange'; }
-	if (now - date <= 10 * 60 * 1000) { wrapperClass = 'color-yellow'; }
+	// red is under 1 minute, orange is 1-5 minutes, yellow is 5-10 minutes, green is 10+ minutes
+	if (elapsed < 10 * 60 * 1000) { wrapperClass = 'color-yellow'; }
+	if (elapsed < 5 * 60 * 1000) { wrapperClass = 'color-orange'; }
+	if (elapsed < 1 * 60 * 1000) { wrapperClass = 'color-red'; }
 
 	return <span className={wrapperClass}>{ret.trim()}</span>;
 }
