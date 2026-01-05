@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Allotment } from "allotment";
+import { Allotment, LayoutPriority } from "allotment";
 import { debounce } from 'lodash';
 import { useLocation } from "react-router-dom";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
@@ -82,15 +82,17 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 		<>
 			{bigState.isDoneLoading && (
 				<Allotment
+					proportionalLayout={false}
 					onChange={debouncedResizeMiniMap}
 				>
 
-					<Allotment.Pane >
+					<Allotment.Pane priority={LayoutPriority.High}>
 						{children}
 					</Allotment.Pane>
 
 					<Allotment.Pane
 						minSize={0}
+						priority={LayoutPriority.Low}
 						preferredSize={clientSettings.miniMapWidth}
 					>
 						<MiniMapComponent
