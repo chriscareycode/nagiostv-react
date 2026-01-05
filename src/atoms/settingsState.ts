@@ -169,20 +169,25 @@ Alerts are always in the past, and I like to measure how long since the last ale
 - If we are not acknowledged, not scheduled downtime, or not flapping, do not mention these states in the response.
 - If we have flapping, put a emoji related to flapping, next to the where you call it out.
 
-Do not provide recommendations unless they are explicitly called out below:
-
-======================================
-RECOMMENDATIONS if the service is not in OK state:
-
-- Check APT: Update the packages at your earliest convenience.
-======================================
-
 `,
 
 	// Server settings
 	serverSettingsTakePrecedence: false,
 };
 
-export const bigStateAtom = atom(bigStateInitial);
+// Store atoms in a global cache to preserve them across HMR
+// This prevents the "Settings are not loaded yet" issue during hot-reload
+// interface AtomCache {
+// 	bigStateAtom?: ReturnType<typeof atom<BigState>>;
+// 	clientSettingsAtom?: ReturnType<typeof atom<ClientSettings>>;
+// }
 
+// const globalWithCache = globalThis as typeof globalThis & { __NAGIOSTV_ATOM_CACHE__?: AtomCache };
+// const atomCache: AtomCache = globalWithCache.__NAGIOSTV_ATOM_CACHE__ ??= {};
+
+// export const bigStateAtom = atomCache.bigStateAtom ??= atom(bigStateInitial);
+// export const clientSettingsAtom = atomCache.clientSettingsAtom ??= atom(clientSettingsInitial);
+
+export const bigStateAtom = atom(bigStateInitial);
 export const clientSettingsAtom = atom(clientSettingsInitial);
+
