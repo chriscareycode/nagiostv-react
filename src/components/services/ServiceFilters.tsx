@@ -27,6 +27,7 @@ import FilterCheckbox from '../widgets/FilterCheckbox';
 import SortOrderSelect from '../widgets/SortOrderSelect';
 import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 const ServiceFilters = () => {
 
@@ -35,6 +36,7 @@ const ServiceFilters = () => {
 	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 	const settingsObject = clientSettings; // TODO rename
+	const queryParams = useQueryParams();
 
 	// Chop the bigState into vars
 	const {
@@ -102,6 +104,8 @@ const ServiceFilters = () => {
 			});
 		});
 
+		// Sync to URL query params
+		queryParams.set({ [propName]: val });
 	};
 
 	const {
@@ -125,6 +129,7 @@ const ServiceFilters = () => {
 				varName="serviceSortOrder"
 				language={language}
 				onChange={handleSelectChange}
+				syncToUrl={true}
 			/>}
 
 			<span>

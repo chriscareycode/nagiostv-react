@@ -18,6 +18,7 @@
 
 import { ChangeEvent } from 'react';
 import { translate } from '../../helpers/language';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 export type SortOrder = 'newest' | 'oldest' | 'az' | 'za';
 
@@ -26,11 +27,24 @@ interface SortOrderSelectProps {
 	varName: string;
 	language: string;
 	onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+	syncToUrl?: boolean; // Optional flag to enable URL sync
 }
 
-const SortOrderSelect = ({ value, varName, language, onChange }: SortOrderSelectProps) => {
+const SortOrderSelect = ({ value, varName, language, onChange, syncToUrl = false }: SortOrderSelectProps) => {
+	const queryParams = useQueryParams();
+
+	const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+		// Call the original onChange handler
+		onChange(e);
+		
+		// Optionally sync to URL query params
+		if (syncToUrl) {
+			queryParams.set({ [varName]: e.target.value });
+		}
+	};
+
 	return (
-		<select value={value} data-varname={varName} onChange={onChange}>
+		<select value={value} data-varname={varName} onChange={handleChange}>
 			<option value="newest">{translate('newest first', language)}</option>
 			<option value="oldest">{translate('oldest first', language)}</option>
 			<option value="az">{translate('A-Z', language)}</option>
