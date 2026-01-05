@@ -24,6 +24,7 @@ import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
+import SortOrderSelect from '../widgets/SortOrderSelect';
 import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
 
@@ -119,10 +120,12 @@ const ServiceFilters = () => {
 
 	return (
 		<>
-			{!hideFilters && <select value={serviceSortOrder} data-varname={'serviceSortOrder'} onChange={handleSelectChange}>
-				<option value="newest">{translate('newest first', language)}</option>
-				<option value="oldest">{translate('oldest first', language)}</option>
-			</select>}
+			{!hideFilters && <SortOrderSelect
+				value={serviceSortOrder}
+				varName="serviceSortOrder"
+				language={language}
+				onChange={handleSelectChange}
+			/>}
 
 			<span>
 				{' '}

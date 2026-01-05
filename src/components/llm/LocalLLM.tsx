@@ -553,7 +553,7 @@ export default function LocalLLM() {
 				// Use a small delay to allow state to settle and avoid tight loops
 				setTimeout(() => {
 					queryLLM();
-				}, 500);
+				}, 1000);
 			}
 		}
 	};

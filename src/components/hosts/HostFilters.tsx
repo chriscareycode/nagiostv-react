@@ -24,6 +24,7 @@ import { hostHowManyAtom } from '../../atoms/hostAtom';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
+import SortOrderSelect from '../widgets/SortOrderSelect';
 import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
 
@@ -110,10 +111,12 @@ const HostFilters = () => {
 	return (
 		<>
 
-			{!hideFilters && <select value={hostSortOrder} data-varname={'hostSortOrder'} onChange={handleSelectChange}>
-				<option value="newest">{translate('newest first', language)}</option>
-				<option value="oldest">{translate('oldest first', language)}</option>
-			</select>}
+			{!hideFilters && <SortOrderSelect
+				value={hostSortOrder}
+				varName="hostSortOrder"
+				language={language}
+				onChange={handleSelectChange}
+			/>}
 
 			<span>
 				{' '}

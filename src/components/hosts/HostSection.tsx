@@ -294,14 +294,23 @@ const HostSection = () => {
 	const howManyHosts = hostHowManyState.howManyHosts;
 
 	// Sort the data based on the hostSortOrder value
-	let sort = 1;
-	if (hostSortOrder === 'oldest') { sort = -1; }
-	//console.log('sortedHostStateArray before', sortedHostStateArray);
-	sortedHostStateArray.sort((a, b) => {
-		if (a.last_time_up < b.last_time_up) { return 1 * sort; }
-		if (a.last_time_up > b.last_time_up) { return -1 * sort; }
-		return 0;
-	});
+	if (hostSortOrder === 'az' || hostSortOrder === 'za') {
+		// Alphabetical sorting by host name
+		const sortMultiplier = hostSortOrder === 'az' ? 1 : -1;
+		sortedHostStateArray.sort((a, b) => {
+			return a.name.localeCompare(b.name) * sortMultiplier;
+		});
+	} else {
+		// Time-based sorting (newest/oldest)
+		let sort = 1;
+		if (hostSortOrder === 'oldest') { sort = -1; }
+		//console.log('sortedHostStateArray before', sortedHostStateArray);
+		sortedHostStateArray.sort((a, b) => {
+			if (a.last_time_up < b.last_time_up) { return 1 * sort; }
+			if (a.last_time_up > b.last_time_up) { return -1 * sort; }
+			return 0;
+		});
+	}
 	//console.log('sortedHostStateArray after', sortedHostStateArray);
 
 	return (
