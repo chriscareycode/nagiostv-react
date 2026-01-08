@@ -14,7 +14,8 @@ interface QuietForSecondsProps {
 export default function QuietForSeconds({ timestamp }: QuietForSecondsProps) {
 	const [now, setNow] = useState(Date.now());
 
-	const elapsedMs = now - timestamp;
+	// Ensure elapsed time is never negative (can happen with clock drift)
+	const elapsedMs = Math.max(0, now - timestamp);
 	const isLessThanOneMinute = elapsedMs < 60 * 1000;
 
 	useEffect(() => {
