@@ -51,9 +51,14 @@ export default function Summary() {
 	// const programStart = programStatus?.response?.program_start;
 	// const programVersion = programStatus?.response?.version;
 
+	// Find the most recent alert that is NOT OK/UP status
+	// state: 1 = host up, state: 8 = service ok
 	let quietForMs: number | null = null;
 	if (alertState && alertState.responseArray && alertState.responseArray.length > 0) {
-		quietForMs = alertState.responseArray[0].timestamp;
+		const nonOkAlert = alertState.responseArray.find(alert => alert.state !== 1 && alert.state !== 8);
+		if (nonOkAlert) {
+			quietForMs = nonOkAlert.timestamp;
+		}
 	}
 
 	const scrollDown = () => {
