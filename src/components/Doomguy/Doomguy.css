@@ -142,3 +142,40 @@
 	opacity: 0.7;
 	white-space: nowrap;
 }
+
+.doomguy-speech-balloon {
+	position: absolute;
+	bottom: 100%;
+	right: 0;
+	margin-bottom: 8px;
+	padding: 6px 10px;
+	background-color: #2a2a2a;
+	border: 1px solid #555;
+	border-radius: 12px;
+	font-size: 12px;
+	color: #eee;
+	white-space: nowrap;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+	z-index: 10;
+}
+
+/* Speech balloon tail/pointer */
+.doomguy-speech-balloon::after {
+	content: '';
+	position: absolute;
+	bottom: -8px;
+	right: 15px;
+	border-width: 8px 6px 0 6px;
+	border-style: solid;
+	border-color: #2a2a2a transparent transparent transparent;
+}
+
+.doomguy-speech-balloon::before {
+	content: '';
+	position: absolute;
+	bottom: -10px;
+	right: 14px;
+	border-width: 9px 7px 0 7px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
+}

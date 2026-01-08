@@ -36,6 +36,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from 'types/settings';
 import Doomguy from './Doomguy/Doomguy';
+import LlmModelSelector from './settings/LlmModelSelector';
 
 const Settings = () => {
 
@@ -863,7 +864,7 @@ const Settings = () => {
 									<span style={{ position: 'relative' }}> &nbsp; The character from the 1993 video game Doom
 
 										<span style={{ position: 'absolute', top: 0, right: -56, height: 32, width: 24 }}>
-											<Doomguy scaleCss='0.5' style={{ position: 'absolute', top: -13 }} />
+											<Doomguy scaleCss='0.5' style={{ position: 'absolute', top: -13 }} showBalloon={false} />
 										</span>
 									</span>
 								</td>
@@ -885,7 +886,7 @@ const Settings = () => {
 												</tr>}
 												{clientSettingsTemp.doomguyEnabled && <tr>
 													<th>Doomguy bloody at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
+													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> hosts DOWN, services CRITICAL</td>
 												</tr>}
 											</tbody>
 										</table>
@@ -960,16 +961,12 @@ const Settings = () => {
 							<tr>
 								<th>LLM Model:</th>
 								<td>
-									<input 
-										type="text" 
-										value={clientSettingsTemp.llmModel} 
+									<LlmModelSelector
+										llmModel={clientSettingsTemp.llmModel}
+										llmServerBaseUrl={clientSettingsTemp.llmServerBaseUrl}
+										llmApiKey={clientSettingsTemp.llmApiKey}
 										onChange={handleChange('llmModel', 'string')}
-										placeholder="llama2 or gpt-3.5-turbo" 
 									/>
-									<br />
-									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Model name to use (e.g., llama2, mistral, gpt-3.5-turbo)
-									</span>
 								</td>
 							</tr>
 							<tr>

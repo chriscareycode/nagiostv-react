@@ -204,11 +204,12 @@ export default function LocalLLM() {
 	const hostStateArray = hostState.stateArray || [];
 	const serviceStateArray = serviceState.stateArray || [];
 
-	// Build a simple signature: sorted list of problem identifiers plus filter settings
-	// Triggers on actual problem additions/removals and filter changes
+	// Build a simple signature: sorted list of problem identifiers with their status plus filter settings
+	// Triggers on actual problem additions/removals, state changes (e.g. WARNING to CRITICAL), and filter changes
 	const buildSignature = (): string => {
-		const hostIds = hostStateArray.map(h => h.name).sort().join(',');
-		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}`).sort().join(',');
+		// Include status in signature so state changes (e.g. WARNING -> CRITICAL) trigger re-analysis
+		const hostIds = hostStateArray.map(h => `${h.name}:${h.status}`).sort().join(',');
+		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}:${s.status}`).sort().join(',');
 		
 		// Include filter settings in signature so changes trigger re-analysis
 		const filterSignature = [
@@ -270,7 +271,12 @@ export default function LocalLLM() {
 		};
 
 		// Get the system prompt from settings and replace variables
-		const systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
+		let systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
+		
+		// If Doomguy is enabled, append instruction for Doomguy to say something
+		if (clientSettings.doomguyEnabled) {
+			systemPrompt += '\n\nWe have a character "Doomguy" who is an avatar for our AI. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. If there is a critical item, then his words should focus should be on that item. Write this in the format: \'Doomguy says "<message>"\'.';
+		}
 
 		try {
 			// Get the host and service problems
@@ -429,6 +435,21 @@ export default function LocalLLM() {
 						selectedEmoji = '✅';
 					}
 				}
+				
+				// Extract "Doomguy says" pattern from the response
+				// Pattern: Doomguy says "<something>" (with or without the period at the end)
+				const doomguySaysRegex = /Doomguy says\s*"([^"]+)"\.?\s*/gi;
+				let doomguyMatch;
+				let doomguySays = '';
+				
+				// Find and extract the Doomguy says text, removing it from content
+				while ((doomguyMatch = doomguySaysRegex.exec(content)) !== null) {
+					doomguySays = doomguyMatch[1]; // Keep the last match if multiple
+				}
+				
+				// Remove all "Doomguy says" patterns from the content
+				content = content.replace(doomguySaysRegex, '').trim();
+				
 				// Based on the filtered host and service problems, determine the color to use for this response
 				let color: LLMHistoryColor = 'green'; // Default to green
 				
@@ -467,6 +488,7 @@ export default function LocalLLM() {
 					emoji: selectedEmoji,
 					model: response.data.model || clientSettings.llmModel || 'unknown',
 					color,
+					shortResponse: doomguySays,
 				};
 				
 				// Check if user is currently viewing the most recent response
