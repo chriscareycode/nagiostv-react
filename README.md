@@ -2,7 +2,7 @@
 
 Homepage at [NagiosTV.com](https://nagiostv.com)
 
-![Display](https://nagiostv.com/images/nagiostv-0.9.0-short.png)
+![Display](https://nagiostv.com/images/nagiostv-0.9.9-beta.png)
 
 NagiosTV is a user interface add-on for the Nagios monitoring system https://www.nagios.org
 
