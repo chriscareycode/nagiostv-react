@@ -35,6 +35,7 @@ import HostItem from './HostItem';
 // CSS
 import './HostItems.css';
 import { useRef } from 'react';
+import useVisibilityChange from '../../hooks/useVisibilityChange';
 import { Host } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 
@@ -52,6 +53,9 @@ const HostItems = ({
 	settings,
 	isDemoMode,
 }: HostItemsProps) => {
+
+	// Track visibility changes to fix stuck animations when tab is backgrounded
+	const visibilityKey = useVisibilityChange();
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -114,7 +118,7 @@ const HostItems = ({
 	return (
 		<div className="HostItems ServiceItems">
 
-			<AnimatePresence initial={false}>
+			<AnimatePresence initial={false} key={`host-all-ok-${visibilityKey}`}>
 				{hostStateArray.length === 0 && <motion.div
 					className={`all-ok-item`}
 					initial={{ opacity: 0, height: 0 }}

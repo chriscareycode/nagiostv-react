@@ -39,6 +39,8 @@ import ServiceItem from './ServiceItem';
 import { Service } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 
+import useVisibilityChange from '../../hooks/useVisibilityChange';
+
 // CSS
 import './ServiceItems.css';
 
@@ -59,6 +61,9 @@ const ServiceItems = ({
 	//howManyServices,
 	//commentlist
 }: ServiceItemsProps) => {
+
+	// Track visibility changes to fix stuck animations when tab is backgrounded
+	const visibilityKey = useVisibilityChange();
 
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
@@ -123,7 +128,7 @@ const ServiceItems = ({
 	return (
 		<div className="ServiceItems">
 
-			<AnimatePresence initial={false}>
+			<AnimatePresence initial={false} key={`service-all-ok-${visibilityKey}`}>
 				{serviceStateArray.length === 0 && <motion.div
 					className={`all-ok-item`}
 					initial={{ opacity: 0, height: 0 }}
