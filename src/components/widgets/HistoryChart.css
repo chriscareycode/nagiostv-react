@@ -8,6 +8,15 @@
 	/* animation: fadeIn 1s; */
 }
 
+/*
+	This works well to remove the gap above the HistoryCharts. However it makes the framer motion animation
+	jumpy so it's commented out for now. The motion framer animation is more important that losing this gap, for now.
+*/
+.AlertSection > .history-chart-wrap:first-of-type,
+.history-summary + .history-chart-wrap {
+	/* margin-top: 0px; */
+}
+
 @keyframes fadeIn {
 	0% {
 		opacity: 0;

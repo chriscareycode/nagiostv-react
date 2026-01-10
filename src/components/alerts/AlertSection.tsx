@@ -17,6 +17,8 @@
  */
 
 import { useCallback, useEffect } from 'react';
+import { AnimatePresence } from "motion/react";
+import * as motion from "motion/react-client";
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -270,51 +272,65 @@ const AlertSection = () => {
 
 			{/* hourly alert chart */}
 
-			{(alertlist.length > 0 && !hideHistory24hChart) && <div className="history-chart-wrap">
+			<AnimatePresence initial={false} key="history-chart-24h">
+				{(alertlist.length > 0 && !hideHistory24hChart) && <motion.div
+					className="history-chart-wrap"
+					initial={{ opacity: 0, height: 0 }}
+					animate={{ opacity: 1, height: 'auto' }}
+					exit={{ opacity: 0, height: 0 }}
+				>
 
-				{(!hideHistoryTitle && !hideHistory24hChart) && <div className="history-chart-title margin-top-10">
-					<span className="">
-						<strong>{alertlistHoursCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertHoursBack}</strong> {translate('hours', language)}
-						{/*alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>*/}
-					</span>
-				</div>}
+					{(!hideHistoryTitle && !hideHistory24hChart) && <div className="history-chart-title margin-top-10">
+						<span className="">
+							<strong>{alertlistHoursCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertHoursBack}</strong> {translate('hours', language)}
+							{/*alertlistCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>*/}
+						</span>
+					</div>}
 
-				{(alertlist.length > 0 && !hideHistory24hChart) && <HistoryChart
-					alertlist={alertlistHours}
-					alertlistLastUpdate={alertState.lastUpdate}
-					groupBy="hour"
-					alertHoursBack={alertHoursBack}
-					alertDaysBack={1}
-					hideAlertSoft={hideAlertSoft}
-					locale={locale}
-					triggerReflow={miniMapWidth}
-				/>}
+					<HistoryChart
+						alertlist={alertlistHours}
+						alertlistLastUpdate={alertState.lastUpdate}
+						groupBy="hour"
+						alertHoursBack={alertHoursBack}
+						alertDaysBack={1}
+						hideAlertSoft={hideAlertSoft}
+						locale={locale}
+						triggerReflow={miniMapWidth}
+					/>
 
-			</div>}
+				</motion.div>}
+			</AnimatePresence>
 
 			{/* full alert chart */}
 
-			{(alertlist.length > 0 && !hideHistoryChart) && <div className="history-chart-wrap">
+			<AnimatePresence initial={false} key="history-chart-full">
+				{(alertlist.length > 0 && !hideHistoryChart) && <motion.div
+					className="history-chart-wrap"
+					initial={{ opacity: 0, height: 0 }}
+					animate={{ opacity: 1, height: 'auto' }}
+					exit={{ opacity: 0, height: 0 }}
+				>
 
-				{(!hideHistoryTitle && !hideHistoryChart) && <div className="history-chart-title margin-top-10">
-					<span className="">
-						<strong>{alertlistFilteredCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertDaysBack}</strong> {translate('days', language)}
-						{alertlistFilteredCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>}
-					</span>
-				</div>}
+					{(!hideHistoryTitle && !hideHistoryChart) && <div className="history-chart-title margin-top-10">
+						<span className="">
+							<strong>{alertlistFilteredCount}</strong> {hideAlertSoft ? <span>hard</span> : <span>hard and soft</span>} {translate('alerts in the past', language)} <strong>{alertDaysBack}</strong> {translate('days', language)}
+							{alertlistFilteredCount > alertlist.length && <span className="font-size-0-6"> ({translate('trimming at', language)} {alertMaxItems})</span>}
+						</span>
+					</div>}
 
-				{/* history chart */}
-				{!hideHistoryChart && <HistoryChart
-					alertlist={alertlist}
-					alertlistLastUpdate={alertState.lastUpdate}
-					groupBy="day"
-					alertDaysBack={alertDaysBack}
-					hideAlertSoft={hideAlertSoft}
-					locale={locale}
-					triggerReflow={miniMapWidth}
-				/>}
+					{/* history chart */}
+					<HistoryChart
+						alertlist={alertlist}
+						alertlistLastUpdate={alertState.lastUpdate}
+						groupBy="day"
+						alertDaysBack={alertDaysBack}
+						hideAlertSoft={hideAlertSoft}
+						locale={locale}
+						triggerReflow={miniMapWidth}
+					/>
 
-			</div>}
+				</motion.div>}
+			</AnimatePresence>
 
 			{/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
 			{(!isDemoMode && alertState.error && (alertState.errorCount > 2 || alertlist.length === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {alertState.errorMessage}</div>}
