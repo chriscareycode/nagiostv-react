@@ -23,7 +23,7 @@ import { useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
-import { llmIsLoadingAtom } from '../../atoms/llmAtom';
+import { llmIsLoadingAtom, llmHistoryAtom, llmCurrentHistoryIndexAtom } from '../../atoms/llmAtom';
 
 // Helpers
 import {
@@ -42,9 +42,10 @@ import doomguyImage from './Doomguy.png';
  Doomguy will be bloody at >= 4 services down
 */
 
-const Doomguy = ({ scaleCss, style }: {
+const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	scaleCss?: string,
-	style?: React.CSSProperties
+	style?: React.CSSProperties,
+	showBalloon?: boolean
 }) => {
 
 	const smileClasses = ['doomguy20', 'doomguy21', 'doomguy22', 'doomguy23'];
@@ -58,20 +59,49 @@ const Doomguy = ({ scaleCss, style }: {
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
 	const llmIsLoading = useAtomValue(llmIsLoadingAtom);
+	const llmHistory = useAtomValue(llmHistoryAtom);
+	const llmCurrentHistoryIndex = useAtomValue(llmCurrentHistoryIndexAtom);
+
+	// Get the current history item for shortResponse and color
+	const currentHistoryItem = llmHistory[llmCurrentHistoryIndex];
+	const llmShortResponse = currentHistoryItem?.shortResponse || '';
+	const llmHistoryColor = currentHistoryItem?.color || 'green';
 
 	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
 	const [thinkingFrame, setThinkingFrame] = useState(thinkingAnimation[0]);
 
 	// Calculate filtered counts using useMemo for performance
-	const howManyDown = useMemo(() => {
+	// howManyDown includes hosts down + service warnings + service criticals (used for concerned/angry)
+	// howManyDownBloody excludes service warnings (used for bloody mode threshold)
+	const { howManyDown, howManyDownBloody } = useMemo(() => {
 		const filteredHosts = filterHostStateArray(hostState.stateArray, clientSettings);
 		const filteredServices = filterServiceStateArray(serviceState.stateArray, clientSettings);
 		
 		const hostDownCount = countFilteredHostStates(filteredHosts);
 		const serviceDownCount = countFilteredServiceStates(filteredServices);
 		
-		return hostDownCount + serviceDownCount.warning + serviceDownCount.critical;
+		return {
+			howManyDown: hostDownCount + serviceDownCount.warning + serviceDownCount.critical,
+			howManyDownBloody: hostDownCount + serviceDownCount.critical, // excludes warnings for bloody mode
+		};
 	}, [hostState.stateArray, serviceState.stateArray, clientSettings]);
+
+	// Map the LLM history color to CSS color
+	const speechBalloonColor = useMemo(() => {
+		switch (llmHistoryColor) {
+			case 'red':
+				return '#FD7272';
+			case 'orange':
+				return 'orange';
+			case 'yellow':
+				return 'yellow';
+			case 'gray':
+				return 'gray';
+			case 'green':
+			default:
+				return 'lime';
+		}
+	}, [llmHistoryColor]);
 
 	// Animate Doomguy while thinking
 	useEffect(() => {
@@ -92,10 +122,11 @@ const Doomguy = ({ scaleCss, style }: {
 		classes = smileClasses;
 	} else if (howManyDown === 0) {
 		classes = happyClasses;
-	} else if (howManyDown >= clientSettings.doomguyAngryAt && howManyDown < clientSettings.doomguyBloodyAt) {
-		classes = angryClasses;
-	} else if (howManyDown >= clientSettings.doomguyBloodyAt) {
+	} else if (howManyDownBloody >= clientSettings.doomguyBloodyAt) {
+		// Check bloody first (uses count excluding warnings)
 		classes = bloodyClasses;
+	} else if (howManyDown >= clientSettings.doomguyAngryAt) {
+		classes = angryClasses;
 	} else {
 		classes = happyClasses;
 	}
@@ -134,6 +165,11 @@ const Doomguy = ({ scaleCss, style }: {
 
 	return (
 		<div className="doomguy-wrap" style={style}>
+			{showBalloon && llmShortResponse && !llmIsLoading && (
+				<div className="doomguy-speech-balloon" style={{ color: speechBalloonColor }}>
+					{llmShortResponse}
+				</div>
+			)}
 			<div style={transformCss} className={doomguyClass} onClick={clickedDoomguy}>
 			</div>
 			{llmIsLoading && <div className="doomguy-thinking">thinking</div>}

@@ -22,7 +22,7 @@ import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import Progress from '../widgets/Progress';
 import './HostItem.css';
@@ -127,7 +127,7 @@ class HostItem extends Component<HostItemProps> {
 		const maxNumberToHideProgress = 40;
 
 		return (
-			<div className={`HostItem2`} onClick={this.mouseClick}>
+			<div className={`HostItem2`}>
 				<div className={`HostItemBorder ${hostBorderClass(e.status)} ${isSoft ? 'host-item-soft' : 'host-item-hard'}`}>
 					<div style={{ float: 'right', textAlign: 'right' }}>
 						{/* soft spinner */}
@@ -144,7 +144,7 @@ class HostItem extends Component<HostItemProps> {
 						</span>{' '}
 						{/* for debug turn this on to know what status this item is */}
 						{/* {1 === 2 && <span>({e.status})</span>} */}
-						<span className={`uppercase ${hostTextClass(e.status)}`}>{translate(nagiosHostStatus(e.status), language)}</span>{' '}
+						<span className={`uppercase ${hostTextClass(e.status)}`}>HOST {translate(nagiosHostStatus(e.status), language)}</span>{' '}
 						{e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
 						{e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
 						{e.is_flapping && <span className="color-orange uppercase"> {translate('flapping', language)}</span>}
@@ -157,7 +157,10 @@ class HostItem extends Component<HostItemProps> {
 					</div>
 
 					<div>
+
 						<div className="host-item-host-name">{e.name}</div>
+
+						<span className="ml-2 cursor-pointer" onClick={this.mouseClick}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 

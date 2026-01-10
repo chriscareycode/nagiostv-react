@@ -24,8 +24,10 @@ import { hostHowManyAtom } from '../../atoms/hostAtom';
 import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
+import SortOrderSelect from '../widgets/SortOrderSelect';
 import { saveLocalStorage } from 'helpers/nagiostv';
 import { ChangeEvent } from 'react';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 const HostFilters = () => {
 
@@ -33,6 +35,7 @@ const HostFilters = () => {
 
 	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const queryParams = useQueryParams();
 
 	// Chop the bigState into vars
 	const {
@@ -92,6 +95,8 @@ const HostFilters = () => {
 			});
 		});
 
+		// Sync to URL query params
+		queryParams.set({ [propName]: val });
 	};
 
 	const {
@@ -110,10 +115,13 @@ const HostFilters = () => {
 	return (
 		<>
 
-			{!hideFilters && <select value={hostSortOrder} data-varname={'hostSortOrder'} onChange={handleSelectChange}>
-				<option value="newest">{translate('newest first', language)}</option>
-				<option value="oldest">{translate('oldest first', language)}</option>
-			</select>}
+			{!hideFilters && <SortOrderSelect
+				value={hostSortOrder}
+				varName="hostSortOrder"
+				language={language}
+				onChange={handleSelectChange}
+				syncToUrl={true}
+			/>}
 
 			<span>
 				{' '}

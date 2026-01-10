@@ -284,13 +284,25 @@ const ServiceSection = () => {
 	// });
 	const howManyServices = serviceHowManyState.howManyServices;
 
-	let sort = 1;
-	if (serviceSortOrder === 'oldest') { sort = -1; }
-	sortedServiceStateArray.sort((a, b) => {
-		if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
-		if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
-		return 0;
-	});
+	// Sort based on serviceSortOrder
+	if (serviceSortOrder === 'az' || serviceSortOrder === 'za') {
+		// Alphabetical sorting by host_name, then by description (service name)
+		const sortMultiplier = serviceSortOrder === 'az' ? 1 : -1;
+		sortedServiceStateArray.sort((a, b) => {
+			const hostCompare = a.host_name.localeCompare(b.host_name);
+			if (hostCompare !== 0) { return hostCompare * sortMultiplier; }
+			return a.description.localeCompare(b.description) * sortMultiplier;
+		});
+	} else {
+		// Time-based sorting (newest/oldest)
+		let sort = 1;
+		if (serviceSortOrder === 'oldest') { sort = -1; }
+		sortedServiceStateArray.sort((a, b) => {
+			if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
+			if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
+			return 0;
+		});
+	}
 
 	return (
 		<div className="ServiceSection">

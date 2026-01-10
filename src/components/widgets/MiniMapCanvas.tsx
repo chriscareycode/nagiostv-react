@@ -2,8 +2,9 @@ import html2canvas from "html2canvas-pro";
 import { useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import './MiniMapCanvas.css';
-import { hostAtom } from 'atoms/hostAtom';
-import { serviceAtom } from 'atoms/serviceAtom';
+import { hostAtom, hostHowManyAtom } from 'atoms/hostAtom';
+import { serviceAtom, serviceHowManyAtom } from 'atoms/serviceAtom';
+import { clientSettingsAtom } from 'atoms/settingsState';
 import { useAtomValue } from 'jotai';
 
 interface MiniMapCanvasProps {
@@ -11,7 +12,8 @@ interface MiniMapCanvasProps {
 	miniMapWidth: number;
 }
 
-const howOftenToRefreshSeconds = 7;
+// Fallback interval - only used when nothing else triggers a snapshot
+const fallbackRefreshSeconds = 1 * 60; // 1 minute(s)
 
 export default function MiniMapCanvas({
 	elementToSnapshot,
@@ -20,6 +22,9 @@ export default function MiniMapCanvas({
 
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
+	const hostHowMany = useAtomValue(hostHowManyAtom);
+	const serviceHowMany = useAtomValue(serviceHowManyAtom);
+	const clientSettings = useAtomValue(clientSettingsAtom);
 	
 	// Use ref to store the last scroll position to avoid rapid fire with same value
 	const scrollToYLastNumberRef = useRef<number>(0);
@@ -61,7 +66,67 @@ export default function MiniMapCanvas({
 		};
 	}, [hostState.lastUpdate, serviceState.lastUpdate]);
 
-	// This useEffect handles setting up the intervals for taking snapshots
+	// Trigger snapshot when host/service counts change (affects items displayed)
+	const triggerAfterHowManyMs = 1000;
+	useEffect(() => {
+		const th = setTimeout(() => {
+			snap();
+		}, triggerAfterHowManyMs);
+		return () => {
+			clearTimeout(th);
+		};
+	}, [
+		hostHowMany.howManyHosts,
+		hostHowMany.howManyHostDown,
+		hostHowMany.howManyHostUnreachable,
+		hostHowMany.howManyHostPending,
+		hostHowMany.howManyHostAcked,
+		hostHowMany.howManyHostScheduled,
+		hostHowMany.howManyHostFlapping,
+		serviceHowMany.howManyServices,
+		serviceHowMany.howManyServiceWarning,
+		serviceHowMany.howManyServiceUnknown,
+		serviceHowMany.howManyServiceCritical,
+		serviceHowMany.howManyServicePending,
+		serviceHowMany.howManyServiceAcked,
+		serviceHowMany.howManyServiceScheduled,
+		serviceHowMany.howManyServiceFlapping,
+	]);
+
+	// Trigger snapshot when filter settings change (affects items displayed)
+	useEffect(() => {
+		const th = setTimeout(() => {
+			snap();
+		}, 500);
+		return () => {
+			clearTimeout(th);
+		};
+	}, [
+		clientSettings.hideHostPending,
+		clientSettings.hideHostUp,
+		clientSettings.hideHostDown,
+		clientSettings.hideHostUnreachable,
+		clientSettings.hideHostAcked,
+		clientSettings.hideHostScheduled,
+		clientSettings.hideHostFlapping,
+		clientSettings.hideHostSoft,
+		clientSettings.hideHostNotificationsDisabled,
+		clientSettings.hideServicePending,
+		clientSettings.hideServiceOk,
+		clientSettings.hideServiceWarning,
+		clientSettings.hideServiceUnknown,
+		clientSettings.hideServiceCritical,
+		clientSettings.hideServiceAcked,
+		clientSettings.hideServiceScheduled,
+		clientSettings.hideServiceFlapping,
+		clientSettings.hideServiceSoft,
+		clientSettings.hideServiceNotificationsDisabled,
+		clientSettings.hostgroupFilter,
+		clientSettings.servicegroupFilter,
+	]);
+
+	// This useEffect handles setting up fallback interval for taking snapshots
+	// This runs infrequently since snapshots are triggered by data/filter changes above
 	useEffect(() => {
 
 		const th = setTimeout(() => {
@@ -74,7 +139,7 @@ export default function MiniMapCanvas({
 
 		const int = setInterval(() => {
 			snap();
-		}, howOftenToRefreshSeconds * 1000);
+		}, fallbackRefreshSeconds * 1000);
 
 		return () => {
 			clearTimeout(th);

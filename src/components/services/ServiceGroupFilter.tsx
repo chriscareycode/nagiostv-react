@@ -23,6 +23,7 @@ import { clientSettingsAtom } from '../../atoms/settingsState';
 import { servicegroupAtom } from '../../atoms/hostgroupAtom';
 import './ServiceGroupFilter.css';
 import { saveLocalStorage } from 'helpers/nagiostv';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 // http://pi4.local/nagios/jsonquery.html
 // http://pi4.local/nagios/cgi-bin/objectjson.cgi?query=servicegrouplist&details=true
@@ -32,22 +33,31 @@ const ServiceGroupFilter = () => {
 	//const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 	const servicegroupState = useAtomValue(servicegroupAtom);
+	const queryParams = useQueryParams();
 
 	const servicegroup = servicegroupState.response;
 	const servicegroupFilter = clientSettings.servicegroupFilter;
 
 	const onChangeServiceGroupFilter = (e: ChangeEvent<HTMLSelectElement>) => {
+		const value = e.target.value;
+		
 		setClientSettings(curr => {
 			saveLocalStorage('Service Group Filter', {
 				...curr,
-				servicegroupFilter: e.target.value
+				servicegroupFilter: value
 			});
 			return ({
 				...curr,
-				servicegroupFilter: e.target.value
+				servicegroupFilter: value
 			});
 		});
 
+		// Sync to URL query params
+		if (value) {
+			queryParams.set({ servicegroupFilter: value });
+		} else {
+			queryParams.remove('servicegroupFilter');
+		}
 	};
 
 	if (!servicegroup) {

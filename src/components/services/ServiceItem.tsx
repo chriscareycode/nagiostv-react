@@ -24,7 +24,7 @@ import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCloudRain } from '@fortawesome/free-solid-svg-icons';
+import { faCloudRain, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../widgets/Progress';
 // Types
 import { ClientSettings } from 'types/settings';
@@ -138,7 +138,7 @@ class ServiceItem extends Component<ServiceItemProps> {
 		*/
 		return (
 
-			<div className={`ServiceItem2`} onClick={this.mouseClick}>
+			<div className={`ServiceItem2`}>
 				<div className={`ServiceItemBorder ${serviceBorderClass(e.status)} ${isSoft ? 'service-item-soft' : 'service-item-hard'}`}>
 					<div style={{ float: 'right', textAlign: 'right' }}>
 						{/* soft */}
@@ -156,7 +156,7 @@ class ServiceItem extends Component<ServiceItemProps> {
 						{/* for debug turn this on to know what status this item is */}
 						{/* {1 === 2 && <span>({e.status})</span>} */}
 						{/* the words CRITICAL WARNING OK */}
-						<span className={`uppercase ${serviceTextClass(e.status)}`}>{translate(nagiosServiceStatus(e.status), language)}</span>{' '}
+						<span className={`uppercase ${serviceTextClass(e.status)}`}>SERVICE {translate(nagiosServiceStatus(e.status), language)}</span>{' '}
 						{/** other stuff */}
 						{e.problem_has_been_acknowledged && <span className="color-green uppercase"> {translate('acked', language)}</span>}
 						{e.scheduled_downtime_depth > 0 && <span className="color-green uppercase"> {translate('scheduled', language)}</span>}
@@ -170,7 +170,10 @@ class ServiceItem extends Component<ServiceItemProps> {
 					</div>
 
 					<div className="service-item-left-first-line">
+
 						<div className="service-item-host-name">{e.host_name}</div>
+
+						<span className="ml-2 cursor-pointer" onClick={this.mouseClick}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className={serviceTextClass(e.status)}>
 							<span className="service-item-description">{e.description}</span>

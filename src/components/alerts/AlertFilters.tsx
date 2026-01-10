@@ -23,6 +23,7 @@ import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import { translate } from '../../helpers/language';
 import Checkbox from '../widgets/FilterCheckbox';
 import { saveLocalStorage } from 'helpers/nagiostv';
+import { useQueryParams } from '../../hooks/useQueryParams';
 // CSS
 import './AlertFilters.css';
 
@@ -36,6 +37,7 @@ const AlertFilters = ({
 
 	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const queryParams = useQueryParams();
 
 	// Chop the bigState into vars
 	const {
@@ -76,6 +78,9 @@ const AlertFilters = ({
 				[propName]: val,
 			});
 		});
+
+		// Sync to URL query params
+		queryParams.set({ [propName]: val });
 	};
 
 	return (

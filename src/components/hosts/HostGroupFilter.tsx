@@ -23,6 +23,7 @@ import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostgroupAtom } from '../../atoms/hostgroupAtom';
 import './HostGroupFilter.css';
 import { saveLocalStorage } from 'helpers/nagiostv';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 // http://pi4.local/nagios/jsonquery.html
 // http://pi4.local/nagios/cgi-bin/objectjson.cgi?query=hostgrouplist&details=true
@@ -32,22 +33,31 @@ const HostGroupFilter = () => {
 	//const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 	const hostgroupState = useAtomValue(hostgroupAtom);
+	const queryParams = useQueryParams();
 
 	const hostgroup = hostgroupState.response;
 	const hostgroupFilter = clientSettings.hostgroupFilter;
 
 	const onChangeHostGroupFilter = (e: ChangeEvent<HTMLSelectElement>) => {
+		const value = e.target.value;
+		
 		setClientSettings(curr => {
 			saveLocalStorage('HostGroup Filter', {
 				...curr,
-				hostgroupFilter: e.target.value
+				hostgroupFilter: value
 			});
 			return ({
 				...curr,
-				hostgroupFilter: e.target.value
+				hostgroupFilter: value
 			});
 		});
 
+		// Sync to URL query params
+		if (value) {
+			queryParams.set({ hostgroupFilter: value });
+		} else {
+			queryParams.remove('hostgroupFilter');
+		}
 	};
 
 	if (!hostgroup) {

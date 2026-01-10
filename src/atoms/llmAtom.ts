@@ -35,6 +35,7 @@ export interface LLMHistoryItem {
 	emoji: string;
 	model: string; // The LLM model used for this response
 	color: LLMHistoryColor;
+	shortResponse: string; // Short response for Doomguy speech balloon
 }
 
 // History state
