@@ -143,39 +143,65 @@
 	white-space: nowrap;
 }
 
-.doomguy-speech-balloon {
+.doomguy-speech-balloon-wrap {
 	position: absolute;
 	bottom: 100%;
 	right: 0;
 	margin-bottom: 8px;
+	z-index: 10;
+	max-width: var(--balloon-max-width, calc(100vw - 20px));
+}
+
+.doomguy-speech-balloon {
 	padding: 6px 10px;
 	background-color: #2a2a2a;
 	border: 1px solid #555;
 	border-radius: 12px;
-	font-size: 12px;
+	font-size: 16px;
 	color: #eee;
-	white-space: nowrap;
 	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-	z-index: 10;
+	overflow: hidden;
+}
+
+.doomguy-speech-balloon-text {
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.doomguy-speech-balloon-text.marquee {
+	animation: marquee-scroll 12s ease-in-out infinite;
+}
+
+@keyframes marquee-scroll {
+	0%, 15% {
+		transform: translateX(0);
+	}
+	45%, 55% {
+		transform: translateX(var(--marquee-distance, 0px));
+	}
+	85%, 100% {
+		transform: translateX(0);
+	}
 }
 
 /* Speech balloon tail/pointer */
-.doomguy-speech-balloon::after {
+.doomguy-speech-balloon-wrap::after {
 	content: '';
 	position: absolute;
-	bottom: -8px;
-	right: 15px;
-	border-width: 8px 6px 0 6px;
+	bottom: -7px;
+	right: 19px;
+	border-width: 8px 5px 0 5px;
 	border-style: solid;
 	border-color: #2a2a2a transparent transparent transparent;
+	z-index: 1;
 }
 
-.doomguy-speech-balloon::before {
+.doomguy-speech-balloon-wrap::before {
 	content: '';
 	position: absolute;
-	bottom: -10px;
-	right: 14px;
-	border-width: 9px 7px 0 7px;
+	bottom: -9px;
+	right: 18px;
+	border-width: 9px 6px 0 6px;
 	border-style: solid;
 	border-color: #555 transparent transparent transparent;
 }

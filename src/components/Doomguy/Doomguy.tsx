@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 // State Management
 import { useAtomValue } from 'jotai';
@@ -69,6 +69,46 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 
 	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
 	const [thinkingFrame, setThinkingFrame] = useState(thinkingAnimation[0]);
+	const [marqueeDistance, setMarqueeDistance] = useState(0);
+	const [balloonMaxWidth, setBalloonMaxWidth] = useState<string>('calc(100vw - 20px)');
+	const balloonRef = useRef<HTMLDivElement>(null);
+	const textRef = useRef<HTMLSpanElement>(null);
+	const wrapRef = useRef<HTMLDivElement>(null);
+
+	// Calculate max-width based on the balloon's position in the viewport
+	useEffect(() => {
+		const calculateMaxWidth = () => {
+			if (wrapRef.current && llmShortResponse) {
+				// Get the right edge position of the doomguy-wrap element
+				const rect = wrapRef.current.getBoundingClientRect();
+				// The balloon is anchored to the right, so max-width should be from left edge of viewport to right edge of wrap
+				// Subtract some padding (10px on each side)
+				const maxWidth = rect.right - 10;
+				setBalloonMaxWidth(`${maxWidth}px`);
+			}
+		};
+
+		calculateMaxWidth();
+
+		// Recalculate on window resize
+		window.addEventListener('resize', calculateMaxWidth);
+		return () => window.removeEventListener('resize', calculateMaxWidth);
+	}, [llmShortResponse]);
+
+	// Detect overflow and calculate marquee distance
+	useEffect(() => {
+		if (balloonRef.current && textRef.current) {
+			const balloonWidth = balloonRef.current.clientWidth;
+			const textWidth = textRef.current.scrollWidth + 10; // Add small buffer
+			if (textWidth > balloonWidth) {
+				// Calculate how far to scroll (negative because we scroll left)
+				// Add 10px extra buffer to ensure last character is fully visible
+				setMarqueeDistance(-(textWidth - balloonWidth + 10));
+			} else {
+				setMarqueeDistance(0);
+			}
+		}
+	}, [llmShortResponse, balloonMaxWidth]);
 
 	// Calculate filtered counts using useMemo for performance
 	// howManyDown includes hosts down + service warnings + service criticals (used for concerned/angry)
@@ -164,10 +204,24 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	};
 
 	return (
-		<div className="doomguy-wrap" style={style}>
+		<div className="doomguy-wrap" style={style} ref={wrapRef}>
 			{showBalloon && llmShortResponse && !llmIsLoading && (
-				<div className="doomguy-speech-balloon" style={{ color: speechBalloonColor }}>
-					{llmShortResponse}
+				<div
+					className="doomguy-speech-balloon-wrap"
+					style={{ '--balloon-max-width': balloonMaxWidth } as React.CSSProperties}
+				>
+					<div className="doomguy-speech-balloon" ref={balloonRef}>
+						<span
+							ref={textRef}
+							className={`doomguy-speech-balloon-text${marqueeDistance < 0 ? ' marquee' : ''}`}
+							style={{
+								color: speechBalloonColor,
+								'--marquee-distance': `${marqueeDistance}px`
+							} as React.CSSProperties}
+						>
+							{llmShortResponse}
+						</span>
+					</div>
 				</div>
 			)}
 			<div style={transformCss} className={doomguyClass} onClick={clickedDoomguy}>
