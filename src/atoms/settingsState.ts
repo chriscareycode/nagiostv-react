@@ -160,14 +160,12 @@ If the current day is significant, like a major holiday, mention it. If it is no
 	llmPromptNotOk: `
 Provide a brief summary of the current situation. 
 
-Alerts are always in the past, and I like to measure how long since the last alert. If it happened recently then it's worth mentioning. If it happened > 1 hour ago then not as interesting.
-
 - If you mention a host name, service name, or check name, put backticks around the name so it will emphasize in the markup.
-
 - If there are no host issues, then do not mention there are no host issues; only focus on the service issues.
 - If no services are critical, then do not mention there are no critical. Only focus on communicating the state of the items listed, and not on what state they are not in.
 - If we are not acknowledged, not scheduled downtime, or not flapping, do not mention these states in the response.
 - If we have flapping, put a emoji related to flapping, next to the where you call it out.
+- CRITICAL issues are more important to take care first before WARNING issues.
 
 `,
 

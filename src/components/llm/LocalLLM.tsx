@@ -549,8 +549,16 @@ export default function LocalLLM() {
 					setError('Request timeout. The LLM server took too long to respond.');
 					console.error('LocalLLM ECONNABORTED:', err);
 				} else if (err.response) {
-					setError(`LLM server error: ${err.response.status} - ${err.response.statusText}`);
-					console.error('LocalLLM response error:', err.response.status, err.response.statusText, err.response.data);
+					if (err.response.status === 401) {
+						setError('Unauthorized. Please check your LLM API key.');
+					} else if (err.response.status === 404) {
+						setError('LLM endpoint not found (404). Please check the server URL.');
+					} else if (err.response.status === 422) {
+						setError('Unprocessable Entity (422). The request was well-formed but contained semantic errors.');
+					} else {
+						setError(`LLM server error: ${err.response.status} - ${err.response.statusText}`);
+						console.error('LocalLLM response error:', err.response.status, err.response.statusText, err.response.data);
+					}
 				} else if (err.request) {
 					setError(`Cannot connect to LLM server at ${clientSettings.llmServerBaseUrl}. Please check the URL.`);
 					console.error('LocalLLM request error (no response):', err.request);
