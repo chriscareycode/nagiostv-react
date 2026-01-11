@@ -84,7 +84,23 @@ const SettingsLoad = () => {
 
 	const loadSettingsFromUrl = () => {
 
-		const urlParams = new URLSearchParams(window.location.search);
+		// First try to get params from window.location.search (for regular URLs)
+		let urlParams = new URLSearchParams(window.location.search);
+		
+		// Also check for params in the hash portion of the URL (for HashRouter)
+		// HashRouter URLs look like: /#/?param=value or /#/path?param=value
+		const hash = window.location.hash;
+		if (hash) {
+			const hashQueryIndex = hash.indexOf('?');
+			if (hashQueryIndex !== -1) {
+				const hashParams = new URLSearchParams(hash.substring(hashQueryIndex));
+				// Merge hash params into urlParams (hash params take precedence)
+				for (const [key, value] of hashParams) {
+					urlParams.set(key, value);
+				}
+			}
+		}
+		
 		const urlObject: Record<string, unknown> = {};
 
 		for (var item of urlParams) {

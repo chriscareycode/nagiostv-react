@@ -4,9 +4,26 @@ import { BigState, ClientSettings } from 'types/settings';
 // Import Polyfills
 import 'url-search-params-polyfill';
 
+// Helper function to get URL params from both regular search and hash portions
+const getUrlParams = () => {
+	const urlParams = new URLSearchParams(window.location.search);
+	// Also check for params in the hash portion of the URL (for HashRouter)
+	const hash = window.location.hash;
+	if (hash) {
+		const hashQueryIndex = hash.indexOf('?');
+		if (hashQueryIndex !== -1) {
+			const hashParams = new URLSearchParams(hash.substring(hashQueryIndex));
+			for (const [key, value] of hashParams) {
+				urlParams.set(key, value);
+			}
+		}
+	}
+	return urlParams;
+};
+
 // turn on demo mode if ?demo=true or we are hosting on nagiostv.com
 // demo mode uses fake data and rotates through a couple of alerts as an example
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams = getUrlParams();
 const isDemoMode = urlParams.get('demo') === 'true' || window.location.hostname === 'nagiostv.com';
 if (isDemoMode) {
 	console.log('Demo mode is on');
