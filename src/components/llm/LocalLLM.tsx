@@ -792,19 +792,21 @@ export default function LocalLLM() {
 				</div>
 			</div>
 
-			{history.length === 0 && !llmResponse && (
-				<div className="ServiceItemBorder border-green mt-2.5 pb-1.5!">
-					<span className="m-[5px_5px] inline-block text-white">
-						All systems operating normally. No issues to analyze.
-					</span>
-				</div>
-			)}
-
 			{error && (
 				<div className="bg-[#4d1e1e] border border-[#7a2d2d] rounded px-2 py-1 text-[#e6a8a8] flex items-start gap-2.5 mb-2.5">
 					<span role="img" aria-label="error">⚠️</span> {error}
 				</div>
 			)}
+
+			{history.length === 0 && !llmResponse && (
+				<div className="ServiceItemBorder border-green mt-2.5 pb-1.5!">
+					<span className="m-[5px_5px] inline-block text-lime text-xl">
+						No analysis performed yet.
+					</span>
+				</div>
+			)}
+
+			
 
 			{llmResponse && (
 				<motion.div 
