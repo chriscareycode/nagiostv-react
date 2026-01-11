@@ -120,10 +120,6 @@ export default function Summary() {
 						<div className="summary-box-text"><span className={hostHowManyState.howManyHosts > 0 ? 'color-white' : 'color-white'}>hosts<br />total</span></div>
 					</div>
 
-					{/** Blue Separator */}
-					<div className="summary-box summary-box-separator">
-					</div>
-
 					{/** Service Critical */}
 					<div className="summary-box">
 						<CornerEmoji type="critical" howManyProblems={serviceHowManyState.howManyServiceCritical} />
@@ -178,7 +174,7 @@ export default function Summary() {
 					</div> */}
 
 					{/* Quiet For */}
-					<div className="summary-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
+					<div className="summary-box quiet-for-box overflow-hidden" onClick={scrollDown} style={{ cursor: 'pointer' }}>
 						<div className="margin-top-5 font-size-0-6 no-wrap">Quiet For</div>
 						<div className="margin-top-5 color-peach no-wrap">{quietForMs ? <QuietForSeconds timestamp={quietForMs} /> : '?'}</div>
 					</div>
@@ -190,8 +186,8 @@ export default function Summary() {
 					</div> */}
 
 					{/* Doomguy */}
-					{clientSettings.doomguyEnabled && <div className="summary-box float-right">
-						<div style={{ position: 'relative', top: -10, width: 47, height: 58 }}>
+					{clientSettings.doomguyEnabled && <div className="summary-box float-right doomguy-summary-box">
+						<div className="doomguy-container">
 							<Doomguy scaleCss={'1'} />
 						</div>
 					</div>}

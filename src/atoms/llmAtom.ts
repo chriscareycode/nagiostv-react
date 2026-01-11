@@ -36,6 +36,7 @@ export interface LLMHistoryItem {
 	model: string; // The LLM model used for this response
 	color: LLMHistoryColor;
 	shortResponse: string; // Short response for Doomguy speech balloon
+	thinkingContent?: string; // Chain of thought reasoning from thinking models
 }
 
 // History state
@@ -43,6 +44,7 @@ export const llmHistoryAtom = atom<LLMHistoryItem[]>([]);
 export const llmCurrentHistoryIndexAtom = atom<number>(-1);
 
 // UI state (persisted through unmounts)
+export const llmBalloonPoppedAtom = atom<boolean>(false); // Track if speech balloon has been popped/dismissed
 export const llmIsLoadingAtom = atom<boolean>(false);
 export const llmResponseAtom = atom<string>('');
 export const llmErrorAtom = atom<string>('');

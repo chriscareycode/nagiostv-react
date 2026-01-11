@@ -146,7 +146,7 @@
 .doomguy-speech-balloon-wrap {
 	position: absolute;
 	bottom: 100%;
-	right: 0;
+	right: -5px;
 	margin-bottom: 8px;
 	z-index: 10;
 	max-width: var(--balloon-max-width, calc(100vw - 20px));
@@ -189,7 +189,7 @@
 	content: '';
 	position: absolute;
 	bottom: -7px;
-	right: 19px;
+	right: 24px;
 	border-width: 8px 5px 0 5px;
 	border-style: solid;
 	border-color: #2a2a2a transparent transparent transparent;
@@ -200,7 +200,7 @@
 	content: '';
 	position: absolute;
 	bottom: -9px;
-	right: 18px;
+	right: 23px;
 	border-width: 9px 6px 0 6px;
 	border-style: solid;
 	border-color: #555 transparent transparent transparent;

@@ -19,11 +19,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 
 // State Management
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
-import { llmIsLoadingAtom, llmHistoryAtom, llmCurrentHistoryIndexAtom } from '../../atoms/llmAtom';
+import { llmIsLoadingAtom, llmHistoryAtom, llmCurrentHistoryIndexAtom, llmBalloonPoppedAtom } from '../../atoms/llmAtom';
 
 // Helpers
 import {
@@ -61,6 +61,8 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	const llmIsLoading = useAtomValue(llmIsLoadingAtom);
 	const llmHistory = useAtomValue(llmHistoryAtom);
 	const llmCurrentHistoryIndex = useAtomValue(llmCurrentHistoryIndexAtom);
+	const llmBalloonPopped = useAtomValue(llmBalloonPoppedAtom);
+	const setLlmBalloonPopped = useSetAtom(llmBalloonPoppedAtom);
 
 	// Get the current history item for shortResponse and color
 	const currentHistoryItem = llmHistory[llmCurrentHistoryIndex];
@@ -143,6 +145,11 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 		}
 	}, [llmHistoryColor]);
 
+	// Reset balloon popped state when history index changes or loading starts
+	useEffect(() => {
+		setLlmBalloonPopped(false);
+	}, [llmCurrentHistoryIndex, llmIsLoading, setLlmBalloonPopped]);
+
 	// Animate Doomguy while thinking
 	useEffect(() => {
 		if (!llmIsLoading) {
@@ -205,10 +212,11 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 
 	return (
 		<div className="doomguy-wrap" style={style} ref={wrapRef}>
-			{showBalloon && llmShortResponse && !llmIsLoading && (
+			{showBalloon && llmShortResponse && !llmIsLoading && !llmBalloonPopped && (
 				<div
 					className="doomguy-speech-balloon-wrap"
-					style={{ '--balloon-max-width': balloonMaxWidth } as React.CSSProperties}
+					style={{ '--balloon-max-width': balloonMaxWidth, cursor: 'pointer' } as React.CSSProperties}
+					onClick={() => setLlmBalloonPopped(true)}
 				>
 					<div className="doomguy-speech-balloon" ref={balloonRef}>
 						<span

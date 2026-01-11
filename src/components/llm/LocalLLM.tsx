@@ -32,7 +32,7 @@ import { formatDateTimeAgo, formatDateTimeLocale } from '../../helpers/dates';
 
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowsRotate, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsRotate, faBrain, faChevronDown, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
@@ -96,6 +96,9 @@ export default function LocalLLM() {
 	// Ref and state for measuring content height for smooth animation
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [contentHeight, setContentHeight] = useState<number>(0);
+
+	// State for expanded thinking section
+	const [isThinkingExpanded, setIsThinkingExpanded] = useState<boolean>(false);
 
 	// Helper function to format host issues
 	const formatHostIssues = (hosts: Host[]): string => {
@@ -198,6 +201,31 @@ export default function LocalLLM() {
 		}).join('\n\n');
 
 		return `Recent Alerts (${alerts.length}):\n\n${formattedAlerts}`;
+	};
+
+	// Helper function to parse thinking/reasoning content from model response
+	const parseThinkingContent = (rawContent: string): { thinkingContent: string; mainContent: string } => {
+		// First try to match <think>...</think> tags (case insensitive, handles multiline)
+		const thinkRegex = /<think>([\s\S]*?)<\/think>/i;
+		const match = rawContent.match(thinkRegex);
+		
+		if (match) {
+			const thinkingContent = match[1].trim();
+			// Remove the think tags and content from the main response
+			const mainContent = rawContent.replace(thinkRegex, '').trim();
+			return { thinkingContent, mainContent };
+		}
+		
+		// Some reasoning models don't include opening <think> tag, only closing </think>
+		// In this case, everything before </think> is the thinking content
+		const closeThinkIndex = rawContent.toLowerCase().indexOf('</think>');
+		if (closeThinkIndex !== -1) {
+			const thinkingContent = rawContent.substring(0, closeThinkIndex).trim();
+			const mainContent = rawContent.substring(closeThinkIndex + '</think>'.length).trim();
+			return { thinkingContent, mainContent };
+		}
+		
+		return { thinkingContent: '', mainContent: rawContent };
 	};
 
 	// Define state arrays early so they can be used by buildSignature and queryLLM
@@ -411,10 +439,13 @@ export default function LocalLLM() {
 				const rawContent = response.data.choices[0].message.content;
 				const timestamp = Date.now();
 				
+				// Parse thinking/reasoning content from the response
+				const { thinkingContent, mainContent: contentWithoutThinking } = parseThinkingContent(rawContent);
+				
 				// Check if response starts with an emoji and extract it
 				// Emoji regex pattern to match emojis at the start of the string
 				const emojiRegex = /^([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2300}-\u{23FF}\u{2B50}\u{2B55}\u{2934}\u{2935}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2614}\u{2615}\u{2648}-\u{2653}\u{267F}\u{2693}\u{26A1}\u{26AA}\u{26AB}\u{26BD}\u{26BE}\u{26C4}\u{26C5}\u{26CE}\u{26D4}\u{26EA}\u{26F2}\u{26F3}\u{26F5}\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}\u{2935}\u{2B05}-\u{2B07}\u{2B1B}\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}][\u{FE00}-\u{FE0F}]?)\s*/u;
-				const emojiMatch = rawContent.match(emojiRegex);
+				const emojiMatch = contentWithoutThinking.match(emojiRegex);
 				
 				let content: string;
 				let selectedEmoji: string;
@@ -422,10 +453,10 @@ export default function LocalLLM() {
 				if (emojiMatch) {
 					// Found an emoji at the start - use it and strip it from content
 					selectedEmoji = emojiMatch[1];
-					content = rawContent.slice(emojiMatch[0].length);
+					content = contentWithoutThinking.slice(emojiMatch[0].length);
 				} else {
 					// No leading emoji - fall back to issue count based selection
-					content = rawContent;
+					content = contentWithoutThinking;
 					const issueCount = hostStateArray.length + serviceStateArray.length;
 					if (issueCount > 10) {
 						selectedEmoji = '🚨';
@@ -489,6 +520,7 @@ export default function LocalLLM() {
 					model: response.data.model || clientSettings.llmModel || 'unknown',
 					color,
 					shortResponse: doomguySays,
+					thinkingContent: thinkingContent || undefined,
 				};
 				
 				// Check if user is currently viewing the most recent response
@@ -787,7 +819,7 @@ export default function LocalLLM() {
 						onClick={handleManualAnalyze}
 						disabled={isLoading}
 					>
-						Analyze
+						{isLoading ? 'Thinking...' : 'Analyze'}
 					</button>
 				</div>
 			</div>
@@ -800,8 +832,8 @@ export default function LocalLLM() {
 
 			{history.length === 0 && !llmResponse && (
 				<div className="ServiceItemBorder border-green mt-2.5 pb-1.5!">
-					<span className="m-[5px_5px] inline-block text-lime text-xl">
-						No analysis performed yet.
+					<span className="mx-[5px] inline-block text-lime text-[1.5em]">
+						No analysis performed yet
 					</span>
 				</div>
 			)}
@@ -823,12 +855,39 @@ export default function LocalLLM() {
 						<div className="text-4xl leading-none row-span-2 col-start-1 flex items-start">{responseEmoji}</div>
 
 						<div className="local-llm-response-content">
+							{/* Collapsible thinking/reasoning section */}
+							{currentHistoryItem?.thinkingContent && (
+								<div className="mb-3">
+									<button
+										onClick={() => setIsThinkingExpanded(!isThinkingExpanded)}
+										className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-200 transition-colors cursor-pointer bg-transparent border-none p-0"
+									>
+										<FontAwesomeIcon icon={faBrain} className="text-purple-400" />
+										<span>Chain of Thought</span>
+										<FontAwesomeIcon 
+											icon={faChevronDown} 
+											className={`text-xs transition-transform duration-200 ${isThinkingExpanded ? 'rotate-180' : ''}`}
+										/>
+									</button>
+									{isThinkingExpanded && (
+										<motion.div
+											initial={{ opacity: 0, height: 0 }}
+											animate={{ opacity: 1, height: 'auto' }}
+											exit={{ opacity: 0, height: 0 }}
+											transition={{ duration: 0.2 }}
+											className="mt-2 p-3 bg-gray-800/50 border border-gray-700 rounded text-sm text-gray-300 overflow-auto max-h-64"
+										>
+											<pre className="whitespace-pre-wrap font-sans m-0">{currentHistoryItem.thinkingContent}</pre>
+										</motion.div>
+									)}
+								</div>
+							)}
 							<LLMMarkup content={llmResponse} />
 						</div>
 
 						{/* Display the model used for this response */}
 						{currentHistoryItem?.model && (
-							<div className="absolute bottom-1 right-2 text-[12px] text-gray-500 opacity-60">
+							<div className="absolute bottom-1 right-2 text-[12px] text-gray-400 opacity-60">
 								{currentHistoryItem.model}
 							</div>
 						)}

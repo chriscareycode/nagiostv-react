@@ -77,20 +77,66 @@
 	padding-top: 15px;
 }
 
-.summary-box.summary-box-separator {
-	background-color: #02496a;
-	height: 50px;
-	width: 2px;
-	padding: 0;
-	margin-top: 18px;
+/* Doomguy container in summary */
+.doomguy-summary-box {
+	padding: 5px;
 	min-width: auto;
 }
 
-@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
-	/* .summary-box.float-right {
+.doomguy-container {
+	position: relative;
+	top: -10px;
+	width: 47px;
+	height: 58px;
+}
+
+/* Mobile responsive styles */
+@media only screen and (max-width: 768px) {
+	.summary-left-side .summary-box:first-of-type {
+		margin-left: 4px;
+	}
+
+	.summary-left-side .summary-box {
+		padding: 3px 3px;
+		margin-left: 2px;
+		min-width: 48px;
+		border-radius: 8px;
+	}
+}
+
+/* Extra small screens */
+@media only screen and (max-width: 480px) {
+	.summary-left-side .summary-box:first-of-type {
+		margin-left: 3px;
+	}
+
+	.summary-left-side .summary-box {
+		padding: 2px 2px;
+		margin-left: 1px;
+		min-width: 42px;
+		border-radius: 6px;
+	}
+
+	.summary-right-side .summary-box.quiet-for-box {
 		display: none;
-	} */
-	/* .summary-box.summary-box-text {
-		display: none;
-	} */
+	}
+
+	.summary-box .corner-emoji {
+		font-size: 0.6em;
+	}
+}
+
+/* Doomguy responsive styles for mobile */
+@media only screen and (max-width: 768px) {
+	.doomguy-container {
+		width: 45px;
+		height: 49px;
+		top: -8px;
+		transform: scale(0.85);
+		transform-origin: top right;
+	}
+	.doomguy-summary-box {
+		padding: 2px 7px 2px 0px;
+		margin-left: 2px;
+	}
 }
