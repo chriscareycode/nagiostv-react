@@ -26,6 +26,7 @@ import ReactTooltip from 'react-tooltip';
 import Clock from '../widgets/Clock';
 import CustomLogo from '../widgets/CustomLogo';
 import { saveLocalStorage } from 'helpers/nagiostv';
+import { cancelSpeaking } from 'helpers/audio';
 
 // Import icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -82,6 +83,10 @@ const TopPanel = () => {
 	};
 
 	const clickedSpeak = () => {
+		// If speak is currently enabled, cancel any ongoing speech before disabling
+		if (speakItems) {
+			cancelSpeaking();
+		}
 		toggleAndSave('speakItems');
 	};
 

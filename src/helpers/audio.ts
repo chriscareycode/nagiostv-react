@@ -97,6 +97,16 @@ function massageSpeakingWords(words: string) {
 }
 
 /**
+ * Cancel any currently speaking audio and clear the speech queue
+ * Call this when the speak toggle is disabled to immediately stop speaking
+ */
+export function cancelSpeaking() {
+	if (window.speechSynthesis) {
+		window.speechSynthesis.cancel();
+	}
+}
+
+/**
  * Get available speech synthesis voices with proper async handling
  * Some browsers (Chrome) don't populate voices until after the first call or voiceschanged event
  */
