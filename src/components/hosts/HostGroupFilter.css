@@ -3,6 +3,7 @@
 	margin-right: 10px;
 	font-size: 1.1em;
 	color: #bbb;
+	max-width: 40vw;
 }
 
 .HostGroupFilter select {
