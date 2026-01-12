@@ -303,7 +303,7 @@ export default function LocalLLM() {
 		
 		// If Doomguy is enabled, append instruction for Doomguy to say something
 		if (clientSettings.doomguyEnabled) {
-			systemPrompt += '\n\nWe have a character "Doomguy" who is an avatar for our AI. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. If there is a critical item, then his words should focus should be on that item. Write this in the format: \'Doomguy says "<message>"\'.';
+			systemPrompt += '\n\nWe have a character "Doomguy" who is an avatar for our AI. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. He can be funny or serious. If there is a warning or critical item, then his words should focus should be on the most important thing. Write this in the format: \'Doomguy says "<message>"\'.';
 		}
 
 		try {
