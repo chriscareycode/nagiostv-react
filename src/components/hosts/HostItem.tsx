@@ -96,8 +96,8 @@ class HostItem extends Component<HostItemProps> {
 			return;
 		}
 		const e = this.props.hostItem
-		const baseUrl = this.props.settings.baseUrl;
-		const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${e.name}`);
+		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${e.name}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
 	}

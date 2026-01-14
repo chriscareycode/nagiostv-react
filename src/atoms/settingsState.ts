@@ -71,6 +71,7 @@ export const clientSettingsInitial: ClientSettings = {
 	titleString: 'NagiosTV',
 	dataSource: 'cgi',
 	baseUrl: '/nagios/cgi-bin/', // Base path to Nagios cgi-bin folder
+	externalLinkBaseUrl: '/nagios/cgi-bin/', // Base path for external links to Nagios cgi-bin
 	livestatusPath: 'connectors/livestatus.php',
 
 	fetchHostFrequency: 30, // seconds

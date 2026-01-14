@@ -106,8 +106,8 @@ class ServiceItem extends Component<ServiceItemProps> {
 			return;
 		}
 		const e = this.props.serviceItem
-		const baseUrl = this.props.settings.baseUrl;
-		const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);
+		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
 	}

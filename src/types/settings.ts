@@ -23,6 +23,7 @@ export interface ClientSettings {
 	titleString: string;
 	dataSource: string;
 	baseUrl: string; // Base path to Nagios cgi-bin folder
+	externalLinkBaseUrl: string; // Base path for external links to Nagios cgi-bin
 	livestatusPath: string;
 
 	fetchHostFrequency: number; // seconds
