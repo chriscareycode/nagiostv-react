@@ -90,7 +90,7 @@ class HostItem extends Component<HostItemProps> {
 		speakAudio(speakWords, voice);
 	}
 
-	mouseClick = () => {
+	openNagiosHostPage = () => {
 		const isDemoMode = this.props.isDemoMode;
 		if (isDemoMode) {
 			return;
@@ -160,7 +160,7 @@ class HostItem extends Component<HostItemProps> {
 
 						<div className="host-item-host-name">{e.name}</div>
 
-						<span className="ml-2 cursor-pointer" onClick={this.mouseClick}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-2 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 

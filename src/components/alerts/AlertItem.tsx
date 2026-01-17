@@ -22,8 +22,8 @@ import { ifQuietFor } from '../../helpers/date-math';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios';
 import QuietFor from './QuietFor';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faAdjust } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 
 // css
 import './AlertItem.css';
@@ -57,8 +57,8 @@ const AlertItem = (props: AlertItemProps) => {
 		if (e.object_type === 2) {
 			hostName = e.host_name;
 		}
-		const baseUrl = props.settings.baseUrl;
-		const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${hostName}`);
+		const externalLinkBaseUrl = props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${hostName}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
 	}
@@ -77,8 +77,8 @@ const AlertItem = (props: AlertItemProps) => {
 		if (e.object_type === 2) {
 			hostName = e.host_name;
 		}
-		const baseUrl = props.settings.baseUrl;
-		const url = encodeURI(`${baseUrl}extinfo.cgi?type=2&host=${hostName}&service=${e.description}`);
+		const externalLinkBaseUrl = props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=2&host=${hostName}&service=${e.description}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
 	}
@@ -117,13 +117,16 @@ const AlertItem = (props: AlertItemProps) => {
 
 					<div style={{ marginTop: '2px' }}>
 						{/* host */}
-						{e.object_type === 1 && <span className="alert-item-host-name alert-item-clickable" onClick={openNagiosHostPage}>{e.name}</span>}
+						{e.object_type === 1 && <span className="alert-item-host-name">{e.name}</span>}
+						{e.object_type === 1 && <span className="ml-2 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>}
 						{/* service */}
-						{e.object_type === 2 && <span className="alert-item-host-name alert-item-clickable" onClick={openNagiosHostPage}>{e.host_name}</span>}
+						{e.object_type === 2 && <span className="alert-item-host-name">{e.host_name}</span>}
+						{e.object_type === 2 && <span className="ml-2 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>}
 						{' '}
+						{e.object_type === 2 && <span className="alert-item-description">{e.description}</span>}
+						{e.object_type === 2 && <span className="cursor-pointer" onClick={openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>}
 						<span className={alertTextClass(e.object_type, e.state)}>
-							{e.object_type === 2 && <span className="alert-item-description alert-item-clickable" onClick={openNagiosServicePage}>{e.description}</span>}
-							<span className="plugin-output">{e.plugin_output}</span>
+							<span className="ml-2 plugin-output">{e.plugin_output}</span>
 						</span>
 					</div>
 				</span>

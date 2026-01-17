@@ -100,7 +100,22 @@ class ServiceItem extends Component<ServiceItemProps> {
 		speakAudio(speakWords, voice);
 	}
 
-	mouseClick = () => {
+	openNagiosHostPage = () => {
+		const isDemoMode = this.props.isDemoMode;
+		if (isDemoMode) {
+			return;
+		}
+
+		const e = this.props.serviceItem
+		let hostName = e.host_name;
+		
+		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${hostName}`);
+		const win = window.open(url, '_blank');
+		win?.focus();
+	}
+
+	openNagiosServicePage = () => {
 		const isDemoMode = this.props.isDemoMode;
 		if (isDemoMode) {
 			return;
@@ -172,12 +187,13 @@ class ServiceItem extends Component<ServiceItemProps> {
 					<div className="service-item-left-first-line">
 
 						<div className="service-item-host-name">{e.host_name}</div>
+						<span className="ml-2 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
-						<span className="ml-2 cursor-pointer" onClick={this.mouseClick}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="service-item-description">{e.description}</span>
+						<span className="cursor-pointer" onClick={this.openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className={serviceTextClass(e.status)}>
-							<span className="service-item-description">{e.description}</span>
-							<span className="plugin-output">{e.plugin_output}</span>
+							<span className="ml-2 plugin-output">{e.plugin_output}</span>
 						</span>
 					</div>
 
