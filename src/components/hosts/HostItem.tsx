@@ -90,14 +90,14 @@ class HostItem extends Component<HostItemProps> {
 		speakAudio(speakWords, voice);
 	}
 
-	mouseClick = () => {
+	openNagiosHostPage = () => {
 		const isDemoMode = this.props.isDemoMode;
 		if (isDemoMode) {
 			return;
 		}
 		const e = this.props.hostItem
-		const baseUrl = this.props.settings.baseUrl;
-		const url = encodeURI(`${baseUrl}extinfo.cgi?type=1&host=${e.name}`);
+		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${e.name}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
 	}
@@ -160,7 +160,7 @@ class HostItem extends Component<HostItemProps> {
 
 						<div className="host-item-host-name">{e.name}</div>
 
-						<span className="ml-2 cursor-pointer" onClick={this.mouseClick}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-2 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 

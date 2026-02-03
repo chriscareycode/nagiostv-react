@@ -361,6 +361,22 @@ const Settings = () => {
 									</div>
 								</td>
 							</tr>
+							<tr>
+								<th>
+									External link cgi-bin path:
+								</th>
+								<td>
+									<input
+										type="text"
+										value={clientSettingsTemp.externalLinkBaseUrl}
+										onChange={handleChange('externalLinkBaseUrl', 'string')}
+									/>
+									<div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
+										This path is used for external links to host and service details in the Nagios cgi-bin.<br />
+										Default is <span style={{ color: 'lime' }}>/nagios/cgi-bin/</span>
+									</div>
+								</td>
+							</tr>
 
 							<tr>
 								<th>Fetch hosts every:</th>

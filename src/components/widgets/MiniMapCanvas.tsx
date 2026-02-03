@@ -1,4 +1,4 @@
-import html2canvas from "html2canvas-pro";
+import { snapdom } from "@zumer/snapdom";
 import { useCallback, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import './MiniMapCanvas.css';
@@ -31,29 +31,28 @@ export default function MiniMapCanvas({
 	// Track route changes to trigger minimap updates
 	const location = useLocation();
 
-	// The function that uses html2canvas-pro to take a snapshot of the area
-	const snap = () => {
+	// The function that uses SnapDOM to take a snapshot of the area
+	const snap = async () => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
 		if (!myElement) {
 			return;
 		}
 		
-		html2canvas(myElement, {
-			backgroundColor: '#111111',
-			scale: 0.25,
-			logging: false,
-		}).then(function (canvas) {
+		try {
+			const result = await snapdom(myElement, {
+				scale: 0.25,
+				backgroundColor: '#111111',
+				fast: true,
+				cache: 'soft',
+			});
 			const mmi = document.querySelector('#mmimg') as HTMLImageElement | null;
 			if (mmi) {
-				const imgDataUrl = canvas.toDataURL();
-				mmi.src = imgDataUrl;
-				// Clean up canvas to prevent memory leaks
-				canvas.width = 0;
-				canvas.height = 0;
+				// Use the SVG data URL directly for best performance
+				mmi.src = result.url;
 			}
-		}).catch(err => {
-			console.log('error doing html2canvas', err);
-		});
+		} catch (err) {
+			console.log('error doing snapdom', err);
+		}
 	};
 
 	// Trigger an update right after host or service updates are fetched

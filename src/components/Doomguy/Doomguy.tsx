@@ -92,9 +92,19 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 
 		calculateMaxWidth();
 
+		// Debounced resize handler to prevent rapid re-renders
+		let resizeTimeout: ReturnType<typeof setTimeout>;
+		const debouncedCalculateMaxWidth = () => {
+			clearTimeout(resizeTimeout);
+			resizeTimeout = setTimeout(calculateMaxWidth, 150);
+		};
+
 		// Recalculate on window resize
-		window.addEventListener('resize', calculateMaxWidth);
-		return () => window.removeEventListener('resize', calculateMaxWidth);
+		window.addEventListener('resize', debouncedCalculateMaxWidth);
+		return () => {
+			window.removeEventListener('resize', debouncedCalculateMaxWidth);
+			clearTimeout(resizeTimeout);
+		};
 	}, [llmShortResponse]);
 
 	// Detect overflow and calculate marquee distance
