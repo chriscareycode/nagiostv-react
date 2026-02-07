@@ -304,6 +304,9 @@ export default function LocalLLM() {
 		// If Doomguy is enabled, append instruction for Doomguy to say something
 		if (clientSettings.doomguyEnabled) {
 			systemPrompt += '\n\nWe have a character "Doomguy" who is an avatar for our AI. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. He can be funny or serious. If there is a warning or critical item, then his words should focus should be on the most important thing. Write this in the format: \'Doomguy says "<message>"\'.';
+			console.log('[LocalLLM] Doomguy is ENABLED - instruction added to system prompt');
+		} else {
+			console.log('[LocalLLM] Doomguy is DISABLED');
 		}
 
 		try {
@@ -467,15 +470,14 @@ export default function LocalLLM() {
 					}
 				}
 				
-				// Extract "Doomguy says" pattern from the response
-				// Pattern: Doomguy says "<something>" (with or without the period at the end)
-				const doomguySaysRegex = /Doomguy says\s*"([^"]+)"\.?\s*/gi;
+				// Extract 'Doomguy says "message"' from the response
+				const doomguySaysRegex = /Doomguy says "([^"]+)"\.?\s*/gi;
 				let doomguyMatch;
 				let doomguySays = '';
 				
 				// Find and extract the Doomguy says text, removing it from content
 				while ((doomguyMatch = doomguySaysRegex.exec(content)) !== null) {
-					doomguySays = doomguyMatch[1]; // Keep the last match if multiple
+					doomguySays = doomguyMatch[1];
 				}
 				
 				// Remove all "Doomguy says" patterns from the content
