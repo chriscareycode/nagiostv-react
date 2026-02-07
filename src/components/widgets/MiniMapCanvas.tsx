@@ -28,6 +28,8 @@ export default function MiniMapCanvas({
 	
 	// Use ref to store the last scroll position to avoid rapid fire with same value
 	const scrollToYLastNumberRef = useRef<number>(0);
+	// Track whether we're currently dragging the minimap thumb
+	const isDraggingRef = useRef<boolean>(false);
 	// Track route changes to trigger minimap updates
 	const location = useLocation();
 
@@ -226,38 +228,32 @@ export default function MiniMapCanvas({
 		});
 	};
 
-	const clickedMiniMap = (e: React.PointerEvent<HTMLDivElement>) => {
-		//console.log('clickedMiniMap', e.clientY, e.pageY, e);
+	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		isDraggingRef.current = true;
+		// Capture pointer so we keep receiving events even if cursor leaves the element
+		(e.target as HTMLElement).setPointerCapture(e.pointerId);
 		scrollToY(e.clientY, false);
 	};
 
-	const onDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-		// blank out the drag image
-		var img = document.createElement("img");   
-		img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
-		e.dataTransfer.setDragImage(img, 0, 0);
+	const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (!isDraggingRef.current) return;
+		scrollToY(e.clientY, true);
 	};
 
-	const onDrag = (e: React.DragEvent<HTMLDivElement>) => {
-		//console.log('onDrag', e.clientY);
-		if (e.clientY !== 0) {
-			scrollToY(e.clientY, true);
-		}
-	};
-
-	const onDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
-		//console.log('onDragEnd', e);
+	const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		isDraggingRef.current = false;
+		(e.target as HTMLElement).releasePointerCapture(e.pointerId);
 	};
 
 	return (
 		<div
 			id="MiniMapCanvas"
 			className="MiniMapCanvas"
-			onClick={clickedMiniMap}
-			draggable="true"
-			onDragStart={onDragStart}
-			onDrag={onDrag}
-			onDragEnd={onDragEnd}
+			onPointerDown={onPointerDown}
+			onPointerMove={onPointerMove}
+			onPointerUp={onPointerUp}
+			onPointerCancel={onPointerUp}
+			style={{ touchAction: 'none' }}
 		>
 			{/* draggable border section */}
 			<div
@@ -265,7 +261,7 @@ export default function MiniMapCanvas({
 				className="mmborder"
 			/>
 			{/* the snapshotted image */}
-			<img id="mmimg" src="" alt="Minimap preview" />
+			<img id="mmimg" src="" alt="Minimap preview" draggable="false" />
 		</div>
 	);
 }
