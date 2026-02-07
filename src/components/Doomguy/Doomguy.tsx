@@ -222,7 +222,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 
 	return (
 		<div className="doomguy-wrap" style={style} ref={wrapRef}>
-			{showBalloon && llmShortResponse && !llmIsLoading && !llmBalloonPopped && (
+			{showBalloon && llmShortResponse && !llmIsLoading && !llmBalloonPopped && !clientSettings.hideLocalLLMSection && (
 				<div
 					className="doomguy-speech-balloon-wrap"
 					style={{ '--balloon-max-width': balloonMaxWidth, cursor: 'pointer' } as React.CSSProperties}
