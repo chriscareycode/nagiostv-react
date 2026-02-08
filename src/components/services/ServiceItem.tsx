@@ -187,10 +187,10 @@ class ServiceItem extends Component<ServiceItemProps> {
 					<div className="service-item-left-first-line">
 
 						<div className="service-item-host-name">{e.host_name}</div>
-						<span className="ml-2 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-1.5 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className="service-item-description">{e.description}</span>
-						<span className="cursor-pointer" onClick={this.openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="-ml-1 cursor-pointer" onClick={this.openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className={serviceTextClass(e.status)}>
 							<span className="ml-2 plugin-output">{e.plugin_output}</span>

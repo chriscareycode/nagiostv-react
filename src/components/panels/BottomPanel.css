@@ -42,7 +42,7 @@
 
 	font-size: 0.9em;
 	color: #999;
-	cursor: pointer;
+	cursor: pointer !important;
 }
 
 .BottomPanel>.bottom-panel-area>.bottom-panel-area-text {
@@ -60,7 +60,7 @@
 	padding: 2px 5px;
 	font-size: 0.9em;
 	color: #999;
-	cursor: pointer;
+	cursor: pointer !important;
 }
 
 .bottom-panel-nav-area {
@@ -70,7 +70,7 @@
 	transform: translateX(-50%);
 	z-index: 12;
 
-	height: 49px;
+	height: 55px;
 	transition: bottom 250ms linear, opacity 350ms linear;
 
 	border: 2px solid #333;
@@ -119,12 +119,13 @@
 	text-align: center;
 	display: inline-block;
 	vertical-align: middle;
-	cursor: pointer;
+	cursor: pointer !important;
 }
 
 .BottomPanel .nav-sidebar-icon .nav-sidebar-icon-text {
 	font-size: 0.8em;
 	color: #555;
+	transition: color 0.1s ease;
 }
 
 .BottomPanel .nav-sidebar-icon span {
@@ -137,6 +138,7 @@
 .BottomPanel .nav-sidebar-icon svg {
 	font-size: 1.2em;
 	color: #666;
+	transition: color 0.1s ease;
 }
 
 /*
@@ -179,15 +181,53 @@
 
 .BottomPanel a {
 	text-decoration: none;
+	cursor: pointer;
 }
 
-.BottomPanel .is-active>svg {
-	color: #eee !important;
-	font-size: 0.9em !important;
+.BottomPanel .nav-sidebar-icon * {
+	cursor: pointer !important;
 }
 
-.BottomPanel .is-active>.nav-sidebar-icon-text {
-	color: #eee;
+/* active state colors for menu items */
+.BottomPanel .nav-sidebar-icon.nav-dash .is-active>svg,
+.BottomPanel .nav-sidebar-icon.nav-dash .is-active>.nav-sidebar-icon-text {
+	color: #4ade80; /* green */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-settings .is-active>svg,
+.BottomPanel .nav-sidebar-icon.nav-settings .is-active>.nav-sidebar-icon-text {
+	color: #60a5fa; /* blue */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-update .is-active>svg,
+.BottomPanel .nav-sidebar-icon.nav-update .is-active>.nav-sidebar-icon-text {
+	color: #fb923c; /* orange */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-info .is-active>svg,
+.BottomPanel .nav-sidebar-icon.nav-info .is-active>.nav-sidebar-icon-text {
+	color: #c084fc; /* purple */
+}
+
+/* hover colors for menu items */
+.BottomPanel .nav-sidebar-icon.nav-dash:hover svg,
+.BottomPanel .nav-sidebar-icon.nav-dash:hover .nav-sidebar-icon-text {
+	color: #4ade80; /* green */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-settings:hover svg,
+.BottomPanel .nav-sidebar-icon.nav-settings:hover .nav-sidebar-icon-text {
+	color: #60a5fa; /* blue */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-update:hover svg,
+.BottomPanel .nav-sidebar-icon.nav-update:hover .nav-sidebar-icon-text {
+	color: #fb923c; /* orange */
+}
+
+.BottomPanel .nav-sidebar-icon.nav-info:hover svg,
+.BottomPanel .nav-sidebar-icon.nav-info:hover .nav-sidebar-icon-text {
+	color: #c084fc; /* purple */
 }
 
 /* more footer */

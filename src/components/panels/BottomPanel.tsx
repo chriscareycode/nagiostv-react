@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { memo, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
@@ -42,6 +42,8 @@ interface BottomPanelProps {
 	currentVersionString: string;
 }
 
+const AUTO_HIDE_DELAY_MS = 100 * 1000; // 10 seconds
+
 const BottomPanel = ({
 	latestVersion,
 	latestVersionString,
@@ -52,6 +54,30 @@ const BottomPanel = ({
 	const clientSettings = useAtomValue<ClientSettings>(clientSettingsAtom);
 	
 	const [isVisible, setIsVisible] = useState(false);
+	const autoHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	// Clear the auto-hide timer
+	const clearAutoHideTimer = useCallback(() => {
+		if (autoHideTimerRef.current) {
+			clearTimeout(autoHideTimerRef.current);
+			autoHideTimerRef.current = null;
+		}
+	}, []);
+
+	// Start the auto-hide timer
+	const startAutoHideTimer = useCallback(() => {
+		clearAutoHideTimer();
+		autoHideTimerRef.current = setTimeout(() => {
+			setIsVisible(false);
+		}, AUTO_HIDE_DELAY_MS);
+	}, [clearAutoHideTimer]);
+
+	// Clean up timer on unmount
+	useEffect(() => {
+		return () => {
+			clearAutoHideTimer();
+		};
+	}, [clearAutoHideTimer]);
 
 	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
 
@@ -62,6 +88,9 @@ const BottomPanel = ({
 
 		// React Router 6 navigate
 		navigate(pathname);
+
+		// Clear auto-hide timer since user selected a menu item
+		clearAutoHideTimer();
 
 		// Close menu
 		setTimeout(() => {
@@ -88,7 +117,17 @@ const BottomPanel = ({
 	const clickedNagiosTv = (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
 		e.stopPropagation(); // Prevent it from triggering standard menu click
-		setIsVisible(visible => !visible);
+		setIsVisible(visible => {
+			const newVisible = !visible;
+			if (newVisible) {
+				// Start auto-hide timer when panel is opened
+				startAutoHideTimer();
+			} else {
+				// Clear timer when panel is manually closed
+				clearAutoHideTimer();
+			}
+			return newVisible;
+		});
 	};
 
 	const clickedUpdateAvailable = (e: React.MouseEvent<HTMLElement>) => {
@@ -166,7 +205,7 @@ const BottomPanel = ({
 
 				<div className={isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 
-					<div className="nav-sidebar-icon">
+					<div className="nav-sidebar-icon nav-dash">
 						<span>
 							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/" onClick={clickedDashboard}>
 								<FontAwesomeIcon
@@ -178,7 +217,7 @@ const BottomPanel = ({
 						</span>
 					</div>
 
-					<div className="nav-sidebar-icon" >
+					<div className="nav-sidebar-icon nav-settings">
 						<span>
 							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/settings" onClick={clickedSettings}>
 								<FontAwesomeIcon
@@ -190,7 +229,7 @@ const BottomPanel = ({
 						</span>
 					</div>
 
-					<div className="nav-sidebar-icon">
+					<div className="nav-sidebar-icon nav-update">
 						<span>
 							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/update" onClick={clickedUpdate}>
 								<FontAwesomeIcon
@@ -202,7 +241,7 @@ const BottomPanel = ({
 						</span>
 					</div>
 
-					<div className="nav-sidebar-icon">
+					<div className="nav-sidebar-icon nav-info">
 						<span>
 							<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/help" onClick={clickedInfo}>
 								<FontAwesomeIcon

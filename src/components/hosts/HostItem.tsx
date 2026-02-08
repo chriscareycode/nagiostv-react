@@ -160,7 +160,7 @@ class HostItem extends Component<HostItemProps> {
 
 						<div className="host-item-host-name">{e.name}</div>
 
-						<span className="ml-2 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-1.5 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 

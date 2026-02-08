@@ -856,7 +856,7 @@ export default function LocalLLM() {
 					>
 						<div className="text-4xl leading-none row-span-2 col-start-1 flex items-start">{responseEmoji}</div>
 
-						<div className="local-llm-response-content">
+						<div className={`local-llm-response-content${borderClasses === 'border-green' ? ' text-[1.5em]' : ''}`}>
 							{/* Collapsible thinking/reasoning section */}
 							{currentHistoryItem?.thinkingContent && (
 								<div className="mb-3">
