@@ -24,8 +24,7 @@ import QuietFor from './QuietFor';
 
 import { Alert } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
-import { useAtomValue } from 'jotai';
-import { alertSearchTextAtom } from '../../atoms/alertAtom';
+import { useQueryParams } from '../../hooks/useQueryParams';
 // CSS
 import '../animation.css';
 import '../services/ServiceItems.css';
@@ -39,7 +38,8 @@ interface AlertItemsProps {
 
 const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
 
-	const alertSearchText = useAtomValue(alertSearchTextAtom);
+	const queryParams = useQueryParams();
+	const alertSearchText = queryParams.get('alertSearch') || '';
 
 	const [howManyToRender, setHowManyToRender] = useState(100);
 	const pageSize = 100;

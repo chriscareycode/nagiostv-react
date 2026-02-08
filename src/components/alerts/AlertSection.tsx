@@ -22,7 +22,8 @@ import * as motion from "motion/react-client";
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
-import { alertIsFetchingAtom, alertAtom, alertHowManyAtom, alertSearchTextAtom } from '../../atoms/alertAtom';
+import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
+import { useQueryParams } from '../../hooks/useQueryParams';
 
 import { translate } from '../../helpers/language';
 
@@ -44,13 +45,20 @@ const AlertSection = () => {
 
 	//console.log('AlertSection run');
 
-	const [alertSearchText, setAlertSearchText] = useAtom(alertSearchTextAtom);
+	const queryParams = useQueryParams();
+	const alertSearchText = queryParams.get('alertSearch') || '';
 	const [localSearchText, setLocalSearchText] = useState(alertSearchText);
 
-	// Debounce updating the shared atom so filtering doesn't run on every keystroke
+	// Debounce updating the URL query param so it doesn't update on every keystroke
 	const debouncedSetSearchText = useMemo(
-		() => _.debounce((value: string) => setAlertSearchText(value), 300),
-		[setAlertSearchText],
+		() => _.debounce((value: string) => {
+			if (value) {
+				queryParams.set({ alertSearch: value });
+			} else {
+				queryParams.remove('alertSearch');
+			}
+		}, 300),
+		[queryParams],
 	);
 
 	// Cleanup debounce on unmount
@@ -69,7 +77,7 @@ const AlertSection = () => {
 	const handleSearchClear = () => {
 		setLocalSearchText('');
 		debouncedSetSearchText.cancel();
-		setAlertSearchText('');
+		queryParams.remove('alertSearch');
 	};
 
 	// State Management state (this section)
