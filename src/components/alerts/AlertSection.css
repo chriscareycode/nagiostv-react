@@ -20,3 +20,32 @@
 	font-size: 1em;
 	color: #555;
 }
+
+/* alert search */
+
+.AlertSection .alert-search-input {
+	padding: 1px 6px;
+	font-size: 0.9em;
+	border: 1px solid #444;
+	border-radius: 4px;
+	width: 200px;
+	position: relative;
+	top: -1px;
+	margin-left: 5px;
+}
+.AlertSection .alert-search-input:focus {
+	outline: none;
+	border-color: #888;
+}
+.AlertSection .alert-search-clear {
+	margin-left: 4px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 0.9em;
+	color: #888;
+	padding: 2px 4px;
+}
+.AlertSection .alert-search-clear:hover {
+	color: #333;
+}

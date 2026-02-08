@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 // State Management
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
-import { alertIsFetchingAtom, alertAtom, alertHowManyAtom } from '../../atoms/alertAtom';
+import { alertIsFetchingAtom, alertAtom, alertHowManyAtom, alertSearchTextAtom } from '../../atoms/alertAtom';
 
 import { translate } from '../../helpers/language';
 
@@ -43,6 +43,34 @@ let isComponentMounted = false;
 const AlertSection = () => {
 
 	//console.log('AlertSection run');
+
+	const [alertSearchText, setAlertSearchText] = useAtom(alertSearchTextAtom);
+	const [localSearchText, setLocalSearchText] = useState(alertSearchText);
+
+	// Debounce updating the shared atom so filtering doesn't run on every keystroke
+	const debouncedSetSearchText = useMemo(
+		() => _.debounce((value: string) => setAlertSearchText(value), 300),
+		[setAlertSearchText],
+	);
+
+	// Cleanup debounce on unmount
+	useEffect(() => {
+		return () => {
+			debouncedSetSearchText.cancel();
+		};
+	}, [debouncedSetSearchText]);
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+		setLocalSearchText(value);
+		debouncedSetSearchText(value);
+	};
+
+	const handleSearchClear = () => {
+		setLocalSearchText('');
+		debouncedSetSearchText.cancel();
+		setAlertSearchText('');
+	};
 
 	// State Management state (this section)
 	const [alertIsFetching, setAlertIsFetching] = useAtom(alertIsFetchingAtom);
@@ -234,6 +262,18 @@ const AlertSection = () => {
 				return false;
 			}
 		}
+		// search filter
+		if (alertSearchText) {
+			const searchLower = alertSearchText.toLowerCase();
+			const matchesSearch =
+				(alert.name && alert.name.toLowerCase().includes(searchLower)) ||
+				(alert.host_name && alert.host_name.toLowerCase().includes(searchLower)) ||
+				(alert.description && alert.description.toLowerCase().includes(searchLower)) ||
+				(alert.plugin_output && alert.plugin_output.toLowerCase().includes(searchLower));
+			if (!matchesSearch) {
+				return false;
+			}
+		}
 		return true;
 	});
 
@@ -257,6 +297,26 @@ const AlertSection = () => {
 				<AlertFilters
 					howManyAlertSoft={alertHowManyState.howManyAlertSoft}
 				/>
+
+				{/* alert search */}
+				<div style={{ display: 'inline-block', marginLeft: '10px' }}>
+					<input
+						type="text"
+						className="alert-search-input"
+						placeholder="Search alerts..."
+						value={localSearchText}
+						onChange={handleSearchChange}
+					/>
+					{localSearchText && (
+						<button
+							className="alert-search-clear"
+							onClick={handleSearchClear}
+							title="Clear search"
+						>
+							✕
+						</button>
+					)}
+				</div>
 
 				{/* loading spinner */}
 				<PollingSpinner

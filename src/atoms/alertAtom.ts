@@ -18,3 +18,5 @@ export const alertHowManyAtom = atom({
 	howManyAlerts: 0,
 	howManyAlertSoft: 0,
 });
+
+export const alertSearchTextAtom = atom('');
