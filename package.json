@@ -33,7 +33,7 @@
     "@types/qs": "^6.14.0",
     "@zumer/snapdom": "^2.0.1",
     "allotment": "^1.20.5",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "clipboard-polyfill": "^3.0.3",
     "highcharts": "^12.4.0",
     "highcharts-react-official": "^3.2.3",
