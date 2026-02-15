@@ -42,7 +42,8 @@ interface BottomPanelProps {
 	currentVersionString: string;
 }
 
-const AUTO_HIDE_DELAY_MS = 100 * 1000; // 10 seconds
+// Auto-hide the bottom panel after this delay if no item is selected
+const AUTO_HIDE_DELAY_MS = 10 * 1000; // 10 seconds
 
 const BottomPanel = ({
 	latestVersion,

@@ -955,7 +955,7 @@ const Settings = () => {
 									&nbsp;
 								</td>
 							</tr>
-							<tr>
+							{!clientSettingsTemp.hideLocalLLMSection && <><tr>
 								<th>LLM Server Base URL:</th>
 								<td>
 									<input 
@@ -1033,8 +1033,29 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>Doomguy Prompt:</th>
+								<td>
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Appended to the system prompt when Doomguy is enabled. Controls the Doomguy balloon text in the AI response.
+										The prompt needs to output in the format: 'Doomguy says &quot;&lt;message&gt;&quot;' to work properly.
+									</span>
+									<br />
+									<textarea 
+										value={clientSettingsTemp.llmDoomguyPrompt} 
+										onChange={handleChange('llmDoomguyPrompt', 'string')}
+										placeholder="Prompt appended to system prompt when Doomguy is enabled"
+										rows={8}
+										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
+									/>
+								</td>
+							</tr>
+							<tr>
 								<th>Prompt (All OK):</th>
 								<td>
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when all services/hosts are OK (0 items down)
+									</span>
+									<br />
 									<textarea 
 										value={clientSettingsTemp.llmPromptAllOk} 
 										onChange={handleChange('llmPromptAllOk', 'string')}
@@ -1042,15 +1063,15 @@ const Settings = () => {
 										rows={12}
 										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
 									/>
-									<br />
-									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Custom instructions appended to the LLM prompt when all services/hosts are OK (0 items down)
-									</span>
 								</td>
 							</tr>
 							<tr>
 								<th>Prompt (Issues):</th>
 								<td>
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Custom instructions appended to the LLM prompt when there are issues (1 or more items down)
+									</span>
+									<br />
 									<textarea 
 										value={clientSettingsTemp.llmPromptNotOk} 
 										onChange={handleChange('llmPromptNotOk', 'string')}
@@ -1058,10 +1079,6 @@ const Settings = () => {
 										rows={12}
 										style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.9em' }}
 									/>
-									<br />
-									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Custom instructions appended to the LLM prompt when there are issues (1 or more items down)
-									</span>
 								</td>
 							</tr>
 							<tr>
@@ -1090,6 +1107,7 @@ const Settings = () => {
 									</div>
 								</td>
 							</tr>
+							</>}
 						</tbody>
 					</table>
 

@@ -115,6 +115,7 @@ export interface ClientSettings {
 	llmApiKey: string;
 	llmSpeakResponse: boolean;
 	llmSystemPrompt: string;
+	llmDoomguyPrompt: string;
 	llmPromptAllOk: string;
 	llmPromptNotOk: string;
 

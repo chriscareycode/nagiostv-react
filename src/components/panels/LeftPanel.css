@@ -85,11 +85,40 @@
 	text-decoration: none;
 }
 
-.LeftPanel .is-active>svg {
-	color: #eee !important;
+/* active state colors for menu items */
+.LeftPanel .nav-sidebar-icon.nav-dash .is-active>svg {
+	color: #4ade80 !important; /* green */
 	font-size: 0.9em !important;
 }
 
-.LeftPanel .is-active>.nav-sidebar-icon-text {
-	color: #eee;
+.LeftPanel .nav-sidebar-icon.nav-settings .is-active>svg {
+	color: #60a5fa !important; /* blue */
+	font-size: 0.9em !important;
+}
+
+.LeftPanel .nav-sidebar-icon.nav-update .is-active>svg {
+	color: #fb923c !important; /* orange */
+	font-size: 0.9em !important;
+}
+
+.LeftPanel .nav-sidebar-icon.nav-info .is-active>svg {
+	color: #c084fc !important; /* purple */
+	font-size: 0.9em !important;
+}
+
+/* hover colors for menu items */
+.LeftPanel .nav-sidebar-icon.nav-dash:hover svg {
+	color: #4ade80; /* green */
+}
+
+.LeftPanel .nav-sidebar-icon.nav-settings:hover svg {
+	color: #60a5fa; /* blue */
+}
+
+.LeftPanel .nav-sidebar-icon.nav-update:hover svg {
+	color: #fb923c; /* orange */
+}
+
+.LeftPanel .nav-sidebar-icon.nav-info:hover svg {
+	color: #c084fc; /* purple */
 }

@@ -339,21 +339,21 @@ const Update = ({
 			<div className="update-help-message">
 				There are a number of ways to update NagiosTV.<br />
 				<span style={{ color: '#6fbbf3' }}>You only need to pick one of these:</span>
-				<ul>
+				<ul className="list-disc pl-5">
 					<li>One-click update to latest</li>
-					<ul>
+					<ul className="list-disc pl-5">
 						<li>You can use the one-click update routines inside the app here to update to the latest version. This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
 					</ul>
 					<li>Rollback to an older version</li>
-					<ul>
+					<ul className="list-disc pl-5">
 						<li>You can switch to a previous version if you are having problems with a newer version.  This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
 					</ul>
 					<li>Command-line (CLI)</li>
-					<ul>
+					<ul className="list-disc pl-5">
 						<li>You can run the autoupdate.sh file in the NagiosTV directory to upgrade or downgrade versions.</li>
 					</ul>
 					<li>Manual Update</li>
-					<ul>
+					<ul className="list-disc pl-5">
 						<li>You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
 					</ul>
 				</ul>
@@ -511,7 +511,7 @@ const Update = ({
 			{/* Check for Updates button */}
 			<h3>Check for Updates</h3>
 			<div className="update-help-message">
-				<button onClick={checkForUpdates}>Check for Updates</button>
+				<button className="border border-[#6fbbf3] rounded py-[2px] px-[6px] text-[#6fbbf3]" onClick={checkForUpdates}>Check for Updates</button>
 
 				{/* Check for updates loading */}
 				{latestVersionState.loading && <span>
@@ -530,7 +530,7 @@ const Update = ({
 				<div style={{ marginTop: 10 }} className="update-help-message">
 
 					{bigState.latestVersionString && <div>
-						<button disabled={skipVersion.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
+						<button className="border border-[#6fbbf3] rounded py-[2px] px-[6px] text-[#6fbbf3]" disabled={skipVersion.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
 					</div>}
 
 					{!skipVersion.version_string && bigState.latestVersionString === '' && <div>

@@ -16,6 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { useCallback, useEffect, useRef } from 'react';
+
 // React Router
 import { NavLink } from "react-router-dom";
 
@@ -33,14 +35,54 @@ interface LeftPanelProps {
 	isLeftPanelOpen: boolean;
 }
 
+// Auto-hide the left panel after this delay if no item is selected
+const AUTO_HIDE_DELAY_MS = 10 * 1000; // 10 seconds
+
 const LeftPanel = ({
 	isLeftPanelOpen
 }: LeftPanelProps) => {
 
 	const setBigState = useSetAtom(bigStateAtom);
+	const autoHideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	// Clear the auto-hide timer
+	const clearAutoHideTimer = useCallback(() => {
+		if (autoHideTimerRef.current) {
+			clearTimeout(autoHideTimerRef.current);
+			autoHideTimerRef.current = null;
+		}
+	}, []);
+
+	// Start the auto-hide timer to close the panel after a period of inactivity
+	const startAutoHideTimer = useCallback(() => {
+		clearAutoHideTimer();
+		autoHideTimerRef.current = setTimeout(() => {
+			setBigState(curr => ({
+				...curr,
+				isLeftPanelOpen: false,
+			}));
+		}, AUTO_HIDE_DELAY_MS);
+	}, [clearAutoHideTimer, setBigState]);
+
+	// Start or clear the auto-hide timer when the panel opens or closes
+	useEffect(() => {
+		if (isLeftPanelOpen) {
+			startAutoHideTimer();
+		} else {
+			clearAutoHideTimer();
+		}
+	}, [isLeftPanelOpen, startAutoHideTimer, clearAutoHideTimer]);
+
+	// Clean up timer on unmount
+	useEffect(() => {
+		return () => {
+			clearAutoHideTimer();
+		};
+	}, [clearAutoHideTimer]);
 
 	const clickedItem = () => {
-		//console.log('clicked');
+		// Clear auto-hide timer since user selected a menu item
+		clearAutoHideTimer();
 		setBigState(curr => ({
 			...curr,
 			isLeftPanelOpen: false,
@@ -50,7 +92,7 @@ const LeftPanel = ({
 	return (
 		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
 
-			<div className="nav-sidebar-icon">
+			<div className="nav-sidebar-icon nav-dash">
 				<span data-tip="Dashboard" data-place="right">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/">
 						<FontAwesomeIcon
@@ -62,7 +104,7 @@ const LeftPanel = ({
 				</span>
 			</div>
 
-			<div className="nav-sidebar-icon">
+			<div className="nav-sidebar-icon nav-settings">
 				<span data-tip="Settings" data-place="right">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/settings">
 						<FontAwesomeIcon
@@ -74,7 +116,7 @@ const LeftPanel = ({
 				</span>
 			</div>
 
-			<div className="nav-sidebar-icon">
+			<div className="nav-sidebar-icon nav-update">
 				<span data-tip="Update">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/update">
 						<FontAwesomeIcon
@@ -86,7 +128,7 @@ const LeftPanel = ({
 				</span>
 			</div>
 
-			<div className="nav-sidebar-icon">
+			<div className="nav-sidebar-icon nav-info">
 				<span data-tip="Info and Help">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/help">
 						<FontAwesomeIcon

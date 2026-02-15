@@ -301,9 +301,9 @@ export default function LocalLLM() {
 		// Get the system prompt from settings and replace variables
 		let systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
 		
-		// If Doomguy is enabled, append instruction for Doomguy to say something
+		// If Doomguy is enabled, append instruction to the system prompt for Doomguy to say something
 		if (clientSettings.doomguyEnabled) {
-			systemPrompt += '\n\nWe have a character "Doomguy" who is an avatar for our AI. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. He can be funny or serious. If there is a warning or critical item, then his words should focus should be on the most important thing. Write this in the format: \'Doomguy says "<message>"\'.';
+			systemPrompt += '\n\n' + clientSettings.llmDoomguyPrompt;
 			console.log('[LocalLLM] Doomguy is ENABLED - instruction added to system prompt');
 		} else {
 			console.log('[LocalLLM] Doomguy is DISABLED');

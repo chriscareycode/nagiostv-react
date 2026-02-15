@@ -65,9 +65,9 @@ body {
 }
 
 select {
-	background-color: #1b1b1b;
+	background-color: #222;
 	color: #ddd;
-	border: 1px solid #001d2a;
+	border: 1px solid #555;
 	border-radius: 4px;
 	padding: 2px;
 }
@@ -78,4 +78,9 @@ input[type="text"], input[type="password"], input[type="number"], textarea {
 	border: 1px solid #5d5d5d;
 	border-radius: 4px;
 	padding: 2px;
+}
+
+h3 {
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
