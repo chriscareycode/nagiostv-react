@@ -16,11 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function ifQuietFor(nowtime: number, prevtime: number, minutes: number): boolean {
-	let diff = prevtime - nowtime;
-	if (diff > minutes * 60 * 1000) {
-		return true;
-	} else {
-		return false;
-	}
-}
+import React from 'react';
+
+const SettingsLoader: React.FC = () => {
+  return (
+    <div className="SettingsLoader">
+      SettingsLoader
+    </div>
+  );
+};
+
+export default SettingsLoader;

@@ -16,11 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function ifQuietFor(nowtime: number, prevtime: number, minutes: number): boolean {
-	let diff = prevtime - nowtime;
-	if (diff > minutes * 60 * 1000) {
-		return true;
-	} else {
-		return false;
-	}
+import { atom } from 'jotai';
+
+interface GroupState {
+	error: boolean;
+	errorCount: number;
+	errorMessage: string;
+	lastUpdate: number;
+	response: Record<string, unknown>;
 }
+
+const initialState: GroupState = {
+	error: false,
+	errorCount: 0,
+	errorMessage: '',
+	lastUpdate: 0,
+	response: {}
+};
+
+export const hostgroupAtom = atom(initialState);
+
+export const servicegroupAtom = atom(initialState);

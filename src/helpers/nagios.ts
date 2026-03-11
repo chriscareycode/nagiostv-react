@@ -18,7 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function nagiosHostStatus(status: number) {
+// Nagios status codes:
+// Host: 0=up, 1=pending, 2=down, 3=unreachable
+// Service: 0=ok, 1=pending, 2=warning, 3=unknown, 4=critical
+
+export function nagiosHostStatus(status: number): string {
 	switch (status) {
 		case 1:
 			return 'pending';
@@ -29,24 +33,22 @@ export function nagiosHostStatus(status: number) {
 		case 8:
 			return 'unreachable';
 		default:
-			return 'Unknown host status ' + status;
+			return `Unknown host status ${status}`;
 	}
-	return 'Unknown host status ' + status;
 }
 
-export function nagiosStateType(state_type: number) {
+export function nagiosStateType(state_type: number): string {
 	switch (state_type) {
 		case 0:
 			return 'soft';
 		case 1:
 			return 'hard';
 		default:
-			return 'Unknown state_type ' + state_type;
+			return `Unknown state_type ${state_type}`;
 	}
-	return 'Unknown state_type ' + state_type;
 }
 
-export function nagiosServiceStatus(status: number) {
+export function nagiosServiceStatus(status: number): string {
 	switch (status) {
 		case 1:
 			return 'pending';
@@ -59,12 +61,11 @@ export function nagiosServiceStatus(status: number) {
 		case 16:
 			return 'critical';
 		default:
-			return 'Unknown service status ' + status;
+			return `Unknown service status ${status}`;
 	}
-	return 'Unknown service status ' + status;
 }
 
-export function nagiosAlertState(state: number) {
+export function nagiosAlertState(state: number): string {
 	switch (state) {
 		case 1:
 			return 'host up';
@@ -81,19 +82,17 @@ export function nagiosAlertState(state: number) {
 		case 64:
 			return 'service unknown';
 		default:
-			return 'Unknown alert state ' + state;
+			return `Unknown alert state ${state}`;
 	}
-	return 'Unknown alert state ' + state;
 }
 
-export function nagiosAlertStateType(state_type: number) {
+export function nagiosAlertStateType(state_type: number): string {
 	switch (state_type) {
 		case 1:
 			return 'hard';
 		case 2:
 			return 'soft';
 		default:
-			return 'Unknown state_type ' + state_type;
+			return `Unknown state_type ${state_type}`;
 	}
-	return 'Unknown alert state_type ' + state_type;
 }

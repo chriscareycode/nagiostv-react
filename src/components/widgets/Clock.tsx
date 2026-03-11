@@ -24,11 +24,17 @@ import './Clock.css';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faClock } from '@fortawesome/free-solid-svg-icons';
 
+interface ClockProps {
+	locale: string;
+	clockDateFormat: string;
+	clockTimeFormat: string;
+}
+
 const Clock = ({
 	locale,
 	clockDateFormat,
 	clockTimeFormat,
-}) => {
+}: ClockProps) => {
 
 	const dateRef = useRef<HTMLDivElement>(null);
 

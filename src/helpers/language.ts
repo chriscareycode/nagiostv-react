@@ -27,27 +27,30 @@
 import { phrases as spanish } from './languages/spanish';
 import { phrases as french } from './languages/french';
 
-export const languages = [
+export interface Language {
+	name: string;
+	code: string;
+}
+
+export const languages: Language[] = [
 	{ name: "English", code: "en" },
 	{ name: "Spanish", code: "es" },
 	{ name: "French", code: "fr" }
 ];
 
-export function translate(phrase, language) {
-	let word;
-	switch(language) {
-		case 'Spanish':
-			word = spanish[phrase];
-			break;
-		case 'French':
-			word = french[phrase];
-			break;
-		default:
-			word = phrase;
-			break;
+// Type for the phrases object from language files
+type Phrases = Record<string, string>;
+
+const phraseMaps: Record<string, Phrases> = {
+	Spanish: spanish as Phrases,
+	French: french as Phrases
+};
+
+export function translate(phrase: string, language: string): string {
+	if (language === 'Spanish') {
+		return (spanish as Phrases)[phrase] ?? phrase;
+	} else if (language === 'French') {
+		return (french as Phrases)[phrase] ?? phrase;
 	}
-	if (typeof word === 'undefined') {
-		console.log(`Word [${phrase}] not found in [${language}] language pack.`);
-	}
-	return word;
+	return phrase;
 }

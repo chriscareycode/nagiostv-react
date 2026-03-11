@@ -34,7 +34,6 @@ import {
 } from '../../helpers/nagiostv';
 
 import './Doomguy.css';
-// @ts-ignore-next-line
 import doomguyImage from './Doomguy.png';
 /*
  Doomguy will be happy at 0 services down
@@ -174,7 +173,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	}, [llmIsLoading]);
 
 	let doomguyClass = 'doomguy';
-	let classes: any[] = [];
+	let classes: string[] = [];
 	if (howManyDown === -1) {
 		classes = smileClasses;
 	} else if (howManyDown === 0) {

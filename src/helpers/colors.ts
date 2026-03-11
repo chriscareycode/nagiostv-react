@@ -16,7 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function hostBorderClass(status) {
+// Nagios status codes
+// Host: 0=up, 1=pending, 2=down, 3=unreachable
+// Service: 0=ok, 1=pending, 2=warning, 3=unknown, 4=critical
+
+export function hostBorderClass(status: number): string {
 	//const status = this.get('servicedetail.status');
 	let classString = '';
 
@@ -40,7 +44,7 @@ export function hostBorderClass(status) {
 	return classString;
 }
 
-export function hostTextClass(status) {
+export function hostTextClass(status: number): string {
 	let classString = '';
 
 	switch (status) {
@@ -63,7 +67,7 @@ export function hostTextClass(status) {
 	return classString;
 }
 
-export function serviceBorderClass(status) {
+export function serviceBorderClass(status: number): string {
 	//const status = this.get('servicedetail.status');
 	let classString = '';
 
@@ -90,7 +94,7 @@ export function serviceBorderClass(status) {
 	return classString;
 }
 
-export function serviceTextClass(status) {
+export function serviceTextClass(status: number): string {
 	let classString = '';
 
 	switch (status) {
@@ -117,7 +121,7 @@ export function serviceTextClass(status) {
 }
 
 
-export function alertBorderClass(object_type, state) {
+export function alertBorderClass(object_type: number, state: number): string {
 	let classString = '';
 
 	switch (state) {
@@ -149,7 +153,7 @@ export function alertBorderClass(object_type, state) {
 	return classString;
 }
 
-export function alertTextClass(object_type, state) {
+export function alertTextClass(object_type: number, state: number): string {
 	let classString = '';
 
 	switch (state) {

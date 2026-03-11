@@ -1,7 +1,12 @@
 import { AxiosError } from "axios";
-import { SetStateAction } from "jotai";
 
-export const handleFetchFail = (setFn: SetStateAction<any>, error: AxiosError, url: string, incrementErrorCount: boolean) => {
+interface FetchStateBase {
+	error: boolean;
+	errorCount?: number;
+	errorMessage: string;
+}
+
+export const handleFetchFail = <T extends FetchStateBase>(setFn: (updater: (prev: T) => T) => void, error: AxiosError, url: string, incrementErrorCount: boolean) => {
 	// console.log('handleFetchFail DEBUG error', error);
 
 	let errorMessage = '';
@@ -15,14 +20,14 @@ export const handleFetchFail = (setFn: SetStateAction<any>, error: AxiosError, u
 	}
 
 	if (incrementErrorCount) {
-		setFn((curr: any) => ({
+		setFn((curr) => ({
 			...curr,
 			error: true,
-			errorCount: curr.errorCount + 1,
+			errorCount: curr.errorCount !== undefined ? curr.errorCount + 1 : 1,
 			errorMessage
 		}));
 	} else {
-		setFn((curr: any) => ({
+		setFn((curr) => ({
 			...curr,
 			error: true,
 			errorMessage

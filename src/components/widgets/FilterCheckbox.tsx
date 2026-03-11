@@ -25,7 +25,7 @@ interface FilterCheckboxProps {
 	hideFilters: boolean;
 	defaultChecked: boolean;
 	howMany: number;
-	howManyText: string;
+	howManyText?: string | undefined;
 	handleCheckboxChange: (e: ChangeEvent<HTMLInputElement>, propName: string, dataType: 'checkbox') => void;
 }
 
