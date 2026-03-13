@@ -796,15 +796,15 @@ const Settings = () => {
 									Uses more CPU in the browser (with recent GPU acceleration)
 								</td>
 							</tr>
-							{/* <tr>
-                <th>Emojis:</th>
-                <td>
-                  <select value={clientSettingsTemp.showEmoji} onChange={handleChange('showEmoji', 'boolean')}>
-                    <option value={true}>On</option>
-                    <option value={false}>Off</option>
-                  </select>
-                </td>
-              </tr> */}
+							<tr>
+								<th>❤️ Emojis:</th>
+								<td>
+									<select value={clientSettingsTemp.showEmoji.toString()} onChange={handleChange('showEmoji', 'boolean')}>
+										<option value={'true'}>On</option>
+										<option value={'false'}>Off</option>
+									</select>
+								</td>
+							</tr>
 							<tr>
 								<th>Automatic Scroll:</th>
 								<td>

@@ -186,6 +186,9 @@ class ServiceItem extends Component<ServiceItemProps> {
 
 					<div className="service-item-left-first-line">
 
+						{this.props.settings.showEmoji && e.status === 16 && <span className="mr-1" role="img" aria-label="critical">🔥</span>}
+						{this.props.settings.showEmoji && e.status === 4 && <span className="mr-1" role="img" aria-label="warning">⚠️</span>}
+
 						<div className="service-item-host-name">{e.host_name}</div>
 						<span className="ml-1.5 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
