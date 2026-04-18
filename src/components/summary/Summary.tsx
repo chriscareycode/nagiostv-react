@@ -96,7 +96,7 @@ export default function Summary() {
 
 					{/** Hosts Down */}
 					<div className="summary-box">
-						<CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostDown} />
+						{clientSettings.showEmoji && <CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostDown} />}
 						<div className="summary-box-big-number">
 							<span className={hostHowManyState.howManyHostDown > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostDown}</span>
 						</div>
@@ -105,7 +105,7 @@ export default function Summary() {
 
 					{/** Hosts Unreachable */}
 					<div className="summary-box">
-						<CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostUnreachable} />
+						{clientSettings.showEmoji && <CornerEmoji type="critical" howManyProblems={hostHowManyState.howManyHostUnreachable} />}
 						<div className="summary-box-big-number">
 							<span className={hostHowManyState.howManyHostUnreachable > 0 ? 'color-red' : 'color-green'}>{hostHowManyState.howManyHostUnreachable}</span>
 						</div>
@@ -122,7 +122,7 @@ export default function Summary() {
 
 					{/** Service Critical */}
 					<div className="summary-box">
-						<CornerEmoji type="critical" howManyProblems={serviceHowManyState.howManyServiceCritical} />
+						{clientSettings.showEmoji && <CornerEmoji type="critical" howManyProblems={serviceHowManyState.howManyServiceCritical} />}
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceCritical > 0 ? 'color-red' : 'color-green'}>{serviceHowManyState.howManyServiceCritical}</span>
 						</div>
@@ -131,7 +131,7 @@ export default function Summary() {
 
 					{/** Service Warning */}
 					<div className="summary-box">
-						<CornerEmoji type="warning" howManyProblems={serviceHowManyState.howManyServiceWarning} />
+						{clientSettings.showEmoji && <CornerEmoji type="warning" howManyProblems={serviceHowManyState.howManyServiceWarning} />}
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceWarning > 0 ? 'color-yellow' : 'color-green'}>{serviceHowManyState.howManyServiceWarning}</span>
 						</div>
@@ -140,7 +140,7 @@ export default function Summary() {
 
 					{/** Service Unknown */}
 					<div className="summary-box">
-						<CornerEmoji type="unknown" howManyProblems={serviceHowManyState.howManyServiceUnknown} />
+						{clientSettings.showEmoji && <CornerEmoji type="unknown" howManyProblems={serviceHowManyState.howManyServiceUnknown} />}
 						<div className="summary-box-big-number">
 							<span className={serviceHowManyState.howManyServiceUnknown > 0 ? 'color-orange' : 'color-green'}>{serviceHowManyState.howManyServiceUnknown}</span>
 						</div>
