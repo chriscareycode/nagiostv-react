@@ -21,7 +21,6 @@
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "vite": "^6.4.2",
-    "vite-plugin-pwa": "^0.21.2",
     "vite-plugin-svgr": "^4.5.0",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
@@ -35,7 +34,7 @@
     "allotment": "^1.20.5",
     "axios": "^1.15.0",
     "clipboard-polyfill": "^3.0.3",
-    "highcharts": "^12.5.0",
+    "highcharts": "^12.6.0",
     "highcharts-react-official": "^3.2.3",
     "jotai": "^2.19.1",
     "js-cookie": "^3.0.5",
@@ -53,7 +52,7 @@
   },
   "scripts": {
     "dev": "vite",
-	"start": "vite",
+    "start": "vite",
     "build": "vite build",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
