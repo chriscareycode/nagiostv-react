@@ -579,6 +579,17 @@ const Settings = () => {
 								</td>
 							</tr>
 							<tr>
+								<th>Service and HostGroup filters:</th>
+								<td>
+									<select value={clientSettingsTemp.alwaysShowGroupFilters.toString()} onChange={handleChange('alwaysShowGroupFilters', 'boolean')}>
+										<option value={'true'}>Show Always</option>
+										<option value={'false'}>Show with Filters</option>
+									</select>
+									&nbsp;
+									Show Always keeps HostGroup and ServiceGroup filters visible. Show with Filters only shows them when filters are toggled on.
+								</td>
+							</tr>
+							<tr>
 								<th>Hosts:</th>
 								<td>
 									<select value={clientSettingsTemp.hideHostSection.toString()} onChange={handleChange('hideHostSection', 'boolean')}>

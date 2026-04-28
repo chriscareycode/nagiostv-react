@@ -126,6 +126,7 @@ export const clientSettingsInitial: ClientSettings = {
 
 	hostgroupFilter: '',
 	servicegroupFilter: '',
+	alwaysShowGroupFilters: false,
 
 	versionCheckDays: 7,
 

@@ -74,6 +74,7 @@ export interface ClientSettings {
 
 	hostgroupFilter: string;
 	servicegroupFilter: string;
+	alwaysShowGroupFilters: boolean;
 
 	versionCheckDays: number;
 

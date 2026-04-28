@@ -41,6 +41,7 @@ const Dashboard = () => {
 		hideHostSection,
 		hideServiceSection,
 		hostsAndServicesSideBySide,
+		alwaysShowGroupFilters,
 	} = clientSettings;
 
 	//console.log('Dashboard render()');
@@ -54,13 +55,13 @@ const Dashboard = () => {
 
 				<DashboardFetch />
 
-				<div className="flex">
+				{(alwaysShowGroupFilters || !hideFilters) && <div className="flex">
 					{/* Hostgroup Filter Section */}
 					<HostGroupFilter />
 
 					{/* Servicegroup Filter Section */}
 					<ServiceGroupFilter />
-				</div>
+				</div>}
 
 
 				{/* Summary Section */}
