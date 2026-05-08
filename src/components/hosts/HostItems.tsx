@@ -137,7 +137,7 @@ const HostItems = ({
 			</div>
 
 			<div className="host-items-wrap">
-				<AnimatePresence initial={false}>
+				<AnimatePresence initial={false} key={`host-items-${visibilityKey}`}>
 					{filteredHostStateArray.map((e, i) => {
 						//console.log('HostItem item');
 						//console.log(e, i);
@@ -147,9 +147,11 @@ const HostItems = ({
 								initial={{ opacity: 0, height: 0 }}
 								animate={{ opacity: 1, height: 'auto' }}
 								exit={{ opacity: 0, height: 0 }}
+								transition={{ duration: 0.3, ease: 'easeInOut' }}
 								// style={box}
 								key={`host-${e.name}`}
 								className="HostItem"
+								style={{ overflow: 'hidden' }}
 							>
 								<HostItem
 									settings={settings}

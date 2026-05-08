@@ -147,7 +147,7 @@ const ServiceItems = ({
 			</div>
 
 			<div className="service-items-wrap">
-				<AnimatePresence initial={false}>
+				<AnimatePresence initial={false} key={`service-items-${visibilityKey}`}>
 					{filteredServiceStateArray.map((e, i) => {
 						//console.log('ServiceItem item');
 						//console.log(e, i);
@@ -157,9 +157,11 @@ const ServiceItems = ({
 								initial={{ opacity: 0, height: 0 }}
 								animate={{ opacity: 1, height: 'auto' }}
 								exit={{ opacity: 0, height: 0 }}
+								transition={{ duration: 0.3, ease: 'easeInOut' }}
 								// style={box}
 								key={e.host_name + '-' + e.description}
 								className="ServiceItem"
+								style={{ overflow: 'hidden' }}
 							>
 								<ServiceItem
 									settings={settings}
