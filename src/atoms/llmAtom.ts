@@ -34,6 +34,7 @@ export interface LLMHistoryItem {
 	timestamp: number; // Unix timestamp
 	emoji: string;
 	model: string; // The LLM model used for this response
+	responseDurationMs?: number; // How long the LLM response took to generate
 	color: LLMHistoryColor;
 	shortResponse: string; // Short response for Doomguy speech balloon
 	thinkingContent?: string; // Chain of thought reasoning from thinking models

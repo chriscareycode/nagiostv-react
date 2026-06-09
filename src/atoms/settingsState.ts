@@ -162,8 +162,10 @@ export const clientSettingsInitial: ClientSettings = {
 
 	// LLM integration
 	llmServerBaseUrl: 'http://localhost:1234',
+	llmBackendType: 'openai-compatible',
 	llmModel: 'openai/gpt-oss-20b',
 	llmApiKey: '',
+	llmThinkingLevel: 'off',
 	llmSpeakResponse: false,
 	llmSystemPrompt: `
 You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is {{DATE}}. The time is {{TIME}}. Day of the week is {{DAY_OF_WEEK}}. If you mention "flapping", capitalize it as "FLAPPING". Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response.

@@ -18,15 +18,18 @@
 
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
+import { getLlmBackendPlugin } from 'helpers/llmBackends';
+import { LlmBackendType } from 'types/settings';
 
 interface LlmModelSelectorProps {
+	llmBackendType: LlmBackendType;
 	llmModel: string;
 	llmServerBaseUrl: string;
 	llmApiKey: string;
 	onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 }
 
-const LlmModelSelector = ({ llmModel, llmServerBaseUrl, llmApiKey, onChange }: LlmModelSelectorProps) => {
+const LlmModelSelector = ({ llmBackendType, llmModel, llmServerBaseUrl, llmApiKey, onChange }: LlmModelSelectorProps) => {
 	const [llmModels, setLlmModels] = useState<string[]>([]);
 	const [llmModelsLoading, setLlmModelsLoading] = useState(false);
 	const [llmModelsError, setLlmModelsError] = useState('');
@@ -43,22 +46,18 @@ const LlmModelSelector = ({ llmModel, llmServerBaseUrl, llmApiKey, onChange }: L
 		setLlmModels([]);
 
 		try {
-			const response = await axios.get(`${llmServerBaseUrl}/v1/models`, {
-				headers: llmApiKey ? {
-					'Authorization': `Bearer ${llmApiKey}`
-				} : undefined,
-				timeout: 10000
+			const backendPlugin = getLlmBackendPlugin(llmBackendType);
+			const modelRequest = backendPlugin.buildModelListRequest(llmServerBaseUrl, llmApiKey);
+			const response = await axios.get(modelRequest.url, {
+				headers: modelRequest.headers,
+				timeout: modelRequest.timeoutMs,
 			});
 
-			// OpenAI-compatible API returns { data: [{ id: "model-name", ... }, ...] }
-			if (response.data?.data && Array.isArray(response.data.data)) {
-				const modelIds = response.data.data.map((model: { id: string }) => model.id).sort();
+			const modelIds = backendPlugin.parseModelListResponse(response.data);
+			if (modelIds.length > 0) {
 				setLlmModels(modelIds);
-				if (modelIds.length === 0) {
-					setLlmModelsError('No models found on the server');
-				}
 			} else {
-				setLlmModelsError('Unexpected response format from server');
+				setLlmModelsError('No models found on the server');
 			}
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -67,7 +66,7 @@ const LlmModelSelector = ({ llmModel, llmServerBaseUrl, llmApiKey, onChange }: L
 				} else if (error.response?.status === 401) {
 					setLlmModelsError('Authentication failed. Check your API key.');
 				} else if (error.response?.status === 404) {
-					setLlmModelsError('Models endpoint not found. Server may not support /v1/models');
+					setLlmModelsError('Models endpoint not found for this backend/server combination.');
 				} else {
 					setLlmModelsError(`Failed to fetch models: ${error.message}`);
 				}

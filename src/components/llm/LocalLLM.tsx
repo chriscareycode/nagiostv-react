@@ -37,6 +37,7 @@ import { faArrowsRotate, faBrain, faChevronDown, faChevronLeft, faChevronRight }
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
 import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv';
+import { getLlmBackendPlugin, LLMMessage } from 'helpers/llmBackends';
 
 // Configurable limit for maximum problems to send to LLM
 const MAX_HOST_PROBLEMS_FOR_LLM = 20;
@@ -44,30 +45,13 @@ const MAX_SERVICE_PROBLEMS_FOR_LLM = 20;
 
 const CONSOLE_DEBUG = false;
 
-interface LLMMessage {
-	role: 'system' | 'user' | 'assistant';
-	content: string;
-}
+const formatResponseDuration = (durationMs?: number): string => {
+	if (durationMs === undefined) {
+		return '';
+	}
 
-interface LLMResponse {
-	id: string;
-	object: string;
-	created: number;
-	model: string;
-	choices: Array<{
-		index: number;
-		message: {
-			role: string;
-			content: string;
-		};
-		finish_reason: string;
-	}>;
-	usage?: {
-		prompt_tokens: number;
-		completion_tokens: number;
-		total_tokens: number;
-	};
-}
+	return `${Math.max(1, Math.round(durationMs / 1000))}s`;
+};
 
 export default function LocalLLM() {
 	// State Management
@@ -300,6 +284,11 @@ export default function LocalLLM() {
 
 		// Get the system prompt from settings and replace variables
 		let systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
+		const llmThinkingLevel = clientSettings.llmThinkingLevel || 'medium';
+
+		if (llmThinkingLevel === 'off') {
+			systemPrompt += '\n\nRespond directly with no internal reasoning, no chain-of-thought, and no <think> tags.';
+		}
 		
 		// If Doomguy is enabled, append instruction to the system prompt for Doomguy to say something
 		if (clientSettings.doomguyEnabled) {
@@ -308,6 +297,8 @@ export default function LocalLLM() {
 		} else {
 			console.log('[LocalLLM] Doomguy is DISABLED');
 		}
+
+		const requestStartedAt = performance.now();
 
 		try {
 			// Get the host and service problems
@@ -410,8 +401,7 @@ export default function LocalLLM() {
 				];
 			}
 
-			// Construct the API URL
-			const apiUrl = `${clientSettings.llmServerBaseUrl}/v1/chat/completions`;
+			const backendPlugin = getLlmBackendPlugin(clientSettings.llmBackendType || 'openai-compatible');
 
 			// Output the messages to console for debugging
 			if (CONSOLE_DEBUG) {
@@ -419,31 +409,66 @@ export default function LocalLLM() {
 				console.log(messages[1].content);
 			}
 
-			// Make the API call
-			const response = await axios.post<LLMResponse>(
-				apiUrl,
-				{
-					model: clientSettings.llmModel || 'openai/gpt-oss-20b',
-					messages: messages,
-					temperature: 0.7,
-					max_tokens: 50000
-				},
-				{
-					headers: {
-						'Content-Type': 'application/json',
-						...(clientSettings.llmApiKey && { 'Authorization': `Bearer ${clientSettings.llmApiKey}` })
-					},
-					timeout: 30000 // 30 second timeout
-				}
-			);
+			let request = backendPlugin.buildChatRequest({
+				baseUrl: clientSettings.llmServerBaseUrl,
+				apiKey: clientSettings.llmApiKey,
+				model: clientSettings.llmModel || 'openai/gpt-oss-20b',
+				messages,
+				temperature: 0.7,
+				maxTokens: 50000,
+				thinkingLevel: llmThinkingLevel,
+				includeThinkingControl: true,
+			});
 
-			// Extract the response
-			if (response.data.choices && response.data.choices.length > 0) {
-				const rawContent = response.data.choices[0].message.content;
+			let response: { data: unknown };
+			try {
+				response = await axios.post(request.url, request.payload, {
+					headers: request.headers,
+					timeout: request.timeoutMs,
+				});
+			} catch (requestErr) {
+				if (!axios.isAxiosError(requestErr) || !requestErr.response || (requestErr.response.status !== 400 && requestErr.response.status !== 422)) {
+					throw requestErr;
+				}
+
+				const errorBody = typeof requestErr.response.data === 'string'
+					? requestErr.response.data
+					: JSON.stringify(requestErr.response.data || '');
+				const isThinkingControlUnsupported = /reasoning_effort|reasoning|unknown field|additional properties|not allowed/i.test(errorBody);
+
+				if (!isThinkingControlUnsupported) {
+					throw requestErr;
+				}
+
+				console.warn('LocalLLM: Server rejected thinking control; retrying without backend thinking parameter.');
+				request = backendPlugin.buildChatRequest({
+					baseUrl: clientSettings.llmServerBaseUrl,
+					apiKey: clientSettings.llmApiKey,
+					model: clientSettings.llmModel || 'openai/gpt-oss-20b',
+					messages,
+					temperature: 0.7,
+					maxTokens: 50000,
+					thinkingLevel: llmThinkingLevel,
+					includeThinkingControl: false,
+				});
+				response = await axios.post(request.url, request.payload, {
+					headers: request.headers,
+					timeout: request.timeoutMs,
+				});
+			}
+
+			const parsedResponse = backendPlugin.parseChatResponse(response.data);
+			if (parsedResponse) {
+				const rawContent = parsedResponse.content;
 				const timestamp = Date.now();
+				const responseDurationMs = performance.now() - requestStartedAt;
 				
-				// Parse thinking/reasoning content from the response
-				const { thinkingContent, mainContent: contentWithoutThinking } = parseThinkingContent(rawContent);
+				// Parse thinking/reasoning content from model output tags and combine with explicit reasoning fields
+				const { thinkingContent: taggedThinkingContent, mainContent: contentWithoutThinking } = parseThinkingContent(rawContent);
+				const thinkingContent = [parsedResponse.thinkingContent || '', taggedThinkingContent]
+					.filter(Boolean)
+					.join('\n\n')
+					.trim();
 				
 				// Check if response starts with an emoji and extract it
 				// Emoji regex pattern to match emojis at the start of the string
@@ -519,7 +544,8 @@ export default function LocalLLM() {
 					content,
 					timestamp,
 					emoji: selectedEmoji,
-					model: response.data.model || clientSettings.llmModel || 'unknown',
+					model: parsedResponse.model || clientSettings.llmModel || 'unknown',
+					responseDurationMs,
 					color,
 					shortResponse: doomguySays,
 					thinkingContent: thinkingContent || undefined,
@@ -580,7 +606,7 @@ export default function LocalLLM() {
 		} catch (err) {
 			if (axios.isAxiosError(err)) {
 				if (err.code === 'ECONNABORTED') {
-					setError('Request timeout. The LLM server took too long to respond.');
+					setError('Request timeout. The LLM server took too long to respond. Try using a smaller model or reduce thinking.');
 					console.error('LocalLLM ECONNABORTED:', err);
 				} else if (err.response) {
 					if (err.response.status === 401) {
@@ -727,7 +753,7 @@ export default function LocalLLM() {
 				window.clearTimeout(debounceTimerRef.current);
 			}
 		};
-	}, [currentSignature, clientSettings.llmServerBaseUrl, isLoading]);
+	}, [currentSignature, clientSettings.llmServerBaseUrl, clientSettings.llmBackendType, isLoading]);
 
 	// Cleanup initial load timer on unmount
 	useEffect(() => {
@@ -890,7 +916,9 @@ export default function LocalLLM() {
 						{/* Display the model used for this response */}
 						{currentHistoryItem?.model && (
 							<div className="absolute bottom-1 right-2 text-[12px] text-gray-400 opacity-60">
-								{currentHistoryItem.model}
+								{currentHistoryItem.responseDurationMs !== undefined
+									? `${formatResponseDuration(currentHistoryItem.responseDurationMs)} on ${currentHistoryItem.model}`
+									: currentHistoryItem.model}
 							</div>
 						)}
 					</div>

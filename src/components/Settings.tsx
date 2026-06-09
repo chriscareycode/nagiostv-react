@@ -967,6 +967,19 @@ const Settings = () => {
 								</td>
 							</tr>
 							{!clientSettingsTemp.hideLocalLLMSection && <><tr>
+								<th>LLM Backend Type:</th>
+								<td>
+									<select value={clientSettingsTemp.llmBackendType} onChange={handleChange('llmBackendType', 'string')}>
+										<option value={'openai-compatible'}>OpenAI-Compatible</option>
+										<option value={'anthropic'}>Anthropic</option>
+										<option value={'lmstudio'}>LM Studio</option>
+									</select>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Selects which request/response adapter plugin to use for this LLM server.
+									</span>
+								</td>
+							</tr><tr>
 								<th>LLM Server Base URL:</th>
 								<td>
 									<input 
@@ -977,7 +990,7 @@ const Settings = () => {
 									/>
 									<br />
 									<span style={{ fontSize: '0.9em', color: '#888' }}>
-										Base URL to your OpenAI-compatible LLM server (the path /v1/chat/completions is added automatically)<br />
+										Base URL to your LLM server. The request path is selected from backend type (OpenAI-compatible, Anthropic, or LM Studio).<br />
 										Examples:<br />
 										• Ollama: <code>http://localhost:11434</code><br />
 										• LM Studio: <code>http://localhost:1234</code><br />
@@ -989,6 +1002,7 @@ const Settings = () => {
 								<th>LLM Model:</th>
 								<td>
 									<LlmModelSelector
+										llmBackendType={clientSettingsTemp.llmBackendType}
 										llmModel={clientSettingsTemp.llmModel}
 										llmServerBaseUrl={clientSettingsTemp.llmServerBaseUrl}
 										llmApiKey={clientSettingsTemp.llmApiKey}
@@ -1008,6 +1022,21 @@ const Settings = () => {
 									<br />
 									<span style={{ fontSize: '0.9em', color: '#888' }}>
 										API key for authentication (optional for most local LLM servers)
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th>LLM Thinking Time:</th>
+								<td>
+									<select value={clientSettingsTemp.llmThinkingLevel} onChange={handleChange('llmThinkingLevel', 'string')}>
+										<option value={'off'}>Off (Direct responses)</option>
+										<option value={'low'}>Low (Fastest)</option>
+										<option value={'medium'}>Medium (Balanced)</option>
+										<option value={'high'}>High (Most thorough)</option>
+									</select>
+									<br />
+									<span style={{ fontSize: '0.9em', color: '#888' }}>
+										Controls reasoning effort for compatible models. If your server does not support this option, NagiosTV will fall back automatically.
 									</span>
 								</td>
 							</tr>

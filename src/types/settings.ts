@@ -18,6 +18,9 @@ export interface BigState {
 	isLeftPanelOpen: boolean;
 }
 
+export type LlmThinkingLevel = 'off' | 'low' | 'medium' | 'high';
+export type LlmBackendType = 'openai-compatible' | 'anthropic' | 'lmstudio';
+
 export interface ClientSettings {
 
 	titleString: string;
@@ -112,8 +115,10 @@ export interface ClientSettings {
 
 	// LLM integration
 	llmServerBaseUrl: string;
+	llmBackendType: LlmBackendType;
 	llmModel: string;
 	llmApiKey: string;
+	llmThinkingLevel: LlmThinkingLevel;
 	llmSpeakResponse: boolean;
 	llmSystemPrompt: string;
 	llmDoomguyPrompt: string;
