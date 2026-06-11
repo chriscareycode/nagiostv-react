@@ -20,7 +20,7 @@ import { ChangeEvent } from 'react';
 import { translate } from '../../helpers/language';
 import { useQueryParams } from '../../hooks/useQueryParams';
 
-export type SortOrder = 'newest' | 'oldest' | 'az' | 'za';
+export type SortOrder = 'newest' | 'oldest' | 'nextcheck' | 'az' | 'za';
 
 interface SortOrderSelectProps {
 	value: string;
@@ -47,6 +47,7 @@ const SortOrderSelect = ({ value, varName, language, onChange, syncToUrl = false
 		<select value={value} data-varname={varName} onChange={handleChange}>
 			<option value="newest">{translate('newest first', language)}</option>
 			<option value="oldest">{translate('oldest first', language)}</option>
+			<option value="nextcheck">{translate('by next check', language)}</option>
 			<option value="az">{translate('A-Z', language)}</option>
 			<option value="za">{translate('Z-A', language)}</option>
 		</select>

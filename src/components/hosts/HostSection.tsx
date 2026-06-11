@@ -300,6 +300,15 @@ const HostSection = () => {
 		sortedHostStateArray.sort((a, b) => {
 			return a.name.localeCompare(b.name) * sortMultiplier;
 		});
+	} else if (hostSortOrder === 'nextcheck') {
+		// Earliest next check first; push invalid/unscheduled checks to the end.
+		sortedHostStateArray.sort((a, b) => {
+			const aNextCheck = a.next_check > 0 ? a.next_check : Number.MAX_SAFE_INTEGER;
+			const bNextCheck = b.next_check > 0 ? b.next_check : Number.MAX_SAFE_INTEGER;
+			if (aNextCheck < bNextCheck) { return -1; }
+			if (aNextCheck > bNextCheck) { return 1; }
+			return a.name.localeCompare(b.name);
+		});
 	} else {
 		// Time-based sorting (newest/oldest)
 		let sort = 1;

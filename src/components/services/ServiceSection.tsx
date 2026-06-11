@@ -293,6 +293,17 @@ const ServiceSection = () => {
 			if (hostCompare !== 0) { return hostCompare * sortMultiplier; }
 			return a.description.localeCompare(b.description) * sortMultiplier;
 		});
+	} else if (serviceSortOrder === 'nextcheck') {
+		// Earliest next check first; push invalid/unscheduled checks to the end.
+		sortedServiceStateArray.sort((a, b) => {
+			const aNextCheck = a.next_check > 0 ? a.next_check : Number.MAX_SAFE_INTEGER;
+			const bNextCheck = b.next_check > 0 ? b.next_check : Number.MAX_SAFE_INTEGER;
+			if (aNextCheck < bNextCheck) { return -1; }
+			if (aNextCheck > bNextCheck) { return 1; }
+			const hostCompare = a.host_name.localeCompare(b.host_name);
+			if (hostCompare !== 0) { return hostCompare; }
+			return a.description.localeCompare(b.description);
+		});
 	} else {
 		// Time-based sorting (newest/oldest)
 		let sort = 1;

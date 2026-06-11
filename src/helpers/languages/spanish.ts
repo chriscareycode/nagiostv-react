@@ -54,6 +54,7 @@ export const phrases = {
 
 	'newest first': 'los más reciente primero',
 	'oldest first': 'los más viejos primero',
+	'by next check': 'por próxima comprobación',
 
 	"show more": "mostrar más",
 	"show less": "mostrar menos",

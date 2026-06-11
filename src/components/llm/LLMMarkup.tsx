@@ -101,8 +101,35 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 		let firstParagraphRendered = false;
 
 		const parseInlineMarkdown = (text: string): (string | JSX.Element)[] => {
-			// Parse bold/italic first, then handle inline code within those
-			return parseTextWithBoldItalic(text, 0);
+			// Process inline code (backticks) first — highest precedence in markdown.
+			// This prevents bold/italic regexes from firing inside backtick-wrapped spans
+			// (e.g. `check_disk_usage` where _disk_ would otherwise be parsed as italic).
+			const parts: (string | JSX.Element)[] = [];
+			const codeRegex = /`([^`]+)`/g;
+			let lastIndex = 0;
+			let match;
+			let partIndex = 0;
+
+			while ((match = codeRegex.exec(text)) !== null) {
+				if (match.index > lastIndex) {
+					const beforeText = text.substring(lastIndex, match.index);
+					parts.push(...parseTextWithBoldItalic(beforeText, partIndex));
+					partIndex += beforeText.length;
+				}
+				parts.push(
+					<code key={`inline-code-${partIndex}`} className="llm-inline-code">
+						{match[1]}
+					</code>
+				);
+				partIndex++;
+				lastIndex = match.index + match[0].length;
+			}
+
+			if (lastIndex < text.length) {
+				parts.push(...parseTextWithBoldItalic(text.substring(lastIndex), partIndex));
+			}
+
+			return parts.length > 0 ? parts : [text];
 		};
 
 		const parseTextWithBoldItalic = (text: string, startIndex: number): (string | JSX.Element)[] => {
@@ -159,50 +186,14 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 				// Add text before the match
 				if (match.index > lastIndex) {
 					const beforeText = text.substring(lastIndex, match.index);
-					parts.push(...parseInlineCode(beforeText, partIndex));
+					parts.push(...highlightStatusWords(beforeText, partIndex));
 				}
 				// Add the italic text
 				const italicText = match[1] || match[2];
-				// Parse the content inside italic for inline code and status words
-				const italicContent = parseInlineCode(italicText, partIndex);
 				parts.push(
 					<em key={`italic-${partIndex}`} className="llm-italic">
-						{italicContent}
+						{highlightStatusWords(italicText, partIndex)}
 					</em>
-				);
-				partIndex++;
-				lastIndex = match.index + match[0].length;
-			}
-
-			// Add remaining text
-			if (lastIndex < text.length) {
-				const remainingText = text.substring(lastIndex);
-				parts.push(...parseInlineCode(remainingText, partIndex));
-			}
-
-			return parts.length > 0 ? parts : [text];
-		};
-
-		const parseInlineCode = (text: string, startIndex: number): (string | JSX.Element)[] => {
-			const parts: (string | JSX.Element)[] = [];
-			
-			// Handle inline code (backticks)
-			const codeRegex = /`([^`]+)`/g;
-			let lastIndex = 0;
-			let match;
-			let partIndex = startIndex;
-
-			while ((match = codeRegex.exec(text)) !== null) {
-				// Add text before the match
-				if (match.index > lastIndex) {
-					const beforeText = text.substring(lastIndex, match.index);
-					parts.push(...highlightStatusWords(beforeText, partIndex));
-				}
-				// Add the inline code
-				parts.push(
-					<code key={`code-${partIndex}`} className="llm-inline-code">
-						{match[1]}
-					</code>
 				);
 				partIndex++;
 				lastIndex = match.index + match[0].length;
