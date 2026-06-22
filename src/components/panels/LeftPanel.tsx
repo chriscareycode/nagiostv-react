@@ -17,13 +17,12 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 // React Router
 import { NavLink } from "react-router-dom";
 
 import './LeftPanel.css';
-
-//import ReactTooltip from 'react-tooltip';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -91,9 +90,10 @@ const LeftPanel = ({
 
 	return (
 		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
+			<Tooltip id="left-panel-tooltip" place="right" variant="dark" />
 
 			<div className="nav-sidebar-icon nav-dash">
-				<span data-tip="Dashboard" data-place="right">
+				<span data-tooltip-id="left-panel-tooltip" data-tooltip-content="Dashboard">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/">
 						<FontAwesomeIcon
 							className="nav-sidebar-icon-icon"
@@ -105,7 +105,7 @@ const LeftPanel = ({
 			</div>
 
 			<div className="nav-sidebar-icon nav-settings">
-				<span data-tip="Settings" data-place="right">
+				<span data-tooltip-id="left-panel-tooltip" data-tooltip-content="Settings">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/settings">
 						<FontAwesomeIcon
 							className="nav-sidebar-icon-icon"
@@ -117,7 +117,7 @@ const LeftPanel = ({
 			</div>
 
 			<div className="nav-sidebar-icon nav-update">
-				<span data-tip="Update">
+				<span data-tooltip-id="left-panel-tooltip" data-tooltip-content="Update">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/update">
 						<FontAwesomeIcon
 							className="nav-sidebar-icon-icon"
@@ -129,7 +129,7 @@ const LeftPanel = ({
 			</div>
 
 			<div className="nav-sidebar-icon nav-info">
-				<span data-tip="Info and Help">
+				<span data-tooltip-id="left-panel-tooltip" data-tooltip-content="Info and Help">
 					<NavLink className={({ isActive }) => (isActive ? 'is-active' : '')} to="/help">
 						<FontAwesomeIcon
 							className="nav-sidebar-icon-icon"

@@ -20,7 +20,7 @@ import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 
 // Import external libraries
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 
 // Import Widgets
 import Clock from '../widgets/Clock';
@@ -111,6 +111,9 @@ const TopPanel = () => {
 
 	return (
 		<>
+			{/* Shared tooltip instance for top panel controls */}
+			<Tooltip id="top-panel-tooltip" place="bottom" variant="dark" />
+
 			{/* Show the automatic scroll is enabled message */}
 			{automaticScroll && (
 				<div className="automatic-scroll-enabled">
@@ -125,7 +128,8 @@ const TopPanel = () => {
 
 					{/* filter icon */}
 					<div
-						data-tip="Show/Hide Filters"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Show/Hide Filters"
 						className={hideFilters === false ? 'generic-icon filter-icon' : 'generic-icon filter-icon generic-icon-disabled'}
 						onClick={clickedFilter}
 					>
@@ -134,7 +138,8 @@ const TopPanel = () => {
 
 					{/* automatic scroll icon */}
 					<div
-						data-tip="Automatic Scroll"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Automatic Scroll"
 						className={automaticScroll ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 						onClick={clickedAutomaticScroll}
 					>
@@ -143,7 +148,8 @@ const TopPanel = () => {
 
 					{/* chart icon */}
 					<div
-						data-tip="Show/Hide 24h Charts"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Show/Hide 24h Charts"
 						className={hideHistory24hChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 						onClick={clickedCharts24h}
 					>
@@ -152,7 +158,8 @@ const TopPanel = () => {
 
 					{/* chart icon */}
 					<div
-						data-tip="Show/Hide Long Charts"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Show/Hide Long Charts"
 						className={hideHistoryChart === false ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 						onClick={clickedCharts}
 					>
@@ -161,7 +168,8 @@ const TopPanel = () => {
 
 					{/* sound effects icon */}
 					<div
-						data-tip="Sound Effects"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Sound Effects"
 						className={playSoundEffects ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 						onClick={clickedSound}
 					>
@@ -170,7 +178,8 @@ const TopPanel = () => {
 
 					{/* speak items icon */}
 					<div
-						data-tip="Speak"
+						data-tooltip-id="top-panel-tooltip"
+						data-tooltip-content="Speak"
 						className={speakItems ? 'generic-icon' : 'generic-icon generic-icon-disabled'}
 						onClick={clickedSpeak}
 					>
@@ -209,7 +218,6 @@ const TopPanel = () => {
 				{/* show the polling time */}
 				{/*<span style={{ marginLeft: '20px' }} className=""><FontAwesomeIcon icon={faYinYang} spin /> 15s</span>*/}
 
-				<ReactTooltip place="bottom" type="dark" effect="solid" />
 			</div>
 		</>
 	);
