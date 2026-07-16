@@ -19,7 +19,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import './HistoryChart.css';
 import Highcharts, { PlotOptions } from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
+import { HighchartsReact } from 'highcharts-react-official';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 // Types
