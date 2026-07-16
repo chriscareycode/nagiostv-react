@@ -114,7 +114,6 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 				if (match.index > lastIndex) {
 					const beforeText = text.substring(lastIndex, match.index);
 					parts.push(...parseTextWithBoldItalic(beforeText, partIndex));
-					partIndex += beforeText.length;
 				}
 				parts.push(
 					<code key={`inline-code-${partIndex}`} className="llm-inline-code">

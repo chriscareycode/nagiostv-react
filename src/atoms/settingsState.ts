@@ -176,7 +176,7 @@ You are a helpful assistant analyzing Nagios monitoring data. Provide concise in
 
 **HARD Alert**: A confirmed failure state that occurs when a service or host has failed and exceeded the maximum retry attempts. Hard alerts indicate a persistent issue that requires attention. These should be prioritized more highly than soft alerts.
 `,
-	llmDoomguyPrompt: `We have a character "Doomguy" who is an avatar for our AI. Though his persona should be kind and friendly. Do not refer to firearms or anything related to violence. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. He can be funny or serious. If there is a warning or critical item, then his words should focus should be on the most important thing. He can also use emojis to convey emotions or have fun. Write this in the format: 'Doomguy says "<message>"'.`,
+	llmDoomguyPrompt: `We have a character "Doomguy" who is an avatar for our AI. Though his persona should be kind and friendly. Do not refer to firearms or anything related to violence. At the very end of the response, we can also add a short couple of words for Doomguy to say to the engineers reading the dashboard. He can be funny or serious. If there is a warning or critical item, then his words should focus should be on the most important thing. He can also use emojis to convey emotions or have fun. Write this in the format: Doomguy says "<message>".`,
 	llmPromptAllOk: `
 All systems are operating normally with no detected issues. 
 

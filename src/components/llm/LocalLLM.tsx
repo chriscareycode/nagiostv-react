@@ -495,8 +495,11 @@ export default function LocalLLM() {
 					}
 				}
 				
-				// Extract 'Doomguy says "message"' from the response
-				const doomguySaysRegex = /Doomguy says "([^"]+)"\.?\s*/gi;
+				// Extract Doomguy says "message" from the response
+				// Match: Doomguy says "..." with optional colon, optional period, and whitespace
+				// Handles both straight ("") and curly/smart (“” ‘’) quotes, and an optional colon after "says"
+				// Use [^...]* (zero or more) instead of one or more to handle empty messages
+				const doomguySaysRegex = /Doomguy says\s*:?\s*["“”'‘’]([^"“”'‘’]*)["“”'‘’]\s*\.?\s*/gi;
 				let doomguyMatch;
 				let doomguySays = '';
 				
@@ -507,6 +510,9 @@ export default function LocalLLM() {
 				
 				// Remove all "Doomguy says" patterns from the content
 				content = content.replace(doomguySaysRegex, '').trim();
+				
+				// Clean up any stray trailing quotes or special characters that might remain
+				content = content.replace(/\s*["'`“”‘’]\s*$/, '').trim();
 				
 				// Based on the filtered host and service problems, determine the color to use for this response
 				let color: LLMHistoryColor = 'green'; // Default to green

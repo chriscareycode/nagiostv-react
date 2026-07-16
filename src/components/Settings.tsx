@@ -1077,7 +1077,7 @@ const Settings = () => {
 								<td>
 									<span style={{ fontSize: '0.9em', color: '#888' }}>
 										Appended to the system prompt when Doomguy is enabled. Controls the Doomguy balloon text in the AI response.
-										The prompt needs to output in the format: 'Doomguy says &quot;&lt;message&gt;&quot;' to work properly.
+										The prompt needs to output in the format: Doomguy says &quot;&lt;message&gt;&quot; to work properly.
 									</span>
 									<br />
 									<textarea 
