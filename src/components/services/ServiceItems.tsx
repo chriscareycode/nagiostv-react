@@ -148,7 +148,7 @@ const ServiceItems = ({
 
 			<div className="service-items-wrap">
 				<AnimatePresence initial={false} key={`service-items-${visibilityKey}`}>
-					{filteredServiceStateArray.map((e, i) => {
+					{filteredServiceStateArray.map((e) => {
 						//console.log('ServiceItem item');
 						//console.log(e, i);
 
@@ -169,6 +169,7 @@ const ServiceItems = ({
 									comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
 									howManyDown={filteredServiceStateArray.length}
 									isDemoMode={isDemoMode}
+
 								/>
 							</motion.div>
 						);
