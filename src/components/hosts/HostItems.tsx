@@ -138,7 +138,7 @@ const HostItems = ({
 
 			<div className="host-items-wrap">
 				<AnimatePresence initial={false} key={`host-items-${visibilityKey}`}>
-					{filteredHostStateArray.map((e, i) => {
+					{filteredHostStateArray.map((e) => {
 						//console.log('HostItem item');
 						//console.log(e, i);
 
@@ -159,6 +159,7 @@ const HostItems = ({
 									comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
 									howManyDown={filteredHostStateArray.length}
 									isDemoMode={isDemoMode}
+
 								/>
 							</motion.div>
 						);
