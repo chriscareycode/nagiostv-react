@@ -497,15 +497,16 @@ export default function LocalLLM() {
 				
 				// Extract Doomguy says "message" from the response
 				// Match: Doomguy says "..." with optional colon, optional period, and whitespace
-				// Handles both straight ("") and curly/smart (“” ‘’) quotes, and an optional colon after "says"
+				// Uses matched quote pairs (straight "", curly “”, curly ‘’) so that apostrophes
+				// inside the message (e.g. "You're doing great") don't prematurely end the match.
 				// Use [^...]* (zero or more) instead of one or more to handle empty messages
-				const doomguySaysRegex = /Doomguy says\s*:?\s*["“”'‘’]([^"“”'‘’]*)["“”'‘’]\s*\.?\s*/gi;
+				const doomguySaysRegex = /Doomguy says\s*:?\s*(?:"([^"]*)"|“([^”]*)”|‘([^’]*)’)\s*\.?\s*/gi;
 				let doomguyMatch;
 				let doomguySays = '';
 				
 				// Find and extract the Doomguy says text, removing it from content
 				while ((doomguyMatch = doomguySaysRegex.exec(content)) !== null) {
-					doomguySays = doomguyMatch[1];
+					doomguySays = doomguyMatch[1] ?? doomguyMatch[2] ?? doomguyMatch[3] ?? '';
 				}
 				
 				// Remove all "Doomguy says" patterns from the content
