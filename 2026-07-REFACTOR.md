@@ -108,7 +108,7 @@ This document records the findings from the July 2026 read-only project review. 
   - Consider typed field descriptors for repetitive inputs while retaining custom components for complex settings.
   - Extracted typed data-source/connection, date/region, display/minimap, alert-history, audio/visual, menu/logo, LLM, and persistence sections with reusable controls and focused interaction tests.
 
-- [ ] Split other large, multi-responsibility components.
+- [x] Split other large, multi-responsibility components.
   - Review `LocalLLM`, `Update`, `SettingsLoad`, `HistoryChart`, and `Demo`.
   - Separate network/state orchestration from display components and pure data transformation.
   - Preserve existing uncommitted `LocalLLM.tsx` work while planning or implementing this item.
@@ -119,6 +119,7 @@ This document records the findings from the July 2026 read-only project review. 
   - [x] Extract `LocalLLM` prompt construction, monitoring serialization, and response parsing into tested helpers.
   - [x] Extract `LocalLLM` backend transport, compatibility retry, and response normalization.
   - [x] Extract `LocalLLM` history storage, navigation, and current-response synchronization.
+  - [x] Extract `LocalLLM` analysis execution, automatic triggers, cancellation, and timer cleanup into a controller hook.
 
 - [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.
