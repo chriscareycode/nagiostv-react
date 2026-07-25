@@ -33,7 +33,6 @@ import { faArrowsRotate, faBrain, faChevronDown, faChevronLeft, faChevronRight }
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
 import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv';
-import { getLlmBackendPlugin } from 'helpers/llmBackends';
 import {
 	buildAnalysisMessages,
 	buildMonitoringSignature,
@@ -43,6 +42,7 @@ import {
 	getLlmHistoryColor,
 	parseLlmContent,
 } from './llmAnalysis';
+import { requestLlmChat } from './llmTransport';
 
 const CONSOLE_DEBUG = false;
 
@@ -130,78 +130,36 @@ export default function LocalLLM() {
 				clientSettings,
 			);
 
-			const backendPlugin = getLlmBackendPlugin(clientSettings.llmBackendType || 'openai-compatible');
-
 			// Output the messages to console for debugging
 			if (CONSOLE_DEBUG) {
 				console.log('LocalLLM - Sending messages to LLM:', messages);
 				console.log(messages[1].content);
 			}
 
-			let request = backendPlugin.buildChatRequest({
+			const parsedResponse = await requestLlmChat({
 				baseUrl: clientSettings.llmServerBaseUrl,
+				backendType: clientSettings.llmBackendType || 'openai-compatible',
 				apiKey: clientSettings.llmApiKey,
 				model: clientSettings.llmModel || 'openai/gpt-oss-20b',
 				messages,
-				temperature: 0.7,
-				maxTokens: 50000,
 				thinkingLevel: llmThinkingLevel,
-				includeThinkingControl: true,
 			});
 
-			let response: { data: unknown };
-			try {
-				response = await axios.post(request.url, request.payload, {
-					headers: request.headers,
-					timeout: request.timeoutMs,
-				});
-			} catch (requestErr) {
-				if (!axios.isAxiosError(requestErr) || !requestErr.response || (requestErr.response.status !== 400 && requestErr.response.status !== 422)) {
-					throw requestErr;
-				}
+			if (parsedResponse) {
+				const timestamp = Date.now();
+				const responseDurationMs = performance.now() - requestStartedAt;
+				const {
+					content,
+					emoji: selectedEmoji,
+					shortResponse: doomguySays,
+					thinkingContent,
+				} = parseLlmContent(
+					parsedResponse.content,
+					parsedResponse.thinkingContent,
+					hostStateArray.length + serviceStateArray.length,
+				);
+				const color = getLlmHistoryColor(filteredHostStates, filteredServiceStates);
 
-				const errorBody = typeof requestErr.response.data === 'string'
-					? requestErr.response.data
-					: JSON.stringify(requestErr.response.data || '');
-				const isThinkingControlUnsupported = /reasoning_effort|reasoning|unknown field|additional properties|not allowed/i.test(errorBody);
-
-				if (!isThinkingControlUnsupported) {
-					throw requestErr;
-				}
-
-				console.warn('LocalLLM: Server rejected thinking control; retrying without backend thinking parameter.');
-				request = backendPlugin.buildChatRequest({
-					baseUrl: clientSettings.llmServerBaseUrl,
-					apiKey: clientSettings.llmApiKey,
-					model: clientSettings.llmModel || 'openai/gpt-oss-20b',
-					messages,
-					temperature: 0.7,
-					maxTokens: 50000,
-					thinkingLevel: llmThinkingLevel,
-					includeThinkingControl: false,
-				});
-				response = await axios.post(request.url, request.payload, {
-					headers: request.headers,
-					timeout: request.timeoutMs,
-				});
-			}
-
-				const parsedResponse = backendPlugin.parseChatResponse(response.data);
-				if (parsedResponse) {
-					const timestamp = Date.now();
-					const responseDurationMs = performance.now() - requestStartedAt;
-					const {
-						content,
-						emoji: selectedEmoji,
-						shortResponse: doomguySays,
-						thinkingContent,
-					} = parseLlmContent(
-						parsedResponse.content,
-						parsedResponse.thinkingContent,
-						hostStateArray.length + serviceStateArray.length,
-					);
-					const color = getLlmHistoryColor(filteredHostStates, filteredServiceStates);
-				
 				// Add to history
 				const newHistoryItem: LLMHistoryItem = {
 					content,
@@ -211,12 +169,9 @@ export default function LocalLLM() {
 					responseDurationMs,
 					color,
 					shortResponse: doomguySays,
-						thinkingContent,
+					thinkingContent,
 				};
-				
-				// Check if user is currently viewing the most recent response
-				const isViewingMostRecent = currentHistoryIndex === history.length - 1 || currentHistoryIndex === -1;
-				
+
 				// Set item into history, keeping max 10 items
 				setHistory(prev => {
 					const newHistory = [...prev, newHistoryItem];
@@ -225,32 +180,21 @@ export default function LocalLLM() {
 					}
 					return newHistory;
 				});
-				
-				// Only jump to new response if user was viewing the most recent one
+
 				// Note: We clamp to 9 (max index) because history is limited to 10 items
 				// and the state update is asynchronous, so history.length may not reflect the new size yet
 				const newIndex = Math.min(history.length, 9);
-				if (isViewingMostRecent) {
-					setCurrentHistoryIndex(newIndex);
-					setLlmResponse(content);
-					setLastResponseTime(new Date(timestamp));
-					setResponseEmoji(selectedEmoji);
-				} else {
-					// Just update the index to account for the new item being added
-					// but don't change what the user is viewing
-					// (the setHistory will add it, but we don't navigate to it)
-					setCurrentHistoryIndex(newIndex);
-					setLlmResponse(content);
-					setLastResponseTime(new Date(timestamp));
-					setResponseEmoji(selectedEmoji);
-				}
-				
-					// Speak the response if speakItems is enabled
-					if (clientSettings.llmSpeakResponse) {
-						speakAudio(
-							cleanLlmContentForSpeech(content),
-							clientSettings.speakItemsVoice,
-						);
+				setCurrentHistoryIndex(newIndex);
+				setLlmResponse(content);
+				setLastResponseTime(new Date(timestamp));
+				setResponseEmoji(selectedEmoji);
+
+				// Speak the response if speakItems is enabled
+				if (clientSettings.llmSpeakResponse) {
+					speakAudio(
+						cleanLlmContentForSpeech(content),
+						clientSettings.speakItemsVoice,
+					);
 				}
 			} else {
 				setError('No response received from LLM server.');
@@ -285,11 +229,11 @@ export default function LocalLLM() {
 			console.error('LocalLLM error:', err);
 		} finally {
 			setIsLoading(false);
-			
+
 			// Check if data changed while we were loading and we need to re-analyze
-				if (pendingReanalysisRef.current) {
-					if (CONSOLE_DEBUG) {
-						console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+			if (pendingReanalysisRef.current) {
+				if (CONSOLE_DEBUG) {
+					console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
 				}
 				pendingReanalysisRef.current = false;
 				// Use a small delay to allow state to settle and avoid tight loops
