@@ -28,6 +28,7 @@ import {
 	cleanDemoDataHostlist,
 	convertHostObjectToArray,
 	countHostStates,
+	sortHostStateArray,
 } from '../../helpers/nagiostv';
 
 import HostItems from './HostItems';
@@ -233,44 +234,13 @@ const HostSection = () => {
 	});
 
 	
-	// Mutating state on hostState.stateArray is not allowed (the sort below)
-	// so we need to copy this to something
-	let sortedHostStateArray: Host[] = [];
-	if (Array.isArray(hostState.stateArray)) {
-		sortedHostStateArray = [...hostState.stateArray];
-	}
+	const sortedHostStateArray = sortHostStateArray(
+		Array.isArray(hostState.stateArray) ? hostState.stateArray : [],
+		hostSortOrder,
+	);
 	
 	// const hostlist = hostState.response;
 	const howManyHosts = hostHowManyState.howManyHosts;
-
-	// Sort the data based on the hostSortOrder value
-	if (hostSortOrder === 'az' || hostSortOrder === 'za') {
-		// Alphabetical sorting by host name
-		const sortMultiplier = hostSortOrder === 'az' ? 1 : -1;
-		sortedHostStateArray.sort((a, b) => {
-			return a.name.localeCompare(b.name) * sortMultiplier;
-		});
-	} else if (hostSortOrder === 'nextcheck') {
-		// Earliest next check first; push invalid/unscheduled checks to the end.
-		sortedHostStateArray.sort((a, b) => {
-			const aNextCheck = a.next_check > 0 ? a.next_check : Number.MAX_SAFE_INTEGER;
-			const bNextCheck = b.next_check > 0 ? b.next_check : Number.MAX_SAFE_INTEGER;
-			if (aNextCheck < bNextCheck) { return -1; }
-			if (aNextCheck > bNextCheck) { return 1; }
-			return a.name.localeCompare(b.name);
-		});
-	} else {
-		// Time-based sorting (newest/oldest)
-		let sort = 1;
-		if (hostSortOrder === 'oldest') { sort = -1; }
-		//console.log('sortedHostStateArray before', sortedHostStateArray);
-		sortedHostStateArray.sort((a, b) => {
-			if (a.last_time_up < b.last_time_up) { return 1 * sort; }
-			if (a.last_time_up > b.last_time_up) { return -1 * sort; }
-			return 0;
-		});
-	}
-	//console.log('sortedHostStateArray after', sortedHostStateArray);
 
 	return (
 		<div className="HostSection">

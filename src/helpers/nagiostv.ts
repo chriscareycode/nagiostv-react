@@ -237,6 +237,64 @@ export const countServiceStates = (servicelist: ServiceList, totalCount: number)
 	};
 };
 
+interface SortableMonitoringState {
+	next_check: number;
+}
+
+interface MonitoringSortAccessors<T> {
+	compareNames: (a: T, b: T) => number;
+	getLastHealthyTime: (item: T) => number;
+}
+
+const sortMonitoringStateArray = <T extends SortableMonitoringState>(
+	items: T[],
+	sortOrder: string,
+	accessors: MonitoringSortAccessors<T>,
+): T[] => {
+	const sortedItems = [...items];
+
+	sortedItems.sort((a, b) => {
+		if (sortOrder === 'az' || sortOrder === 'za') {
+			const multiplier = sortOrder === 'az' ? 1 : -1;
+			return accessors.compareNames(a, b) * multiplier;
+		}
+
+		if (sortOrder === 'nextcheck') {
+			const aNextCheck = a.next_check > 0 ? a.next_check : Number.MAX_SAFE_INTEGER;
+			const bNextCheck = b.next_check > 0 ? b.next_check : Number.MAX_SAFE_INTEGER;
+			if (aNextCheck < bNextCheck) return -1;
+			if (aNextCheck > bNextCheck) return 1;
+			return accessors.compareNames(a, b);
+		}
+
+		const aLastHealthy = accessors.getLastHealthyTime(a);
+		const bLastHealthy = accessors.getLastHealthyTime(b);
+		const multiplier = sortOrder === 'oldest' ? -1 : 1;
+		if (aLastHealthy < bLastHealthy) return multiplier;
+		if (aLastHealthy > bLastHealthy) return -multiplier;
+		return 0;
+	});
+
+	return sortedItems;
+};
+
+export const sortHostStateArray = (hosts: Host[], sortOrder: string): Host[] => {
+	return sortMonitoringStateArray(hosts, sortOrder, {
+		compareNames: (a, b) => a.name.localeCompare(b.name),
+		getLastHealthyTime: host => host.last_time_up,
+	});
+};
+
+export const sortServiceStateArray = (services: Service[], sortOrder: string): Service[] => {
+	return sortMonitoringStateArray(services, sortOrder, {
+		compareNames: (a, b) => {
+			const hostComparison = a.host_name.localeCompare(b.host_name);
+			return hostComparison || a.description.localeCompare(b.description);
+		},
+		getLastHealthyTime: service => service.last_time_ok,
+	});
+};
+
 /**
  * Count how many hosts are in a down state from a filtered array
  */

@@ -27,6 +27,7 @@ import {
 	cleanDemoDataServicelist,
 	convertServiceObjectToArray,
 	countServiceStates,
+	sortServiceStateArray,
 } from '../../helpers/nagiostv';
 
 import PollingSpinner from '../widgets/PollingSpinner';
@@ -216,12 +217,10 @@ const ServiceSection = () => {
 		]),
 	});
 
-	// Mutating state on serviceState.stateArray is not allowed (the sort below)
-	// so we need to copy this to something
-	let sortedServiceStateArray: Service[] = [];
-	if (Array.isArray(serviceState.stateArray)) {
-		sortedServiceStateArray = [...serviceState.stateArray];
-	}
+	const sortedServiceStateArray = sortServiceStateArray(
+		Array.isArray(serviceState.stateArray) ? serviceState.stateArray : [],
+		serviceSortOrder,
+	);
 	
 	// let howManyServices = 0;
 	// const servicelist = serviceState.response;
@@ -229,37 +228,6 @@ const ServiceSection = () => {
 	// 	howManyServices += Object.keys(servicelist[host]).length;
 	// });
 	const howManyServices = serviceHowManyState.howManyServices;
-
-	// Sort based on serviceSortOrder
-	if (serviceSortOrder === 'az' || serviceSortOrder === 'za') {
-		// Alphabetical sorting by host_name, then by description (service name)
-		const sortMultiplier = serviceSortOrder === 'az' ? 1 : -1;
-		sortedServiceStateArray.sort((a, b) => {
-			const hostCompare = a.host_name.localeCompare(b.host_name);
-			if (hostCompare !== 0) { return hostCompare * sortMultiplier; }
-			return a.description.localeCompare(b.description) * sortMultiplier;
-		});
-	} else if (serviceSortOrder === 'nextcheck') {
-		// Earliest next check first; push invalid/unscheduled checks to the end.
-		sortedServiceStateArray.sort((a, b) => {
-			const aNextCheck = a.next_check > 0 ? a.next_check : Number.MAX_SAFE_INTEGER;
-			const bNextCheck = b.next_check > 0 ? b.next_check : Number.MAX_SAFE_INTEGER;
-			if (aNextCheck < bNextCheck) { return -1; }
-			if (aNextCheck > bNextCheck) { return 1; }
-			const hostCompare = a.host_name.localeCompare(b.host_name);
-			if (hostCompare !== 0) { return hostCompare; }
-			return a.description.localeCompare(b.description);
-		});
-	} else {
-		// Time-based sorting (newest/oldest)
-		let sort = 1;
-		if (serviceSortOrder === 'oldest') { sort = -1; }
-		sortedServiceStateArray.sort((a, b) => {
-			if (a.last_time_ok < b.last_time_ok) { return 1 * sort; }
-			if (a.last_time_ok > b.last_time_ok) { return -1 * sort; }
-			return 0;
-		});
-	}
 
 	return (
 		<div className="ServiceSection">

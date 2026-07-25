@@ -7,6 +7,8 @@ import {
 	countServiceStates,
 	filterHostStateArray,
 	filterServiceStateArray,
+	sortHostStateArray,
+	sortServiceStateArray,
 } from './nagiostv';
 
 const visibleSettings: ClientSettings = {
@@ -211,5 +213,75 @@ describe('monitoring state counters', () => {
 			howManyServiceSoft: 1,
 			howManyServiceNotificationsDisabled: 1,
 		});
+	});
+});
+
+describe('monitoring state sorting', () => {
+	it('sorts hosts alphabetically in either direction without mutating the input', () => {
+		const hosts = [
+			createHost('charlie', 4),
+			createHost('alpha', 4),
+			createHost('bravo', 4),
+		];
+
+		expect(sortHostStateArray(hosts, 'az').map(host => host.name))
+			.toEqual(['alpha', 'bravo', 'charlie']);
+		expect(sortHostStateArray(hosts, 'za').map(host => host.name))
+			.toEqual(['charlie', 'bravo', 'alpha']);
+		expect(hosts.map(host => host.name)).toEqual(['charlie', 'alpha', 'bravo']);
+	});
+
+	it('sorts services by host and then description', () => {
+		const services = [
+			createService('memory', 16, { host_name: 'web-02' }),
+			createService('memory', 16, { host_name: 'web-01' }),
+			createService('cpu', 16, { host_name: 'web-01' }),
+		];
+		const labels = (items: Service[]) => items.map(
+			service => `${service.host_name}:${service.description}`,
+		);
+
+		expect(labels(sortServiceStateArray(services, 'az')))
+			.toEqual(['web-01:cpu', 'web-01:memory', 'web-02:memory']);
+		expect(labels(sortServiceStateArray(services, 'za')))
+			.toEqual(['web-02:memory', 'web-01:memory', 'web-01:cpu']);
+	});
+
+	it('sorts scheduled checks first and uses domain names to break ties', () => {
+		const hosts = [
+			createHost('unscheduled', 4, { next_check: 0 }),
+			createHost('bravo', 4, { next_check: 100 }),
+			createHost('alpha', 4, { next_check: 100 }),
+		];
+		const services = [
+			createService('unscheduled', 16, { next_check: 0 }),
+			createService('memory', 16, { next_check: 100 }),
+			createService('cpu', 16, { next_check: 100 }),
+		];
+
+		expect(sortHostStateArray(hosts, 'nextcheck').map(host => host.name))
+			.toEqual(['alpha', 'bravo', 'unscheduled']);
+		expect(sortServiceStateArray(services, 'nextcheck').map(service => service.description))
+			.toEqual(['cpu', 'memory', 'unscheduled']);
+	});
+
+	it('sorts host and service healthy timestamps newest or oldest first', () => {
+		const hosts = [
+			createHost('older', 4, { last_time_up: 100 }),
+			createHost('newer', 4, { last_time_up: 200 }),
+		];
+		const services = [
+			createService('older', 16, { last_time_ok: 100 }),
+			createService('newer', 16, { last_time_ok: 200 }),
+		];
+
+		expect(sortHostStateArray(hosts, 'newest').map(host => host.name))
+			.toEqual(['newer', 'older']);
+		expect(sortHostStateArray(hosts, 'oldest').map(host => host.name))
+			.toEqual(['older', 'newer']);
+		expect(sortServiceStateArray(services, 'newest').map(service => service.description))
+			.toEqual(['newer', 'older']);
+		expect(sortServiceStateArray(services, 'oldest').map(service => service.description))
+			.toEqual(['older', 'newer']);
 	});
 });

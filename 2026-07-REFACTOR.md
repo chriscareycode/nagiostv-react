@@ -126,6 +126,7 @@ This document records the findings from the July 2026 read-only project review. 
   - Do not erase meaningful host/service domain differences merely to reduce line count.
   - [x] Use shared visibility helpers for host/service item lists and centralize common state predicates.
   - [x] Consolidate host/service counters around shared monitoring-state predicates.
+  - [x] Share host/service sorting mechanics while retaining domain-specific name ordering.
 
 ## Priority 5: Performance and dependency hygiene
 
