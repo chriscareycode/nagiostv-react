@@ -125,6 +125,7 @@ This document records the findings from the July 2026 read-only project review. 
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.
   - Do not erase meaningful host/service domain differences merely to reduce line count.
   - [x] Use shared visibility helpers for host/service item lists and centralize common state predicates.
+  - [x] Consolidate host/service counters around shared monitoring-state predicates.
 
 ## Priority 5: Performance and dependency hygiene
 

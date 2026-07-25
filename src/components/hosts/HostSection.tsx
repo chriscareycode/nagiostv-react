@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useRef, useState } from 'react';
+import { useRef } from 'react';
 // State Management
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -24,8 +24,11 @@ import { hostIsFetchingAtom, hostAtom, hostHowManyAtom, hostIsFakeDataSetAtom } 
 
 import PollingSpinner from '../widgets/PollingSpinner';
 import { translate } from '../../helpers/language';
-import { cleanDemoDataHostlist } from '../../helpers/nagiostv';
-import { convertHostObjectToArray } from '../../helpers/nagiostv';
+import {
+	cleanDemoDataHostlist,
+	convertHostObjectToArray,
+	countHostStates,
+} from '../../helpers/nagiostv';
 
 import HostItems from './HostItems';
 import HostFilters from './HostFilters';
@@ -33,9 +36,8 @@ import HostFilters from './HostFilters';
 // 3rd party addons
 import { DateTime } from 'luxon';
 import _ from 'lodash';
-import { Host, HostList } from 'types/hostAndServiceTypes';
+import { Host } from 'types/hostAndServiceTypes';
 import { getJson, handleFetchFail } from 'helpers/axios';
-import { howManyHostCounter } from './host-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import { useCancellablePolling } from '../../hooks/useCancellablePolling';
 
@@ -78,27 +80,6 @@ const HostSection = () => {
 		//hideHostSection,
 		language,
 	} = clientSettings;
-
-	const howManyCounter = useCallback((hostlist: HostList) => {
-		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
-
-		// count how many items in each of the host states
-		const howMany = howManyHostCounter(hostlist, totalCount);
-
-		setHostHowManyState({
-			howManyHosts: howMany.howManyHosts,
-			howManyHostPending: howMany.howManyHostPending,
-			howManyHostUp: howMany.howManyHostUp,
-			howManyHostDown: howMany.howManyHostDown,
-			howManyHostUnreachable: howMany.howManyHostUnreachable,
-			howManyHostAcked: howMany.howManyHostAcked,
-			howManyHostScheduled: howMany.howManyHostScheduled,
-			howManyHostFlapping: howMany.howManyHostFlapping,
-			howManyHostSoft: howMany.howManyHostSoft,
-			howManyHostNotificationsDisabled: howMany.howManyHostNotificationsDisabled,
-		});
-
-	}, [setHostHowManyState]);
 
 	const fetchHostCountThenFetchData = (signal?: AbortSignal) => {
 
@@ -221,7 +202,7 @@ const HostSection = () => {
 
 				setHostIsFakeDataSet(useFakeSampleData);
 
-				howManyCounter(my_list);
+				setHostHowManyState(countHostStates(my_list, totalCount.current));
 			}
 		})
 		.catch((error) => {

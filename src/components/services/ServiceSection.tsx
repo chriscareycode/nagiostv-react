@@ -16,15 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 // State Management
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
 import { serviceIsFetchingAtom, serviceAtom, serviceHowManyAtom, serviceIsFakeDataSetAtom } from '../../atoms/serviceAtom';
 
 import { translate } from '../../helpers/language';
-import { cleanDemoDataServicelist } from '../../helpers/nagiostv';
-import { convertServiceObjectToArray } from '../../helpers/nagiostv';
+import {
+	cleanDemoDataServicelist,
+	convertServiceObjectToArray,
+	countServiceStates,
+} from '../../helpers/nagiostv';
 
 import PollingSpinner from '../widgets/PollingSpinner';
 import ServiceItems from './ServiceItems';
@@ -34,9 +37,8 @@ import ServiceFilters from './ServiceFilters';
 import _ from 'lodash';
 
 // Types
-import { Service, ServiceList } from '../../types/hostAndServiceTypes';
+import { Service } from '../../types/hostAndServiceTypes';
 import { getJson, handleFetchFail } from 'helpers/axios';
-import { howManyServiceCounter } from './service-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import { useCancellablePolling } from '../../hooks/useCancellablePolling';
 
@@ -69,27 +71,6 @@ const ServiceSection = () => {
 		serviceSortOrder,
 		language,
 	} = clientSettings;
-
-	const howManyCounter = useCallback((servicelist: ServiceList) => {
-		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
-
-		const howMany = howManyServiceCounter(servicelist, totalCount);
-
-		setServiceHowManyState({
-			howManyServices: howMany.howManyServices,
-			howManyServiceOk: howMany.howManyServiceOk,
-			howManyServiceWarning: howMany.howManyServiceWarning,
-			howManyServiceUnknown: howMany.howManyServiceUnknown,
-			howManyServiceCritical: howMany.howManyServiceCritical,
-			howManyServicePending: howMany.howManyServicePending,
-			howManyServiceAcked: howMany.howManyServiceAcked,
-			howManyServiceScheduled: howMany.howManyServiceScheduled,
-			howManyServiceFlapping: howMany.howManyServiceFlapping,
-			howManyServiceSoft: howMany.howManyServiceSoft,
-			howManyServiceNotificationsDisabled: howMany.howManyServiceNotificationsDisabled,
-		});
-
-	}, [setServiceHowManyState]);
 
 	const fetchServiceCountThenFetchData = (signal?: AbortSignal) => {
 
@@ -205,7 +186,7 @@ const ServiceSection = () => {
 
 				setServiceIsFakeDataSet(useFakeSampleData);
 
-				howManyCounter(my_list);
+				setServiceHowManyState(countServiceStates(my_list, totalCount.current));
 			}
 		})
 		.catch((error) => {

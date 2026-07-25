@@ -93,6 +93,7 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 
 
 interface CommonMonitoringState {
+	status: number;
 	problem_has_been_acknowledged: boolean;
 	scheduled_downtime_depth: number;
 	is_flapping: boolean;
@@ -158,6 +159,82 @@ export const filterServiceStateArray = (
 		if (settings.hideServiceCritical && service.status === 16) return false;
 		return isCommonMonitoringStateVisible(service, commonSettings);
 	});
+};
+
+interface CommonStateCounts {
+	acknowledged: number;
+	scheduled: number;
+	flapping: number;
+	soft: number;
+	notificationsDisabled: number;
+}
+
+const countCommonMonitoringStates = (
+	items: CommonMonitoringState[],
+	healthyStatus: number,
+): CommonStateCounts => {
+	return items.reduce<CommonStateCounts>((counts, item) => {
+		if (item.problem_has_been_acknowledged) counts.acknowledged++;
+		if (item.scheduled_downtime_depth > 0) counts.scheduled++;
+		if (item.is_flapping) counts.flapping++;
+		if (item.status !== healthyStatus && item.state_type === 0) counts.soft++;
+		if (item.status !== healthyStatus && !item.notifications_enabled) {
+			counts.notificationsDisabled++;
+		}
+		return counts;
+	}, {
+		acknowledged: 0,
+		scheduled: 0,
+		flapping: 0,
+		soft: 0,
+		notificationsDisabled: 0,
+	});
+};
+
+export const countHostStates = (hostlist: HostList, totalCount: number) => {
+	const hosts = Object.values(hostlist);
+	const common = countCommonMonitoringStates(hosts, 2);
+	const howManyHostPending = hosts.filter(host => host.status === 1).length;
+	const howManyHostDown = hosts.filter(host => host.status === 4).length;
+	const howManyHostUnreachable = hosts.filter(host => host.status === 8).length;
+
+	return {
+		howManyHosts: totalCount,
+		howManyHostPending,
+		howManyHostUp: totalCount - howManyHostDown - howManyHostUnreachable,
+		howManyHostDown,
+		howManyHostUnreachable,
+		howManyHostAcked: common.acknowledged,
+		howManyHostScheduled: common.scheduled,
+		howManyHostFlapping: common.flapping,
+		howManyHostSoft: common.soft,
+		howManyHostNotificationsDisabled: common.notificationsDisabled,
+	};
+};
+
+export const countServiceStates = (servicelist: ServiceList, totalCount: number) => {
+	const services = Object.values(servicelist).flatMap(Object.values);
+	const common = countCommonMonitoringStates(services, 2);
+	const howManyServiceWarning = services.filter(service => service.status === 4).length;
+	const howManyServiceUnknown = services.filter(service => service.status === 8).length;
+	const howManyServiceCritical = services.filter(service => service.status === 16).length;
+
+	return {
+		howManyServices: totalCount,
+		howManyServiceOk: totalCount
+			- howManyServiceWarning
+			- howManyServiceCritical
+			- howManyServiceUnknown,
+		howManyServicePending: services.filter(service => service.status === 1).length,
+		howManyServiceWarning,
+		howManyServiceUnknown,
+		howManyServiceCritical,
+		howManyServiceAcked: common.acknowledged,
+		howManyServiceScheduled: common.scheduled,
+		howManyServiceFlapping: common.flapping,
+		howManyServiceSoft: common.soft,
+		howManyServiceNotificationsDisabled: common.notificationsDisabled,
+	};
 };
 
 /**

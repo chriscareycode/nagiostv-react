@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { clientSettingsInitial } from '../atoms/settingsState';
-import { Host, Service } from '../types/hostAndServiceTypes';
+import { Host, HostList, Service, ServiceList } from '../types/hostAndServiceTypes';
 import { ClientSettings } from '../types/settings';
-import { filterHostStateArray, filterServiceStateArray } from './nagiostv';
+import {
+	countHostStates,
+	countServiceStates,
+	filterHostStateArray,
+	filterServiceStateArray,
+} from './nagiostv';
 
 const visibleSettings: ClientSettings = {
 	...clientSettingsInitial,
@@ -134,4 +139,77 @@ describe('monitoring visibility filters', () => {
 			expect(filterServiceStateArray([service], settings)).toEqual([]);
 		},
 	);
+});
+
+describe('monitoring state counters', () => {
+	it('counts host-specific statuses while using the server total for healthy hosts', () => {
+		const hosts: HostList = {
+			pending: createHost('pending', 1),
+			down: createHost('down', 4),
+			unreachable: createHost('unreachable', 8),
+		};
+
+		expect(countHostStates(hosts, 10)).toMatchObject({
+			howManyHosts: 10,
+			howManyHostPending: 1,
+			howManyHostUp: 8,
+			howManyHostDown: 1,
+			howManyHostUnreachable: 1,
+		});
+	});
+
+	it('counts service-specific statuses while using the server total for healthy services', () => {
+		const services: ServiceList = {
+			'web-01': {
+				pending: createService('pending', 1),
+				warning: createService('warning', 4),
+				unknown: createService('unknown', 8),
+				critical: createService('critical', 16),
+			},
+		};
+
+		expect(countServiceStates(services, 12)).toMatchObject({
+			howManyServices: 12,
+			howManyServiceOk: 9,
+			howManyServicePending: 1,
+			howManyServiceWarning: 1,
+			howManyServiceUnknown: 1,
+			howManyServiceCritical: 1,
+		});
+	});
+
+	it('shares common problem-state counting without treating healthy soft states as problems', () => {
+		const commonProblem = {
+			problem_has_been_acknowledged: true,
+			scheduled_downtime_depth: 1,
+			is_flapping: true,
+			state_type: 0,
+			notifications_enabled: false,
+		};
+		const hosts: HostList = {
+			problem: createHost('problem', 4, commonProblem),
+			healthy: createHost('healthy', 2, commonProblem),
+		};
+		const services: ServiceList = {
+			'web-01': {
+				problem: createService('problem', 16, commonProblem),
+				healthy: createService('healthy', 2, commonProblem),
+			},
+		};
+
+		expect(countHostStates(hosts, 2)).toMatchObject({
+			howManyHostAcked: 2,
+			howManyHostScheduled: 2,
+			howManyHostFlapping: 2,
+			howManyHostSoft: 1,
+			howManyHostNotificationsDisabled: 1,
+		});
+		expect(countServiceStates(services, 2)).toMatchObject({
+			howManyServiceAcked: 2,
+			howManyServiceScheduled: 2,
+			howManyServiceFlapping: 2,
+			howManyServiceSoft: 1,
+			howManyServiceNotificationsDisabled: 1,
+		});
+	});
 });
