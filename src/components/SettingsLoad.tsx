@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 // State Management
 import { useAtom, useSetAtom } from 'jotai';
@@ -6,24 +6,23 @@ import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
 
 import axios, { AxiosResponse } from 'axios';
-import { ClientSettings, VersionCheck } from 'types/settings';
+import { ClientSettings } from 'types/settings';
 import { responseHasJsonContentType } from 'helpers/axios';
 import {
-	isLocalStorageAvailable,
 	migrateLegacyCookiesToLocalStorage,
 	readClientSettings,
-	readLastVersionCheckTime,
 	readSkipVersion,
-	saveLastVersionCheckTime,
 } from '../helpers/persistence';
+import { useVersionCheck } from '../hooks/useVersionCheck';
 
 const SettingsLoad = () => {
 
 	//console.log('SettingsLoad run');
 
 	const [bigState, setBigState] = useAtom(bigStateAtom);
-	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
+	const setClientSettings = useSetAtom(clientSettingsAtom);
 	const setSkipVersion = useSetAtom(skipVersionAtom);
+	useVersionCheck();
 
 	const {
 		isDemoMode,
@@ -49,7 +48,7 @@ const SettingsLoad = () => {
 	 client settings button to help clear any client settings once server side settings become established. */
 	/* ************************************************************************************ */
 
-	const loadSettingsFromUrl = () => {
+	const loadSettingsFromUrl = useCallback(() => {
 
 		// First try to get params from window.location.search (for regular URLs)
 		let urlParams = new URLSearchParams(window.location.search);
@@ -95,9 +94,9 @@ const SettingsLoad = () => {
 			...curr,
 			isDoneLoading: true
 		}));
-	};
+	}, [setBigState, setClientSettings]);
 
-	const getLocalSettings = () => {
+	const getLocalSettings = useCallback(() => {
 		// Do not load the local settings in demo mode
 		if (isDemoMode) {
 			setBigState(curr => ({
@@ -137,20 +136,20 @@ const SettingsLoad = () => {
 
 		loadSettingsFromUrl();
 
-	};
+	}, [isDemoMode, loadSettingsFromUrl, setBigState, setClientSettings]);
 
-	const loadSkipVersionSettings = () => {
+	const loadSkipVersionSettings = useCallback(() => {
 		const persistedSkipVersion = readSkipVersion();
 		if (persistedSkipVersion) {
 			setSkipVersion(persistedSkipVersion);
 		}
-	};
+	}, [setSkipVersion]);
 
-	const getRemoteSettings = () => {
+	const getRemoteSettings = useCallback((signal: AbortSignal) => {
 		const url = 'client-settings.json?v=' + new Date().getTime();
 
 		axios.get(
-			url, { timeout: 10 * 1000 }
+			url, { timeout: 10 * 1000, signal }
 		).then((response: AxiosResponse<ClientSettings>) => {
 
 			// test that return data is json
@@ -195,131 +194,29 @@ const SettingsLoad = () => {
 			getLocalSettings();
 
 		}).catch((error) => {
+			if (axios.isCancel(error)) {
+				return;
+			}
 			console.log('getRemoteSettings() ajax ERROR:', error);
 			console.log('Skipping server settings.');
 			getLocalSettings();
 		});
-	};
-
-	const lastVersionCheckTimeRef = useRef(0);
-
-	// Version check
-	const versionCheck = () => {
-
-		const lastVersionCheckTime = lastVersionCheckTimeRef.current;
-		const nowTime = new Date().getTime();
-		const twentyThreeHoursInSeconds = (86400 - 3600) * 1000;
-
-		// PREVENT extra last version check time
-		// if the last version check was recent then do not check again
-		// this prevents version checks if you refresh the UI over and over
-		// as is common on TV rotation
-		const lastVersionCheckTimeInt = readLastVersionCheckTime();
-
-		if (lastVersionCheckTimeInt !== 0) {
-			const diff = nowTime - lastVersionCheckTimeInt;
-			if (diff < twentyThreeHoursInSeconds) {
-				console.log('Not performing version check since it was done ' + (diff / 1000).toFixed(0) + ' seconds ago (Local settings check)');
-				return;
-			}
-		}
-
-		// PREVENT extra last version check time with local variable
-		// If for some reason the localStorage check doesn't work
-		if (lastVersionCheckTime !== 0) {
-			const diff = nowTime - lastVersionCheckTime;
-			if (diff < twentyThreeHoursInSeconds) {
-				console.log('Not performing version check since it was done ' + (diff / 1000).toFixed(0) + ' seconds ago (local var check)');
-				return;
-			}
-		}
-
-		console.log('Running version check...');
-
-		// Set the last version check time in local variable
-		// I'm setting this one here not in the callback to prevent the rapid fire
-		lastVersionCheckTimeRef.current = nowTime;
-
-		saveLastVersionCheckTime(nowTime);
-
-		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + bigState.currentVersionString;
-
-		axios.get(
-			url,
-			{timeout: 5 * 1000}
-		).then((response: AxiosResponse<VersionCheck>) => {
-			const myJson = response.data;
-			console.log(`Latest NagiosTV release is ${myJson.version_string} (r${myJson.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
-
-			setBigState(curr => ({
-				...curr,
-				latestVersion: myJson.version,
-				latestVersionString: myJson.version_string,
-				lastVersionCheckTime: nowTime,
-			}));
-
-		})
-		.catch(error => {
-			console.log('There was some error with the version check', error);
-		});
-	};
-
-
+	}, [getLocalSettings, loadSettingsFromUrl, setBigState, setClientSettings]);
 
 	useEffect(() => {
 		//console.log('SettingsLoad useEffect()');
 
 		migrateLegacyCookiesToLocalStorage();
 
-		getRemoteSettings();
+		const controller = new AbortController();
+		getRemoteSettings(controller.signal);
 
 		loadSkipVersionSettings();
 
-		// If localStorage is set then run version check after 30s.
-		// If no localStorage is set then run version check after 30m.
-		// localStorage helps us prevent version check too often if NagiosTV is on a rotation
-		// where the page is loading over and over every few minutes.
-
-		let versionCheckTimeout = 30 * 1000; // 30s
-		if (!isLocalStorageAvailable()) {
-			console.log('localStorage not enabled so delaying first version check by 30m');
-			versionCheckTimeout = 1800 * 1000; // 30m
-		}
-
-		let intervalHandleVersionCheck: ReturnType<typeof setInterval> | null = null;
-		const timeoutHandle = setTimeout(() => {
-			const versionCheckDays = clientSettings.versionCheckDays;
-			// if someone turns off the version check, it should never check
-			if (versionCheckDays && versionCheckDays > 0) {
-				// version check - run once on app boot
-				versionCheck();
-				// version check - run every n days
-				const intervalTime = versionCheckDays * 24 * 60 * 60 * 1000;
-				// console.log('Checking on intervalTime', intervalTime);
-				// safety check that interval > 1hr
-				if (intervalTime !== 0 && intervalTime > (60 * 60 * 1000)) {
-					intervalHandleVersionCheck = setInterval(() => {
-						// inside the interval we check again if the user disabled the check
-						if (clientSettings.versionCheckDays > 0) {
-							versionCheck();
-						}
-					}, intervalTime);
-				} else {
-					console.log('intervalTime not yet an hour, not re-running check.', intervalTime);
-				}
-			} else {
-				console.log('Invalid versionCheckDays. Not starting version check interval.', versionCheckDays);
-			}
-		}, versionCheckTimeout);
-
 		return () => {
-			//console.log('SettingsLoad useEffect() teardown');
-			clearTimeout(timeoutHandle);
-			if (intervalHandleVersionCheck) {
-				clearInterval(intervalHandleVersionCheck);
-			}
+			controller.abort();
 		};
-	}, []);
+	}, [getRemoteSettings, loadSkipVersionSettings]);
 
 	return (<></>);
 };
