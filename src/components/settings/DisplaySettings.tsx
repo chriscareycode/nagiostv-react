@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { ClientSettings } from '../../types/settings';
 import { BooleanSettingKey, SettingsChangeHandler } from './settingsTypes';
+import { BooleanSettingRow } from './SettingControls';
 
 interface DisplaySettingsProps {
 	onChange: SettingsChangeHandler;
@@ -78,20 +79,12 @@ const DisplaySettings = ({ onChange, settings }: DisplaySettingsProps) => (
 		</thead>
 		<tbody>
 			{booleanControls.map(control => (
-				<tr key={control.property}>
-					<th>{control.title}:</th>
-					<td>
-						<select
-							aria-label={control.title}
-							value={settings[control.property].toString()}
-							onChange={onChange(control.property, 'boolean')}
-						>
-							<option value="true">{control.trueLabel}</option>
-							<option value="false">{control.falseLabel}</option>
-						</select>
-						{control.description && <>&nbsp;{control.description}</>}
-					</td>
-				</tr>
+				<BooleanSettingRow
+					key={control.property}
+					{...control}
+					value={settings[control.property]}
+					onChange={onChange}
+				/>
 			))}
 			<tr>
 				<th>MiniMap width:</th>

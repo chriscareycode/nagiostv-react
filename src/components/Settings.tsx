@@ -39,6 +39,7 @@ import { removeClientSettings, saveClientSettings } from '../helpers/persistence
 import DataSourceSettings from './settings/DataSourceSettings';
 import DateRegionSettings from './settings/DateRegionSettings';
 import DisplaySettings from './settings/DisplaySettings';
+import AlertHistorySettings from './settings/AlertHistorySettings';
 import {
 	SettingInputType,
 	SettingsChangeHandler,
@@ -284,60 +285,7 @@ const Settings = () => {
 
 
 
-					{/* history */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Alert History Settings</td>
-							</tr>
-						</thead>
-						<tbody>
-
-							<tr>
-								<th>Alert History (24h) Chart:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHistory24hChart.toString()} onChange={handleChange('hideHistory24hChart', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Alert History ({clientSettingsTemp.alertDaysBack}d) Chart:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHistoryChart.toString()} onChange={handleChange('hideHistoryChart', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Alert History Titles:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHistoryTitle.toString()} onChange={handleChange('hideHistoryTitle', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Alert History Days Back:</th>
-								<td>
-									<input type="number" min="1" max="100" value={clientSettingsTemp.alertDaysBack} onChange={handleChange('alertDaysBack', 'number')} />
-									&nbsp;
-									Affects server CPU. Lower number of days = less CPU
-								</td>
-							</tr>
-							<tr>
-								<th>Alert History max # items:</th>
-								<td>
-									<input type="number" min="1" max="10000" value={clientSettingsTemp.alertMaxItems} onChange={handleChange('alertMaxItems', 'number')} />
-									&nbsp;
-									This will trim the results (in the browser) to limit how many can be shown. Does not affect the server.
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<AlertHistorySettings settings={clientSettingsTemp} onChange={handleChange} />
 
 					{/* fun */}
 					<table className="SettingsTable">
