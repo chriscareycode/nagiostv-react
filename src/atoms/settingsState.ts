@@ -1,8 +1,6 @@
 import { atom } from 'jotai';
 // Types
 import { BigState, ClientSettings } from 'types/settings';
-// Import Polyfills
-import 'url-search-params-polyfill';
 
 // Helper function to get URL params from both regular search and hash portions
 const getUrlParams = () => {
@@ -216,4 +214,3 @@ Provide a brief summary of the current situation.
 
 export const bigStateAtom = atom(bigStateInitial);
 export const clientSettingsAtom = atom(clientSettingsInitial);
-

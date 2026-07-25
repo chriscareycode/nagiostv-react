@@ -45,9 +45,6 @@ import BottomPanel from './panels/BottomPanel';
 import ScrollToTop from './widgets/ScrollToTop';
 import ScrollToSection from './widgets/ScrollToSection';
 
-// Import Polyfills
-import 'url-search-params-polyfill';
-
 // Import css
 import './Base.css';
 import './animation.css';

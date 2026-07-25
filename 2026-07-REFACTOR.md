@@ -150,11 +150,14 @@ This document records the findings from the July 2026 read-only project review. 
   - Perform a clean, reproducible install and commit the resulting lockfile only after verifying the supported Node version.
   - Verified with `npm ci`, Node 24.16.0, Vite 8.0.16, and plugin-react 6.0.2.
 
-- [ ] Audit dependencies and legacy compatibility.
+- [x] Audit dependencies and legacy compatibility.
   - Verify whether `styled-components` is unused and remove it if so.
   - Decide whether IE 11 remains supported.
   - If IE 11 is not supported, remove obsolete React and URL search-parameter polyfills and update `browserslist`.
   - If it is supported, reconcile that requirement with the current `ESNext` target and modern Vite toolchain.
+  - Confirmed `styled-components` was unused and removed it.
+  - Ended the contradictory IE 11 path to match React 18, Vite 8, and the ESNext target; removed legacy polyfills and the IE-only development browserslist entry.
+  - Removing the unused dependencies and eagerly loaded polyfills reduced initial JavaScript by another 175.33 kB / 60.81 kB gzip.
 
 ## Validation baseline
 

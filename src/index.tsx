@@ -16,10 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Fix for IE11 - This must be the first line in src/index.js
-import 'react-app-polyfill/ie11';
-import 'react-app-polyfill/stable';
-
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
