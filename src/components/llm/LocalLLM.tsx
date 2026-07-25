@@ -98,10 +98,16 @@ export default function LocalLLM() {
 				8: 'UNREACHABLE'
 			};
 
+			const stateTypeMap: Record<number, string> = {
+				0: 'SOFT',
+				1: 'HARD'
+			};
+
 			const timestampAgo = formatDateTimeAgo(host.last_time_up);
 
 			return `- Host: ${host.name}
   Status: ${statusMap[host.status] || 'UNKNOWN'}
+  Alert State: ${stateTypeMap[host.state_type] || 'UNKNOWN'}
   Plugin Output: ${host.plugin_output || 'N/A'}
   Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
   Acknowledged: ${host.problem_has_been_acknowledged ? 'Yes' : 'No'}
@@ -127,11 +133,17 @@ export default function LocalLLM() {
 				16: 'CRITICAL'
 			};
 
+			const stateTypeMap: Record<number, string> = {
+				0: 'SOFT',
+				1: 'HARD'
+			};
+
 			const timestampAgo = formatDateTimeAgo(service.last_time_ok);
 
 			return `- Host: ${service.host_name}
   Service: ${service.description}
   Status: ${statusMap[service.status] || 'UNKNOWN'}
+  Alert State: ${stateTypeMap[service.state_type] || 'UNKNOWN'}
   Last Time OK: ${service.last_time_ok ? formatDateTimeLocale(service.last_time_ok, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
   Plugin Output: ${service.plugin_output || 'N/A'}
   Acknowledged: ${service.problem_has_been_acknowledged ? 'Yes' : 'No'}
