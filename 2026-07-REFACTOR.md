@@ -132,10 +132,12 @@ This document records the findings from the July 2026 read-only project review. 
 
 ## Priority 5: Performance and dependency hygiene
 
-- [ ] Add route-level code splitting.
+- [x] Add route-level code splitting.
   - Lazy-load Settings, Update, and Help routes.
   - Consider lazy-loading optional heavy dashboard features such as Highcharts history, minimap capture, and local LLM functionality.
   - Measure before and after. The reviewed production build emitted approximately 1.48 MB of minified JavaScript, about 500 KB gzip.
+  - Lazy-loaded Settings, Update, and Help while keeping the primary dashboard eager.
+  - The July implementation reduced initial JavaScript from 1,406.02 kB / 466.62 kB gzip to 1,356.57 kB / 455.75 kB gzip; 51.67 kB / 13.84 kB gzip moved into route chunks.
 
 - [ ] Review minimap snapshot scheduling.
   - Several independent effects can request snapshots close together.

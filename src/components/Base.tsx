@@ -39,9 +39,6 @@ import {
 // Import Various
 import SettingsLoad from './SettingsLoad';
 import Dashboard from './Dashboard';
-import Update from './Update';
-import Help from './Help';
-import Settings from './Settings';
 import TopPanel from './panels/TopPanel';
 import LeftPanel from './panels/LeftPanel';
 import BottomPanel from './panels/BottomPanel';
@@ -59,7 +56,11 @@ import MiniMapWrap from './widgets/MiniMapWrap';
 import SettingsFakeData from './SettingsFakeData';
 import { BigState, ClientSettings } from 'types/settings';
 import { AnimatePresence, motion } from 'motion/react';
-import { ReactNode } from 'react';
+import { lazy, ReactNode, Suspense } from 'react';
+
+const Help = lazy(() => import('./Help'));
+const Settings = lazy(() => import('./Settings'));
+const Update = lazy(() => import('./Update'));
 
 const pageVariants = {
 	initial: { opacity: 0, x: 0 },
@@ -159,12 +160,20 @@ const AnimatedRoutes = () => {
 				)}
 
 				<AnimatePresence mode="wait">
-					<Routes location={location} key={location.pathname}>
-						<Route path="/settings" element={<PageWrapper>{settingsRoute}</PageWrapper>} />
-						<Route path="/update" element={<PageWrapper>{updateRoute}</PageWrapper>} />
-						<Route path="/help" element={<PageWrapper>{helpRoute}</PageWrapper>} />
-						<Route path="/" element={<PageWrapper>{rootRoute}</PageWrapper>} />
-					</Routes>
+					<Suspense
+						fallback={(
+							<div className="settings-not-loaded" role="status">
+								Loading page…
+							</div>
+						)}
+					>
+						<Routes location={location} key={location.pathname}>
+							<Route path="/settings" element={<PageWrapper>{settingsRoute}</PageWrapper>} />
+							<Route path="/update" element={<PageWrapper>{updateRoute}</PageWrapper>} />
+							<Route path="/help" element={<PageWrapper>{helpRoute}</PageWrapper>} />
+							<Route path="/" element={<PageWrapper>{rootRoute}</PageWrapper>} />
+						</Routes>
+					</Suspense>
 				</AnimatePresence>
 
 			</div> {/* endwrapper around the main content */}
