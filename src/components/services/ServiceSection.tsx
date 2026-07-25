@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 // State Management
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -39,6 +39,7 @@ import { Service, ServiceList } from '../../types/hostAndServiceTypes';
 import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyServiceCounter } from './service-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
+import { useCancellablePolling } from '../../hooks/useCancellablePolling';
 
 const ServiceSection = () => {
 
@@ -69,49 +70,6 @@ const ServiceSection = () => {
 		serviceSortOrder,
 		language,
 	} = clientSettings;
-
-	useEffect(() => {
-		let requestController: AbortController | null = null;
-		const runFetch = () => {
-			requestController?.abort();
-			requestController = new AbortController();
-			fetchServiceCountThenFetchDataRef.current(requestController.signal);
-		};
-
-		const timeoutHandle = setTimeout(() => {
-			runFetch();
-		}, 1000);
-
-		let intervalHandle: ReturnType<typeof setInterval> | null = null;
-		if (isDemoMode === false && useFakeSampleData == false) {
-			// safetly net in case the interval value is bad
-			const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
-			// we fetch alerts on a slower frequency interval
-			intervalHandle = setInterval(() => {
-				runFetch();
-			}, fetchServiceFrequencySafe * 1000);
-		}
-
-		return () => {
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
-			}
-			if (intervalHandle) {
-				clearInterval(intervalHandle);
-			}
-			requestController?.abort();
-		};
-	}, [
-		clientSettings.baseUrl,
-		clientSettings.dataSource,
-		fetchServiceFrequency,
-		clientSettings.hideServiceOk,
-		clientSettings.livestatusPath,
-		hostgroupFilter,
-		isDemoMode,
-		servicegroupFilter,
-		useFakeSampleData,
-	]);
 
 	const howManyCounter = useCallback((servicelist: ServiceList) => {
 		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
@@ -280,6 +238,21 @@ const ServiceSection = () => {
 	}
 
 	fetchServiceCountThenFetchDataRef.current = fetchServiceCountThenFetchData;
+
+	useCancellablePolling(fetchServiceCountThenFetchDataRef, {
+		fallbackIntervalSeconds: clientSettingsInitial.fetchServiceFrequency,
+		intervalSeconds: isDemoMode || useFakeSampleData ? null : fetchServiceFrequency,
+		requestKey: JSON.stringify([
+			clientSettings.baseUrl,
+			clientSettings.dataSource,
+			clientSettings.hideServiceOk,
+			clientSettings.livestatusPath,
+			hostgroupFilter,
+			isDemoMode,
+			servicegroupFilter,
+			useFakeSampleData,
+		]),
+	});
 
 	// Mutating state on serviceState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something

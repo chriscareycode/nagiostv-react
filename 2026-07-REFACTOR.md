@@ -94,6 +94,7 @@ This document records the findings from the July 2026 read-only project review. 
   - Host, service, alert, group, comment, and program-status flows repeat URL selection, timeouts, content-type validation, error handling, scheduling, and atom updates.
   - Introduce small typed utilities or hooks rather than one highly configurable monolith.
   - Keep endpoint-specific response transformation explicit and testable.
+  - Progress: centralized delayed polling, interval validation, and request cancellation in a tested hook; request and response handling remain endpoint-specific.
 
 - [x] Extract shared Nagios URL construction.
   - Encode query parameters safely rather than concatenating raw filter strings.

@@ -40,6 +40,7 @@ import { handleFetchFail, responseHasJsonContentType } from '../../helpers/axios
 import { Alert } from '../../types/hostAndServiceTypes';
 import { shiftAlertsToNow } from './alert-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
+import { useCancellablePolling } from '../../hooks/useCancellablePolling';
 
 const AlertSection = () => {
 
@@ -110,53 +111,6 @@ const AlertSection = () => {
 		servicegroupFilter,
 		miniMapWidth,
 	} = clientSettings;
-
-	useEffect(() => {
-		let requestController: AbortController | null = null;
-		const runFetch = () => {
-			requestController?.abort();
-			requestController = new AbortController();
-			fetchAlertDataRef.current(requestController.signal);
-		};
-		let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
-		let intervalHandle: ReturnType<typeof setInterval> | null = null;
-
-		timeoutHandle = setTimeout(() => {
-			runFetch();
-		}, 1000);
-
-		// Start interval
-		if (isDemoMode === false && useFakeSampleData === false) {
-			// safetly net in case the interval value is bad
-			const fetchAlertFrequencySafe = (typeof fetchAlertFrequency === 'number' && fetchAlertFrequency >= 5) ? fetchAlertFrequency : clientSettingsInitial.fetchAlertFrequency;
-
-			intervalHandle = setInterval(() => {
-				runFetch();
-			}, fetchAlertFrequencySafe * 1000);
-		}
-
-		return () => {
-
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
-			}
-			if (intervalHandle) {
-				clearInterval(intervalHandle);
-			}
-			requestController?.abort();
-		};
-	}, [
-		alertDaysBack,
-		alertMaxItems,
-		clientSettings.baseUrl,
-		clientSettings.dataSource,
-		fetchAlertFrequency,
-		clientSettings.livestatusPath,
-		hostgroupFilter,
-		isDemoMode,
-		servicegroupFilter,
-		useFakeSampleData,
-	]);
 
 	const howManyCounter = useCallback((alertlist: Alert[]) => {
 
@@ -255,6 +209,22 @@ const AlertSection = () => {
 	};
 
 	fetchAlertDataRef.current = fetchAlertData;
+
+	useCancellablePolling(fetchAlertDataRef, {
+		fallbackIntervalSeconds: clientSettingsInitial.fetchAlertFrequency,
+		intervalSeconds: isDemoMode || useFakeSampleData ? null : fetchAlertFrequency,
+		requestKey: JSON.stringify([
+			alertDaysBack,
+			alertMaxItems,
+			clientSettings.baseUrl,
+			clientSettings.dataSource,
+			clientSettings.livestatusPath,
+			hostgroupFilter,
+			isDemoMode,
+			servicegroupFilter,
+			useFakeSampleData,
+		]),
+	});
 
 	//const { language, clientSettings } = this.props;
 

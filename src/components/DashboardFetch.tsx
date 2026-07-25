@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 // State Management
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
@@ -12,6 +12,7 @@ import { handleFetchFail, responseHasJsonContentType } from "helpers/axios";
 // Types
 import { CommentListObject } from "types/commentTypes";
 import { buildNagiosUrl } from '../helpers/nagiosUrls';
+import { useCancellablePolling } from '../hooks/useCancellablePolling';
 
 const DashboardFetch = () => {
 
@@ -271,87 +272,37 @@ const DashboardFetch = () => {
 	fetchServiceGroupDataRef.current = fetchServiceGroupData;
 	fetchProgramStatusRef.current = fetchProgramStatus;
 
-	// useEffect
-	useEffect(() => {
-		//console.log('DashboardFetch useEffect()');
-		let commentController: AbortController | null = null;
-		let groupController: AbortController | null = null;
-		let programController: AbortController | null = null;
-
-		const runCommentFetch = () => {
-			commentController?.abort();
-			commentController = new AbortController();
-			fetchCommentDataRef.current(commentController.signal);
-		};
-
-		const runGroupFetches = () => {
-			groupController?.abort();
-			groupController = new AbortController();
-			fetchHostGroupDataRef.current(groupController.signal);
-			fetchServiceGroupDataRef.current(groupController.signal);
-		};
-
-		const runProgramFetch = () => {
-			programController?.abort();
-			programController = new AbortController();
-			fetchProgramStatusRef.current(programController.signal);
-		};
-
-		// If we are in demo mode then exit here
-		if (isDemoMode) {
-			const demoTimeoutHandle = setTimeout(() => {
-				runProgramFetch();
-			}, 1000);
-			return () => {
-				clearTimeout(demoTimeoutHandle);
-				programController?.abort();
-			};
-		}
-
-		// fetch the initial data after 1 second
-		const initialTimeoutHandle = setTimeout(() => {
-			// fetch data now
-			runProgramFetch();
-			runGroupFetches();
-			runCommentFetch();
-		}, 1000);
-
-		// safetly net in case the interval value is bad
-		const fetchCommentFrequencySafe = (typeof fetchCommentFrequency === 'number' && fetchCommentFrequency >= 5) ? fetchCommentFrequency : clientSettingsInitial.fetchCommentFrequency;
-
-		let intervalHandleComment = setInterval(() => {
-			runCommentFetch();
-		}, fetchCommentFrequencySafe * 1000);
-
-		// safetly net in case the interval value is bad
-		const fetchHostGroupFrequencySafe = (typeof fetchHostGroupFrequency === 'number' && fetchHostGroupFrequency >= 5) ? fetchHostGroupFrequency : clientSettingsInitial.fetchHostGroupFrequency;
-
-		let intervalHandleHostGroup = setInterval(() => {
-			runGroupFetches();
-		}, fetchHostGroupFrequencySafe * 1000);
-
-		//let intervalHandleVersionCheck = null;
-
-		return () => {
-			//console.log('DashboardFetch useEffect() teardown');
-			clearTimeout(initialTimeoutHandle);
-			if (intervalHandleComment) { clearInterval(intervalHandleComment); }
-			if (intervalHandleHostGroup) { clearInterval(intervalHandleHostGroup); }
-			commentController?.abort();
-			groupController?.abort();
-			programController?.abort();
-			//if (intervalHandleVersionCheck) { clearInterval(intervalHandleVersionCheck); }
-		};
-
-	}, [
+	const requestKey = JSON.stringify([
 		clientSettings.baseUrl,
 		clientSettings.dataSource,
 		clientSettings.livestatusPath,
-		fetchCommentFrequency,
-		fetchHostGroupFrequency,
 		isDemoMode,
 		useFakeSampleData,
 	]);
+
+	useCancellablePolling(fetchProgramStatusRef, {
+		fallbackIntervalSeconds: clientSettingsInitial.fetchHostGroupFrequency,
+		intervalSeconds: null,
+		requestKey,
+	});
+	useCancellablePolling(fetchCommentDataRef, {
+		enabled: !isDemoMode,
+		fallbackIntervalSeconds: clientSettingsInitial.fetchCommentFrequency,
+		intervalSeconds: fetchCommentFrequency,
+		requestKey,
+	});
+	useCancellablePolling(fetchHostGroupDataRef, {
+		enabled: !isDemoMode,
+		fallbackIntervalSeconds: clientSettingsInitial.fetchHostGroupFrequency,
+		intervalSeconds: fetchHostGroupFrequency,
+		requestKey,
+	});
+	useCancellablePolling(fetchServiceGroupDataRef, {
+		enabled: !isDemoMode,
+		fallbackIntervalSeconds: clientSettingsInitial.fetchHostGroupFrequency,
+		intervalSeconds: fetchHostGroupFrequency,
+		requestKey,
+	});
 
 	//console.log('DashboardFetch render()');
 

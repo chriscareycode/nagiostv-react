@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 // State Management
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../../atoms/settingsState';
@@ -38,6 +38,7 @@ import { Host, HostList } from 'types/hostAndServiceTypes';
 import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyHostCounter } from './host-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
+import { useCancellablePolling } from '../../hooks/useCancellablePolling';
 
 //import './HostSection.css';
 
@@ -78,50 +79,6 @@ const HostSection = () => {
 		//hideHostSection,
 		language,
 	} = clientSettings;
-
-	useEffect(() => {
-		let requestController: AbortController | null = null;
-		const runFetch = () => {
-			requestController?.abort();
-			requestController = new AbortController();
-			fetchHostCountThenFetchDataRef.current(requestController.signal);
-		};
-
-		const timeoutHandle = setTimeout(() => {
-			runFetch();
-		}, 1000);
-
-		let intervalHandle: ReturnType<typeof setInterval> | null = null;
-
-		if (isDemoMode === false && useFakeSampleData === false) {
-			// safetly net in case the interval value is bad
-			const fetchHostFrequencySafe = (typeof fetchHostFrequency === 'number' && fetchHostFrequency >= 5) ? fetchHostFrequency : clientSettingsInitial.fetchHostFrequency;
-			// we fetch alerts on a slower frequency interval
-			intervalHandle = setInterval(() => {
-				runFetch();
-			}, fetchHostFrequencySafe * 1000);
-		}
-
-		return () => {
-			if (timeoutHandle) {
-				clearTimeout(timeoutHandle);
-			}
-			if (intervalHandle) {
-				clearInterval(intervalHandle);
-			}
-			requestController?.abort();
-		};
-	}, [
-		clientSettings.baseUrl,
-		clientSettings.dataSource,
-		fetchHostFrequency,
-		clientSettings.hideHostUp,
-		clientSettings.livestatusPath,
-		hostgroupFilter,
-		isDemoMode,
-		servicegroupFilter,
-		useFakeSampleData,
-	]);
 
 	const howManyCounter = useCallback((hostlist: HostList) => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
@@ -292,6 +249,21 @@ const HostSection = () => {
 	};
 
 	fetchHostCountThenFetchDataRef.current = fetchHostCountThenFetchData;
+
+	useCancellablePolling(fetchHostCountThenFetchDataRef, {
+		fallbackIntervalSeconds: clientSettingsInitial.fetchHostFrequency,
+		intervalSeconds: isDemoMode || useFakeSampleData ? null : fetchHostFrequency,
+		requestKey: JSON.stringify([
+			clientSettings.baseUrl,
+			clientSettings.dataSource,
+			clientSettings.hideHostUp,
+			clientSettings.livestatusPath,
+			hostgroupFilter,
+			isDemoMode,
+			servicegroupFilter,
+			useFakeSampleData,
+		]),
+	});
 
 	
 	// Mutating state on hostState.stateArray is not allowed (the sort below)
