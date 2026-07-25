@@ -139,10 +139,11 @@ This document records the findings from the July 2026 read-only project review. 
   - Lazy-loaded Settings, Update, and Help while keeping the primary dashboard eager.
   - The July implementation reduced initial JavaScript from 1,406.02 kB / 466.62 kB gzip to 1,356.57 kB / 455.75 kB gzip; 51.67 kB / 13.84 kB gzip moved into route chunks.
 
-- [ ] Review minimap snapshot scheduling.
+- [x] Review minimap snapshot scheduling.
   - Several independent effects can request snapshots close together.
   - Route all requests through one debounced or queued scheduler.
   - Prevent concurrent snapshots and discard obsolete results.
+  - Added a tested generation-aware scheduler that coalesces bursts, queues during capture, and applies only the newest result.
 
 - [x] Reconcile declared and installed tool versions.
   - The reviewed local installation had Vite 6 and plugin-react 4 while `package.json` requested Vite 8 and plugin-react 6.

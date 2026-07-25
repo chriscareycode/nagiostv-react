@@ -6,6 +6,7 @@ import { hostAtom, hostHowManyAtom } from 'atoms/hostAtom';
 import { serviceAtom, serviceHowManyAtom } from 'atoms/serviceAtom';
 import { clientSettingsAtom } from 'atoms/settingsState';
 import { useAtomValue } from 'jotai';
+import { useSnapshotScheduler } from '../../hooks/useSnapshotScheduler';
 
 interface MiniMapCanvasProps {
 	elementToSnapshot: string;
@@ -33,11 +34,10 @@ export default function MiniMapCanvas({
 	// Track route changes to trigger minimap updates
 	const location = useLocation();
 
-	// The function that uses SnapDOM to take a snapshot of the area
-	const snap = async () => {
+	const captureSnapshot = useCallback(async (): Promise<string | null> => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
 		if (!myElement) {
-			return;
+			return null;
 		}
 		
 		try {
@@ -47,36 +47,31 @@ export default function MiniMapCanvas({
 				fast: true,
 				cache: 'soft',
 			});
-			const mmi = document.querySelector('#mmimg') as HTMLImageElement | null;
-			if (mmi) {
-				// Use the SVG data URL directly for best performance
-				mmi.src = result.url;
-			}
+			return result.url;
 		} catch (err) {
 			console.log('error doing snapdom', err);
+			return null;
 		}
-	};
+	}, [elementToSnapshot]);
 
-	// Trigger an update right after host or service updates are fetched
-	useEffect(() => {
-		const th = setTimeout(() => {
-			snap();
-		}, 500);
-		return () => {
-			clearTimeout(th);
-		};
-	}, [hostState.lastUpdate, serviceState.lastUpdate]);
+	const applySnapshot = useCallback((snapshot: string) => {
+		const minimapImage = document.querySelector('#mmimg') as HTMLImageElement | null;
+		if (minimapImage) {
+			minimapImage.src = snapshot;
+		}
+	}, []);
 
-	// Trigger snapshot when host/service counts change (affects items displayed)
-	const triggerAfterHowManyMs = 1000;
+	const requestSnapshot = useSnapshotScheduler(captureSnapshot, applySnapshot);
+
+	// Coalesce data, count, filter, and route changes into one delayed snapshot.
 	useEffect(() => {
-		const th = setTimeout(() => {
-			snap();
-		}, triggerAfterHowManyMs);
-		return () => {
-			clearTimeout(th);
-		};
+		requestSnapshot();
 	}, [
+		requestSnapshot,
+		elementToSnapshot,
+		location.pathname,
+		hostState.lastUpdate,
+		serviceState.lastUpdate,
 		hostHowMany.howManyHosts,
 		hostHowMany.howManyHostDown,
 		hostHowMany.howManyHostUnreachable,
@@ -92,17 +87,6 @@ export default function MiniMapCanvas({
 		serviceHowMany.howManyServiceAcked,
 		serviceHowMany.howManyServiceScheduled,
 		serviceHowMany.howManyServiceFlapping,
-	]);
-
-	// Trigger snapshot when filter settings change (affects items displayed)
-	useEffect(() => {
-		const th = setTimeout(() => {
-			snap();
-		}, 500);
-		return () => {
-			clearTimeout(th);
-		};
-	}, [
 		clientSettings.hideHostPending,
 		clientSettings.hideHostUp,
 		clientSettings.hideHostDown,
@@ -126,28 +110,18 @@ export default function MiniMapCanvas({
 		clientSettings.servicegroupFilter,
 	]);
 
-	// This useEffect handles setting up fallback interval for taking snapshots
-	// This runs infrequently since snapshots are triggered by data/filter changes above
+	// Capture once more after initial layout settles, then only as a fallback.
 	useEffect(() => {
-
-		const th = setTimeout(() => {
-			snap();
-		}, 500);
-
-		const th2 = setTimeout(() => {
-			snap();
-		}, 5000);
-
+		const settledLayoutTimer = setTimeout(() => requestSnapshot(), 5000);
 		const int = setInterval(() => {
-			snap();
+			requestSnapshot();
 		}, fallbackRefreshSeconds * 1000);
 
 		return () => {
-			clearTimeout(th);
-			clearTimeout(th2);
+			clearTimeout(settledLayoutTimer);
 			clearInterval(int);
 		};
-	}, [elementToSnapshot, location.pathname]);
+	}, [requestSnapshot]);
 
 	/**
 	 * Takes in a number (width) and converts it to the width of the minimap
