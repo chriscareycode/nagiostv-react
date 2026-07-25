@@ -27,8 +27,6 @@ import './Settings.css';
 
 import axios from 'axios';
 import { getVoices, playSoundEffectDebounced, speakAudio } from '../helpers/audio';
-import { listLocales } from '../helpers/dates';
-import { languages } from '../helpers/language';
 // clipboard
 import * as clipboard from "clipboard-polyfill/text";
 // icons
@@ -38,10 +36,13 @@ import { ClientSettings } from 'types/settings';
 import Doomguy from './Doomguy/Doomguy';
 import LlmModelSelector from './settings/LlmModelSelector';
 import { removeClientSettings, saveClientSettings } from '../helpers/persistence';
-import DataSourceSettings, {
+import DataSourceSettings from './settings/DataSourceSettings';
+import DateRegionSettings from './settings/DateRegionSettings';
+import {
 	SettingInputType,
 	SettingsChangeHandler,
-} from './settings/DataSourceSettings';
+	SettingsValueSetter,
+} from './settings/settingsTypes';
 
 const Settings = () => {
 
@@ -147,6 +148,14 @@ const Settings = () => {
 
 	};
 
+	const setSettingValue: SettingsValueSetter = (propName, value) => {
+		setClientSettingsTemp(curr => ({
+			...curr,
+			[propName]: value,
+		}));
+		setIsDirty(true);
+	};
+
 	const saveSettingsToServer = () => {
 
 		// convert the clientSettingsTemp into a string, where we also pretty-print the json with carriage returns and spaces
@@ -197,46 +206,6 @@ const Settings = () => {
 		);
 	});
 	voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
-
-	// languages
-	const languageOptions = languages.map((language, i) => {
-		return (
-			<option key={'language-' + i} value={language.name}>{language.name} ({language.code})</option>
-		);
-	});
-
-	// languages
-	const locales = listLocales();
-	const localeOptions = locales.map((locale, i) => {
-		return (
-			<option key={'locale-' + i} value={locale}>{locale}</option>
-		);
-	});
-
-	// A routine to fix the date format used from the migration of "moment" to "luxon".
-	// We will change the dateFormat from 'llll' to 'fff' which is the new equivalent in luxon.
-	const setDefaultDate = () => {
-		setClientSettingsTemp(curr => ({
-			...curr,
-			dateFormat: 'fff'
-		}));
-		setIsDirty(true);
-	};
-	const setDefaultClockDate = () => {
-		setClientSettingsTemp(curr => ({
-			...curr,
-			clockDateFormat: 'DD'
-		}));
-		setIsDirty(true);
-	};
-	const setDefaultClockTime = () => {
-		setClientSettingsTemp(curr => ({
-			...curr,
-			clockTimeFormat: 'ttt'
-		}));
-		setIsDirty(true);
-	};
-
 
 	return (
 		<div className={`Settings`}>
@@ -304,108 +273,11 @@ const Settings = () => {
 
 					<DataSourceSettings settings={clientSettingsTemp} onChange={handleChange} />
 
-					{/* regional */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Date and Region Settings</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th>Language:</th>
-								<td>
-									<select value={clientSettingsTemp.language} onChange={handleChange('language', 'string')}>
-										{languageOptions}
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Date Locale:</th>
-								<td>
-									<select value={clientSettingsTemp.locale} onChange={handleChange('locale', 'string')}>
-										{localeOptions}
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Date Format:</th>
-								<td>
-									<input
-										type="text"
-										value={clientSettingsTemp.dateFormat}
-										onChange={handleChange('dateFormat', 'string')}
-										style={{
-											width: '200px',
-											border: clientSettingsTemp.dateFormat === 'llll' ? '2px solid red' : '0px solid transparent',
-										}}
-									/>
-									{' '}<button onClick={setDefaultDate}>Set to default</button>
-									{clientSettingsTemp.dateFormat === 'llll' && (
-										<div style={{ color: 'red' }}>
-											We migrated from using the "moment" date library to "luxon". If you used the default value 'llll' before when we were using "moment" library, we suggest 'fff' now.
-										</div>
-									)}
-									<div>
-										Format options are on this page:{' '}
-										<a
-											style={{
-												color: 'white',
-											}}
-											target="_blank"
-											rel="noopener noreferrer"
-											href="https://github.com/moment/luxon/blob/master/docs/formatting.md#table-of-tokens"
-										>
-											https://github.com/moment/luxon/blob/master/docs/formatting.md#table-of-tokens
-										</a>
-										{' '}under "Table of tokens". 
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<th>Clock Date Format:</th>
-								<td>
-									<input
-										type="text"
-										value={clientSettingsTemp.clockDateFormat}
-										onChange={handleChange('clockDateFormat', 'string')}
-										style={{
-											width: '200px',
-											border: clientSettingsTemp.clockDateFormat === 'll' ? '2px solid red' : '0px solid transparent',
-										}}
-									/>
-									{' '}<button onClick={setDefaultClockDate}>Set to default</button>
-									{clientSettingsTemp.clockDateFormat === 'll' && (
-										<div style={{ color: 'red' }}>
-											We migrated from using the "moment" date library to "luxon". If you used the default value 'll' before when we were using "moment" library, we suggest 'DD' now.
-											{' '}
-										</div>
-									)}
-								</td>
-							</tr>
-							<tr>
-								<th>Clock Time Format:</th>
-								<td>
-									<input
-										type="text"
-										value={clientSettingsTemp.clockTimeFormat}
-										onChange={handleChange('clockTimeFormat', 'string')}
-										style={{
-											width: '200px',
-											border: clientSettingsTemp.clockTimeFormat === 'LTS' ? '2px solid red' : '0px solid transparent',
-										}}
-									/>
-									{' '}<button onClick={setDefaultClockTime}>Set to default</button>
-									{clientSettingsTemp.clockTimeFormat === 'LTS' && (
-										<div style={{ color: 'red' }}>
-											We migrated from using the "moment" date library to "luxon". If you used the default value 'LTS' before when we were using "moment" library, we suggest 'ttt' for 12 hour or 'TTT' for 24 hour.
-											{' '}
-										</div>
-									)}
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<DateRegionSettings
+						settings={clientSettingsTemp}
+						onChange={handleChange}
+						onSetValue={setSettingValue}
+					/>
 
 					{/* summary */}
 					<table className="SettingsTable">

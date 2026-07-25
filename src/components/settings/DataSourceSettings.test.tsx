@@ -3,10 +3,11 @@ import { ChangeEvent, useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { clientSettingsInitial } from '../../atoms/settingsState';
 import { ClientSettings } from '../../types/settings';
-import DataSourceSettings, {
+import DataSourceSettings from './DataSourceSettings';
+import {
 	SettingInputType,
 	SettingsChangeHandler,
-} from './DataSourceSettings';
+} from './settingsTypes';
 
 const DataSourceSettingsHarness = () => {
 	const [settings, setSettings] = useState<ClientSettings>(clientSettingsInitial);
