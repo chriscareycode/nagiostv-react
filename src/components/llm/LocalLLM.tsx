@@ -17,11 +17,7 @@ import {
 	llmErrorAtom,
 	llmLastResponseTimeAtom,
 	llmResponseEmojiAtom,
-	LLMHistoryColor
 } from '../../atoms/llmAtom';
-
-// Types
-import { Alert, Host, Service } from '../../types/hostAndServiceTypes';
 
 // Components
 import LLMMarkup from './LLMMarkup';
@@ -37,21 +33,18 @@ import { faArrowsRotate, faBrain, faChevronDown, faChevronLeft, faChevronRight }
 // CSS (kept for complex styles like animations and grid layout)
 import './LocalLLM.css';
 import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv';
-import { getLlmBackendPlugin, LLMMessage } from 'helpers/llmBackends';
-
-// Configurable limit for maximum problems to send to LLM
-const MAX_HOST_PROBLEMS_FOR_LLM = 20;
-const MAX_SERVICE_PROBLEMS_FOR_LLM = 20;
+import { getLlmBackendPlugin } from 'helpers/llmBackends';
+import {
+	buildAnalysisMessages,
+	buildMonitoringSignature,
+	buildSystemPrompt,
+	cleanLlmContentForSpeech,
+	formatResponseDuration,
+	getLlmHistoryColor,
+	parseLlmContent,
+} from './llmAnalysis';
 
 const CONSOLE_DEBUG = false;
-
-const formatResponseDuration = (durationMs?: number): string => {
-	if (durationMs === undefined) {
-		return '';
-	}
-
-	return `${Math.max(1, Math.round(durationMs / 1000))}s`;
-};
 
 export default function LocalLLM() {
 	// State Management
@@ -85,183 +78,12 @@ export default function LocalLLM() {
 	// State for expanded thinking section
 	const [isThinkingExpanded, setIsThinkingExpanded] = useState<boolean>(false);
 
-	// Helper function to format host issues
-	const formatHostIssues = (hosts: Host[]): string => {
-		if (hosts.length === 0) {
-			return 'No host issues detected.';
-		}
-
-		const issues = hosts.map(host => {
-			const statusMap: Record<number, string> = {
-				1: 'PENDING',
-				2: 'UP',
-				4: 'DOWN',
-				8: 'UNREACHABLE'
-			};
-
-			const stateTypeMap: Record<number, string> = {
-				0: 'SOFT',
-				1: 'HARD'
-			};
-
-			const timestampAgo = formatDateTimeAgo(host.last_time_up);
-
-			return `- Host: ${host.name}
-  Status: ${statusMap[host.status] || 'UNKNOWN'}
-  Alert State: ${stateTypeMap[host.state_type] || 'UNKNOWN'}
-  Plugin Output: ${host.plugin_output || 'N/A'}
-  Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
-  Acknowledged: ${host.problem_has_been_acknowledged ? 'Yes' : 'No'}
-  Scheduled Downtime: ${host.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
-  Flapping: ${host.is_flapping ? 'Yes' : 'No'}`;
-		}).join('\n\n');
-
-		return `Host Issues (${hosts.length}):\n\n${issues}`;
-	};
-
-	// Helper function to format service issues
-	const formatServiceIssues = (services: Service[]): string => {
-		if (services.length === 0) {
-			return 'No service issues detected.';
-		}
-
-		const issues = services.map(service => {
-			const statusMap: Record<number, string> = {
-				1: 'PENDING',
-				2: 'OK',
-				4: 'WARNING',
-				8: 'UNKNOWN',
-				16: 'CRITICAL'
-			};
-
-			const stateTypeMap: Record<number, string> = {
-				0: 'SOFT',
-				1: 'HARD'
-			};
-
-			const timestampAgo = formatDateTimeAgo(service.last_time_ok);
-
-			return `- Host: ${service.host_name}
-  Service: ${service.description}
-  Status: ${statusMap[service.status] || 'UNKNOWN'}
-  Alert State: ${stateTypeMap[service.state_type] || 'UNKNOWN'}
-  Last Time OK: ${service.last_time_ok ? formatDateTimeLocale(service.last_time_ok, clientSettings.locale, clientSettings.dateFormat) : 'N/A'} (${timestampAgo} ago)
-  Plugin Output: ${service.plugin_output || 'N/A'}
-  Acknowledged: ${service.problem_has_been_acknowledged ? 'Yes' : 'No'}
-  Scheduled Downtime: ${service.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
-  Flapping: ${service.is_flapping ? 'Yes' : 'No'}`;
-		}).join('\n\n');
-
-		return `Service Issues (${services.length}):\n\n${issues}`;
-	};
-
-	// Helper function to format recent alerts
-	const formatRecentAlerts = (alerts: Alert[]): string => {
-		if (alerts.length === 0) {
-			return 'No recent alerts.';
-		}
-
-		const alertStateMap: Record<number, string> = {
-			1: 'HOST UP',
-			2: 'HOST DOWN',
-			4: 'HOST UNREACHABLE',
-			8: 'SERVICE OK',
-			16: 'SERVICE WARNING',
-			32: 'SERVICE CRITICAL',
-			64: 'SERVICE UNKNOWN'
-		};
-
-		const stateTypeMap: Record<number, string> = {
-			1: 'HARD',
-			2: 'SOFT'
-		};
-
-		const formattedAlerts = alerts.map(alert => {
-			const isHostAlert = alert.object_type === 1;
-			const timestampFormatted = formatDateTimeLocale(alert.timestamp, clientSettings.locale, clientSettings.dateFormat);
-			const timestampAgo = formatDateTimeAgo(alert.timestamp);
-
-			if (isHostAlert) {
-				return `- Host: ${alert.name}
-  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
-  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
-  Time: ${timestampFormatted} (${timestampAgo} ago)
-  Plugin Output: ${alert.plugin_output || 'N/A'}`;
-			} else {
-				return `- Host: ${alert.host_name}
-  Service: ${alert.description}
-  State: ${alertStateMap[alert.state] || 'UNKNOWN'}
-  State Type: ${stateTypeMap[alert.state_type] || 'UNKNOWN'}
-  Time: ${timestampFormatted} (${timestampAgo} ago)
-  Plugin Output: ${alert.plugin_output || 'N/A'}`;
-			}
-		}).join('\n\n');
-
-		return `Recent Alerts (${alerts.length}):\n\n${formattedAlerts}`;
-	};
-
-	// Helper function to parse thinking/reasoning content from model response
-	const parseThinkingContent = (rawContent: string): { thinkingContent: string; mainContent: string } => {
-		// First try to match <think>...</think> tags (case insensitive, handles multiline)
-		const thinkRegex = /<think>([\s\S]*?)<\/think>/i;
-		const match = rawContent.match(thinkRegex);
-		
-		if (match) {
-			const thinkingContent = match[1].trim();
-			// Remove the think tags and content from the main response
-			const mainContent = rawContent.replace(thinkRegex, '').trim();
-			return { thinkingContent, mainContent };
-		}
-		
-		// Some reasoning models don't include opening <think> tag, only closing </think>
-		// In this case, everything before </think> is the thinking content
-		const closeThinkIndex = rawContent.toLowerCase().indexOf('</think>');
-		if (closeThinkIndex !== -1) {
-			const thinkingContent = rawContent.substring(0, closeThinkIndex).trim();
-			const mainContent = rawContent.substring(closeThinkIndex + '</think>'.length).trim();
-			return { thinkingContent, mainContent };
-		}
-		
-		return { thinkingContent: '', mainContent: rawContent };
-	};
-
 	// Define state arrays early so they can be used by buildSignature and queryLLM
 	const hostStateArray = hostState.stateArray || [];
 	const serviceStateArray = serviceState.stateArray || [];
 
 	// Build a simple signature: sorted list of problem identifiers with their status plus filter settings
 	// Triggers on actual problem additions/removals, state changes (e.g. WARNING to CRITICAL), and filter changes
-	const buildSignature = (): string => {
-		// Include status in signature so state changes (e.g. WARNING -> CRITICAL) trigger re-analysis
-		const hostIds = hostStateArray.map(h => `${h.name}:${h.status}`).sort().join(',');
-		const serviceIds = serviceStateArray.map(s => `${s.host_name}:${s.description}:${s.status}`).sort().join(',');
-		
-		// Include filter settings in signature so changes trigger re-analysis
-		const filterSignature = [
-			clientSettings.hideHostPending,
-			clientSettings.hideHostUp,
-			clientSettings.hideHostDown,
-			clientSettings.hideHostUnreachable,
-			clientSettings.hideHostAcked,
-			clientSettings.hideHostScheduled,
-			clientSettings.hideHostFlapping,
-			clientSettings.hideHostSoft,
-			clientSettings.hideHostNotificationsDisabled,
-			clientSettings.hideServicePending,
-			clientSettings.hideServiceOk,
-			clientSettings.hideServiceWarning,
-			clientSettings.hideServiceUnknown,
-			clientSettings.hideServiceCritical,
-			clientSettings.hideServiceAcked,
-			clientSettings.hideServiceScheduled,
-			clientSettings.hideServiceFlapping,
-			clientSettings.hideServiceSoft,
-			clientSettings.hideServiceNotificationsDisabled,
-		].map(v => v ? '1' : '0').join('');
-		
-		return `${hostStateArray.length}|${serviceStateArray.length}|${hostIds}|${serviceIds}|${filterSignature}`;
-	};
-
 	// Function to query the LLM
 	const queryLLM = async () => {
 		// Check if LLM settings are configured
@@ -274,7 +96,7 @@ export default function LocalLLM() {
 		
 		// Capture the signature at the moment we start loading
 		// This allows us to detect if data changed while we were loading
-		loadingSignatureRef.current = buildSignature();
+		loadingSignatureRef.current = buildMonitoringSignature(hostStateArray, serviceStateArray, clientSettings);
 		pendingReanalysisRef.current = false; // Reset pending flag
 
 		setIsLoading(true);
@@ -282,34 +104,8 @@ export default function LocalLLM() {
 		// Don't clear llmResponse - keep previous results visible while loading
 		// setLlmResponse('');
 
-		// Let the LLM know what today's date is
-		const todaysDate = new Date().toISOString().split('T')[0];
-		const todaysTime = new Date().toLocaleTimeString(undefined, { hour12: false });
-		const dayOfTheWeek = new Date().toLocaleDateString(undefined, { weekday: 'long' });
-
-		// Helper function to replace template variables in system prompt
-		const replacePromptVariables = (prompt: string): string => {
-			return prompt
-				.replace(/\{\{DATE\}\}/g, todaysDate)
-				.replace(/\{\{TIME\}\}/g, todaysTime)
-				.replace(/\{\{DAY_OF_WEEK\}\}/g, dayOfTheWeek);
-		};
-
-		// Get the system prompt from settings and replace variables
-		let systemPrompt = replacePromptVariables(clientSettings.llmSystemPrompt);
+		const systemPrompt = buildSystemPrompt(clientSettings);
 		const llmThinkingLevel = clientSettings.llmThinkingLevel || 'medium';
-
-		if (llmThinkingLevel === 'off') {
-			systemPrompt += '\n\nRespond directly with no internal reasoning, no chain-of-thought, and no <think> tags.';
-		}
-		
-		// If Doomguy is enabled, append instruction to the system prompt for Doomguy to say something
-		if (clientSettings.doomguyEnabled) {
-			systemPrompt += '\n\n' + clientSettings.llmDoomguyPrompt;
-			console.log('[LocalLLM] Doomguy is ENABLED - instruction added to system prompt');
-		} else {
-			console.log('[LocalLLM] Doomguy is DISABLED');
-		}
 
 		const requestStartedAt = performance.now();
 
@@ -326,93 +122,13 @@ export default function LocalLLM() {
 			// Get the most recent 2 alerts
 			const recentAlerts = (alertState.responseArray || []).slice(0, 2);
 
-			// Check if there are too many problems to analyze
-			const tooManyHostStates = filteredHostStates.length > MAX_HOST_PROBLEMS_FOR_LLM;
-			const tooManyServiceStates = filteredServiceStates.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
-
-			// Check if there are no issues
-			const noIssues = filteredHostStates.length === 0 && filteredServiceStates.length === 0;
-
-			// Prepare the messages for the LLM
-			let messages: LLMMessage[];
-
-			if (tooManyHostStates || tooManyServiceStates) {
-				// Too many problems - inform the LLM without sending the full payload
-				let overloadMessage = 'The monitoring system is reporting a large number of states to the LLM:\n\n';
-				
-				if (tooManyHostStates) {
-					overloadMessage += `- There are ${filteredHostStates.length} host problems (limit is ${MAX_HOST_PROBLEMS_FOR_LLM})\n`;
-				} else {
-					overloadMessage += `- There are ${filteredHostStates.length} host problems\n`;
-				}
-				
-				if (tooManyServiceStates) {
-					overloadMessage += `- There are ${filteredServiceStates.length} service problems (limit is ${MAX_SERVICE_PROBLEMS_FOR_LLM})\n`;
-				} else {
-					overloadMessage += `- There are ${filteredServiceStates.length} service problems\n`;
-				}
-				
-				overloadMessage += '\nThe detailed analysis cannot be performed due to context size protections. Increase the maximums in settings if you wish to allow larger analyses.';
-
-				messages = [
-					{
-						role: 'system',
-						content: systemPrompt
-					},
-					{
-						role: 'user',
-						content: `${overloadMessage}\n\nPlease provide a brief response acknowledging this situation and suggesting immediate steps the operator should take.`
-					},
-				];
-			} else if (noIssues) {
-				// No issues - ask for a compliment
-				messages = [
-					{
-						role: 'system',
-						content: systemPrompt
-					},
-					{
-						role: 'user',
-						content: `${clientSettings.llmPromptAllOk}`
-					},
-				];
-			} else {
-				// Format the issues for the LLM
-				const hostIssuesText = formatHostIssues(filteredHostStates);
-				const serviceIssuesText = formatServiceIssues(filteredServiceStates);
-				// Only include recent alerts if the Most Recent Alert section is visible
-				const recentAlertsText = !clientSettings.hideMostRecentAlertSection ? formatRecentAlerts(recentAlerts) : '';
-
-				messages = [
-					{
-						role: 'system',
-						content: systemPrompt
-					},
-					// Default
-					{
-						role: 'user',
-						content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}${recentAlertsText ? `\n\n${recentAlertsText}` : ''}\n\n ${clientSettings.llmPromptNotOk}`
-					},
-
-					// Middle of the road
-					// {
-					// 	role: 'user',
-					// 	content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\nProvide a brief summary of the current situation. Please do not start your response with a title or greeting, just get in to the summary of host and service issues. Try to refrain from creating bulleted or numbered lists unless absolutely necessary. ${clientSettings.llmPromptNotOk}`
-					// },
-
-					// More Detailed
-					// {
-					// 	role: 'user',
-					// 	content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\nProvide a brief summary of the current situation. Call out specific hosts or service checks that are most important and when you do call them out, emphasize the name with backtick so it shows up clearly in the response. Please do not start your response with a title or greeting, just get in to the summary of host and service issues. Try to refrain from creating bulleted or numbered lists unless absolutely necessary.`
-					// },
-
-					// Detailed summary
-					// {
-					// 	role: 'user',
-					// 	content: `Please analyze the following Nagios monitoring data and provide insights:\n\n${hostIssuesText}\n\n${serviceIssuesText}\n\nStart with a short high level overview in the first paragraph. Next, provide a detailed summary of the current situation. We want to focus on what is having issues, so do not call out if all hosts or services are OK. Call out specific hosts or service checks that are most important and when you do call them out, emphasize the name with backtick so it shows up clearly in the response. Please do not start your response with a title or greeting, just get in to the summary of host and service issues.`
-					// },
-				];
-			}
+			const messages = buildAnalysisMessages(
+				systemPrompt,
+				filteredHostStates,
+				filteredServiceStates,
+				recentAlerts,
+				clientSettings,
+			);
 
 			const backendPlugin = getLlmBackendPlugin(clientSettings.llmBackendType || 'openai-compatible');
 
@@ -470,94 +186,21 @@ export default function LocalLLM() {
 				});
 			}
 
-			const parsedResponse = backendPlugin.parseChatResponse(response.data);
-			if (parsedResponse) {
-				const rawContent = parsedResponse.content;
-				const timestamp = Date.now();
-				const responseDurationMs = performance.now() - requestStartedAt;
-				
-				// Parse thinking/reasoning content from model output tags and combine with explicit reasoning fields
-				const { thinkingContent: taggedThinkingContent, mainContent: contentWithoutThinking } = parseThinkingContent(rawContent);
-				const thinkingContent = [parsedResponse.thinkingContent || '', taggedThinkingContent]
-					.filter(Boolean)
-					.join('\n\n')
-					.trim();
-				
-				// Check if response starts with an emoji and extract it
-				// Emoji regex pattern to match emojis at the start of the string
-				const emojiRegex = /^([\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2300}-\u{23FF}\u{2B50}\u{2B55}\u{2934}\u{2935}\u{25AA}\u{25AB}\u{25B6}\u{25C0}\u{25FB}-\u{25FE}\u{2614}\u{2615}\u{2648}-\u{2653}\u{267F}\u{2693}\u{26A1}\u{26AA}\u{26AB}\u{26BD}\u{26BE}\u{26C4}\u{26C5}\u{26CE}\u{26D4}\u{26EA}\u{26F2}\u{26F3}\u{26F5}\u{26FA}\u{26FD}\u{2702}\u{2705}\u{2708}-\u{270D}\u{270F}\u{2712}\u{2714}\u{2716}\u{271D}\u{2721}\u{2728}\u{2733}\u{2734}\u{2744}\u{2747}\u{274C}\u{274E}\u{2753}-\u{2755}\u{2757}\u{2763}\u{2764}\u{2795}-\u{2797}\u{27A1}\u{27B0}\u{27BF}\u{2934}\u{2935}\u{2B05}-\u{2B07}\u{2B1B}\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}][\u{FE00}-\u{FE0F}]?)\s*/u;
-				const emojiMatch = contentWithoutThinking.match(emojiRegex);
-				
-				let content: string;
-				let selectedEmoji: string;
-				
-				if (emojiMatch) {
-					// Found an emoji at the start - use it and strip it from content
-					selectedEmoji = emojiMatch[1];
-					content = contentWithoutThinking.slice(emojiMatch[0].length);
-				} else {
-					// No leading emoji - fall back to issue count based selection
-					content = contentWithoutThinking;
-					const issueCount = hostStateArray.length + serviceStateArray.length;
-					if (issueCount > 10) {
-						selectedEmoji = '🚨';
-					} else if (issueCount > 0) {
-						selectedEmoji = '⚠️';
-					} else {
-						selectedEmoji = '✅';
-					}
-				}
-				
-				// Extract Doomguy says "message" from the response
-				// Match: Doomguy says "..." with optional colon, optional period, and whitespace
-				// Uses matched quote pairs (straight "", curly “”, curly ‘’) so that apostrophes
-				// inside the message (e.g. "You're doing great") don't prematurely end the match.
-				// Use [^...]* (zero or more) instead of one or more to handle empty messages
-				const doomguySaysRegex = /Doomguy says\s*:?\s*(?:"([^"]*)"|“([^”]*)”|‘([^’]*)’)\s*\.?\s*/gi;
-				let doomguyMatch;
-				let doomguySays = '';
-				
-				// Find and extract the Doomguy says text, removing it from content
-				while ((doomguyMatch = doomguySaysRegex.exec(content)) !== null) {
-					doomguySays = doomguyMatch[1] ?? doomguyMatch[2] ?? doomguyMatch[3] ?? '';
-				}
-				
-				// Remove all "Doomguy says" patterns from the content
-				content = content.replace(doomguySaysRegex, '').trim();
-				
-				// Clean up any stray trailing quotes or special characters that might remain
-				content = content.replace(/\s*["'`“”‘’]\s*$/, '').trim();
-				
-				// Based on the filtered host and service problems, determine the color to use for this response
-				let color: LLMHistoryColor = 'green'; // Default to green
-				
-				// Count issues from filtered arrays
-				const hasServiceWarning = filteredServiceStates.some(s => s.status === 4);  // 4 = WARNING
-				const hasServiceCritical = filteredServiceStates.some(s => s.status === 16); // 16 = CRITICAL
-				const hasServiceUnknown = filteredServiceStates.some(s => s.status === 8);  // 8 = UNKNOWN
-				const hasHostDown = filteredHostStates.some(h => h.status === 4);           // 4 = DOWN
-				const hasHostUnreachable = filteredHostStates.some(h => h.status === 8);    // 8 = UNREACHABLE
-				
-				// Service unknown
-				if (hasServiceUnknown) {
-					color = 'orange';
-				}
-				// Service warning
-				if (hasServiceWarning) {
-					color = 'yellow';
-				}
-				// Service critical
-				if (hasServiceCritical) {
-					color = 'red';
-				}
-				// Host down
-				if (hasHostDown) {
-					color = 'red';
-				}
-				// Host unreachable
-				if (hasHostUnreachable) {
-					color = 'red';
-				}
+				const parsedResponse = backendPlugin.parseChatResponse(response.data);
+				if (parsedResponse) {
+					const timestamp = Date.now();
+					const responseDurationMs = performance.now() - requestStartedAt;
+					const {
+						content,
+						emoji: selectedEmoji,
+						shortResponse: doomguySays,
+						thinkingContent,
+					} = parseLlmContent(
+						parsedResponse.content,
+						parsedResponse.thinkingContent,
+						hostStateArray.length + serviceStateArray.length,
+					);
+					const color = getLlmHistoryColor(filteredHostStates, filteredServiceStates);
 				
 				// Add to history
 				const newHistoryItem: LLMHistoryItem = {
@@ -568,7 +211,7 @@ export default function LocalLLM() {
 					responseDurationMs,
 					color,
 					shortResponse: doomguySays,
-					thinkingContent: thinkingContent || undefined,
+						thinkingContent,
 				};
 				
 				// Check if user is currently viewing the most recent response
@@ -602,23 +245,12 @@ export default function LocalLLM() {
 					setResponseEmoji(selectedEmoji);
 				}
 				
-				// Speak the response if speakItems is enabled
-				if (clientSettings.llmSpeakResponse) {
-					// Remove markdown formatting for better speech
-					const cleanedContent = content
-						.replace(/#{1,6}\s+/g, '') // Remove heading markers
-						.replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold markers
-						.replace(/\*([^*]+)\*/g, '$1') // Remove italic markers
-						.replace(/`([^`]+)`/g, '$1') // Remove inline code markers
-						.replace(/```[\s\S]*?```/g, '') // Remove code blocks
-						.replace(/[-*+]\s+/g, '') // Remove list markers
-						.replace(/\d+\.\s+/g, '') // Remove numbered list markers
-						.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}]/gu, ''); // Remove emojis
-					
-					// Extract only the first paragraph (split by double newlines or single newlines)
-					// const firstParagraph = cleanedContent.split(/\n\n|\n/)[0];
-					
-					speakAudio(cleanedContent, clientSettings.speakItemsVoice);
+					// Speak the response if speakItems is enabled
+					if (clientSettings.llmSpeakResponse) {
+						speakAudio(
+							cleanLlmContentForSpeech(content),
+							clientSettings.speakItemsVoice,
+						);
 				}
 			} else {
 				setError('No response received from LLM server.');
@@ -695,7 +327,11 @@ export default function LocalLLM() {
 		}
 	};
 
-	const currentSignature = buildSignature();
+	const currentSignature = buildMonitoringSignature(
+		hostStateArray,
+		serviceStateArray,
+		clientSettings,
+	);
 	const prevSignatureRef = useRef<string | null>(null);
 	const debounceTimerRef = useRef<number | null>(null);
 	const initialLoadTimerRef = useRef<number | null>(null);

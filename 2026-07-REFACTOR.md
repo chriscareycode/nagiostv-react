@@ -116,6 +116,7 @@ This document records the findings from the July 2026 read-only project review. 
   - [x] Extract `SettingsLoad` version-check scheduling and request lifecycle into a tested hook.
   - [x] Extract `HistoryChart` alert aggregation and layout calculations into pure, tested helpers.
   - [x] Extract `Demo` scenario transitions and timer orchestration into tested helpers and a hook.
+  - [x] Extract `LocalLLM` prompt construction, monitoring serialization, and response parsing into tested helpers.
 
 - [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.
