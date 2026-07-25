@@ -22,7 +22,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { hostgroupAtom } from '../../atoms/hostgroupAtom';
 import './HostGroupFilter.css';
-import { saveLocalStorage } from 'helpers/nagiostv';
+import { saveClientSettings } from 'helpers/persistence';
 import { useQueryParams } from '../../hooks/useQueryParams';
 
 // http://pi4.local/nagios/jsonquery.html
@@ -42,7 +42,7 @@ const HostGroupFilter = () => {
 		const value = e.target.value;
 		
 		setClientSettings(curr => {
-			saveLocalStorage('HostGroup Filter', {
+			saveClientSettings({
 				...curr,
 				hostgroupFilter: value
 			});

@@ -34,6 +34,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faTools, faUpload, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from '../../types/settings';
 import { clientSettingsAtom } from 'atoms/settingsState';
+import { readSkipVersion, saveSkipVersion } from '../../helpers/persistence';
 
 interface BottomPanelProps {
 	latestVersion: number;
@@ -138,23 +139,12 @@ const BottomPanel = ({
 		clickedUpdate(e);
 	};
 
-	const loadSkipVersion = () => {
-		const skipVersionString = localStorage.getItem('skipVersion');
-		if (skipVersionString) {
-			try {
-				const skipVersionObj = JSON.parse(skipVersionString);
-				if (skipVersionObj) {
-					//console.log('Loaded skipVersion', skipVersionObj);
-					setSkipVersion({
-						version: skipVersionObj.version,
-						version_string: skipVersionObj.version_string,
-					});
-				}
-			} catch (e) {
-				console.log('Could not parse the skipVersion');
-			}
+	const loadSkipVersion = useCallback(() => {
+		const persistedSkipVersion = readSkipVersion();
+		if (persistedSkipVersion) {
+			setSkipVersion(persistedSkipVersion);
 		}
-	};
+	}, [setSkipVersion]);
 
 	const clickedSkipVersion = (e: React.MouseEvent<HTMLElement>) => {
 		e.preventDefault();
@@ -163,7 +153,7 @@ const BottomPanel = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
+		saveSkipVersion(skipVersionObj);
 		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
@@ -172,7 +162,7 @@ const BottomPanel = ({
 
 	useEffect(() => {
 		loadSkipVersion();
-	}, []);
+	}, [loadSkipVersion]);
 
 	const isUpdateAvailable = latestVersion > currentVersion;
 

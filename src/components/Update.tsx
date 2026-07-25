@@ -21,6 +21,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
+import { removeSkipVersion, saveSkipVersion } from '../helpers/persistence';
 // React Router
 import { Link } from "react-router-dom";
 import axios from 'axios';
@@ -291,7 +292,7 @@ const Update = ({
 			version: latestVersion,
 			version_string: latestVersionString
 		};
-		localStorage.setItem('skipVersion', JSON.stringify(skipVersionObj));
+		saveSkipVersion(skipVersionObj);
 		setSkipVersion({
 			version: latestVersion,
 			version_string: latestVersionString,
@@ -299,7 +300,7 @@ const Update = ({
 	};
 
 	const clearSkipVersion = () => {
-		localStorage.removeItem('skipVersion');
+		removeSkipVersion();
 		setSkipVersion({
 			version: 0,
 			version_string: '',

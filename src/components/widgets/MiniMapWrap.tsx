@@ -7,7 +7,7 @@ import MiniMapMozilla from '../widgets/MiniMapMozilla';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from 'atoms/settingsState';
 import "allotment/dist/style.css";
-import { saveLocalStorage } from 'helpers/nagiostv';
+import { saveClientSettings } from 'helpers/persistence';
 
 /**
  * Detect if the browser is Firefox and supports -moz-element()
@@ -46,7 +46,7 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 						...curr,
 						miniMapWidth: newMiniMapWidth,
 					};
-					saveLocalStorage('MiniMap', o);
+					saveClientSettings(o);
 					return o;
 				});
 			}

@@ -37,6 +37,7 @@ import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icon
 import { ClientSettings } from 'types/settings';
 import Doomguy from './Doomguy/Doomguy';
 import LlmModelSelector from './settings/LlmModelSelector';
+import { removeClientSettings, saveClientSettings } from '../helpers/persistence';
 
 const Settings = () => {
 
@@ -98,9 +99,7 @@ const Settings = () => {
 	const saveLocalSettings = () => {
 
 		if (clientSettingsTemp) {
-			// Save to localStorage
-			localStorage.setItem('settings', JSON.stringify(clientSettingsTemp));
-			console.log('TEST saved local settings', clientSettingsTemp);
+			saveClientSettings(clientSettingsTemp);
 
 			setIsDirty(false);
 			setClientSettings(clientSettingsTemp); // TODO: is this good, or do I need to wrap it with spread? I think it's ok
@@ -114,12 +113,11 @@ const Settings = () => {
 	};
 
 	const deleteLocalSettings = () => {
-		localStorage.removeItem('settings');
+		removeClientSettings();
 
 		// show a message then clear the message
 		setSaveMessage('Local settings deleted. Refresh your browser.');
 
-		console.log('Local settings deleted.');
 	};
 
 	// handle state changes for all the widgets on this page

@@ -82,10 +82,11 @@ This document records the findings from the July 2026 read-only project review. 
   - It currently copies the host/service arrays but mutates the objects inside those arrays.
   - Create new objects only for entries whose `next_check` changes.
 
-- [ ] Centralize persisted settings access.
+- [x] Centralize persisted settings access.
   - Consolidate repeated `localStorage` parsing, serialization, error handling, and fallback behavior.
   - Define typed storage keys and schemas for settings, skipped versions, and version-check timestamps.
   - Remove temporary/debug logging from normal save paths.
+  - Added validated localStorage access, cookie fallback and migration, and tests for malformed, blocked, and legacy storage scenarios.
 
 ## Priority 4: Reduce duplication and component size
 

@@ -25,7 +25,7 @@ import './ServiceFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
 import SortOrderSelect from '../widgets/SortOrderSelect';
-import { saveLocalStorage } from 'helpers/nagiostv';
+import { saveClientSettings } from 'helpers/persistence';
 import { ChangeEvent } from 'react';
 import { useQueryParams } from '../../hooks/useQueryParams';
 
@@ -66,7 +66,7 @@ const ServiceFilters = () => {
 		}
 
 		setClientSettings(settings => {
-			saveLocalStorage('Service Filters', {
+			saveClientSettings({
 				...settings,
 				[propName]: e.target.value
 			});
@@ -94,7 +94,7 @@ const ServiceFilters = () => {
 
 		// Save to localStorage and to Recoil state
 		setClientSettings(settings => {
-			saveLocalStorage('Service Filters', {
+			saveClientSettings({
 				...settings,
 				[propName]: val
 			});

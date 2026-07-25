@@ -25,7 +25,7 @@ import './HostFilters.css';
 import { translate } from '../../helpers/language';
 import FilterCheckbox from '../widgets/FilterCheckbox';
 import SortOrderSelect from '../widgets/SortOrderSelect';
-import { saveLocalStorage } from 'helpers/nagiostv';
+import { saveClientSettings } from 'helpers/persistence';
 import { ChangeEvent } from 'react';
 import { useQueryParams } from '../../hooks/useQueryParams';
 
@@ -60,7 +60,7 @@ const HostFilters = () => {
 		}
 
 		setClientSettings(settings => {
-			saveLocalStorage('Host Filters', {
+			saveClientSettings({
 				...settings,
 				[propName]: e.target.value
 			});
@@ -85,7 +85,7 @@ const HostFilters = () => {
 
 		// Save to localStorage and to Recoil state
 		setClientSettings(settings => {
-			saveLocalStorage('Host Filters', {
+			saveClientSettings({
 				...settings,
 				[propName]: val
 			});

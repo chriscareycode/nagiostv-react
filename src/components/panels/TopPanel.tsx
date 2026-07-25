@@ -25,7 +25,7 @@ import { Tooltip } from 'react-tooltip';
 // Import Widgets
 import Clock from '../widgets/Clock';
 import CustomLogo from '../widgets/CustomLogo';
-import { saveLocalStorage } from 'helpers/nagiostv';
+import { saveClientSettings } from 'helpers/persistence';
 import { cancelSpeaking } from 'helpers/audio';
 
 // Import icons
@@ -73,7 +73,7 @@ const TopPanel = () => {
 				...curr,
 				[settingName]: !curr[settingName]
 			};
-			saveLocalStorage('TopPanel', s);
+			saveClientSettings(s);
 			return s;
 		});
 	};
