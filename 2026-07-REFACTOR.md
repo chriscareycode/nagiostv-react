@@ -175,3 +175,8 @@ No implementation work should be considered complete until the relevant behavior
 - [x] Resolve the remaining React Hook warnings without suppressing lint rules.
   - Stabilized Doomguy animation data and minimap resize callbacks.
   - Fixed automatic-scroll memoization so speed and wait-setting changes take effect.
+
+- [x] Lazy-load optional heavy dashboard features.
+  - Deferred the minimap stack until enabled and Highcharts until alert history charts render.
+  - Reduced initial JavaScript from 1,182.15 kB / 395.21 kB gzip to 745.72 kB / 244.49 kB gzip.
+  - Moved 437.00 kB / 151.81 kB gzip into optional minimap and history-chart chunks.

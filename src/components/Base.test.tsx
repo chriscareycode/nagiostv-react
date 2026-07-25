@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { Provider, createStore } from 'jotai';
 import { describe, expect, it, vi } from 'vitest';
+import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import Base from './Base';
 
 vi.mock('./SettingsLoad', () => ({ default: () => null }));
@@ -12,10 +14,34 @@ vi.mock('./panels/TopPanel', () => ({ default: () => null }));
 vi.mock('./panels/LeftPanel', () => ({ default: () => null }));
 vi.mock('./panels/BottomPanel', () => ({ default: () => null }));
 vi.mock('./widgets/MiniMapWrap', () => ({
-	default: ({ children }: { children: React.ReactNode }) => children,
+	default: ({ children }: { children: React.ReactNode }) => (
+		<div>
+			<span>Deferred minimap loaded</span>
+			{children}
+		</div>
+	),
 }));
 vi.mock('./widgets/ScrollToTop', () => ({ default: () => null }));
 vi.mock('./widgets/ScrollToSection', () => ({ default: () => null }));
+
+const renderBase = (path: string, showMiniMap = false) => {
+	const store = createStore();
+	store.set(bigStateAtom, {
+		...store.get(bigStateAtom),
+		isDoneLoading: true,
+	});
+	store.set(clientSettingsAtom, {
+		...clientSettingsInitial,
+		showMiniMap,
+	});
+	window.location.hash = `#${path}`;
+
+	return render(
+		<Provider store={store}>
+			<Base />
+		</Provider>,
+	);
+};
 
 describe('Base routes', () => {
 	it.each([
@@ -23,10 +49,15 @@ describe('Base routes', () => {
 		['/update', 'Update route content'],
 		['/help', 'Help route content'],
 	])('loads the %s route asynchronously', async (path, content) => {
-		window.location.hash = `#${path}`;
-
-		render(<Base />);
+		renderBase(path);
 
 		expect(await screen.findByText(content)).toBeInTheDocument();
+	});
+
+	it('loads the minimap wrapper only when enabled', async () => {
+		renderBase('/', true);
+
+		expect(await screen.findByText('Deferred minimap loaded')).toBeInTheDocument();
+		expect(screen.getByText('Dashboard route content')).toBeInTheDocument();
 	});
 });

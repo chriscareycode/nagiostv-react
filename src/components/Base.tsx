@@ -49,13 +49,13 @@ import ScrollToSection from './widgets/ScrollToSection';
 import './Base.css';
 import './animation.css';
 
-import MiniMapWrap from './widgets/MiniMapWrap';
 import SettingsFakeData from './SettingsFakeData';
 import { BigState, ClientSettings } from 'types/settings';
 import { AnimatePresence, motion } from 'motion/react';
 import { lazy, ReactNode, Suspense } from 'react';
 
 const Help = lazy(() => import('./Help'));
+const MiniMapWrap = lazy(() => import('./widgets/MiniMapWrap'));
 const Settings = lazy(() => import('./Settings'));
 const Update = lazy(() => import('./Update'));
 
@@ -197,9 +197,17 @@ const AnimatedRoutes = () => {
 
 			{/* minimap enabled, mainContent gets wrapped */}
 			{clientSettings.showMiniMap && (
-			<MiniMapWrap>
-				{mainContent}
-			</MiniMapWrap>
+				<Suspense
+					fallback={(
+						<div className="settings-not-loaded" role="status">
+							Loading minimap…
+						</div>
+					)}
+				>
+					<MiniMapWrap>
+						{mainContent}
+					</MiniMapWrap>
+				</Suspense>
 			)}
 
 			{/* minimap disabled */}

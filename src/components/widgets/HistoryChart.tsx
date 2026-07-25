@@ -31,7 +31,7 @@ import {
 
 const debug = false;
 
-interface HistoryChartProps {
+export interface HistoryChartProps {
 	alertlistLastUpdate: number;
 	alertlist: Alert[];
 	hideAlertSoft: boolean;

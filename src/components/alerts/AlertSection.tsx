@@ -31,7 +31,7 @@ import PollingSpinner from '../widgets/PollingSpinner';
 import MonitoringError from '../monitoring/MonitoringError';
 import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
-import HistoryChart from '../widgets/HistoryChart';
+import DeferredHistoryChart from '../widgets/DeferredHistoryChart';
 
 import _ from 'lodash';
 
@@ -309,7 +309,7 @@ const AlertSection = () => {
 						</span>
 					</div>}
 
-					<HistoryChart
+					<DeferredHistoryChart
 						alertlist={alertlistHours}
 						alertlistLastUpdate={alertState.lastUpdate}
 						groupBy="hour"
@@ -341,7 +341,7 @@ const AlertSection = () => {
 					</div>}
 
 					{/* history chart */}
-					<HistoryChart
+					<DeferredHistoryChart
 						alertlist={alertlist}
 						alertlistLastUpdate={alertState.lastUpdate}
 						groupBy="day"
