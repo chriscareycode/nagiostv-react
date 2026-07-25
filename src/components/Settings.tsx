@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import './Settings.css';
 
 import axios from 'axios';
-import { getVoices, playSoundEffectDebounced, speakAudio } from '../helpers/audio';
+import { getVoices } from '../helpers/audio';
 // clipboard
 import * as clipboard from "clipboard-polyfill/text";
 // icons
@@ -40,6 +40,7 @@ import DataSourceSettings from './settings/DataSourceSettings';
 import DateRegionSettings from './settings/DateRegionSettings';
 import DisplaySettings from './settings/DisplaySettings';
 import AlertHistorySettings from './settings/AlertHistorySettings';
+import AudioVisualSettings from './settings/AudioVisualSettings';
 import {
 	SettingInputType,
 	SettingsChangeHandler,
@@ -137,7 +138,7 @@ const Settings = () => {
 		let val: boolean | number | string | null = '';
 		if (dataType === 'boolean') { val = (event.target.value === 'true'); }
 		else if (dataType === 'number') {
-			val = parseInt(event.target.value, 10);
+			val = Number.parseFloat(event.target.value);
 		} else {
 			val = event.target.value;
 		}
@@ -184,30 +185,6 @@ const Settings = () => {
 	const copySettingsToClipboard = () => {
 		clipboard.writeText(JSON.stringify(clientSettingsTemp, null, 2));
 	};
-
-	const playCritical = () => {
-		playSoundEffectDebounced('service', 'critical', clientSettingsTemp);
-	}
-	const playWarning = () => {
-		playSoundEffectDebounced('service', 'warning', clientSettingsTemp);
-	}
-	const playOk = () => {
-		playSoundEffectDebounced('service', 'ok', clientSettingsTemp);
-	}
-	const playVoice = () => {
-		const voice = clientSettingsTemp?.speakItemsVoice;
-		if (voice) {
-			speakAudio('Naagios TV is cool', voice);
-		}
-	}
-
-	// Voice options are populated from state (loaded asynchronously in useEffect)
-	const voiceOptions = voices.map((voice, i) => {
-		return (
-			<option key={'voice-' + i} value={voice.name}>{voice.name} ({voice.lang})</option>
-		);
-	});
-	voiceOptions.unshift(<option key={'voice-default'} value={''}>DEFAULT</option>);
 
 	return (
 		<div className={`Settings`}>
@@ -287,146 +264,12 @@ const Settings = () => {
 
 					<AlertHistorySettings settings={clientSettingsTemp} onChange={handleChange} />
 
-					{/* fun */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Audio and Visual</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th>
-									Dashboard Font Size
-								</th>
-								<td>
-									<input
-										type="range"
-										min="0.5"
-										max="4"
-										step="0.1"
-										value={parseFloat(clientSettingsTemp.fontSizeEm)}
-										onChange={(e) => {
-											const val = `${e.target.value}em`;
-											setClientSettingsTemp(curr => ({
-												...curr,
-												fontSizeEm: val
-											}));
-											setIsDirty(true);
-										}}
-										style={{ width: '200px', marginRight: '10px' }}
-									/>
-									<div style={{ fontSize: clientSettingsTemp.fontSizeEm }}>Example text at {clientSettingsTemp.fontSizeEm}</div>
-								</td>
-							</tr>
-
-							<tr>
-								<th>Sound Effects:</th>
-								<td>
-									<select value={clientSettingsTemp.playSoundEffects.toString()} onChange={handleChange('playSoundEffects', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-								</td>
-							</tr>
-							{clientSettingsTemp.playSoundEffects && <tr>
-								<th>CRITICAL sound:</th>
-								<td>
-									<input type="text" value={clientSettingsTemp.soundEffectCritical} onChange={handleChange('soundEffectCritical', 'string')} />
-									<button className="SettingsTestButton" onClick={playCritical}>Test</button>
-								</td>
-							</tr>}
-							{clientSettingsTemp.playSoundEffects && <tr>
-								<th>WARNING sound:</th>
-								<td>
-									<input type="text" value={clientSettingsTemp.soundEffectWarning} onChange={handleChange('soundEffectWarning', 'string')} />
-									<button className="SettingsTestButton" onClick={playWarning}>Test</button>
-								</td>
-							</tr>}
-							{clientSettingsTemp.playSoundEffects && <tr>
-								<th>OK sound:</th>
-								<td>
-									<input type="text" value={clientSettingsTemp.soundEffectOk} onChange={handleChange('soundEffectOk', 'string')} />
-									<button className="SettingsTestButton" onClick={playOk}>Test</button>
-								</td>
-							</tr>}
-							{clientSettingsTemp.playSoundEffects && <tr>
-								<th></th>
-								<td>
-									<div style={{ margin: '5px 0', fontSize: '0.8em' }}>* You can have multiple sound files for each state, and it will randomly choose one from the list. Add a semicolon between sounds like "http://example.com/sound-1.mp3;http://example.com/sound-2.mp3"</div>
-								</td>
-							</tr>}
-							<tr>
-								<th>Speak Items:</th>
-								<td>
-									<select value={clientSettingsTemp.speakItems.toString()} onChange={handleChange('speakItems', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Speaking Voice:</th>
-								<td>
-									<select value={clientSettingsTemp.speakItemsVoice} onChange={handleChange('speakItemsVoice', 'string')}>
-										{voiceOptions}
-									</select>
-									<button className="SettingsTestButton" onClick={playVoice}>Test Speaking Voice</button>
-								</td>
-							</tr>
-							<tr>
-								<th>Animated progress bar for "Next Check In":</th>
-								<td>
-									<select value={clientSettingsTemp.showNextCheckInProgressBar.toString()} onChange={handleChange('showNextCheckInProgressBar', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-									&nbsp;
-									Uses more CPU in the browser (with recent GPU acceleration)
-								</td>
-							</tr>
-							<tr>
-								<th>❤️ Emojis:</th>
-								<td>
-									<select value={clientSettingsTemp.showEmoji.toString()} onChange={handleChange('showEmoji', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Automatic Scroll:</th>
-								<td>
-									<select value={clientSettingsTemp.automaticScroll.toString()} onChange={handleChange('automaticScroll', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-									&nbsp;
-									When there are many down hosts or services this will scroll the screen through all the items
-								</td>
-							</tr>
-							{clientSettingsTemp.automaticScroll && (
-								<tr>
-									<th>Automatic Scroll Time Multiplier:</th>
-									<td>
-										<input type="number" min="0.1" max="10" value={clientSettingsTemp.automaticScrollTimeMultiplier} onChange={handleChange('automaticScrollTimeMultiplier', 'number')} />
-										&nbsp;
-										Slow down the scroll routine by multiplying the animation time 2 = 2x, 2.5 = 2.5x, 3 = 3x. Higher number is slower.
-									</td>
-								</tr>
-							)}
-							{clientSettingsTemp.automaticScroll && (
-								<tr>
-									<th>Automatic Scroll Wait Time:</th>
-									<td>
-										<input type="number" min="0" max="20" value={clientSettingsTemp.automaticScrollWaitSeconds} onChange={handleChange('automaticScrollWaitSeconds', 'number')} />
-										&nbsp;
-										Control how long the page waits after it reaches it's new location
-									</td>
-								</tr>
-							)}
-						</tbody>
-					</table>
+					<AudioVisualSettings
+						settings={clientSettingsTemp}
+						voices={voices}
+						onChange={handleChange}
+						onSetValue={setSettingValue}
+					/>
 
 					{/* top and bottom menu */}
 					<table className="SettingsTable">
