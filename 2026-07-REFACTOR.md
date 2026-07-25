@@ -169,3 +169,9 @@ At the time of review:
 - `npm ls vite vitest @vitejs/plugin-react --depth=0` reported installed Vite/plugin-react versions that did not satisfy `package.json`.
 
 No implementation work should be considered complete until the relevant behavior is covered by tests and the applicable validation commands pass.
+
+## Follow-up cleanup
+
+- [x] Resolve the remaining React Hook warnings without suppressing lint rules.
+  - Stabilized Doomguy animation data and minimap resize callbacks.
+  - Fixed automatic-scroll memoization so speed and wait-setting changes take effect.

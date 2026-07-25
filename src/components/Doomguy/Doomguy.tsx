@@ -36,6 +36,13 @@ import {
 import './Doomguy.css';
 // @ts-ignore-next-line
 import doomguyImage from './Doomguy.png';
+
+const smileClasses = ['doomguy20', 'doomguy21', 'doomguy22', 'doomguy23'];
+const happyClasses = ['doomguy1', 'doomguy6', 'doomguy11'];
+const angryClasses = ['doomguy2', 'doomguy3', 'doomguy7', 'doomguy8', 'doomguy12', 'doomguy13', 'doomguy16', 'doomguy17', 'doomguy18', 'doomguy19'];
+const bloodyClasses = ['doomguy4', 'doomguy5', 'doomguy9', 'doomguy10', 'doomguy14', 'doomguy15', 'doomguy24', 'doomguy25'];
+const thinkingAnimation = [6, 6, 6, 6, 11, 11, 11, 6, 6, 6, 6, 11, 11, 11, 11, 6, 6, 6, 6, 11, 11];
+
 /*
  Doomguy will be happy at 0 services down
  Doomguy will be angry at < 4 services down
@@ -47,14 +54,6 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	style?: React.CSSProperties,
 	showBalloon?: boolean
 }) => {
-
-	const smileClasses = ['doomguy20', 'doomguy21', 'doomguy22', 'doomguy23'];
-	const happyClasses = ['doomguy1', 'doomguy6', 'doomguy11'];
-	const angryClasses = ['doomguy2', 'doomguy3', 'doomguy7', 'doomguy8', 'doomguy12', 'doomguy13', 'doomguy16', 'doomguy17', 'doomguy18', 'doomguy19'];
-	const bloodyClasses = ['doomguy4', 'doomguy5', 'doomguy9', 'doomguy10', 'doomguy14', 'doomguy15', 'doomguy24', 'doomguy25'];
-	const thinkingClasses = ['doomguy1', 'doomguy6', 'doomguy7', 'doomguy8', 'doomguy11', 'doomguy12'];
-	const thinkingAnimation = [6,6,6,6,11,11,11,6,6,6,6,11,11,11,11,6,6,6,6,11,11];
-
 	const clientSettings = useAtomValue(clientSettingsAtom);
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);

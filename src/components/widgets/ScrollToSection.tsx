@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { ClientSettings } from 'types/settings';
 
 const debug = false;
@@ -15,7 +15,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 	const getScrollAreaElement = () => document.querySelector<HTMLElement>(scrollAreaSelector);
 
-	const smoothScrollTo = (element: HTMLElement, to: number, duration: number) => {
+	const smoothScrollTo = useCallback((element: HTMLElement, to: number, duration: number) => {
 		if (animationFrameIdRef.current) {
 			cancelAnimationFrame(animationFrameIdRef.current);
 		}
@@ -47,9 +47,9 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		};
 
 		animationFrameIdRef.current = requestAnimationFrame(animateScroll);
-	};
+	}, []);
 
-	const scrollToNextSection = (currentSection: string, animateSpeed: number) => {
+	const scrollToNextSection = useCallback((currentSection: string, animateSpeed: number) => {
 		const scrollAreaElement = getScrollAreaElement();
 		if (!scrollAreaElement) return;
 
@@ -122,15 +122,15 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 				smoothScrollTo(scrollAreaElement, sectionEl.offsetTop - window.innerHeight + topBuffer, animateSpeed);
 			}
 		}
-	};
+	}, [smoothScrollTo]);
 
-	const stopAllAnimation = () => {
+	const stopAllAnimation = useCallback(() => {
 		if (debug) console.log('ScrollToSection() stopAllAnimation');
 		if (animationFrameIdRef.current) {
 			cancelAnimationFrame(animationFrameIdRef.current);
 			animationFrameIdRef.current = null;
 		}
-	};
+	}, []);
 
 	const [currentIndex, setCurrentIndex] = useState(1);
 
@@ -139,7 +139,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		return () => {
 			stopAllAnimation();
 		};
-	}, []);
+	}, [stopAllAnimation]);
 
 	useEffect(() => {
 		if (debug) console.log('ScrollToSection() useEffect() trigger. Multiplier', clientSettings.automaticScrollTimeMultiplier);
@@ -256,7 +256,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		return () => {
 			clearTimeout(handle);
 		};
-	}, [clientSettings, currentIndex, setCurrentIndex]);
+	}, [clientSettings, currentIndex, scrollToNextSection]);
 
 	return (
 		<div className="ScrollToSection">
@@ -265,11 +265,13 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
   
 };
 
-function arePropsEqual(prev: ScrollToSectionProps, next: ScrollToSectionProps) {
+export function arePropsEqual(prev: ScrollToSectionProps, next: ScrollToSectionProps) {
   if (debug) console.log('ScrollToSection() arePropsEqual()', prev, next);
 	const same = prev.clientSettings.hideServiceSection === next.clientSettings.hideServiceSection &&
 		prev.clientSettings.hideHostSection === next.clientSettings.hideHostSection &&
-		prev.clientSettings.hideHistory === next.clientSettings.hideHistory;
+		prev.clientSettings.hideHistory === next.clientSettings.hideHistory &&
+		prev.clientSettings.automaticScrollTimeMultiplier === next.clientSettings.automaticScrollTimeMultiplier &&
+		prev.clientSettings.automaticScrollWaitSeconds === next.clientSettings.automaticScrollWaitSeconds;
 
 	if (same === false) {
 		if (debug) console.log('ScrollToSection() arePropsEqual() re-rendering');

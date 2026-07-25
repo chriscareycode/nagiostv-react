@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Allotment, LayoutPriority } from "allotment";
 import { debounce } from 'lodash';
 import { useLocation } from "react-router-dom";
@@ -30,7 +30,7 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
-	const onResizeMiniMap = (e: number[]) => {
+	const onResizeMiniMap = useCallback((e: number[]) => {
 		//console.log('onResizeMiniMap', e);
 		if (!bigState.isDoneLoading) {
 			return undefined;
@@ -38,24 +38,29 @@ const MiniMapWrap = ({ children }: MiniMapWrapProps) => {
 		// Gets passed an array of [panel1width, panel2width]
 		if (e && e.length === 2 && e[1] >= 0) {
 			const newMiniMapWidth = Math.trunc(e[1]);
-			if (newMiniMapWidth !== clientSettings.miniMapWidth) {
-
-				setClientSettings(curr => {
-					//console.log('setting miniMapWidth to', w);
-					const o = {
-						...curr,
-						miniMapWidth: newMiniMapWidth,
-					};
-					saveClientSettings(o);
-					return o;
-				});
-			}
+			setClientSettings(curr => {
+				if (newMiniMapWidth === curr.miniMapWidth) {
+					return curr;
+				}
+				const updatedSettings = {
+					...curr,
+					miniMapWidth: newMiniMapWidth,
+				};
+				saveClientSettings(updatedSettings);
+				return updatedSettings;
+			});
 		}
 		return undefined;
-	};
+	}, [bigState.isDoneLoading, setClientSettings]);
 
-	// Wrap debounce in useMemo to prevent memory leaks and ensure proper cleanup
-	const debouncedResizeMiniMap = useMemo(() => debounce((e: number[]) => onResizeMiniMap(e), 1000), [bigState.isDoneLoading, clientSettings.miniMapWidth]);
+	const debouncedResizeMiniMap = useMemo(
+		() => debounce(onResizeMiniMap, 1000),
+		[onResizeMiniMap],
+	);
+
+	useEffect(() => {
+		return () => debouncedResizeMiniMap.cancel();
+	}, [debouncedResizeMiniMap]);
 
 	// React router location
 	const location = useLocation();
