@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { memo } from 'react';
 import './HowMany.css';
 
 interface HowManyProps {
@@ -24,36 +24,17 @@ interface HowManyProps {
 	howManyDown: number;
 }
 
-class HowMany extends Component<HowManyProps> {
-
-	shouldComponentUpdate(nextProps: HowManyProps) {
-		//console.log('shouldComponentUpdate', nextProps, nextState);
-		if (nextProps.howMany !== this.props.howMany || nextProps.howManyDown !== this.props.howManyDown) {
-			return true;
-		} else {
-			return false;
+const HowMany = memo(({ howMany, howManyDown }: HowManyProps) => {
+	const res = [...Array(howMany)].map((_, i) => {
+		if (i < howManyDown) {
+			return <span key={i} className="HowManyItem HowManyItemProblem"></span>;
 		}
-	}
+		return <span key={i} className="HowManyItem"></span>;
+	});
 
-	render() {
+	return <>{res}</>;
+});
 
-		const howMany = this.props.howMany;
-		const howManyDown = this.props.howManyDown;
-
-		const res = [...Array(howMany)].map((_, i) => {
-			if (i < howManyDown) {
-				return <span key={i} className="HowManyItem HowManyItemProblem"></span>;
-			} else {
-				return <span key={i} className="HowManyItem"></span>;
-			}
-		});
-
-		return (
-			<>
-				{res}
-			</>
-		);
-	}
-}
+HowMany.displayName = 'HowMany';
 
 export default HowMany;

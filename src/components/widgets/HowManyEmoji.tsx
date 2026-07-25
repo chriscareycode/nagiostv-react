@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { memo, useEffect, useState } from 'react';
 import './HowManyEmoji.css';
 
 interface HowManyEmojiProps {
@@ -25,97 +25,57 @@ interface HowManyEmojiProps {
 	howManyCritical: number;
 }
 
-interface HowManyEmojiState {
+interface EmojiSelection {
 	redEmoji: string;
 	yellowEmoji: string;
 	greenEmoji: string;
 }
 
-class HowManyEmoji extends Component<HowManyEmojiProps, HowManyEmojiState> {
+const redEmojis = ['😡', '🌺', '💋', '🐙', '🌹', '🍉', '🍓', '🍟', '🎟', '🚒', '🥵', '🤬', '👹', '👺', '💄', '👠', '🐞', '🦑', '🦐', '🦞', '🦀'];
+const yellowEmojis = ['😳', '😲', '🤯', '🥑', '💰', '🧽', '🔑', '⚠️', '🚸', '🔆', '🎗', '☹️', '😢', '🤮'];
+const greenEmojis = ['🍀', '💚', '🥦', '🍏', '♻️', '🐢', '🐸', '🔋', '📗', '🌲', '🌴', '🥒', '🎾'];
 
-	shouldComponentUpdate(nextProps: HowManyEmojiProps, nextState: HowManyEmojiState) {
-		//console.log('HowManyEmoji shouldComponentUpdate', nextProps, nextState);
-		if (
-			nextProps.howMany !== this.props.howMany ||
-			nextProps.howManyWarning !== this.props.howManyWarning ||
-			nextProps.howManyCritical !== this.props.howManyCritical ||
-			nextState.redEmoji !== this.state.redEmoji ||
-			nextState.yellowEmoji !== this.state.yellowEmoji ||
-			nextState.greenEmoji !== this.state.greenEmoji
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+const selectEmojis = (): EmojiSelection => ({
+	redEmoji: redEmojis[Math.floor(Math.random() * redEmojis.length)],
+	yellowEmoji: yellowEmojis[Math.floor(Math.random() * yellowEmojis.length)],
+	greenEmoji: greenEmojis[Math.floor(Math.random() * greenEmojis.length)]
+});
 
-	redEmojis = ['😡', '🌺', '💋', '🐙', '🌹', '🍉', '🍓', '🍟', '🎟', '🚒', '🥵', '🤬', '👹', '👺', '💄', '👠', '🐞', '🦑', '🦐', '🦞', '🦀'];
-	yellowEmojis = ['😳', '😲', '🤯', '🥑', '💰', '🧽', '🔑', '⚠️', '🚸', '🔆', '🎗', '☹️', '😢', '🤮'];
-	greenEmojis = ['🍀', '💚', '🥦', '🍏', '♻️', '🐢', '🐸', '🔋', '📗', '🌲', '🌴', '🥒', '🎾'];
-
-	state = {
+const HowManyEmoji = memo(({ howManyWarning, howManyCritical }: HowManyEmojiProps) => {
+	const [emojis, setEmojis] = useState<EmojiSelection>({
 		redEmoji: '',
 		yellowEmoji: '',
 		greenEmoji: ''
-	};
+	});
 
-	intervalHandle: ReturnType<typeof setInterval> | null = null;
-	initialTimeoutHandle: ReturnType<typeof setTimeout> | null = null;
-
-	componentDidMount() {
-
-		this.initialTimeoutHandle = setTimeout(() => {
-			this.selectEmojis();
+	useEffect(() => {
+		const initialTimeoutHandle = setTimeout(() => {
+			setEmojis(selectEmojis());
 		}, 100);
 
 		// Randomize the emojis on some interval
 		//const interv = 60 * 60 * 1000; // hour
 		const interv = 60 * 1000; // 60 seconds
-		this.intervalHandle = setInterval(() => {
-			this.selectEmojis();
+		const intervalHandle = setInterval(() => {
+			setEmojis(selectEmojis());
 		}, interv);
-	}
 
-	componentWillUnmount() {
-		if (this.initialTimeoutHandle) {
-			clearTimeout(this.initialTimeoutHandle);
-		}
-		if (this.intervalHandle) {
-			clearInterval(this.intervalHandle);
-		}
-	}
+		return () => {
+			clearTimeout(initialTimeoutHandle);
+			clearInterval(intervalHandle);
+		};
+	}, []);
 
-	selectEmojis() {
-		const redEmoji = this.redEmojis[Math.floor(Math.random() * this.redEmojis.length)];
-		const yellowEmoji = this.yellowEmojis[Math.floor(Math.random() * this.yellowEmojis.length)];
-		const greenEmoji = this.greenEmojis[Math.floor(Math.random() * this.greenEmojis.length)];
+	const criticals = [...Array(howManyCritical)].map((_, i) => (
+		<span key={`crit_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{emojis.redEmoji}</span>
+	));
+	const warnings = [...Array(howManyWarning)].map((_, i) => (
+		<span key={`warn_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{emojis.yellowEmoji}</span>
+	));
 
-		this.setState({
-			redEmoji,
-			yellowEmoji,
-			greenEmoji
-		})
-	}
+	return <span className="HowManyEmojiWrap">{[...criticals, ...warnings]}</span>;
+});
 
-	render() {
-
-		// add criticals
-		const criticals = [...Array(this.props.howManyCritical)].map((item, i) => {
-			return <span key={`crit_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.redEmoji}</span>;
-		});
-		// add warnings
-		const warnings = [...Array(this.props.howManyWarning)].map((item, i) => {
-			return <span key={`warn_${i}`} role="img" aria-label="item down" className="HowManyEmojiItem HowManyEmojiItemProblem">{this.state.yellowEmoji}</span>;
-		});
-		// merge two arrays
-		const res = [...criticals, ...warnings];
-
-		return (
-			<span className="HowManyEmojiWrap">
-				{res}
-			</span>
-		);
-	}
-}
+HowManyEmoji.displayName = 'HowManyEmoji';
 
 export default HowManyEmoji;

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { memo } from 'react';
 import { ClientSettings } from 'types/settings';
 import './CustomLogo.css';
 
@@ -24,24 +24,15 @@ interface CustomLogoProps {
 	settings: ClientSettings;
 }
 
-class CustomLogo extends Component<CustomLogoProps> {
+const CustomLogo = memo(({ settings }: CustomLogoProps) => (
+	<div className="CustomLogo">
+		<img alt="custom logo" src={settings.customLogoUrl} />
+	</div>
+), (previousProps, nextProps) => (
+	previousProps.settings.customLogoEnabled === nextProps.settings.customLogoEnabled
+	&& previousProps.settings.customLogoUrl === nextProps.settings.customLogoUrl
+));
 
-	shouldComponentUpdate(nextProps: CustomLogoProps) {
-		//console.log('shouldComponentUpdate', nextProps);
-		if (nextProps.settings.customLogoEnabled !== this.props.settings.customLogoEnabled || nextProps.settings.customLogoUrl !== this.props.settings.customLogoUrl) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	render() {
-		return (
-			<div className="CustomLogo">
-				<img alt="custom logo" src={this.props.settings.customLogoUrl} />
-			</div>
-		);
-	}
-}
+CustomLogo.displayName = 'CustomLogo';
 
 export default CustomLogo;

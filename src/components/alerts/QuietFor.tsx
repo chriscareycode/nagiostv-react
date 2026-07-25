@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { memo } from 'react';
 import { translate } from '../../helpers/language';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,20 +30,7 @@ interface QuietForProps {
 	language: string;
 }
 
-class QuietFor extends Component<QuietForProps> {
-
-	shouldComponentUpdate(nextProps: QuietForProps) {
-		//console.log('shouldComponentUpdate', nextProps, nextState);
-		if (nextProps.nowtime !== this.props.nowtime || nextProps.prevtime !== this.props.prevtime) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	render() {
-
-		const { language } = this.props;
+const QuietFor = memo(({ nowtime, prevtime, language }: QuietForProps) => {
 
 		const quietForText = (date_now: number, date_future: number) => {
 			//var diff = date_now - date_future;
@@ -86,8 +73,8 @@ class QuietFor extends Component<QuietForProps> {
 			return foo;
 		};
 
-		const date_future = this.props.prevtime;
-		const date_now = this.props.nowtime;
+		const date_future = prevtime;
+		const date_now = nowtime;
 		const durationMs = Math.abs(date_future - date_now);
 		const hours = Math.floor(durationMs / (1000 * 60 * 60));
 
@@ -118,10 +105,14 @@ class QuietFor extends Component<QuietForProps> {
 				<span className="QuietForClock"><FontAwesomeIcon icon={faClock} /></span>
 				<span className={`${color}`}>
 				</span>
-				<span className="QuietForText uppercase-first display-inline-block">{translate('quiet', language)}</span> {quietForText(this.props.nowtime, this.props.prevtime)}
+				<span className="QuietForText uppercase-first display-inline-block">{translate('quiet', language)}</span> {quietForText(nowtime, prevtime)}
 			</div>
 		);
-	}
-}
+}, (previousProps, nextProps) => (
+	previousProps.nowtime === nextProps.nowtime
+	&& previousProps.prevtime === nextProps.prevtime
+));
+
+QuietFor.displayName = 'QuietFor';
 
 export default QuietFor;

@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { useEffect, useRef } from 'react';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
@@ -38,79 +38,76 @@ interface HostItemProps {
 	comments: Comment[];
 }
 
-class HostItem extends Component<HostItemProps> {
-
-	componentDidMount() {
-		if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
-		if (this.props.settings.speakItems) { this.doSpeakIntro(); }
-	}
-
-	componentWillUnmount() {
-		if (this.props.settings.playSoundEffects) {
-			playSoundEffectDebounced('host', 'up', this.props.settings);
-		}
-		if (this.props.settings.speakItems) { this.doSpeakOutro(); }
-	}
-
-	doSoundEffect() {
-		const status = nagiosHostStatus(this.props.hostItem.status);
+const doSoundEffect = ({ hostItem, settings }: HostItemProps) => {
+		const status = nagiosHostStatus(hostItem.status);
 		switch (status) {
 			case 'down':
-				playSoundEffectDebounced('host', 'down', this.props.settings);
+				playSoundEffectDebounced('host', 'down', settings);
 				break;
 			case 'unreachable':
-				playSoundEffectDebounced('host', 'unreachable', this.props.settings);
+				playSoundEffectDebounced('host', 'unreachable', settings);
 				break;
 			default:
 				break;
 		}
-	}
+};
 
-	doSpeakIntro() {
-		const { language } = this.props.settings;
-		const voice = this.props.settings.speakItemsVoice;
+const doSpeakIntro = ({ hostItem, settings }: HostItemProps) => {
+		const { language } = settings;
+		const voice = settings.speakItemsVoice;
 
-		let words = translate('host', language) + ' ' + this.props.hostItem.name + ' '
-			+ translate('is', language) + ' ' + translate(nagiosHostStatus(this.props.hostItem.status), language);
+		let words = translate('host', language) + ' ' + hostItem.name + ' '
+			+ translate('is', language) + ' ' + translate(nagiosHostStatus(hostItem.status), language);
 
-		if (this.props.hostItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
-		if (this.props.hostItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
-		if (this.props.hostItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
+		if (hostItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
+		if (hostItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
+		if (hostItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
 
-		//console.log({words});
 		speakAudio(words, voice);
-	}
+};
 
-	doSpeakOutro() {
-		const { language } = this.props.settings;
-		const voice = this.props.settings.speakItemsVoice;
-		const speakWords = translate('host', language) + ' ' + this.props.hostItem.name + ' ' + translate('ok', language);
+const doSpeakOutro = ({ hostItem, settings }: HostItemProps) => {
+		const { language } = settings;
+		const voice = settings.speakItemsVoice;
+		const speakWords = translate('host', language) + ' ' + hostItem.name + ' ' + translate('ok', language);
 
-		//console.log({speakWords});
 		speakAudio(speakWords, voice);
-	}
+};
 
-	openNagiosHostPage = () => {
-		const isDemoMode = this.props.isDemoMode;
+const HostItem = (props: HostItemProps) => {
+	const { settings, hostItem: e, isDemoMode, howManyDown, comments } = props;
+	const initialProps = useRef(props);
+	const latestProps = useRef(props);
+	latestProps.current = props;
+
+	useEffect(() => {
+		const mountedProps = initialProps.current;
+		if (mountedProps.settings.playSoundEffects) { doSoundEffect(mountedProps); }
+		if (mountedProps.settings.speakItems) { doSpeakIntro(mountedProps); }
+
+		return () => {
+			const currentProps = latestProps.current;
+			if (currentProps.settings.playSoundEffects) {
+				playSoundEffectDebounced('host', 'up', currentProps.settings);
+			}
+			if (currentProps.settings.speakItems) { doSpeakOutro(currentProps); }
+		};
+	}, []);
+
+	const openNagiosHostPage = () => {
 		if (isDemoMode) {
 			return;
 		}
-		const e = this.props.hostItem
-		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
 		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${e.name}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
-	}
+	};
 
-	render() {
-
-		const e = this.props.hostItem; // clean this up
 		const isSoft = e.state_type === 0;
-		const { language } = this.props.settings;
+		const { language } = settings;
 		const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
 		const nowTime = new Date().getTime();
-		const howManyDown = this.props.howManyDown;
-
 		// When passive freshold check is done, this is reported as an active check (check_type=0)
 		// So we need another reliable way to determine if this is a stale passive alert.
 		//
@@ -160,7 +157,7 @@ class HostItem extends Component<HostItemProps> {
 
 						<div className="host-item-host-name">{e.name}</div>
 
-						<span className="ml-1.5 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-1.5 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						{/*<span className="alert-item-description">{e.description}</span>*/}
 
@@ -182,8 +179,8 @@ class HostItem extends Component<HostItemProps> {
 					</div>
 
 					{/* comments */}
-					{(this.props.comments && this.props.comments.length > 0) && <div>
-						{this.props.comments.slice().reverse().map((comment, i) => (
+					{(comments && comments.length > 0) && <div>
+						{comments.slice().reverse().map((comment, i) => (
 							<div className="comment" key={i}>
 								{/* Comment: */}
 								<span className="comment-color">({comment.author}): {formatDateTimeAgo(comment.entry_time)} {translate('ago', language)} - {comment.comment_data}</span>
@@ -191,12 +188,11 @@ class HostItem extends Component<HostItemProps> {
 						))}
 					</div>}
 
-					{(nextCheckInTheFuture && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={hostTextClass(e.status)}></Progress>}
+					{(nextCheckInTheFuture && settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={hostTextClass(e.status)}></Progress>}
 
 				</div>
 			</div>
 		);
-	}
-}
+};
 
 export default HostItem;

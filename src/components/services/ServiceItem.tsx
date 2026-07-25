@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Component } from 'react';
+import { useEffect, useRef } from 'react';
 import './ServiceItem.css';
 import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { serviceBorderClass, serviceTextClass } from '../../helpers/colors';
@@ -40,98 +40,92 @@ interface ServiceItemProps {
 	comments: CommentListResponseObject[];
 }
 
-class ServiceItem extends Component<ServiceItemProps> {
-
-	componentDidMount() {
-		if (this.props.settings.playSoundEffects) { this.doSoundEffect(); }
-		if (this.props.settings.speakItems) { this.doSpeakIntro(); }
-	}
-
-	componentWillUnmount() {
-		// Only play sound effects or speak if the component is unmounting due to
-		// the service being resolved (OK), not when navigating away or other cases
-		const isServiceOk = this.props.serviceItem.status === 2; // 2 is the OK status
-		
-		if (this.props.settings.playSoundEffects && isServiceOk) {
-			playSoundEffectDebounced('service', 'ok', this.props.settings);
-		}
-		
-		if (this.props.settings.speakItems && isServiceOk) {
-			this.doSpeakOutro();
-		}
-	}
-
-	doSoundEffect() {
-		const status = nagiosServiceStatus(this.props.serviceItem.status);
+const doSoundEffect = ({ serviceItem, settings }: ServiceItemProps) => {
+		const status = nagiosServiceStatus(serviceItem.status);
 		switch (status) {
 			case 'critical':
-				playSoundEffectDebounced('service', 'critical', this.props.settings);
+				playSoundEffectDebounced('service', 'critical', settings);
 				break;
 			case 'warning':
-				playSoundEffectDebounced('service', 'warning', this.props.settings);
+				playSoundEffectDebounced('service', 'warning', settings);
 				break;
 			default:
 				break;
 		}
-	}
+};
 
-	doSpeakIntro() {
-		const { language } = this.props.settings;
-		const voice = this.props.settings.speakItemsVoice;
+const doSpeakIntro = ({ serviceItem, settings }: ServiceItemProps) => {
+		const { language } = settings;
+		const voice = settings.speakItemsVoice;
 
-		let words = translate('service', language) + ' ' + this.props.serviceItem.description +
-			' ' + translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('is', language) + ' '
-			+ translate(nagiosServiceStatus(this.props.serviceItem.status), language);
+		let words = translate('service', language) + ' ' + serviceItem.description +
+			' ' + translate('on', language) + ' ' + serviceItem.host_name + ' ' + translate('is', language) + ' '
+			+ translate(nagiosServiceStatus(serviceItem.status), language);
 
-		if (this.props.serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
-		if (this.props.serviceItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
-		if (this.props.serviceItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
+		if (serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
+		if (serviceItem.problem_has_been_acknowledged) { words += ' ' + translate('and', language) + ' ' + translate('acked', language); }
+		if (serviceItem.scheduled_downtime_depth > 0) { words += ' ' + translate('and', language) + ' ' + translate('scheduled', language); }
 
-		//console.log({words});
 		speakAudio(words, voice);
-	}
+};
 
-	doSpeakOutro() {
-		const { language } = this.props.settings;
-		const voice = this.props.settings.speakItemsVoice;
-		const speakWords = translate('service', language) + ' ' + this.props.serviceItem.description + ' ' + translate('on', language) + ' ' + this.props.serviceItem.host_name + ' ' + translate('ok', language);
+const doSpeakOutro = ({ serviceItem, settings }: ServiceItemProps) => {
+		const { language } = settings;
+		const voice = settings.speakItemsVoice;
+		const speakWords = translate('service', language) + ' ' + serviceItem.description + ' ' + translate('on', language) + ' ' + serviceItem.host_name + ' ' + translate('ok', language);
 
-		//console.log({speakWords});
 		speakAudio(speakWords, voice);
-	}
+};
 
-	openNagiosHostPage = () => {
-		const isDemoMode = this.props.isDemoMode;
+const ServiceItem = (props: ServiceItemProps) => {
+	const { settings, serviceItem: e, isDemoMode, howManyDown, comments } = props;
+	const initialProps = useRef(props);
+	const latestProps = useRef(props);
+	latestProps.current = props;
+
+	useEffect(() => {
+		const mountedProps = initialProps.current;
+		if (mountedProps.settings.playSoundEffects) { doSoundEffect(mountedProps); }
+		if (mountedProps.settings.speakItems) { doSpeakIntro(mountedProps); }
+
+		return () => {
+			const currentProps = latestProps.current;
+			const isServiceOk = currentProps.serviceItem.status === 2;
+
+			if (currentProps.settings.playSoundEffects && isServiceOk) {
+				playSoundEffectDebounced('service', 'ok', currentProps.settings);
+			}
+			if (currentProps.settings.speakItems && isServiceOk) {
+				doSpeakOutro(currentProps);
+			}
+		};
+	}, []);
+
+	const openNagiosHostPage = () => {
 		if (isDemoMode) {
 			return;
 		}
 
-		const e = this.props.serviceItem
-		let hostName = e.host_name;
+		const hostName = e.host_name;
 		
-		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
 		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${hostName}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
-	}
+	};
 
-	openNagiosServicePage = () => {
-		const isDemoMode = this.props.isDemoMode;
+	const openNagiosServicePage = () => {
 		if (isDemoMode) {
 			return;
 		}
-		const e = this.props.serviceItem
-		const externalLinkBaseUrl = this.props.settings.externalLinkBaseUrl;
+		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
 		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);
 		const win = window.open(url, '_blank');
 		win?.focus();
-	}
+	};
 
-	render() {
-
-		const e = this.props.serviceItem; // clean this up
 		const isSoft = e.state_type === 0;
-		const { language } = this.props.settings;
+		const { language } = settings;
 		const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
 		const nowTime = new Date().getTime();
 
@@ -142,8 +136,6 @@ class ServiceItem extends Component<ServiceItemProps> {
 		// checks_enabled === false
 		const isPassive = e.check_type === 1;
 		const isDown = e.status !== 2;
-
-		const howManyDown = this.props.howManyDown;
 
 		const maxNumberToHideProgress = 40;
 
@@ -186,14 +178,14 @@ class ServiceItem extends Component<ServiceItemProps> {
 
 					<div className="service-item-left-first-line">
 
-						{this.props.settings.showEmoji && e.status === 16 && <span className="mr-1" role="img" aria-label="critical">🔥</span>}
-						{this.props.settings.showEmoji && e.status === 4 && <span className="mr-1" role="img" aria-label="warning">⚠️</span>}
+						{settings.showEmoji && e.status === 16 && <span className="mr-1" role="img" aria-label="critical">🔥</span>}
+						{settings.showEmoji && e.status === 4 && <span className="mr-1" role="img" aria-label="warning">⚠️</span>}
 
 						<div className="service-item-host-name">{e.host_name}</div>
-						<span className="ml-1.5 cursor-pointer" onClick={this.openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="ml-1.5 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className="service-item-description">{e.description}</span>
-						<span className="-ml-1 cursor-pointer" onClick={this.openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
+						<span className="-ml-1 cursor-pointer" onClick={openNagiosServicePage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className={serviceTextClass(e.status)}>
 							<span className="ml-2 plugin-output">{e.plugin_output}</span>
@@ -213,8 +205,8 @@ class ServiceItem extends Component<ServiceItemProps> {
 
 					</div>
 
-					{(this.props.comments && this.props.comments.length > 0) && <div>
-						{this.props.comments.slice().reverse().map((comment, i) => (
+					{(comments && comments.length > 0) && <div>
+						{comments.slice().reverse().map((comment, i) => (
 							<div className="comment" key={i}>
 								{/* Comment: */}
 								<span className="comment-color">({comment.author}): {formatDateTimeAgo(comment.entry_time)} ago - {comment.comment_data}</span>
@@ -222,13 +214,12 @@ class ServiceItem extends Component<ServiceItemProps> {
 						))}
 					</div>}
 
-					{(!isPassive && this.props.settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={serviceTextClass(e.status)}></Progress>}
+					{(!isPassive && settings.showNextCheckInProgressBar && howManyDown < maxNumberToHideProgress) && <Progress next_check={e.next_check} color={serviceTextClass(e.status)}></Progress>}
 
 				</div>
 
 			</div>
 		);
-	}
-}
+};
 
 export default ServiceItem;
