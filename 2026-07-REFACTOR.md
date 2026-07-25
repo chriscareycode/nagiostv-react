@@ -106,6 +106,7 @@ This document records the findings from the July 2026 read-only project review. 
   - The component is currently over 1,200 lines.
   - Extract cohesive sections such as data source, display, hosts, services, alerts/history, audio/speech, minimap, LLM, and persistence actions.
   - Consider typed field descriptors for repetitive inputs while retaining custom components for complex settings.
+  - Progress: extracted the typed data-source and connection section, including reusable polling-frequency controls and focused interaction tests.
 
 - [ ] Split other large, multi-responsibility components.
   - Review `LocalLLM`, `Update`, `SettingsLoad`, `HistoryChart`, and `Demo`.

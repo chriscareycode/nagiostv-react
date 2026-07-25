@@ -38,6 +38,10 @@ import { ClientSettings } from 'types/settings';
 import Doomguy from './Doomguy/Doomguy';
 import LlmModelSelector from './settings/LlmModelSelector';
 import { removeClientSettings, saveClientSettings } from '../helpers/persistence';
+import DataSourceSettings, {
+	SettingInputType,
+	SettingsChangeHandler,
+} from './settings/DataSourceSettings';
 
 const Settings = () => {
 
@@ -54,8 +58,6 @@ const Settings = () => {
 	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
 	const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 	const saveMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const hostlistError = false;
 
 	const {
 		isDemoMode,
@@ -121,7 +123,10 @@ const Settings = () => {
 	};
 
 	// handle state changes for all the widgets on this page
-	const handleChange = (propName: string, dataType: boolean | number | string) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+	const handleChange: SettingsChangeHandler = (
+		propName: keyof ClientSettings,
+		dataType: SettingInputType,
+	) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 		// console.log('handleChange new');
 		// console.log(propName, dataType);
 		// console.log(event.target.value);
@@ -297,148 +302,7 @@ const Settings = () => {
 						</tbody>
 					</table>}
 
-					{/* main settings */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Data Source Settings</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th style={{ padding: '0px', height: '3px' }}></th>
-								<td style={{ padding: '0px', height: '3px' }}></td>
-							</tr>
-							<tr>
-								<th>
-									{hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-									Fetch data from
-								</th>
-								<td>
-									<select value={clientSettingsTemp.dataSource} onChange={handleChange('dataSource', 'string')}>
-										<option value={'cgi'}>Nagios cgi-bin</option>
-										<option value={'livestatus'}>MK Livestatus</option>
-									</select>
-								</td>
-							</tr>
-							{clientSettingsTemp.dataSource === 'livestatus' && <tr>
-								<th>
-									{hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-									livestatus.php path:
-								</th>
-								<td>
-									<input
-										type="text"
-										className={hostlistError ? 'input-error' : ''}
-										value={clientSettingsTemp.livestatusPath}
-										onChange={handleChange('livestatusPath', 'string')}
-									/>
-									<div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-										This path needs to point to where the included livestatus.php file is located. default is <span style={{ color: 'lime' }}> connectors/livestatus.php</span>.
-										In the connectors/ folder, copy livestatus-settings.ini.sample to livestatus-settings.ini and configure it.
-										Your livestatus-settings.ini will not be overwritten when NagiosTV is updated.
-									</div>
-								</td>
-							</tr>}
-							<tr>
-								<th>
-									{hostlistError && <span role="img" aria-label="error">⚠️ </span>}
-									Nagios cgi-bin path:
-								</th>
-								<td>
-									<input
-										type="text"
-										className={hostlistError ? 'input-error' : ''}
-										value={clientSettingsTemp.baseUrl}
-										onChange={handleChange('baseUrl', 'string')}
-									/>
-									<div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-										This path needs to point to where the cgi files are being served by the Nagios web user interface.<br />
-										<br />
-										A note on authentication: Nagios cgi files rely on you to be authenticated so they know which user you are accessing Nagios as.
-										Nagios uses this to determine which hosts/services and other rights you have.
-										If you are hosting NagiosTV in a subdirectory in the Nagios web user interface, as is the suggested installation method, then the default path
-										<span style={{ color: 'lime' }}> /nagios/cgi-bin/</span> will work without additional authentication since you will already be logged in.<br />
-										<br />
-										<div>You can read more about how to bypass auth here at <a target="_blank" rel="noopener noreferer" href="https://nagiostv.com/bypassing-authentication">https://nagiostv.com/bypassing-authentication</a>.</div>
-
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									External link cgi-bin path:
-								</th>
-								<td>
-									<input
-										type="text"
-										value={clientSettingsTemp.externalLinkBaseUrl}
-										onChange={handleChange('externalLinkBaseUrl', 'string')}
-									/>
-									<div className="Note" style={{ fontSize: '0.8em', marginTop: '10px' }}>
-										This path is used for external links to host and service details in the Nagios cgi-bin.<br />
-										Default is <span style={{ color: 'lime' }}>/nagios/cgi-bin/</span>
-									</div>
-								</td>
-							</tr>
-
-							<tr>
-								<th>Fetch hosts every:</th>
-								<td>
-									<select value={clientSettingsTemp.fetchHostFrequency} onChange={handleChange('fetchHostFrequency', 'number')}>
-										<option value={15}>15s</option>
-										<option value={30}>30s</option>
-										<option value={60}>1m</option>
-										<option value={300}>5m</option>
-										<option value={600}>10m</option>
-									</select>
-									&nbsp;
-									Affects server CPU. Larger interval = less CPU
-								</td>
-							</tr>
-							<tr>
-								<th>Fetch services every:</th>
-								<td>
-									<select value={clientSettingsTemp.fetchServiceFrequency} onChange={handleChange('fetchServiceFrequency', 'number')}>
-										<option value={15}>15s</option>
-										<option value={30}>30s</option>
-										<option value={60}>1m</option>
-										<option value={300}>5m</option>
-										<option value={600}>10m</option>
-									</select>
-									&nbsp;
-									Affects server CPU. Larger interval = less CPU
-								</td>
-							</tr>
-							<tr>
-								<th>Fetch alerts every:</th>
-								<td>
-									<select value={clientSettingsTemp.fetchAlertFrequency} onChange={handleChange('fetchAlertFrequency', 'number')}>
-										<option value={15}>15s</option>
-										<option value={30}>30s</option>
-										<option value={60}>1m</option>
-										<option value={300}>5m</option>
-										<option value={600}>10m</option>
-									</select>
-									&nbsp;
-									Affects server CPU. Larger interval = less CPU
-								</td>
-							</tr>
-
-							<tr>
-								<th>Check for new version:</th>
-								<td>
-									<select value={clientSettingsTemp.versionCheckDays} onChange={handleChange('versionCheckDays', 'number')}>
-										<option value={0}>Never</option>
-										<option value={1}>1 day</option>
-										<option value={7}>1 week</option>
-										<option value={30}>1 month</option>
-									</select>
-								</td>
-							</tr>
-
-						</tbody>
-					</table>
+					<DataSourceSettings settings={clientSettingsTemp} onChange={handleChange} />
 
 					{/* regional */}
 					<table className="SettingsTable">
