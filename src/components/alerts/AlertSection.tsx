@@ -32,11 +32,10 @@ import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
 import HistoryChart from '../widgets/HistoryChart';
 
-import axios from 'axios';
 import _ from 'lodash';
 
 import './AlertSection.css';
-import { handleFetchFail, responseHasJsonContentType } from '../../helpers/axios';
+import { getJson, handleFetchFail } from '../../helpers/axios';
 import { Alert } from '../../types/hostAndServiceTypes';
 import { shiftAlertsToNow } from './alert-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
@@ -145,7 +144,7 @@ const AlertSection = () => {
 
 		setAlertIsFetching(true);
 
-		axios.get(
+		getJson(
 			url,
 			{
 				timeout: (fetchAlertFrequency - 2) * 1000,
@@ -156,20 +155,6 @@ const AlertSection = () => {
 			if (signal?.aborted) {
 				return;
 			}
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-
-				setAlertIsFetching(false);
-				setAlertState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
-				return;
-			}
-
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)

@@ -32,10 +32,9 @@ import HostFilters from './HostFilters';
 
 // 3rd party addons
 import { DateTime } from 'luxon';
-import axios from 'axios';
 import _ from 'lodash';
 import { Host, HostList } from 'types/hostAndServiceTypes';
-import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
+import { getJson, handleFetchFail } from 'helpers/axios';
 import { howManyHostCounter } from './host-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import { useCancellablePolling } from '../../hooks/useCancellablePolling';
@@ -113,7 +112,7 @@ const HostSection = () => {
 
 		setHostIsFetching(true);
 
-		axios.get(url, {
+		getJson(url, {
 			timeout: (fetchHostFrequency - 2) * 1000,
 			signal,
 		})
@@ -160,7 +159,7 @@ const HostSection = () => {
 
 		setHostIsFetching(true);
 
-		axios.get(
+		getJson(
 			url,
 			{
 				timeout: (fetchHostFrequency - 2) * 1000,
@@ -171,19 +170,6 @@ const HostSection = () => {
 			if (signal?.aborted) {
 				return;
 			}
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-				setHostIsFetching(false);
-				setHostState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
-				return;
-			}
-
 			// Success
 
 			// Make an array from the object

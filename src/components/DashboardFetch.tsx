@@ -6,9 +6,8 @@ import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
 import _ from 'lodash';
-import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
-import { handleFetchFail, responseHasJsonContentType } from "helpers/axios";
+import { getJson, handleFetchFail } from "helpers/axios";
 // Types
 import { CommentListObject } from "types/commentTypes";
 import { buildNagiosUrl } from '../helpers/nagiosUrls';
@@ -46,23 +45,11 @@ const DashboardFetch = () => {
 			? './sample-data/commentlist.json'
 			: buildNagiosUrl(clientSettings, 'commentlist');
 
-		axios.get(
+		getJson(
 			url,
 			{ timeout: 10 * 1000, signal }
 		).then((response) => {
 			if (signal?.aborted) {
-				return;
-			}
-
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchCommentData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-
-				setCommentlist(curr => ({
-					...curr,
-					error: true,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
 				return;
 			}
 
@@ -137,23 +124,11 @@ const DashboardFetch = () => {
 		}
 		const url = buildNagiosUrl(clientSettings, 'hostgrouplist');
 
-		axios.get(
+		getJson(
 			url,
 			{ timeout: 10 * 1000, signal }
 		).then(response => {
 			if (signal?.aborted) {
-				return;
-			}
-
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-
-				setHostgroup(curr => ({
-					...curr,
-					error: true,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
 				return;
 			}
 
@@ -183,23 +158,11 @@ const DashboardFetch = () => {
 		}
 		const url = buildNagiosUrl(clientSettings, 'servicegrouplist');
 
-		axios.get(
+		getJson(
 			url,
 			{ timeout: 10 * 1000, signal }
 		).then((response) => {
 			if (signal?.aborted) {
-				return;
-			}
-
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-
-				setServicegroup(curr => ({
-					...curr,
-					error: true,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
 				return;
 			}
 
@@ -228,23 +191,11 @@ const DashboardFetch = () => {
 			? './sample-data/programstatus.json'
 			: buildNagiosUrl(clientSettings, 'programstatus');
 
-		axios.get(
+		getJson(
 			url,
 			{ timeout: 10 * 1000, signal }
 		).then(response => {
 			if (signal?.aborted) {
-				return;
-			}
-
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchProgramStatus() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-
-				setProgramStatus(curr => ({
-					...curr,
-					error: true,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
 				return;
 			}
 

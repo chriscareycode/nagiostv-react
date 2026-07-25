@@ -31,12 +31,11 @@ import ServiceItems from './ServiceItems';
 import ServiceFilters from './ServiceFilters';
 
 // 3rd party addons
-import axios from 'axios';
 import _ from 'lodash';
 
 // Types
 import { Service, ServiceList } from '../../types/hostAndServiceTypes';
-import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
+import { getJson, handleFetchFail } from 'helpers/axios';
 import { howManyServiceCounter } from './service-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import { useCancellablePolling } from '../../hooks/useCancellablePolling';
@@ -104,7 +103,7 @@ const ServiceSection = () => {
 
 		setServiceIsFetching(true);
 
-		axios.get(url, {
+		getJson(url, {
 			timeout: (fetchServiceFrequency - 2) * 1000,
 			signal,
 		})
@@ -125,12 +124,7 @@ const ServiceSection = () => {
 			}
 			setServiceIsFetching(false);
 
-			setServiceState(curr => ({
-				...curr,
-				error: true,
-				errorCount: curr.errorCount + 1,
-				errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-			}));
+			handleFetchFail(setServiceState, error, url, true);
 		});
 
 	};
@@ -156,7 +150,7 @@ const ServiceSection = () => {
 
 		setServiceIsFetching(true);
 
-		axios.get(
+		getJson(
 			url,
 			{
 				timeout: (fetchServiceFrequency - 2) * 1000,
@@ -167,19 +161,6 @@ const ServiceSection = () => {
 			if (signal?.aborted) {
 				return;
 			}
-			// test that return data is json
-			if (!responseHasJsonContentType(response.headers)) {
-				console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
-				setServiceIsFetching(false);
-				setServiceState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-				}));
-				return;
-			}
-
 			// Success
 
 			// Make an array from the object
