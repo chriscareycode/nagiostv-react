@@ -118,6 +118,7 @@ This document records the findings from the July 2026 read-only project review. 
   - [x] Extract `Demo` scenario transitions and timer orchestration into tested helpers and a hook.
   - [x] Extract `LocalLLM` prompt construction, monitoring serialization, and response parsing into tested helpers.
   - [x] Extract `LocalLLM` backend transport, compatibility retry, and response normalization.
+  - [x] Extract `LocalLLM` history storage, navigation, and current-response synchronization.
 
 - [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.

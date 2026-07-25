@@ -9,14 +9,9 @@ import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
 import { clientSettingsAtom } from '../../atoms/settingsState';
 import { 
-	llmHistoryAtom, 
-	llmCurrentHistoryIndexAtom, 
 	LLMHistoryItem,
 	llmIsLoadingAtom,
-	llmResponseAtom,
 	llmErrorAtom,
-	llmLastResponseTimeAtom,
-	llmResponseEmojiAtom,
 } from '../../atoms/llmAtom';
 
 // Components
@@ -43,6 +38,7 @@ import {
 	parseLlmContent,
 } from './llmAnalysis';
 import { requestLlmChat } from './llmTransport';
+import { useLlmHistory } from '../../hooks/useLlmHistory';
 
 const CONSOLE_DEBUG = false;
 
@@ -55,12 +51,18 @@ export default function LocalLLM() {
 
 	// All state persisted in atoms
 	const [isLoading, setIsLoading] = useAtom(llmIsLoadingAtom);
-	const [llmResponse, setLlmResponse] = useAtom(llmResponseAtom);
 	const [error, setError] = useAtom(llmErrorAtom);
-	const [lastResponseTime, setLastResponseTime] = useAtom(llmLastResponseTimeAtom);
-	const [responseEmoji, setResponseEmoji] = useAtom(llmResponseEmojiAtom);
-	const [history, setHistory] = useAtom(llmHistoryAtom);
-	const [currentHistoryIndex, setCurrentHistoryIndex] = useAtom(llmCurrentHistoryIndexAtom);
+	const {
+		addHistoryItem,
+		currentHistoryIndex,
+		currentHistoryItem,
+		history,
+		lastResponseTime,
+		llmResponse,
+		navigateToNext,
+		navigateToPrevious,
+		responseEmoji,
+	} = useLlmHistory();
 
 	// Tracks whether we've already triggered an analysis this page load (manual or auto)
 	const hasTriggeredAnalysisRef = useRef<boolean>(false);
@@ -172,22 +174,7 @@ export default function LocalLLM() {
 					thinkingContent,
 				};
 
-				// Set item into history, keeping max 10 items
-				setHistory(prev => {
-					const newHistory = [...prev, newHistoryItem];
-					if (newHistory.length > 10) {
-						return newHistory.slice(-10); // Keep only the last 10 items
-					}
-					return newHistory;
-				});
-
-				// Note: We clamp to 9 (max index) because history is limited to 10 items
-				// and the state update is asynchronous, so history.length may not reflect the new size yet
-				const newIndex = Math.min(history.length, 9);
-				setCurrentHistoryIndex(newIndex);
-				setLlmResponse(content);
-				setLastResponseTime(new Date(timestamp));
-				setResponseEmoji(selectedEmoji);
+				addHistoryItem(newHistoryItem);
 
 				// Speak the response if speakItems is enabled
 				if (clientSettings.llmSpeakResponse) {
@@ -245,29 +232,6 @@ export default function LocalLLM() {
 					queryLLM();
 				}, 1000);
 			}
-		}
-	};
-
-	// Navigation functions
-	const navigateToPrevious = () => {
-		if (currentHistoryIndex > 0) {
-			const newIndex = currentHistoryIndex - 1;
-			const item = history[newIndex];
-			setCurrentHistoryIndex(newIndex);
-			setLlmResponse(item.content);
-			setLastResponseTime(new Date(item.timestamp));
-			setResponseEmoji(item.emoji);
-		}
-	};
-
-	const navigateToNext = () => {
-		if (currentHistoryIndex < history.length - 1) {
-			const newIndex = currentHistoryIndex + 1;
-			const item = history[newIndex];
-			setCurrentHistoryIndex(newIndex);
-			setLlmResponse(item.content);
-			setLastResponseTime(new Date(item.timestamp));
-			setResponseEmoji(item.emoji);
 		}
 	};
 
@@ -397,9 +361,6 @@ export default function LocalLLM() {
 			resizeObserver.disconnect();
 		};
 	}, [llmResponse]);
-
-	// Border color based on hosts and services warning or critical status from current history item
-	const currentHistoryItem = history[currentHistoryIndex];
 
 	const color = currentHistoryItem?.color || 'green';
 	const borderClasses = `border-${color}`;
