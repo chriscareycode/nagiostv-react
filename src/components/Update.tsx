@@ -16,42 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChangeEvent, useEffect, useState } from 'react';
-// State Management
-import { useAtom, useAtomValue } from 'jotai';
-import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
-import { skipVersionAtom } from '../atoms/skipVersionAtom';
-import { removeSkipVersion, saveSkipVersion } from '../helpers/persistence';
 // React Router
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import { useUpdateManager } from '../hooks/useUpdateManager';
 
 import './Update.css';
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-
-interface GithubResult {
-	tag_name: string;
-	name: string;
-}
-interface GithubState {
-	loading: boolean;
-	error: boolean;
-	errorMessage: string;
-	result: GithubResult[] | null;
-}
-
-interface TestPhpState {
-	loading: boolean;
-	error: boolean;
-	errorMessage: string;
-	result: {
-		whoami: string | null;
-		script: string | null;
-	}
-}
 
 interface UpdateProps {
 	currentVersion: number;
@@ -63,260 +36,23 @@ const Update = ({
 	currentVersionString,
 }: UpdateProps) => {
 
-	const [bigState, setBigState] = useAtom(bigStateAtom);
-	const clientSettings = useAtomValue(clientSettingsAtom);
-	const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
-	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
-	const [testPhpState, setTestPhpState] = useState<TestPhpState>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: {
-			whoami: null,
-			script: null,
-		}
-	});
-	const [latestVersionState, setLatestVersionState] = useState({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: {}
-	});
-	const [githubState, setGithubState] = useState<GithubState>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: []
-	});
-	const [updateState, setUpdateState] = useState({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: ''
-	});
-	const [downgradeState, setDowngradeState] = useState({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: ''
-	});
-	const [selected, setSelected] = useState('');
-
-	const checkForUpdates = () => {
-		testPhp();
-		fetchLatestVersion();
-		fetchReleasesFromGithub();
-
-		setClickedCheckForUpdates(true);
-	};
-
-	const testPhp = () => {
-		//console.log('testPhp');
-
-		setTestPhpState(curr => ({
-			...curr,
-			loading: true,
-		}));
-
-		const url = 'auto-version-switch.php?testphp=true';
-
-		axios.get(url, { timeout: 10 * 1000 })
-			.then((response) => {
-				// Got data
-				setTestPhpState({
-					loading: false,
-					error: false,
-					errorMessage: '',
-					result: response.data
-				});
-			})
-			.catch((error) => {
-				// Error
-				setTestPhpState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error testing PHP',
-					result: {
-						whoami: null,
-						script: null,
-					}
-				});
-			});
-	};
-
-	const fetchLatestVersion = () => {
-		//console.log('latestVersion');
-
-		setLatestVersionState(curr => ({
-			...curr,
-			loading: true,
-		}));
-
-		const url = 'https://nagiostv.com/version/nagiostv-react/?version=' + currentVersionString;
-
-		axios.get(url, { timeout: 10 * 1000 })
-			.then((response) => {
-				// Got data
-				const myJson = response.data;
-				// set version into local state
-				setLatestVersionState({
-					loading: false,
-					error: false,
-					errorMessage: '',
-					result: myJson
-				});
-				// set version into bigState
-				setBigState(curr => ({
-					...curr,
-					latestVersion: myJson.version,
-					latestVersionString: myJson.version_string,
-					lastVersionCheckTime: new Date().getTime(),
-				}));
-			})
-			.catch((error) => {
-				// Error
-				setLatestVersionState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error getting latest version from server',
-					result: {}
-				});
-			});
-	};
-
-	const fetchReleasesFromGithub = () => {
-		//console.log('fetchReleasesFromGithub');
-
-		setGithubState(curr => ({
-			...curr,
-			loading: true,
-		}));
-
-		const url = 'https://api.github.com/repos/chriscareycode/nagiostv-react/releases';
-
-		axios.get(url, { timeout: 10 * 1000 })
-			.then((response) => {
-				// Got data from Github
-				setGithubState({
-					loading: false,
-					error: false,
-					errorMessage: '',
-					result: response.data
-				});
-			})
-			.catch((error) => {
-				// Error
-				setGithubState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error fetching from github',
-					result: null,
-				});
-			});
-	};
-
-	const selectChanged = (e: ChangeEvent<HTMLSelectElement>) => {
-		//console.log(e.target.value);
-		setSelected(e.target.value);
-	};
-
-	const beginUpdate = () => {
-		//console.log('beginUpdate');
-
-		const latestVersionString = bigState.latestVersionString;
-
-		setUpdateState(curr => ({
-			...curr,
-			loading: true,
-		}));
-
-		const url = `auto-version-switch.php?version=v${latestVersionString}`;
-
-		axios.get(url, { timeout: 30 * 1000 })
-			.then((response) => {
-				// Got data from update php script
-				setUpdateState({
-					loading: false,
-					error: false,
-					errorMessage: '',
-					result: response.data
-				});
-			})
-			.catch((error) => {
-				// Error
-				setUpdateState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error calling auto-version-switch.php',
-					result: ''
-				});
-			});
-
-	};
-
-	const beginDowngrade = () => {
-		//console.log('beginDowngrade');
-
-		setDowngradeState(curr => ({
-			...curr,
-			loading: true,
-		}));
-
-		const url = `auto-version-switch.php?version=${selected}`;
-
-		axios.get(url, { timeout: 30 * 1000 })
-			.then((response) => {
-				// Success
-				setDowngradeState({
-					loading: false,
-					error: false,
-					errorMessage: '',
-					result: response.data
-				});
-			})
-			.catch((error) => {
-				// Error
-				setDowngradeState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error calling auto-version-switch.php',
-					result: ''
-				});
-			});
-	};
-
-	const clickedSkipVersion = () => {
-		const latestVersion = bigState.latestVersion;
-		const latestVersionString = bigState.latestVersionString;
-		const skipVersionObj = {
-			version: latestVersion,
-			version_string: latestVersionString
-		};
-		saveSkipVersion(skipVersionObj);
-		setSkipVersion({
-			version: latestVersion,
-			version_string: latestVersionString,
-		});
-	};
-
-	const clearSkipVersion = () => {
-		removeSkipVersion();
-		setSkipVersion({
-			version: 0,
-			version_string: '',
-		});
-	};
-
-	/**
-	 * React Hooks
-	 */
-
-	useEffect(() => {
-		// If the user does not have Check Updates disabled, then fetch now
-		if (clientSettings && clientSettings.versionCheckDays !== 0) {
-			checkForUpdates();
-		}
-	}, ['clientSettings.versionCheckDays']);
+	const {
+		beginDowngrade,
+		beginUpdate,
+		bigState,
+		checkForUpdates,
+		clearSkipVersion,
+		clickedCheckForUpdates,
+		clickedSkipVersion,
+		downgradeState,
+		githubState,
+		latestVersionState,
+		selected,
+		selectChanged,
+		skipVersion,
+		testPhpState,
+		updateState,
+	} = useUpdateManager({ currentVersionString });
 
 	/**
 	 * Start Render
