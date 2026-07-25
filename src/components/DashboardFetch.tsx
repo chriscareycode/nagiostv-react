@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 // State Management
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
@@ -20,6 +20,10 @@ const DashboardFetch = () => {
 	const setServicegroup = useSetAtom(servicegroupAtom);
 	const setCommentlist = useSetAtom(commentlistAtom);
 	const setProgramStatus = useSetAtom(programStatusAtom)
+	const fetchCommentDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
+	const fetchHostGroupDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
+	const fetchServiceGroupDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
+	const fetchProgramStatusRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 
 	// Chop the bigState into vars
 	const {
@@ -279,6 +283,11 @@ const DashboardFetch = () => {
 		});
 	};
 
+	fetchCommentDataRef.current = fetchCommentData;
+	fetchHostGroupDataRef.current = fetchHostGroupData;
+	fetchServiceGroupDataRef.current = fetchServiceGroupData;
+	fetchProgramStatusRef.current = fetchProgramStatus;
+
 	// useEffect
 	useEffect(() => {
 		//console.log('DashboardFetch useEffect()');
@@ -289,20 +298,20 @@ const DashboardFetch = () => {
 		const runCommentFetch = () => {
 			commentController?.abort();
 			commentController = new AbortController();
-			fetchCommentData(commentController.signal);
+			fetchCommentDataRef.current(commentController.signal);
 		};
 
 		const runGroupFetches = () => {
 			groupController?.abort();
 			groupController = new AbortController();
-			fetchHostGroupData(groupController.signal);
-			fetchServiceGroupData(groupController.signal);
+			fetchHostGroupDataRef.current(groupController.signal);
+			fetchServiceGroupDataRef.current(groupController.signal);
 		};
 
 		const runProgramFetch = () => {
 			programController?.abort();
 			programController = new AbortController();
-			fetchProgramStatus(programController.signal);
+			fetchProgramStatusRef.current(programController.signal);
 		};
 
 		// If we are in demo mode then exit here
@@ -354,9 +363,9 @@ const DashboardFetch = () => {
 	}, [
 		clientSettings.baseUrl,
 		clientSettings.dataSource,
-		clientSettings.fetchCommentFrequency,
-		clientSettings.fetchHostGroupFrequency,
 		clientSettings.livestatusPath,
+		fetchCommentFrequency,
+		fetchHostGroupFrequency,
 		isDemoMode,
 		useFakeSampleData,
 	]);

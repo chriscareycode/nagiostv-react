@@ -27,7 +27,17 @@ Before submitting a change, run the complete local validation suite:
 $ npm run check
 ```
 
-This runs strict TypeScript checking, the non-watch test suite, and a production build.
+This runs linting, strict TypeScript checking, the non-watch test suite, and a production build.
+
+Individual checks are also available:
+
+```console
+$ npm run lint
+$ npm run typecheck
+$ npm run test:no-watch
+$ npm run test:coverage
+$ npm run build
+```
 
 
 

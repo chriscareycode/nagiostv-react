@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 // State Management
@@ -83,6 +83,7 @@ const AlertSection = () => {
 	const [alertIsFetching, setAlertIsFetching] = useAtom(alertIsFetchingAtom);
 	const [alertState, setAlertState] = useAtom(alertAtom);
 	const [alertHowManyState, setAlertHowManyState] = useAtom(alertHowManyAtom);
+	const fetchAlertDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	// State Management state (main)
 	const bigState = useAtomValue(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -114,7 +115,7 @@ const AlertSection = () => {
 		const runFetch = () => {
 			requestController?.abort();
 			requestController = new AbortController();
-			fetchAlertData(requestController.signal);
+			fetchAlertDataRef.current(requestController.signal);
 		};
 		let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
 		let intervalHandle: ReturnType<typeof setInterval> | null = null;
@@ -148,7 +149,7 @@ const AlertSection = () => {
 		alertMaxItems,
 		clientSettings.baseUrl,
 		clientSettings.dataSource,
-		clientSettings.fetchAlertFrequency,
+		fetchAlertFrequency,
 		clientSettings.livestatusPath,
 		hostgroupFilter,
 		isDemoMode,
@@ -174,7 +175,7 @@ const AlertSection = () => {
 			howManyAlertSoft,
 		});
 
-	}, [alertState]);
+	}, [setAlertHowManyState]);
 
 	const fetchAlertData = (signal?: AbortSignal) => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
@@ -260,6 +261,8 @@ const AlertSection = () => {
 			handleFetchFail(setAlertState, error, url, true);
 		});
 	};
+
+	fetchAlertDataRef.current = fetchAlertData;
 
 	//const { language, clientSettings } = this.props;
 

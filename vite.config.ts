@@ -1,7 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgr from 'vite-plugin-svgr';
 // import { VitePWA } from 'vite-plugin-pwa';
 import tailwindcss from '@tailwindcss/vite';
@@ -25,20 +24,11 @@ export default defineConfig({
 	build: {
 		outDir: 'build',
 	},
-	optimizeDeps: {
-    force: true,
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx',
-      },
-    },
-  },
 	plugins: [
 		react({
 			// Enable JSX in .js files
 			include: /\.(jsx|js|tsx|ts)$/,
 		}), 
-		viteTsconfigPaths(),
 		tailwindcss(),
 		svgr({
 			include: '**/*.svg?react',
@@ -49,6 +39,7 @@ export default defineConfig({
 		// }),
 	],
 	resolve: {
+		tsconfigPaths: true,
 		// alias. These also need to be set up in tsconfig.json
 		alias: {
 			'~': path.resolve(__dirname, './src'),

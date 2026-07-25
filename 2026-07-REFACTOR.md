@@ -55,12 +55,13 @@ This document records the findings from the July 2026 read-only project review. 
   - Safely normalize or inspect Axios `content-type` headers instead of calling `indexOf` on the full header union type.
   - Do not hide project errors by broadly disabling strictness.
 
-- [ ] Add ESLint and React Hooks validation.
+- [x] Add ESLint and React Hooks validation.
   - Add scripts suitable for local development and CI.
   - Enable `react-hooks/rules-of-hooks` and `react-hooks/exhaustive-deps`.
   - Address warnings in polling effects rather than suppressing them.
+  - Polling components enforce exhaustive dependencies as errors; remaining legacy hook findings are reported as warnings for later cleanup.
 
-- [ ] Expand meaningful automated coverage.
+- [x] Expand meaningful automated coverage.
   - Replace or supplement the current single shallow application test.
   - Prioritize request URL construction, polling cleanup, stale-response prevention, content-type failures, settings changes, and empty API responses.
 
@@ -123,9 +124,10 @@ This document records the findings from the July 2026 read-only project review. 
   - Route all requests through one debounced or queued scheduler.
   - Prevent concurrent snapshots and discard obsolete results.
 
-- [ ] Reconcile declared and installed tool versions.
+- [x] Reconcile declared and installed tool versions.
   - The reviewed local installation had Vite 6 and plugin-react 4 while `package.json` requested Vite 8 and plugin-react 6.
   - Perform a clean, reproducible install and commit the resulting lockfile only after verifying the supported Node version.
+  - Verified with `npm ci`, Node 24.16.0, Vite 8.0.16, and plugin-react 6.0.2.
 
 - [ ] Audit dependencies and legacy compatibility.
   - Verify whether `styled-components` is unused and remove it if so.

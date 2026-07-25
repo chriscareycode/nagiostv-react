@@ -50,6 +50,7 @@ const HostSection = () => {
 	const [hostState, setHostState] = useAtom(hostAtom);
 	const [hostHowManyState, setHostHowManyState] = useAtom(hostHowManyAtom);
 	const totalCount = useRef(0);
+	const fetchHostCountThenFetchDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	// State Management state (main)
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -82,7 +83,7 @@ const HostSection = () => {
 		const runFetch = () => {
 			requestController?.abort();
 			requestController = new AbortController();
-			fetchHostCountThenFetchData(requestController.signal);
+			fetchHostCountThenFetchDataRef.current(requestController.signal);
 		};
 
 		const timeoutHandle = setTimeout(() => {
@@ -112,7 +113,7 @@ const HostSection = () => {
 	}, [
 		clientSettings.baseUrl,
 		clientSettings.dataSource,
-		clientSettings.fetchHostFrequency,
+		fetchHostFrequency,
 		clientSettings.hideHostUp,
 		clientSettings.livestatusPath,
 		hostgroupFilter,
@@ -140,7 +141,7 @@ const HostSection = () => {
 			howManyHostNotificationsDisabled: howMany.howManyHostNotificationsDisabled,
 		});
 
-	}, [hostState.lastUpdate]);
+	}, [setHostHowManyState]);
 
 	const fetchHostCountThenFetchData = (signal?: AbortSignal) => {
 
@@ -301,6 +302,8 @@ const HostSection = () => {
 			handleFetchFail(setHostState, error, url, true);
 		});
 	};
+
+	fetchHostCountThenFetchDataRef.current = fetchHostCountThenFetchData;
 
 	
 	// Mutating state on hostState.stateArray is not allowed (the sort below)

@@ -49,6 +49,7 @@ const ServiceSection = () => {
 	const [serviceState, setServiceState] = useAtom(serviceAtom);
 	const [serviceHowManyState, setServiceHowManyState] = useAtom(serviceHowManyAtom);
 	const totalCount = useRef(0);
+	const fetchServiceCountThenFetchDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	// State Management state (main)
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
@@ -73,7 +74,7 @@ const ServiceSection = () => {
 		const runFetch = () => {
 			requestController?.abort();
 			requestController = new AbortController();
-			fetchServiceCountThenFetchData(requestController.signal);
+			fetchServiceCountThenFetchDataRef.current(requestController.signal);
 		};
 
 		const timeoutHandle = setTimeout(() => {
@@ -102,7 +103,7 @@ const ServiceSection = () => {
 	}, [
 		clientSettings.baseUrl,
 		clientSettings.dataSource,
-		clientSettings.fetchServiceFrequency,
+		fetchServiceFrequency,
 		clientSettings.hideServiceOk,
 		clientSettings.livestatusPath,
 		hostgroupFilter,
@@ -130,7 +131,7 @@ const ServiceSection = () => {
 			howManyServiceNotificationsDisabled: howMany.howManyServiceNotificationsDisabled,
 		});
 
-	}, [serviceState.lastUpdate]);
+	}, [setServiceHowManyState]);
 
 	const fetchServiceCountThenFetchData = (signal?: AbortSignal) => {
 
@@ -289,6 +290,8 @@ const ServiceSection = () => {
 			handleFetchFail(setServiceState, error, url, true);
 		});
 	}
+
+	fetchServiceCountThenFetchDataRef.current = fetchServiceCountThenFetchData;
 
 	// Mutating state on serviceState.stateArray is not allowed (the sort below)
 	// so we need to copy this to something
