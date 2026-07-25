@@ -37,6 +37,7 @@ import _ from 'lodash';
 import { Host, HostList } from 'types/hostAndServiceTypes';
 import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyHostCounter } from './host-functions';
+import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 
 //import './HostSection.css';
 
@@ -145,18 +146,13 @@ const HostSection = () => {
 
 	const fetchHostCountThenFetchData = (signal?: AbortSignal) => {
 
-		let url;
-		if (useFakeSampleData) {
-			url = './sample-data/hostcount.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=hostcount';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostcount';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		}
+		const url = useFakeSampleData
+			? './sample-data/hostcount.json'
+			: buildNagiosUrl(
+				clientSettings,
+				'hostcount',
+				buildGroupFilterParameters(hostgroupFilter, servicegroupFilter),
+			);
 
 		setHostIsFetching(true);
 
@@ -196,22 +192,14 @@ const HostSection = () => {
 		//   return;
 		// }
 
-		let url;
-		if (useFakeSampleData) {
-			url = './sample-data/hostlist.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=hostlist';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=hostlist&details=true';
-			// add filter for hoststatus "not up" only
-			if (clientSettings.hideHostUp) {
-				url += '&hoststatus=down+unreachable+pending';
-			}
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		}
+		const url = useFakeSampleData
+			? './sample-data/hostlist.json'
+			: buildNagiosUrl(clientSettings, 'hostlist', {
+				...(clientSettings.dataSource !== 'livestatus' && clientSettings.hideHostUp
+					? { hoststatus: 'down unreachable pending' }
+					: {}),
+				...buildGroupFilterParameters(hostgroupFilter, servicegroupFilter),
+			});
 
 		setHostIsFetching(true);
 

@@ -39,6 +39,7 @@ import './AlertSection.css';
 import { handleFetchFail, responseHasJsonContentType } from '../../helpers/axios';
 import { Alert } from '../../types/hostAndServiceTypes';
 import { shiftAlertsToNow } from './alert-functions';
+import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 
 const AlertSection = () => {
 
@@ -180,22 +181,13 @@ const AlertSection = () => {
 	const fetchAlertData = (signal?: AbortSignal) => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
 
-		let url = '';
-		// let endtime = '0';
-		// let endtime = '%2B0'; // +0
-		let endtime = '%2D0'; // -0
-
-		if (useFakeSampleData) {
-			url = './sample-data/alertlist.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + `?query=alertlist&starttime=-${starttime}&endtime=${endtime}`;
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		} else {
-			url = `${clientSettings.baseUrl}archivejson.cgi?query=alertlist&starttime=-${starttime}&endtime=${endtime}`;
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		}
+		const url = useFakeSampleData
+			? './sample-data/alertlist.json'
+			: buildNagiosUrl(clientSettings, 'alertlist', {
+				starttime: -starttime,
+				endtime: '-0',
+				...buildGroupFilterParameters(hostgroupFilter, servicegroupFilter),
+			});
 
 		setAlertIsFetching(true);
 

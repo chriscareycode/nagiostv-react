@@ -38,6 +38,7 @@ import _ from 'lodash';
 import { Service, ServiceList } from '../../types/hostAndServiceTypes';
 import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyServiceCounter } from './service-functions';
+import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 
 const ServiceSection = () => {
 
@@ -135,18 +136,13 @@ const ServiceSection = () => {
 
 	const fetchServiceCountThenFetchData = (signal?: AbortSignal) => {
 
-		let url = '';
-		if (useFakeSampleData) {
-			url = './sample-data/servicecount.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=servicecount';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicecount';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		}
+		const url = useFakeSampleData
+			? './sample-data/servicecount.json'
+			: buildNagiosUrl(
+				clientSettings,
+				'servicecount',
+				buildGroupFilterParameters(hostgroupFilter, servicegroupFilter),
+			);
 
 		setServiceIsFetching(true);
 
@@ -190,22 +186,14 @@ const ServiceSection = () => {
 		//   return;
 		// }
 
-		let url = '';
-		if (useFakeSampleData) {
-			url = './sample-data/servicelist.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=servicelist';
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=servicelist&details=true';
-			// add filter for servicestatus "not ok" only
-			if (clientSettings.hideServiceOk) {
-				url += '&servicestatus=warning+critical+unknown+pending';
-			}
-			if (hostgroupFilter) { url += `&hostgroup=${hostgroupFilter}`; }
-			if (servicegroupFilter) { url += `&servicegroup=${servicegroupFilter}`; }
-		}
+		const url = useFakeSampleData
+			? './sample-data/servicelist.json'
+			: buildNagiosUrl(clientSettings, 'servicelist', {
+				...(clientSettings.dataSource !== 'livestatus' && clientSettings.hideServiceOk
+					? { servicestatus: 'warning critical unknown pending' }
+					: {}),
+				...buildGroupFilterParameters(hostgroupFilter, servicegroupFilter),
+			});
 		//console.log('Requesting Service Data: ' + url);
 
 		setServiceIsFetching(true);

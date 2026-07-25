@@ -95,10 +95,11 @@ This document records the findings from the July 2026 read-only project review. 
   - Introduce small typed utilities or hooks rather than one highly configurable monolith.
   - Keep endpoint-specific response transformation explicit and testable.
 
-- [ ] Extract shared Nagios URL construction.
+- [x] Extract shared Nagios URL construction.
   - Encode query parameters safely rather than concatenating raw filter strings.
   - Support both statusjson and livestatus sources through typed builders.
   - Unit-test hostgroup and servicegroup filters containing reserved URL characters.
+  - Added a typed query-to-CGI mapping and migrated host, service, alert, group, comment, and program-status requests.
 
 - [ ] Split `Settings.tsx`.
   - The component is currently over 1,200 lines.

@@ -11,6 +11,7 @@ import { programStatusAtom } from "atoms/programAtom";
 import { handleFetchFail, responseHasJsonContentType } from "helpers/axios";
 // Types
 import { CommentListObject } from "types/commentTypes";
+import { buildNagiosUrl } from '../helpers/nagiosUrls';
 
 const DashboardFetch = () => {
 
@@ -40,14 +41,9 @@ const DashboardFetch = () => {
 
 	const fetchCommentData = (signal?: AbortSignal) => {
 
-		let url = '';
-		if (useFakeSampleData) {
-			url = './sample-data/commentlist.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=commentlist';
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=commentlist&details=true';
-		}
+		const url = useFakeSampleData
+			? './sample-data/commentlist.json'
+			: buildNagiosUrl(clientSettings, 'commentlist');
 
 		axios.get(
 			url,
@@ -135,14 +131,10 @@ const DashboardFetch = () => {
 
 	const fetchHostGroupData = (signal?: AbortSignal) => {
 
-		let url = '';
 		if (useFakeSampleData) {
 			return;
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=hostgrouplist';
-		} else {
-			url = clientSettings.baseUrl + 'objectjson.cgi?query=hostgrouplist&details=true';
 		}
+		const url = buildNagiosUrl(clientSettings, 'hostgrouplist');
 
 		axios.get(
 			url,
@@ -185,14 +177,10 @@ const DashboardFetch = () => {
 
 	const fetchServiceGroupData = (signal?: AbortSignal) => {
 
-		let url = '';
 		if (useFakeSampleData) {
 			return;
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=servicegrouplist';
-		} else {
-			url = clientSettings.baseUrl + 'objectjson.cgi?query=servicegrouplist&details=true';
 		}
+		const url = buildNagiosUrl(clientSettings, 'servicegrouplist');
 
 		axios.get(
 			url,
@@ -235,14 +223,9 @@ const DashboardFetch = () => {
 
 	const fetchProgramStatus = (signal?: AbortSignal) => {
 
-		let url = '';
-		if (useFakeSampleData) {
-			url = './sample-data/programstatus.json';
-		} else if (clientSettings.dataSource === 'livestatus') {
-			url = clientSettings.livestatusPath + '?query=programstatus';
-		} else {
-			url = clientSettings.baseUrl + 'statusjson.cgi?query=programstatus';
-		}
+		const url = useFakeSampleData
+			? './sample-data/programstatus.json'
+			: buildNagiosUrl(clientSettings, 'programstatus');
 
 		axios.get(
 			url,
