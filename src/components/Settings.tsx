@@ -25,10 +25,7 @@ import { Link } from "react-router-dom";
 // CSS
 import './Settings.css';
 
-import axios from 'axios';
 import { getVoices } from '../helpers/audio';
-// clipboard
-import * as clipboard from "clipboard-polyfill/text";
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
@@ -41,6 +38,7 @@ import AlertHistorySettings from './settings/AlertHistorySettings';
 import AudioVisualSettings from './settings/AudioVisualSettings';
 import MenuSettings from './settings/MenuSettings';
 import LlmSettings from './settings/LlmSettings';
+import SettingsPersistence from './settings/SettingsPersistence';
 import {
 	SettingInputType,
 	SettingsChangeHandler,
@@ -59,13 +57,8 @@ const Settings = () => {
 	const [isDirty, setIsDirty] = useState(false);
 	const [saveMessage, setSaveMessage] = useState('');
 
-	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
 	const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 	const saveMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-	const {
-		isDemoMode,
-	} = bigState;
 
 	useEffect(() => {
 		return () => {
@@ -159,31 +152,11 @@ const Settings = () => {
 		setIsDirty(true);
 	};
 
-	const saveSettingsToServer = () => {
-
-		// convert the clientSettingsTemp into a string, where we also pretty-print the json with carriage returns and spaces
-		const settingsString = JSON.stringify(clientSettingsTemp, null, 2);
-
-		axios.post('save-client-settings.php', settingsString).then(response => {
-			//console.log('saved to server', response);
-
-			if (typeof response.data === 'object') {
-				setSaveMessage('Saved to Server');
-			} else {
-				setSaveMessage(response.data);
-			}
-
-		}).catch(error => {
-			//console.log('error saving to server', error);
-			// show a message then clear the message
-			setSaveMessage('Error saving to server');
-		});
-
-		clearSaveMessageAfter(3000);
-	};
-
-	const copySettingsToClipboard = () => {
-		clipboard.writeText(JSON.stringify(clientSettingsTemp, null, 2));
+	const showSaveMessage = (message: string, clearAfterMs?: number) => {
+		setSaveMessage(message);
+		if (clearAfterMs !== undefined) {
+			clearSaveMessageAfter(clearAfterMs);
+		}
 	};
 
 	return (
@@ -275,81 +248,12 @@ const Settings = () => {
 
 					<LlmSettings settings={clientSettingsTemp} onChange={handleChange} />
 
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td className="SettingsTableHeader">💾 Saving these settings on the server</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<div className="" style={{ margin: '5px' }}>
-										<div>
-											By default, settings are saved into localStorage in your browser. There is also the option to save these settings on the server
-											so they can be shared with all users of NagiosTV as defaults when they load the page.
-										</div>
-										<br />
-										<div>
-											Local client settings are applied AFTER loading settings from the server, so you can think of server settings as a way to set defaults
-											for all clients, but they can still be customized individually with settings saved in client settings. Delete the client settings and refresh the page to fetch server setting defaults again.
-										</div>
-										<br />
-										<div>
-											<label>
-												<input
-													type="checkbox"
-													checked={clientSettingsTemp.serverSettingsTakePrecedence}
-													onChange={(e: ChangeEvent<HTMLInputElement>) => {
-														setClientSettingsTemp(curr => ({ ...curr, serverSettingsTakePrecedence: e.target.checked }));
-														setIsDirty(true);
-													}}
-												/>
-												{' '}Server settings take precedence (when enabled, local settings will not override server settings)
-											</label>
-										</div>
-
-										<br />
-
-										<h4>Option 1: If you have PHP enabled on your server</h4>
-
-										<div style={{ marginLeft: '30px' }}>
-
-											You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
-											the nagiostv folder and chown 777 client-settings.json so the Apache web server has rights to write to it.
-
-											<pre>
-												sudo touch client-settings.json<br />
-												sudo chmod 777 client-settings.json
-											</pre>
-
-											After those steps, you can try this button:
-											<button disabled={isDemoMode} className="SettingsSaveToServerButton" onClick={saveSettingsToServer}>Save settings to server</button><br />
-											<br />
-
-										</div>
-
-
-										<h4>Option 2: Manually create the settings file and copy and paste the configuration in</h4>
-
-										<div style={{ marginLeft: '30px' }}>
-											Manually create the file <span style={{ color: 'lime' }}>client-settings.json</span> in the nagiostv folder and paste in this data:
-											
-											<div style={{ marginTop: 10 }}>
-												<button className="SettingsShowJsonButton" onClick={() => setShowClientSettingsJson(curr => !curr)}>
-													{showClientSettingsJson ? 'Hide' : 'Show'} JSON
-												</button>
-												<button className="SettingsSaveToServerButton" onClick={copySettingsToClipboard}>Copy settings to clipboard for manual paste</button>
-											</div>
-											
-
-											{showClientSettingsJson && <div className="raw-json-settings">{JSON.stringify(clientSettingsTemp, null, 2)}</div>}
-										</div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+					<SettingsPersistence
+						isDemoMode={bigState.isDemoMode}
+						settings={clientSettingsTemp}
+						onMessage={showSaveMessage}
+						onSetValue={setSettingValue}
+					/>
 				</div>
 			</div>}
 

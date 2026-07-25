@@ -102,11 +102,11 @@ This document records the findings from the July 2026 read-only project review. 
   - Unit-test hostgroup and servicegroup filters containing reserved URL characters.
   - Added a typed query-to-CGI mapping and migrated host, service, alert, group, comment, and program-status requests.
 
-- [ ] Split `Settings.tsx`.
+- [x] Split `Settings.tsx`.
   - The component is currently over 1,200 lines.
   - Extract cohesive sections such as data source, display, hosts, services, alerts/history, audio/speech, minimap, LLM, and persistence actions.
   - Consider typed field descriptors for repetitive inputs while retaining custom components for complex settings.
-  - Progress: extracted the typed data-source/connection, date/region, display/minimap, alert-history, audio/visual, menu/logo, and LLM sections, including reusable polling-frequency, legacy-format, prompt, and boolean controls with focused interaction tests.
+  - Extracted typed data-source/connection, date/region, display/minimap, alert-history, audio/visual, menu/logo, LLM, and persistence sections with reusable controls and focused interaction tests.
 
 - [ ] Split other large, multi-responsibility components.
   - Review `LocalLLM`, `Update`, `SettingsLoad`, `HistoryChart`, and `Demo`.
