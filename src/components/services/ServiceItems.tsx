@@ -26,8 +26,8 @@ import {
 } from '../../atoms/serviceAtom';
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
-import { translate } from '../../helpers/language';
 import { filterServiceStateArray } from '../../helpers/nagiostv';
+import MonitoringItems from '../monitoring/MonitoringItems';
 import ServiceItem from './ServiceItem';
 
 // icons
@@ -38,13 +38,8 @@ import ServiceItem from './ServiceItem';
 import { Service } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 
-import useVisibilityChange from '../../hooks/useVisibilityChange';
-
 // CSS
 import './ServiceItems.css';
-
-import { AnimatePresence } from "motion/react";
-import * as motion from "motion/react-client";
 
 interface ServiceItemsProps {
 	serviceStateArray: Service[];
@@ -60,10 +55,6 @@ const ServiceItems = ({
 	//howManyServices,
 	//commentlist
 }: ServiceItemsProps) => {
-
-	// Track visibility changes to fix stuck animations when tab is backgrounded
-	const visibilityKey = useVisibilityChange();
-
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
 
@@ -88,62 +79,32 @@ const ServiceItems = ({
 
 	const filteredServiceStateArray = filterServiceStateArray(serviceStateArray, settings);
 
-	const howManyHidden = serviceStateArray.length - filteredServiceStateArray.length;
-	const showSomeDownItems = serviceStateArray.length > 0 && filteredServiceStateArray.length === 0;
 	const { language } = settings;
 
 	return (
-		<div className="ServiceItems">
-
-			<AnimatePresence initial={false} key={`service-all-ok-${visibilityKey}`}>
-				{serviceStateArray.length === 0 && <motion.div
-					className={`all-ok-item`}
-					initial={{ opacity: 0, height: 0 }}
-					animate={{ opacity: 1, height: 'auto' }}
-					exit={{ opacity: 0, height: 0 }}
-				>
-					<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyServices} {translate('services are OK', language)}</span>{' '}
-				</motion.div>}
-			</AnimatePresence>
-
-			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-				<div>
-					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyServices - serviceStateArray.length} of {howManyServices} {translate('services are OK', language)}</span>{' '}
-					<span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
-				</div>
-			</div>
-
-			<div className="service-items-wrap">
-				<AnimatePresence initial={false} key={`service-items-${visibilityKey}`}>
-					{filteredServiceStateArray.map((e) => {
-						//console.log('ServiceItem item');
-						//console.log(e, i);
-
-						return (
-							<motion.div
-								initial={{ opacity: 0, height: 0 }}
-								animate={{ opacity: 1, height: 'auto' }}
-								exit={{ opacity: 0, height: 0 }}
-								transition={{ duration: 0.3, ease: 'easeInOut' }}
-								// style={box}
-								key={e.host_name + '-' + e.description}
-								className="ServiceItem"
-								style={{ overflow: 'hidden' }}
-							>
-								<ServiceItem
-									settings={settings}
-									serviceItem={e}
-									comments={commentlistObject.services[`${e.host_name}_${e.description}`] ? commentlistObject.services[`${e.host_name}_${e.description}`].comments : []}
-									howManyDown={filteredServiceStateArray.length}
-									isDemoMode={isDemoMode}
-
-								/>
-							</motion.div>
-						);
-					})}
-				</AnimatePresence>
-			</div>
-		</div>
+		<MonitoringItems
+			allHealthyMessage="services are OK"
+			className="ServiceItems"
+			filteredItems={filteredServiceStateArray}
+			getKey={service => `${service.host_name}-${service.description}`}
+			itemClassName="ServiceItem"
+			items={serviceStateArray}
+			itemsWrapClassName="service-items-wrap"
+			language={language}
+			renderItem={(service, problemCount) => (
+				<ServiceItem
+					settings={settings}
+					serviceItem={service}
+					comments={commentlistObject.services[
+						`${service.host_name}_${service.description}`
+					]?.comments ?? []}
+					howManyDown={problemCount}
+					isDemoMode={isDemoMode}
+				/>
+			)}
+			totalCount={howManyServices}
+			type="service"
+		/>
 	);
 }
 

@@ -25,8 +25,8 @@ import {
 } from '../../atoms/hostAtom';
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
-import { translate } from '../../helpers/language';
 import { filterHostStateArray } from '../../helpers/nagiostv';
+import MonitoringItems from '../monitoring/MonitoringItems';
 import HostItem from './HostItem';
 
 // icons
@@ -35,12 +35,8 @@ import HostItem from './HostItem';
 
 // CSS
 import './HostItems.css';
-import useVisibilityChange from '../../hooks/useVisibilityChange';
 import { Host } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
-
-import { AnimatePresence } from "motion/react";
-import * as motion from "motion/react-client";
 
 interface HostItemsProps {
 	hostStateArray: Host[];
@@ -53,10 +49,6 @@ const HostItems = ({
 	settings,
 	isDemoMode,
 }: HostItemsProps) => {
-
-	// Track visibility changes to fix stuck animations when tab is backgrounded
-	const visibilityKey = useVisibilityChange();
-
 	const commentlistState = useAtomValue(commentlistAtom);
 	const commentlistObject = commentlistState.commentlistObject;
 
@@ -82,63 +74,30 @@ const HostItems = ({
 
 	const filteredHostStateArray = filterHostStateArray(hostStateArray, settings);
 
-	const howManyHidden = hostStateArray.length - filteredHostStateArray.length;
-	const showSomeDownItems = hostStateArray.length > 0 && filteredHostStateArray.length === 0;
 	const { language } = settings;
 
 	return (
-		<div className="HostItems ServiceItems">
-
-			<AnimatePresence initial={false} key={`host-all-ok-${visibilityKey}`}>
-				{hostStateArray.length === 0 && <motion.div
-					className={`all-ok-item`}
-					initial={{ opacity: 0, height: 0 }}
-					animate={{ opacity: 1, height: 'auto' }}
-					exit={{ opacity: 0, height: 0 }}
-				>
-					<span style={{ margin: '5px 10px' }} className="margin-left-10 display-inline-block color-green">{translate('All', language)} {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
-				</motion.div>}
-			</AnimatePresence>
-
-			<div className={`some-down-items ${showSomeDownItems ? 'visible' : 'hidden'}`}>
-				<div>
-					<span className="display-inline-block color-green" style={{ marginRight: '10px' }}>{howManyHosts - hostStateArray.length} of {howManyHosts} {translate('hosts are UP', language)}</span>{' '}
-					<span className="filter-ok-label filter-ok-label-green some-down-hidden-text">{howManyHidden} hidden</span>
-				</div>
-			</div>
-
-			<div className="host-items-wrap">
-				<AnimatePresence initial={false} key={`host-items-${visibilityKey}`}>
-					{filteredHostStateArray.map((e) => {
-						//console.log('HostItem item');
-						//console.log(e, i);
-
-						return (
-							<motion.div
-								initial={{ opacity: 0, height: 0 }}
-								animate={{ opacity: 1, height: 'auto' }}
-								exit={{ opacity: 0, height: 0 }}
-								transition={{ duration: 0.3, ease: 'easeInOut' }}
-								// style={box}
-								key={`host-${e.name}`}
-								className="HostItem"
-								style={{ overflow: 'hidden' }}
-							>
-								<HostItem
-									settings={settings}
-									hostItem={e}
-									comments={commentlistObject.hosts[e.name] ? commentlistObject.hosts[e.name].comments : []}
-									howManyDown={filteredHostStateArray.length}
-									isDemoMode={isDemoMode}
-
-								/>
-							</motion.div>
-						);
-
-					})}
-				</AnimatePresence>
-			</div>
-		</div>
+		<MonitoringItems
+			allHealthyMessage="hosts are UP"
+			className="HostItems ServiceItems"
+			filteredItems={filteredHostStateArray}
+			getKey={host => `host-${host.name}`}
+			itemClassName="HostItem"
+			items={hostStateArray}
+			itemsWrapClassName="host-items-wrap"
+			language={language}
+			renderItem={(host, problemCount) => (
+				<HostItem
+					settings={settings}
+					hostItem={host}
+					comments={commentlistObject.hosts[host.name]?.comments ?? []}
+					howManyDown={problemCount}
+					isDemoMode={isDemoMode}
+				/>
+			)}
+			totalCount={howManyHosts}
+			type="host"
+		/>
 	);
 
 };

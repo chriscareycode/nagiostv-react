@@ -127,6 +127,7 @@ This document records the findings from the July 2026 read-only project review. 
   - [x] Use shared visibility helpers for host/service item lists and centralize common state predicates.
   - [x] Consolidate host/service counters around shared monitoring-state predicates.
   - [x] Share host/service sorting mechanics while retaining domain-specific name ordering.
+  - [x] Extract the shared animated item-list shell while retaining domain-specific rows.
 
 ## Priority 5: Performance and dependency hygiene
 
