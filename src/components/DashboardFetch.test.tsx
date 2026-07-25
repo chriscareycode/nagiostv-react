@@ -131,5 +131,6 @@ describe('DashboardFetch', () => {
 
 		expect(originalSignals.every((signal) => signal.aborted)).toBe(true);
 		view.unmount();
+		expect(vi.getTimerCount()).toBe(0);
 	});
 });

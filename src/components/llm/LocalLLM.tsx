@@ -74,6 +74,7 @@ export default function LocalLLM() {
 
 	// Tracks if a change occurred while we were loading - if so, we need to re-analyze after loading completes
 	const pendingReanalysisRef = useRef<boolean>(false);
+	const reanalysisTimerRef = useRef<number | null>(null);
 	// Store the signature that was used when we started loading, to compare against when done
 	const loadingSignatureRef = useRef<string | null>(null);
 
@@ -654,13 +655,17 @@ export default function LocalLLM() {
 			setIsLoading(false);
 			
 			// Check if data changed while we were loading and we need to re-analyze
-			if (pendingReanalysisRef.current) {
-				if (CONSOLE_DEBUG) {
-					console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
+				if (pendingReanalysisRef.current) {
+					if (CONSOLE_DEBUG) {
+						console.log('[LocalLLM] Data changed while loading, triggering re-analysis');
 				}
 				pendingReanalysisRef.current = false;
 				// Use a small delay to allow state to settle and avoid tight loops
-				setTimeout(() => {
+				if (reanalysisTimerRef.current) {
+					window.clearTimeout(reanalysisTimerRef.current);
+				}
+				reanalysisTimerRef.current = window.setTimeout(() => {
+					reanalysisTimerRef.current = null;
 					queryLLM();
 				}, 1000);
 			}
@@ -713,6 +718,7 @@ export default function LocalLLM() {
 			
 			// Initial load: trigger after 5 seconds if no analysis has run and history is empty
 			initialLoadTimerRef.current = window.setTimeout(() => {
+				initialLoadTimerRef.current = null;
 				if (!hasTriggeredAnalysisRef.current && !isLoading && history.length === 0) {
 					if (CONSOLE_DEBUG) {
 						console.log('[LocalLLM] Initial load trigger');
@@ -721,7 +727,12 @@ export default function LocalLLM() {
 					queryLLM();
 				}
 			}, 5000);
-			return;
+			return () => {
+				if (initialLoadTimerRef.current) {
+					window.clearTimeout(initialLoadTimerRef.current);
+					initialLoadTimerRef.current = null;
+				}
+			};
 		}
 
 		// Check if signature changed
@@ -774,11 +785,16 @@ export default function LocalLLM() {
 		};
 	}, [currentSignature, clientSettings.llmServerBaseUrl, clientSettings.llmBackendType, isLoading]);
 
-	// Cleanup initial load timer on unmount
+	// Cleanup timers that can be scheduled outside the signature effect lifecycle.
 	useEffect(() => {
 		return () => {
 			if (initialLoadTimerRef.current) {
 				window.clearTimeout(initialLoadTimerRef.current);
+				initialLoadTimerRef.current = null;
+			}
+			if (reanalysisTimerRef.current) {
+				window.clearTimeout(reanalysisTimerRef.current);
+				reanalysisTimerRef.current = null;
 			}
 		};
 	}, []);

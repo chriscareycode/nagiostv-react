@@ -94,8 +94,9 @@ const BottomPanel = ({
 		clearAutoHideTimer();
 
 		// Close menu
-		setTimeout(() => {
+		autoHideTimerRef.current = setTimeout(() => {
 			setIsVisible(false);
+			autoHideTimerRef.current = null;
 		}, 800);
 	};
 

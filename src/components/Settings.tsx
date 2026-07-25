@@ -85,9 +85,13 @@ const Settings = () => {
 
 	// Load speech synthesis voices asynchronously
 	useEffect(() => {
-		getVoices().then(loadedVoices => {
-			setVoices(loadedVoices);
+		const controller = new AbortController();
+		getVoices(controller.signal).then(loadedVoices => {
+			if (!controller.signal.aborted) {
+				setVoices(loadedVoices);
+			}
 		});
+		return () => controller.abort();
 	}, []);
 
 	// Save Local Settings

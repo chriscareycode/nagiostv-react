@@ -110,34 +110,52 @@ export function cancelSpeaking() {
  * Get available speech synthesis voices with proper async handling
  * Some browsers (Chrome) don't populate voices until after the first call or voiceschanged event
  */
-export function getVoices(): Promise<SpeechSynthesisVoice[]> {
+export function getVoices(signal?: AbortSignal): Promise<SpeechSynthesisVoice[]> {
 	return new Promise((resolve) => {
-		if (!window.speechSynthesis) {
+		if (!window.speechSynthesis || signal?.aborted) {
 			resolve([]);
 			return;
 		}
 
 		let voices = window.speechSynthesis.getVoices();
-		
+		let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+		let settled = false;
+
+		const finish = (result: SpeechSynthesisVoice[]) => {
+			if (settled) {
+				return;
+			}
+			settled = true;
+			window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedHandler);
+			signal?.removeEventListener('abort', abortHandler);
+			if (timeoutHandle) {
+				clearTimeout(timeoutHandle);
+			}
+			resolve(result);
+		};
+
+		const voicesChangedHandler = () => {
+			voices = window.speechSynthesis.getVoices();
+			finish(voices);
+		};
+
+		const abortHandler = () => {
+			finish([]);
+		};
+
 		// If voices are already loaded, return them
 		if (voices.length > 0) {
-			resolve(voices);
+			finish(voices);
 			return;
 		}
 
 		// Otherwise, wait for the voiceschanged event
-		const voicesChangedHandler = () => {
-			voices = window.speechSynthesis.getVoices();
-			window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedHandler);
-			resolve(voices);
-		};
-
 		window.speechSynthesis.addEventListener('voiceschanged', voicesChangedHandler);
-		
+		signal?.addEventListener('abort', abortHandler, { once: true });
+
 		// Fallback: resolve with empty array after timeout if voices never load
-		setTimeout(() => {
-			window.speechSynthesis.removeEventListener('voiceschanged', voicesChangedHandler);
-			resolve(window.speechSynthesis.getVoices());
+		timeoutHandle = setTimeout(() => {
+			finish(window.speechSynthesis.getVoices());
 		}, 1000);
 	});
 }

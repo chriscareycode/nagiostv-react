@@ -71,11 +71,12 @@ This document records the findings from the July 2026 read-only project review. 
 
 ## Priority 3: Timer and state cleanup
 
-- [ ] Audit every timeout and interval for cleanup.
+- [x] Audit every timeout and interval for cleanup.
   - Known candidates include `DashboardFetch`, `SettingsFakeData`, `Demo`, `HowManyEmoji`, `Doomguy`, and minimap components.
   - `SettingsFakeData` clears its interval but not its initial timeout.
   - `DashboardFetch` does not clear its delayed initial fetches.
   - Store multiple demo timers together so cleanup is reliable and easy to review.
+  - Audited remaining timers in panels, summary, audio, LLM, minimap, charts, scrolling, and status widgets; added cancellation for the remaining delayed callbacks.
 
 - [x] Avoid mutating nested atom state in `SettingsFakeData`.
   - It currently copies the host/service arrays but mutates the objects inside those arrays.

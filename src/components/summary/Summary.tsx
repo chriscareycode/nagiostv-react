@@ -79,7 +79,7 @@ export default function Summary() {
 		return () => {
 			clearInterval(i);
 		};
-	});
+	}, []);
 
 	return (
 		<div className="summary">
