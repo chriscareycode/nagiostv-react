@@ -92,60 +92,73 @@ export function convertServiceObjectToArray(servicelist: Record<string, Record<s
 }
 
 
-export const filterHostStateArray = (hostStateArray: Host[], settings: ClientSettings): Host[] => {
-	return hostStateArray.filter(host => {
-		// Filter by status
+interface CommonMonitoringState {
+	problem_has_been_acknowledged: boolean;
+	scheduled_downtime_depth: number;
+	is_flapping: boolean;
+	state_type: number;
+	notifications_enabled: boolean;
+}
+
+interface CommonVisibilitySettings {
+	hideAcknowledged: boolean;
+	hideScheduled: boolean;
+	hideFlapping: boolean;
+	hideSoft: boolean;
+	hideNotificationsDisabled: boolean;
+}
+
+const isCommonMonitoringStateVisible = (
+	item: CommonMonitoringState,
+	settings: CommonVisibilitySettings,
+): boolean => {
+	if (settings.hideAcknowledged && item.problem_has_been_acknowledged) return false;
+	if (settings.hideScheduled && item.scheduled_downtime_depth > 0) return false;
+	if (settings.hideFlapping && item.is_flapping) return false;
+	if (settings.hideSoft && item.state_type === 0) return false;
+	if (settings.hideNotificationsDisabled && !item.notifications_enabled) return false;
+	return true;
+};
+
+export const filterHostStateArray = (hosts: Host[], settings: ClientSettings): Host[] => {
+	const commonSettings: CommonVisibilitySettings = {
+		hideAcknowledged: settings.hideHostAcked,
+		hideScheduled: settings.hideHostScheduled,
+		hideFlapping: settings.hideHostFlapping,
+		hideSoft: settings.hideHostSoft,
+		hideNotificationsDisabled: settings.hideHostNotificationsDisabled,
+	};
+
+	return hosts.filter(host => {
 		if (settings.hideHostPending && host.status === 1) return false;
 		if (settings.hideHostUp && host.status === 2) return false;
 		if (settings.hideHostDown && host.status === 4) return false;
 		if (settings.hideHostUnreachable && host.status === 8) return false;
-
-		// Filter by acknowledged
-		if (settings.hideHostAcked && host.problem_has_been_acknowledged) return false;
-
-		// Filter by scheduled downtime
-		if (settings.hideHostScheduled && host.scheduled_downtime_depth > 0) return false;
-
-		// Filter by flapping
-		if (settings.hideHostFlapping && host.is_flapping) return false;
-
-		// Filter by soft state (state_type 0 = soft, 1 = hard)
-		if (settings.hideHostSoft && host.state_type === 0) return false;
-
-		// Filter by notifications disabled
-		if (settings.hideHostNotificationsDisabled && !host.notifications_enabled) return false;
-
-		return true;
+		return isCommonMonitoringStateVisible(host, commonSettings);
 	});
 };
 
-export const filterServiceStateArray = (serviceStateArray: Service[], settings: ClientSettings): Service[] => {
-	return serviceStateArray.filter(service => {
-		// Filter by status
+export const filterServiceStateArray = (
+	services: Service[],
+	settings: ClientSettings,
+): Service[] => {
+	const commonSettings: CommonVisibilitySettings = {
+		hideAcknowledged: settings.hideServiceAcked,
+		hideScheduled: settings.hideServiceScheduled,
+		hideFlapping: settings.hideServiceFlapping,
+		hideSoft: settings.hideServiceSoft,
+		hideNotificationsDisabled: settings.hideServiceNotificationsDisabled,
+	};
+
+	return services.filter(service => {
 		if (settings.hideServicePending && service.status === 1) return false;
 		if (settings.hideServiceOk && service.status === 2) return false;
 		if (settings.hideServiceWarning && service.status === 4) return false;
 		if (settings.hideServiceUnknown && service.status === 8) return false;
 		if (settings.hideServiceCritical && service.status === 16) return false;
-
-		// Filter by acknowledged
-		if (settings.hideServiceAcked && service.problem_has_been_acknowledged) return false;
-
-		// Filter by scheduled downtime
-		if (settings.hideServiceScheduled && service.scheduled_downtime_depth > 0) return false;
-
-		// Filter by flapping
-		if (settings.hideServiceFlapping && service.is_flapping) return false;
-
-		// Filter by soft state (state_type 0 = soft, 1 = hard)
-		if (settings.hideServiceSoft && service.state_type === 0) return false;
-
-		// Filter by notifications disabled
-		if (settings.hideServiceNotificationsDisabled && !service.notifications_enabled) return false;
-
-		return true;
+		return isCommonMonitoringStateVisible(service, commonSettings);
 	});
-}
+};
 
 /**
  * Count how many hosts are in a down state from a filtered array

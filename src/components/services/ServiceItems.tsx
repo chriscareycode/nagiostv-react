@@ -16,8 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { useRef } from 'react';
-
 // State Management
 import { useAtomValue } from 'jotai';
 //import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
@@ -29,6 +27,7 @@ import {
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
 import { translate } from '../../helpers/language';
+import { filterServiceStateArray } from '../../helpers/nagiostv';
 import ServiceItem from './ServiceItem';
 
 // icons
@@ -87,39 +86,7 @@ const ServiceItems = ({
 	//console.log('this.props.serviceStateArray is', this.props.serviceStateArray);
 	//console.log(Object.keys(this.props.serviceStateArray));
 
-	const filteredServiceStateArray = serviceStateArray.filter(item => {
-		if (settings.hideServicePending) {
-			if (item.status === 1) { return false; }
-		}
-		if (settings.hideServiceOk) {
-			if (item.status === 2) { return false; }
-		}
-		if (settings.hideServiceWarning) {
-			if (item.status === 4) { return false; }
-		}
-		if (settings.hideServiceUnknown) {
-			if (item.status === 8) { return false; }
-		}
-		if (settings.hideServiceCritical) {
-			if (item.status === 16) { return false; }
-		}
-		if (settings.hideServiceAcked) {
-			if (item.problem_has_been_acknowledged) { return false; }
-		}
-		if (settings.hideServiceScheduled) {
-			if (item.scheduled_downtime_depth > 0) { return false; }
-		}
-		if (settings.hideServiceFlapping) {
-			if (item.is_flapping) { return false; }
-		}
-		if (settings.hideServiceSoft) {
-			if (item.state_type === 0) { return false; }
-		}
-		if (settings.hideServiceNotificationsDisabled) {
-			if (item.notifications_enabled === false) { return false; }
-		}
-		return true;
-	});
+	const filteredServiceStateArray = filterServiceStateArray(serviceStateArray, settings);
 
 	const howManyHidden = serviceStateArray.length - filteredServiceStateArray.length;
 	const showSomeDownItems = serviceStateArray.length > 0 && filteredServiceStateArray.length === 0;

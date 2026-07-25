@@ -26,6 +26,7 @@ import {
 import { commentlistAtom } from '../../atoms/commentlistAtom';
 
 import { translate } from '../../helpers/language';
+import { filterHostStateArray } from '../../helpers/nagiostv';
 import HostItem from './HostItem';
 
 // icons
@@ -34,7 +35,6 @@ import HostItem from './HostItem';
 
 // CSS
 import './HostItems.css';
-import { useRef } from 'react';
 import useVisibilityChange from '../../hooks/useVisibilityChange';
 import { Host } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
@@ -80,36 +80,7 @@ const HostItems = ({
 	//console.log('hostStateArray is', hostStateArray);
 	//console.log(Object.keys(hostStateArray));
 
-	const filteredHostStateArray = hostStateArray.filter(item => {
-		if (settings.hideHostPending) {
-			if (item.status === 1) { return false; }
-		}
-		if (settings.hideHostUp) {
-			if (item.status === 2) { return false; }
-		}
-		if (settings.hideHostDown) {
-			if (item.status === 4) { return false; }
-		}
-		if (settings.hideHostUnreachable) {
-			if (item.status === 8) { return false; }
-		}
-		if (settings.hideHostAcked) {
-			if (item.problem_has_been_acknowledged) { return false; }
-		}
-		if (settings.hideHostScheduled) {
-			if (item.scheduled_downtime_depth > 0) { return false; }
-		}
-		if (settings.hideHostFlapping) {
-			if (item.is_flapping) { return false; }
-		}
-		if (settings.hideHostSoft) {
-			if (item.state_type === 0) { return false; }
-		}
-		if (settings.hideHostNotificationsDisabled) {
-			if (item.notifications_enabled === false) { return false; }
-		}
-		return true;
-	});
+	const filteredHostStateArray = filterHostStateArray(hostStateArray, settings);
 
 	const howManyHidden = hostStateArray.length - filteredHostStateArray.length;
 	const showSomeDownItems = hostStateArray.length > 0 && filteredHostStateArray.length === 0;

@@ -124,6 +124,7 @@ This document records the findings from the July 2026 read-only project review. 
 - [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.
   - Do not erase meaningful host/service domain differences merely to reduce line count.
+  - [x] Use shared visibility helpers for host/service item lists and centralize common state predicates.
 
 ## Priority 5: Performance and dependency hygiene
 
