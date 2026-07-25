@@ -114,6 +114,7 @@ This document records the findings from the July 2026 read-only project review. 
   - Preserve existing uncommitted `LocalLLM.tsx` work while planning or implementing this item.
   - [x] Extract `Update` HTTP/state orchestration into a dedicated, cancellable hook.
   - [x] Extract `SettingsLoad` version-check scheduling and request lifecycle into a tested hook.
+  - [x] Extract `HistoryChart` alert aggregation and layout calculations into pure, tested helpers.
 
 - [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.

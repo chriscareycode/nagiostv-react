@@ -20,10 +20,14 @@ import { useEffect, useMemo, useRef } from 'react';
 import './HistoryChart.css';
 import Highcharts, { PlotOptions } from 'highcharts';
 import { HighchartsReact } from 'highcharts-react-official';
-import _ from 'lodash';
 import { DateTime } from 'luxon';
 // Types
 import { Alert } from 'types/hostAndServiceTypes';
+import {
+	buildHistoryChartSeries,
+	getHistoryChartBarWidth,
+	getHourlyAxisRange,
+} from './historyChartData';
 
 const debug = false;
 
@@ -37,16 +41,6 @@ interface HistoryChartProps {
 	alertDaysBack?: number;
 	triggerReflow: number;
 }
-interface HighChartsSeriesData {
-	x: number;
-	y: number;
-	xNice: string;
-}
-
-interface GroupByData {
-	[key: string]: Alert[];
-}
-
 const HistoryChart = ({
 	alertlistLastUpdate,
 	alertlist,
@@ -165,25 +159,6 @@ const HistoryChart = ({
 	}, [groupBy]);
 
 	useEffect(() => {
-
-		const massageGroupByDataIntoHighchartsData = (groupByData: GroupByData) => {
-
-			let returnArray: HighChartsSeriesData[] = [];
-
-			Object.keys(groupByData).forEach(group => {
-				returnArray.push({
-					x: parseInt(group),
-					y: groupByData[group].length,
-					xNice: new Date(parseInt(group)).toString() // extra data for debugging
-				});
-			});
-
-			// Sort the array in ascending order by the x value
-			returnArray.sort((a, b) => a.x - b.x);
-
-			return returnArray;
-		};
-
 		// multiple stacked charts for OK, WARNING and CRITICAL
 		const updateSeriesFromProps = () => {
 
@@ -194,125 +169,23 @@ const HistoryChart = ({
 				return;
 			}
 
-			// group the alerts into an object with keys that are for each day
-			// this is a super awesome one liner for grouping
-
-			// OK
-			const alertOks = alertlist.filter(alert => alert.state === 1 || alert.state === 8);
-			const groupedOks = _.groupBy(alertOks, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
-			//console.log('updateSeriesFromProps() groupedOks', groupBy, groupedOks);
-
-			// WARNING
-			// Filter for only warning states
-			// 16 = WARNING
-			const alertWarnings = alertlist.filter(alert => alert.state === 16);
-			const groupedWarnings = _.groupBy(alertWarnings, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
-
-			// UNKNOWN
-			// Filter for only unknown states
-			// 64 = UNKNOWN
-			const alertUnknowns = alertlist.filter(alert => alert.state === 64);
-			const groupedUnknowns = _.groupBy(alertUnknowns, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
-
-			// CRITICAL
-			// Filter for only critical states
-			// 2 = CRITICAL
-			// 32 = ?
-			const alertCriticals = alertlist.filter(alert => alert.state === 2 || alert.state === 32);
-			const groupedCriticals = _.groupBy(alertCriticals, (result) => DateTime.fromJSDate(new Date(result.timestamp)).startOf(groupBy === 'day' ? 'day' : 'hour').toMillis().toString());
-
-			// if (debug) {
-			//   console.log('alertOks', alertOks);
-			//   console.log('alertWarnings', alertWarnings);
-			//   console.log('alertUnknowns', alertUnknowns);
-			//   console.log('alertCriticals', alertCriticals);
-
-			//   console.log('groupedOks', groupedOks);
-			//   console.log('groupedWarnings', groupedWarnings);
-			//   console.log('groupedUnknowns', groupedUnknowns);
-			//   console.log('groupedCriticals', groupedCriticals);
-			// }
-
-			
-
 			// HighCharts setData
 			// https://api.highcharts.com/class-reference/Highcharts.Series.html#setData
-
-			// OK
-			if (Object.keys(groupedOks).length > 0) {
-				let okData = massageGroupByDataIntoHighchartsData(groupedOks);
+			const seriesData = buildHistoryChartSeries(alertlist, groupBy, hideAlertSoft);
+			seriesData.forEach((data, index) => {
 				if (debug) {
-					console.log('Setting 0 okData', groupBy, okData);
+					console.log('Setting series data', index, groupBy, data);
 				}
-				chart.series[0].setData(okData, false, false, false);
-			} else {
-				chart.series[0].setData([], false, false, false);
-			}
-
-			// WARNING
-			if (Object.keys(groupedWarnings).length > 0) {
-				let warningData = massageGroupByDataIntoHighchartsData(groupedWarnings);
-				if (debug) {
-					console.log('Setting 1 warningData', groupBy, warningData);
-					console.log('chart.series', chart.series);
-				}
-				chart.series[1].setData(warningData, false, false, false);
-			} else {
-				chart.series[1].setData([], false, false, false);
-			}
-
-			// UNKNOWN
-			if (Object.keys(groupedUnknowns).length > 0) {
-				let unknownData = massageGroupByDataIntoHighchartsData(groupedUnknowns);
-				if (debug) {
-					console.log('Setting 2 unknownData', groupBy, unknownData);
-				}
-				chart.series[2].setData(unknownData, false, false, false);
-			} else {
-				chart.series[2].setData([], false, false, false);
-			}
-
-			// CRITICAL
-			if (Object.keys(groupedCriticals).length > 0) {
-				let criticalData = massageGroupByDataIntoHighchartsData(groupedCriticals);
-				if (debug) {
-					console.log('Setting 3 criticalData', groupBy, criticalData);
-				}
-				chart.series[3].setData(criticalData, false, false, false);
-			} else {
-				chart.series[3].setData([], false, false, false);
-			}
+				chart.series[index].setData(data, false, false, false);
+			});
 
 			if (groupBy === 'hour' && alertHoursBack) {
-
-				// calculate min and max for hourly chart XAxis configuration
-				// If it is 10:12, this will return 10:00
-				const currentHour = new Date();
-				currentHour.setMinutes(0);
-				currentHour.setSeconds(0);
-				currentHour.setMilliseconds(0);
-
-				// Go back 24 hours from the current hour to get the same hour yesterday
-				// If currentHour is 10:00, this will return 10:00 yesterday
-				const sameHourYesterday = DateTime.fromJSDate(currentHour).minus({ hours: 24 }).toJSDate();
-				// If sameHourYesterday is 10:00 yesterday, this will return 9:30 yesterday
-				const sameHourYesterdayMinusSome = DateTime.fromJSDate(sameHourYesterday).minus({ minutes: 30 }).toJSDate();
-				// Set min to 30 minutes before the same hour yesterday (to add some spacing)
-				const min = sameHourYesterdayMinusSome.getTime();
-				;
-				// Set max to 30 minutes after the current hour: ex: 10:30
-				const max = currentHour.getTime() + 30 * 60 * 1000;
+				const { min, max, tickPositions } = getHourlyAxisRange();
 
 				if (debug) {
 					console.log('min max', min, max);
 					console.log(new Date(min));
 					console.log(new Date(max));
-				}
-
-				// Calculate exactly 25 tick positions (one per hour)
-				const tickPositions = [];
-				for (let i = 0; i < 25; i++) {
-					tickPositions.push(sameHourYesterday.getTime() + (i * 3600 * 1000));
 				}
 
 				chart.update({
@@ -341,8 +214,7 @@ const HistoryChart = ({
 				});
 
 				// update pointWidth based on howManyItems
-				let barWidth = (((window.innerWidth + 100) / 2) / alertHoursBack);
-				if (barWidth > 35) { barWidth = 35; } // set a max width to 35
+				const barWidth = getHistoryChartBarWidth(window.innerWidth, alertHoursBack);
 
 				const plotOptionsColumn: Highcharts.Options = {
 					plotOptions: {
@@ -357,8 +229,7 @@ const HistoryChart = ({
 
 			if (groupBy === 'day' && alertDaysBack) {
 				// update pointWidth based on howManyItems
-				let barWidth = (((window.innerWidth + 100) / 2) / alertDaysBack);
-				if (barWidth > 35) { barWidth = 35; } // set a max width to 35
+				const barWidth = getHistoryChartBarWidth(window.innerWidth, alertDaysBack);
 
 				const plotOptionsColumn: Highcharts.Options = {
 					plotOptions: {
