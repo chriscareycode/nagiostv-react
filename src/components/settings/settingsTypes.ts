@@ -3,6 +3,10 @@ import { ClientSettings } from '../../types/settings';
 
 export type SettingInputType = 'boolean' | 'number' | 'string';
 
+export type BooleanSettingKey = {
+	[Key in keyof ClientSettings]: ClientSettings[Key] extends boolean ? Key : never;
+}[keyof ClientSettings];
+
 export type SettingsChangeHandler = (
 	propName: keyof ClientSettings,
 	dataType: SettingInputType,

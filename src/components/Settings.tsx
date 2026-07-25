@@ -38,6 +38,7 @@ import LlmModelSelector from './settings/LlmModelSelector';
 import { removeClientSettings, saveClientSettings } from '../helpers/persistence';
 import DataSourceSettings from './settings/DataSourceSettings';
 import DateRegionSettings from './settings/DateRegionSettings';
+import DisplaySettings from './settings/DisplaySettings';
 import {
 	SettingInputType,
 	SettingsChangeHandler,
@@ -279,118 +280,7 @@ const Settings = () => {
 						onSetValue={setSettingValue}
 					/>
 
-					{/* summary */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Show or Hide sections</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th>Summary:</th>
-								<td>
-									<select value={clientSettingsTemp.hideSummarySection.toString()} onChange={handleChange('hideSummarySection', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<th>Most Recent Alert:</th>
-								<td>
-									<select value={clientSettingsTemp.hideMostRecentAlertSection.toString()} onChange={handleChange('hideMostRecentAlertSection', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<th>Hosts and Services layout:</th>
-								<td>
-									<select value={clientSettingsTemp.hostsAndServicesSideBySide.toString()} onChange={handleChange('hostsAndServicesSideBySide', 'boolean')}>
-										<option value={'true'}>Side-by-side (Column)</option>
-										<option value={'false'}>Stacked</option>
-									</select>
-									&nbsp;
-									Side-by-side (Column) layout reverts to stacked on smaller screens
-								</td>
-							</tr>
-							<tr>
-								<th>Service and HostGroup filters:</th>
-								<td>
-									<select value={clientSettingsTemp.alwaysShowGroupFilters.toString()} onChange={handleChange('alwaysShowGroupFilters', 'boolean')}>
-										<option value={'true'}>Show Always</option>
-										<option value={'false'}>Show with Filters</option>
-									</select>
-									&nbsp;
-									Show Always keeps HostGroup and ServiceGroup filters visible. Show with Filters only shows them when filters are toggled on.
-								</td>
-							</tr>
-							<tr>
-								<th>Hosts:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHostSection.toString()} onChange={handleChange('hideHostSection', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<th>Services:</th>
-								<td>
-									<select value={clientSettingsTemp.hideServiceSection.toString()} onChange={handleChange('hideServiceSection', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<th>Alert History:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHistory.toString()} onChange={handleChange('hideHistory', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-									&nbsp;
-								</td>
-							</tr>
-							<tr>
-								<th>MiniMap:</th>
-								<td>
-									<select value={clientSettingsTemp.showMiniMap.toString()} onChange={handleChange('showMiniMap', 'boolean')}>
-										<option value={'false'}>Hide</option>
-										<option value={'true'}>Show</option>
-									</select>
-									&nbsp;
-									Show a "MiniMap" on the right side of the screen (Experimental)
-								</td>
-							</tr>
-							<tr>
-								<th>MiniMap width:</th>
-								<td>
-									<input
-										type="text"
-										style={{ maxWidth: 60 }}
-										//className={hostlistError ? 'input-error' : ''}
-										disabled={!clientSettingsTemp.showMiniMap}
-										value={clientSettingsTemp.miniMapWidth}
-										onChange={handleChange('miniMapWidth', 'number')}
-									/>px
-									&nbsp;
-
-								</td>
-							</tr>
-
-
-
-
-						</tbody>
-					</table>
+					<DisplaySettings settings={clientSettingsTemp} onChange={handleChange} />
 
 
 
