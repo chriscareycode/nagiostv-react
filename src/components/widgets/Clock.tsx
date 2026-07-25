@@ -20,6 +20,12 @@ import { useEffect, useRef } from 'react';
 import { formatDateTimeLocale } from '../../helpers/dates';
 import './Clock.css';
 
+interface ClockProps {
+	locale: string;
+	clockDateFormat: string;
+	clockTimeFormat: string;
+}
+
 // icons
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faClock } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +34,7 @@ const Clock = ({
 	locale,
 	clockDateFormat,
 	clockTimeFormat,
-}) => {
+	}: ClockProps) => {
 
 	const dateRef = useRef<HTMLDivElement>(null);
 

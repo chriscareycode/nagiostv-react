@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function hostBorderClass(status) {
+export function hostBorderClass(status: number) {
 	//const status = this.get('servicedetail.status');
 	let classString = '';
 
@@ -40,7 +40,7 @@ export function hostBorderClass(status) {
 	return classString;
 }
 
-export function hostTextClass(status) {
+export function hostTextClass(status: number) {
 	let classString = '';
 
 	switch (status) {
@@ -63,7 +63,7 @@ export function hostTextClass(status) {
 	return classString;
 }
 
-export function serviceBorderClass(status) {
+export function serviceBorderClass(status: number) {
 	//const status = this.get('servicedetail.status');
 	let classString = '';
 
@@ -90,7 +90,7 @@ export function serviceBorderClass(status) {
 	return classString;
 }
 
-export function serviceTextClass(status) {
+export function serviceTextClass(status: number) {
 	let classString = '';
 
 	switch (status) {
@@ -117,7 +117,7 @@ export function serviceTextClass(status) {
 }
 
 
-export function alertBorderClass(object_type, state) {
+export function alertBorderClass(_objectType: number, state: number) {
 	let classString = '';
 
 	switch (state) {
@@ -149,7 +149,7 @@ export function alertBorderClass(object_type, state) {
 	return classString;
 }
 
-export function alertTextClass(object_type, state) {
+export function alertTextClass(_objectType: number, state: number) {
 	let classString = '';
 
 	switch (state) {

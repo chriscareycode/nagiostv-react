@@ -26,8 +26,8 @@ interface CustomLogoProps {
 
 class CustomLogo extends Component<CustomLogoProps> {
 
-	shouldComponentUpdate(nextProps, nextState) {
-		//console.log('shouldComponentUpdate', nextProps, nextState);
+	shouldComponentUpdate(nextProps: CustomLogoProps) {
+		//console.log('shouldComponentUpdate', nextProps);
 		if (nextProps.settings.customLogoEnabled !== this.props.settings.customLogoEnabled || nextProps.settings.customLogoUrl !== this.props.settings.customLogoUrl) {
 			return true;
 		} else {

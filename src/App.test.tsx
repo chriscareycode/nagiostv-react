@@ -1,6 +1,13 @@
 import { screen, render } from "@testing-library/react";
 import App from "./App";
 
+vi.mock("axios", () => ({
+	default: {
+		get: vi.fn(() => new Promise(() => undefined)),
+		post: vi.fn(() => new Promise(() => undefined)),
+	},
+}));
+
 describe("App tests", () => {
 	it("should render the title", () => {
 		render(<App />);

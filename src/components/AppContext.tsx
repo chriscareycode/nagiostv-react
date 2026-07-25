@@ -1,8 +1,8 @@
-import { createContext, useState } from "react";
+import { createContext, PropsWithChildren, useState } from "react";
 
 export const AppContext = createContext({});
 
-export function AppContextProvider({ children }) {
+export function AppContextProvider({ children }: PropsWithChildren) {
 	const [preset, setPreset] = useState("moveToLeftFromRight");
 	const [enterAnimation, setEnterAnimation] = useState("");
 	const [exitAnimation, setExitAnimation] = useState("");

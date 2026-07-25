@@ -10,8 +10,8 @@
 
 import { hostAtom } from "atoms/hostAtom";
 import { serviceAtom } from "atoms/serviceAtom"
-import { bigStateAtom, clientSettingsAtom } from "atoms/settingsState";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { bigStateAtom } from "atoms/settingsState";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 
 const startAfterSeconds = 4; // This is how long to wait before starting the first/initial fake data
@@ -19,8 +19,7 @@ const fakeOutIntervalSeconds = 40; // This needs to be longer than the polling i
 
 const SettingsFakeData = () => {
 	// State Management state (main)
-	const [bigState, setBigState] = useAtom(bigStateAtom);
-	// const clientSettings = useAtomValue(clientSettingsAtom);
+	const bigState = useAtomValue(bigStateAtom);
 	const setHostState = useSetAtom(hostAtom);
 	const setServiceState = useSetAtom(serviceAtom);
 
@@ -29,31 +28,30 @@ const SettingsFakeData = () => {
 		// If we are in demo mode, loop over all hosts and services and set next_check to a random time in the future
 		const fakeOutTheData = () => {
 			setHostState(prev => {
-				// Loop over all hosts
-				const newArr = [...prev.stateArray];
-				newArr.forEach((host) => {
-					if (host.next_check < Date.now()) {
-						host.next_check = Date.now() + Math.floor(Math.random() * 500000);
-					}
+				const now = Date.now();
+				const newArr = prev.stateArray.map((host) => {
+					return host.next_check < now
+						? { ...host, next_check: now + Math.floor(Math.random() * 500000) }
+						: host;
 				});
 				return { ...prev, stateArray: newArr };
 			});
 			setServiceState(prev => {
-				// Loop over all services
-				const newArr = [...prev.stateArray];
-				newArr.forEach((service) => {
-					if (service.next_check < Date.now()) {
-						service.next_check = Date.now() + Math.floor(Math.random() * 500000);
-					}
+				const now = Date.now();
+				const newArr = prev.stateArray.map((service) => {
+					return service.next_check < now
+						? { ...service, next_check: now + Math.floor(Math.random() * 500000) }
+						: service;
 				});
 				return { ...prev, stateArray: newArr };
 			});
 		}
 
-		let interval: NodeJS.Timeout;
+		let interval: ReturnType<typeof setInterval> | undefined;
+		let initialTimeout: ReturnType<typeof setTimeout> | undefined;
 		if (bigState.useFakeSampleData) {
 			// Run one after 5s
-			setTimeout(() => {
+			initialTimeout = setTimeout(() => {
 				console.log('Running fakeOutTheData to fake out the fake data...');
 				fakeOutTheData();
 			}, startAfterSeconds * 1000);
@@ -67,6 +65,9 @@ const SettingsFakeData = () => {
 
 		// Cleanup
 		return () => {
+			if (initialTimeout) {
+				clearTimeout(initialTimeout);
+			}
 			if (interval) {
 				clearInterval(interval);
 			}

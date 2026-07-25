@@ -19,6 +19,16 @@ Make sure you can access your web server on the hostname and port shown, and you
 **However**, you _probably_ see error messages since you _likely_ don't have a Nagios data source. 
 You'll either want to use the provided _Mock Data_ or _proxy server_.
 
+### Validation
+
+Before submitting a change, run the complete local validation suite:
+
+```console
+$ npm run check
+```
+
+This runs strict TypeScript checking, the non-watch test suite, and a production build.
+
 
 
 ### Using Mock data

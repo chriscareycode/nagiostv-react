@@ -35,12 +35,10 @@ import { DateTime } from 'luxon';
 import axios from 'axios';
 import _ from 'lodash';
 import { Host, HostList } from 'types/hostAndServiceTypes';
-import { handleFetchFail } from 'helpers/axios';
+import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyHostCounter } from './host-functions';
 
 //import './HostSection.css';
-
-let isComponentMounted = false;
 
 const HostSection = () => {
 
@@ -80,21 +78,25 @@ const HostSection = () => {
 	} = clientSettings;
 
 	useEffect(() => {
-
-		isComponentMounted = true;
+		let requestController: AbortController | null = null;
+		const runFetch = () => {
+			requestController?.abort();
+			requestController = new AbortController();
+			fetchHostCountThenFetchData(requestController.signal);
+		};
 
 		const timeoutHandle = setTimeout(() => {
-			fetchHostCountThenFetchData();
+			runFetch();
 		}, 1000);
 
-		let intervalHandle: NodeJS.Timeout | null = null;
+		let intervalHandle: ReturnType<typeof setInterval> | null = null;
 
 		if (isDemoMode === false && useFakeSampleData === false) {
 			// safetly net in case the interval value is bad
 			const fetchHostFrequencySafe = (typeof fetchHostFrequency === 'number' && fetchHostFrequency >= 5) ? fetchHostFrequency : clientSettingsInitial.fetchHostFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
-				fetchHostCountThenFetchData();
+				runFetch();
 			}, fetchHostFrequencySafe * 1000);
 		}
 
@@ -105,9 +107,19 @@ const HostSection = () => {
 			if (intervalHandle) {
 				clearInterval(intervalHandle);
 			}
-			isComponentMounted = false;
+			requestController?.abort();
 		};
-	}, [clientSettings.fetchHostFrequency, clientSettings.hideHostUp, hostgroupFilter, servicegroupFilter]);
+	}, [
+		clientSettings.baseUrl,
+		clientSettings.dataSource,
+		clientSettings.fetchHostFrequency,
+		clientSettings.hideHostUp,
+		clientSettings.livestatusPath,
+		hostgroupFilter,
+		isDemoMode,
+		servicegroupFilter,
+		useFakeSampleData,
+	]);
 
 	const howManyCounter = useCallback((hostlist: HostList) => {
 		//console.log('HostSection howManyCounter() useCallback() hostState.response changed');
@@ -130,7 +142,7 @@ const HostSection = () => {
 
 	}, [hostState.lastUpdate]);
 
-	const fetchHostCountThenFetchData = () => {
+	const fetchHostCountThenFetchData = (signal?: AbortSignal) => {
 
 		let url;
 		if (useFakeSampleData) {
@@ -148,28 +160,33 @@ const HostSection = () => {
 		setHostIsFetching(true);
 
 		axios.get(url, {
-			timeout: (fetchHostFrequency - 2) * 1000
+			timeout: (fetchHostFrequency - 2) * 1000,
+			signal,
 		})
 		.then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 			let total = 0;
 			Object.keys(response.data.data.count).forEach((aaKey) => {
 				total += response.data.data.count[aaKey];
 			});
 			totalCount.current = total;
-			fetchHostData();
+			fetchHostData(signal);
 		})
 		.catch((error) => {
-			console.log('fetchHostCountThenFetchData() ajax error');
-			if (isComponentMounted) {
-				setHostIsFetching(false);
-
-				handleFetchFail(setHostState, error, url, true);
+			if (signal?.aborted) {
+				return;
 			}
+			console.log('fetchHostCountThenFetchData() ajax error');
+			setHostIsFetching(false);
+
+			handleFetchFail(setHostState, error, url, true);
 		});
 
 	};
 
-	const fetchHostData = () => {
+	const fetchHostData = (signal?: AbortSignal) => {
 
 		// if we are offline, let's just skip
 		// This is broken on Midori browser on Raspberry Pi and I assume others then. Disabling for now.
@@ -199,11 +216,17 @@ const HostSection = () => {
 
 		axios.get(
 			url,
-			{ timeout: (fetchHostFrequency - 2) * 1000 }
+			{
+				timeout: (fetchHostFrequency - 2) * 1000,
+				signal,
+			}
 		)
 		.then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchHostData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setHostIsFetching(false);
 				setHostState(curr => ({
@@ -239,46 +262,43 @@ const HostSection = () => {
 
 			if (isDemoMode === false && useFakeSampleData === false && parseFloat(hours) >= 1) {
 				// Data is stale
-				if (isComponentMounted) {
-					setHostIsFetching(false);
+				setHostIsFetching(false);
 
-					setHostState(curr => ({
-						...curr,
-						error: true,
-						errorCount: curr.errorCount + 1,
-						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-						lastUpdate: new Date().getTime(),
-						response: my_list,
-						stateArray: myArray
-					}));
-				}
+				setHostState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+					lastUpdate: new Date().getTime(),
+					response: my_list,
+					stateArray: myArray
+				}));
 			} else {
 				// Data is not stale, good
-				if (isComponentMounted) {
-					setHostIsFetching(false);
+				setHostIsFetching(false);
 
-					setHostState(curr => ({
-						...curr,
-						error: false,
-						errorCount: 0,
-						errorMessage: '',
-						lastUpdate: new Date().getTime(),
-						response: my_list,
-						stateArray: myArray
-					}));
+				setHostState(curr => ({
+					...curr,
+					error: false,
+					errorCount: 0,
+					errorMessage: '',
+					lastUpdate: new Date().getTime(),
+					response: my_list,
+					stateArray: myArray
+				}));
 
-					setHostIsFakeDataSet(useFakeSampleData);
+				setHostIsFakeDataSet(useFakeSampleData);
 
-					howManyCounter(my_list);
-				}
+				howManyCounter(my_list);
 			}
 		})
 		.catch((error) => {
-			if (isComponentMounted) {
-				setHostIsFetching(false);
-
-				handleFetchFail(setHostState, error, url, true);
+			if (signal?.aborted) {
+				return;
 			}
+			setHostIsFetching(false);
+
+			handleFetchFail(setHostState, error, url, true);
 		});
 	};
 

@@ -37,9 +37,6 @@ interface HistoryChartProps {
 	alertDaysBack?: number;
 	triggerReflow: number;
 }
-interface HistoryChartState {
-	intervalHandle: NodeJS.Timeout | null;
-}
 interface HighChartsSeriesData {
 	x: number;
 	y: number;

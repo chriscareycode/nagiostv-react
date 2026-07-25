@@ -59,11 +59,12 @@ class HowManyEmoji extends Component<HowManyEmojiProps, HowManyEmojiState> {
 		greenEmoji: ''
 	};
 
-	intervalHandle: NodeJS.Timeout | null = null;
+	intervalHandle: ReturnType<typeof setInterval> | null = null;
+	initialTimeoutHandle: ReturnType<typeof setTimeout> | null = null;
 
 	componentDidMount() {
 
-		setTimeout(() => {
+		this.initialTimeoutHandle = setTimeout(() => {
 			this.selectEmojis();
 		}, 100);
 
@@ -76,6 +77,9 @@ class HowManyEmoji extends Component<HowManyEmojiProps, HowManyEmojiState> {
 	}
 
 	componentWillUnmount() {
+		if (this.initialTimeoutHandle) {
+			clearTimeout(this.initialTimeoutHandle);
+		}
 		if (this.intervalHandle) {
 			clearInterval(this.intervalHandle);
 		}

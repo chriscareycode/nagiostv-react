@@ -9,6 +9,7 @@ import axios, { AxiosResponse } from 'axios';
 import Cookie from 'js-cookie';
 import { ClientSettings, VersionCheck } from 'types/settings';
 import { doesLocalStorageSettingsExist, isLocalStorageEnabled } from 'helpers/nagiostv';
+import { responseHasJsonContentType } from 'helpers/axios';
 
 const SettingsLoad = () => {
 
@@ -234,7 +235,7 @@ const SettingsLoad = () => {
 		).then((response: AxiosResponse<ClientSettings>) => {
 
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('getRemoteSettings() parse ERROR: got response but result data is not JSON. Skipping server settings.');
 				getLocalSettings();
 				return;
@@ -380,7 +381,7 @@ const SettingsLoad = () => {
 			versionCheckTimeout = 1800 * 1000; // 30m
 		}
 
-		let intervalHandleVersionCheck: NodeJS.Timeout | null = null;
+		let intervalHandleVersionCheck: ReturnType<typeof setInterval> | null = null;
 		const timeoutHandle = setTimeout(() => {
 			const versionCheckDays = clientSettings.versionCheckDays;
 			// if someone turns off the version check, it should never check

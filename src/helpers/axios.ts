@@ -1,5 +1,10 @@
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { SetStateAction } from "jotai";
+
+export const responseHasJsonContentType = (headers: AxiosResponse['headers']): boolean => {
+	const contentType = headers?.['content-type'];
+	return contentType == null || String(contentType).toLowerCase().includes('application/json');
+};
 
 export const handleFetchFail = (setFn: SetStateAction<any>, error: AxiosError, url: string, incrementErrorCount: boolean) => {
 	// console.log('handleFetchFail DEBUG error', error);
@@ -29,4 +34,3 @@ export const handleFetchFail = (setFn: SetStateAction<any>, error: AxiosError, u
 		}));
 	}
 };
-

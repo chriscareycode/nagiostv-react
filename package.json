@@ -54,6 +54,8 @@
     "dev": "vite",
     "start": "vite",
     "build": "vite build",
+    "check": "npm run typecheck && npm run test:no-watch && npm run build",
+    "typecheck": "tsc --noEmit",
     "test": "vitest watch",
     "test:no-watch": "vitest run",
     "test:coverage": "vitest run --coverage",

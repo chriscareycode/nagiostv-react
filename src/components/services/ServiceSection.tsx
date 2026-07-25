@@ -36,10 +36,8 @@ import _ from 'lodash';
 
 // Types
 import { Service, ServiceList } from '../../types/hostAndServiceTypes';
-import { handleFetchFail } from 'helpers/axios';
+import { handleFetchFail, responseHasJsonContentType } from 'helpers/axios';
 import { howManyServiceCounter } from './service-functions';
-
-let isComponentMounted = false;
 
 const ServiceSection = () => {
 
@@ -71,20 +69,24 @@ const ServiceSection = () => {
 	} = clientSettings;
 
 	useEffect(() => {
-
-		isComponentMounted = true;
+		let requestController: AbortController | null = null;
+		const runFetch = () => {
+			requestController?.abort();
+			requestController = new AbortController();
+			fetchServiceCountThenFetchData(requestController.signal);
+		};
 
 		const timeoutHandle = setTimeout(() => {
-			fetchServiceCountThenFetchData();
+			runFetch();
 		}, 1000);
 
-		let intervalHandle: NodeJS.Timeout | null = null;
+		let intervalHandle: ReturnType<typeof setInterval> | null = null;
 		if (isDemoMode === false && useFakeSampleData == false) {
 			// safetly net in case the interval value is bad
 			const fetchServiceFrequencySafe = (typeof fetchServiceFrequency === 'number' && fetchServiceFrequency >= 5) ? fetchServiceFrequency : clientSettingsInitial.fetchServiceFrequency;
 			// we fetch alerts on a slower frequency interval
 			intervalHandle = setInterval(() => {
-				fetchServiceCountThenFetchData();
+				runFetch();
 			}, fetchServiceFrequencySafe * 1000);
 		}
 
@@ -95,9 +97,19 @@ const ServiceSection = () => {
 			if (intervalHandle) {
 				clearInterval(intervalHandle);
 			}
-			isComponentMounted = false;
+			requestController?.abort();
 		};
-	}, [clientSettings.fetchServiceFrequency, clientSettings.hideServiceOk, hostgroupFilter, servicegroupFilter]);
+	}, [
+		clientSettings.baseUrl,
+		clientSettings.dataSource,
+		clientSettings.fetchServiceFrequency,
+		clientSettings.hideServiceOk,
+		clientSettings.livestatusPath,
+		hostgroupFilter,
+		isDemoMode,
+		servicegroupFilter,
+		useFakeSampleData,
+	]);
 
 	const howManyCounter = useCallback((servicelist: ServiceList) => {
 		//console.log('ServiceSection howManyCounter() useCallback() serviceState.response changed');
@@ -120,7 +132,7 @@ const ServiceSection = () => {
 
 	}, [serviceState.lastUpdate]);
 
-	const fetchServiceCountThenFetchData = () => {
+	const fetchServiceCountThenFetchData = (signal?: AbortSignal) => {
 
 		let url = '';
 		if (useFakeSampleData) {
@@ -138,32 +150,37 @@ const ServiceSection = () => {
 		setServiceIsFetching(true);
 
 		axios.get(url, {
-			timeout: (fetchServiceFrequency - 2) * 1000
+			timeout: (fetchServiceFrequency - 2) * 1000,
+			signal,
 		})
 		.then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 			let total = 0;
 			Object.keys(response.data.data.count).forEach((aaKey) => {
 				total += response.data.data.count[aaKey];
 			});
 			totalCount.current = total;
-			fetchServiceData();
+			fetchServiceData(signal);
 		})
 		.catch((error) => {
-			if (isComponentMounted) {
-				setServiceIsFetching(false);
-
-				setServiceState(curr => ({
-					...curr,
-					error: true,
-					errorCount: curr.errorCount + 1,
-					errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
-				}));
+			if (signal?.aborted) {
+				return;
 			}
+			setServiceIsFetching(false);
+
+			setServiceState(curr => ({
+				...curr,
+				error: true,
+				errorCount: curr.errorCount + 1,
+				errorMessage: `ERROR: CONNECTION REFUSED to ${url}`
+			}));
 		});
 
 	};
 
-	const fetchServiceData = () => {
+	const fetchServiceData = (signal?: AbortSignal) => {
 
 		// if we are offline, let's just skip
 		// This is broken on Midori browser on Raspberry Pi and I assume others then. Disabling for now.
@@ -194,11 +211,17 @@ const ServiceSection = () => {
 
 		axios.get(
 			url,
-			{timeout: (fetchServiceFrequency - 2) * 1000}
+			{
+				timeout: (fetchServiceFrequency - 2) * 1000,
+				signal,
+			}
 		)
 		.then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchServiceData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 				setServiceIsFetching(false);
 				setServiceState(curr => ({
@@ -230,43 +253,40 @@ const ServiceSection = () => {
 
 			// we disable the stale check if in demo mode since the demo data is always stale
 			if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {
-				if (isComponentMounted) {
-					setServiceIsFetching(false);
-					setServiceState(curr => ({
-						...curr,
-						error: true,
-						errorCount: curr.errorCount + 1,
-						errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
-						lastUpdate: new Date().getTime(),
-						response: my_list,
-						stateArray: myArray
-					}));
-				}
+				setServiceIsFetching(false);
+				setServiceState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: `Data is stale ${hours} hours. Is Nagios running?`,
+					lastUpdate: new Date().getTime(),
+					response: my_list,
+					stateArray: myArray
+				}));
 			} else {
-				if (isComponentMounted) {
-					setServiceIsFetching(false);
-					setServiceState(curr => ({
-						...curr,
-						error: false,
-						errorCount: 0,
-						errorMessage: '',
-						lastUpdate: new Date().getTime(),
-						response: my_list,
-						stateArray: myArray
-					}));
+				setServiceIsFetching(false);
+				setServiceState(curr => ({
+					...curr,
+					error: false,
+					errorCount: 0,
+					errorMessage: '',
+					lastUpdate: new Date().getTime(),
+					response: my_list,
+					stateArray: myArray
+				}));
 
-					setServiceIsFakeDataSet(useFakeSampleData);
+				setServiceIsFakeDataSet(useFakeSampleData);
 
-					howManyCounter(my_list);
-				}
+				howManyCounter(my_list);
 			}
 		})
 		.catch((error) => {
-			if (isComponentMounted) {
-				setServiceIsFetching(false);
-
-				handleFetchFail(setServiceState, error, url, true);
+			if (signal?.aborted) {
+				return;
 			}
+			setServiceIsFetching(false);
+
+			handleFetchFail(setServiceState, error, url, true);
 		});
 	}
 

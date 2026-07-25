@@ -36,10 +36,9 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import './AlertSection.css';
-import { handleFetchFail } from '../../helpers/axios';
+import { handleFetchFail, responseHasJsonContentType } from '../../helpers/axios';
 import { Alert } from '../../types/hostAndServiceTypes';
-
-let isComponentMounted = false;
+import { shiftAlertsToNow } from './alert-functions';
 
 const AlertSection = () => {
 
@@ -111,11 +110,17 @@ const AlertSection = () => {
 	} = clientSettings;
 
 	useEffect(() => {
-		let timeoutHandle: NodeJS.Timeout | null = null;
-		let intervalHandle: NodeJS.Timeout | null = null;
+		let requestController: AbortController | null = null;
+		const runFetch = () => {
+			requestController?.abort();
+			requestController = new AbortController();
+			fetchAlertData(requestController.signal);
+		};
+		let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+		let intervalHandle: ReturnType<typeof setInterval> | null = null;
 
 		timeoutHandle = setTimeout(() => {
-			fetchAlertData();
+			runFetch();
 		}, 1000);
 
 		// Start interval
@@ -124,11 +129,9 @@ const AlertSection = () => {
 			const fetchAlertFrequencySafe = (typeof fetchAlertFrequency === 'number' && fetchAlertFrequency >= 5) ? fetchAlertFrequency : clientSettingsInitial.fetchAlertFrequency;
 
 			intervalHandle = setInterval(() => {
-				fetchAlertData();
+				runFetch();
 			}, fetchAlertFrequencySafe * 1000);
 		}
-
-		isComponentMounted = true;
 
 		return () => {
 
@@ -138,9 +141,20 @@ const AlertSection = () => {
 			if (intervalHandle) {
 				clearInterval(intervalHandle);
 			}
-			isComponentMounted = false;
+			requestController?.abort();
 		};
-	}, [clientSettings.fetchAlertFrequency, hostgroupFilter, servicegroupFilter]);
+	}, [
+		alertDaysBack,
+		alertMaxItems,
+		clientSettings.baseUrl,
+		clientSettings.dataSource,
+		clientSettings.fetchAlertFrequency,
+		clientSettings.livestatusPath,
+		hostgroupFilter,
+		isDemoMode,
+		servicegroupFilter,
+		useFakeSampleData,
+	]);
 
 	const howManyCounter = useCallback((alertlist: Alert[]) => {
 
@@ -162,7 +176,7 @@ const AlertSection = () => {
 
 	}, [alertState]);
 
-	const fetchAlertData = () => {
+	const fetchAlertData = (signal?: AbortSignal) => {
 		const starttime = alertDaysBack * 60 * 60 * 24;
 
 		let url = '';
@@ -186,31 +200,33 @@ const AlertSection = () => {
 
 		axios.get(
 			url,
-			{timeout: (fetchAlertFrequency - 2) * 1000}
+			{
+				timeout: (fetchAlertFrequency - 2) * 1000,
+				signal,
+			}
 		)
 		.then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchAlertData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
-				// We check this since the axios could take a while to respond and the page may have unmounted
-				if (isComponentMounted) {
-					// Save settings
-					setAlertIsFetching(false);
-					setAlertState(curr => ({
-						...curr,
-						error: true,
-						errorCount: curr.errorCount + 1,
-						errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
-					}));
-				}
+				setAlertIsFetching(false);
+				setAlertState(curr => ({
+					...curr,
+					error: true,
+					errorCount: curr.errorCount + 1,
+					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
+				}));
 				return;
 			}
 
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
-			const myAlertlist = _.get(response.data.data, 'alertlist', []).reverse() as Alert[];
+			let myAlertlist = _.get(response.data.data, 'alertlist', []).reverse() as Alert[];
 
 			// trim
 			if (myAlertlist.length > alertMaxItems) {
@@ -219,42 +235,29 @@ const AlertSection = () => {
 
 			// If we are in demo mode then let's modify the latest timestamps
 			if (useFakeSampleData) {
-				// Find out how far in the past the newest alert data item is
-				const howMuchToScoochBy = new Date().getTime() - myAlertlist[0].timestamp;
-
-				// Loop through every item and scooch it forward just the right amount
-				myAlertlist.forEach(a => a.timestamp += howMuchToScoochBy);
+				myAlertlist = shiftAlertsToNow(myAlertlist);
 			}
 
-			// We check this since the axios could take a while to respond and the page may have unmounted
-			if (isComponentMounted) {
-				// Save settings
-				setAlertIsFetching(false);
+			setAlertIsFetching(false);
 
-				setAlertState(curr => ({
-					...curr,
-					error: false,
-					errorCount: 0,
-					errorMessage: '',
-					lastUpdate: new Date().getTime(),
-					response: response.data.data,
-					responseArray: myAlertlist
-				}));
+			setAlertState(curr => ({
+				...curr,
+				error: false,
+				errorCount: 0,
+				errorMessage: '',
+				lastUpdate: new Date().getTime(),
+				response: response.data.data,
+				responseArray: myAlertlist
+			}));
 
-				howManyCounter(myAlertlist);
-			} else {
-				console.log('AlertSection got data but component is not mounted');
-			}
+			howManyCounter(myAlertlist);
 		})
 		.catch((error) => {
-			if (isComponentMounted) {
-				setAlertIsFetching(false);
-
-				handleFetchFail(setAlertState, error, url, true);
-
-			} else {
-				console.log('AlertSection failed but component is not mounted');
+			if (signal?.aborted) {
+				return;
 			}
+			setAlertIsFetching(false);
+			handleFetchFail(setAlertState, error, url, true);
 		});
 	};
 

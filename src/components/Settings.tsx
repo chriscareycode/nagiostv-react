@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 // State Management
 import { useAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
@@ -52,21 +52,31 @@ const Settings = () => {
 
 	const [showClientSettingsJson, setShowClientSettingsJson] = useState(false);
 	const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+	const saveMessageTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	let isComponentMounted = false;
 	const hostlistError = false;
 
 	const {
 		isDemoMode,
 	} = bigState;
 
-	// Hooks
 	useEffect(() => {
-		isComponentMounted = true;
 		return () => {
-			isComponentMounted = false;
+			if (saveMessageTimerRef.current) {
+				clearTimeout(saveMessageTimerRef.current);
+			}
 		};
 	}, []);
+
+	const clearSaveMessageAfter = (delayMs: number) => {
+		if (saveMessageTimerRef.current) {
+			clearTimeout(saveMessageTimerRef.current);
+		}
+		saveMessageTimerRef.current = setTimeout(() => {
+			setSaveMessage('');
+			saveMessageTimerRef.current = null;
+		}, delayMs);
+	};
 
 	// If clientSettings object changes, we need to update the state of clientSettingsTemp
 	useEffect(() => {
@@ -95,11 +105,7 @@ const Settings = () => {
 			// Now that we have saved settings, set the document.title from the title setting
 			if (clientSettingsTemp.titleString) { document.title = clientSettingsTemp.titleString; }
 
-			setTimeout(() => {
-				if (isComponentMounted) {
-					setSaveMessage('');
-				}
-			}, 5000);
+				clearSaveMessageAfter(5000);
 		}
 	};
 
@@ -154,11 +160,7 @@ const Settings = () => {
 			setSaveMessage('Error saving to server');
 		});
 
-		setTimeout(() => {
-			if (isComponentMounted) {
-				setSaveMessage('');
-			}
-		}, 3000);
+		clearSaveMessageAfter(3000);
 	};
 
 	const copySettingsToClipboard = () => {

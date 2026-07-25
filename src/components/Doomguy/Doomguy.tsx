@@ -76,6 +76,15 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	const balloonRef = useRef<HTMLDivElement>(null);
 	const textRef = useRef<HTMLSpanElement>(null);
 	const wrapRef = useRef<HTMLDivElement>(null);
+	const clickedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(() => {
+		return () => {
+			if (clickedTimerRef.current) {
+				clearTimeout(clickedTimerRef.current);
+			}
+		};
+	}, []);
 
 	// Calculate max-width based on the balloon's position in the viewport
 	useEffect(() => {
@@ -214,9 +223,12 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	// If clicked then force smile
 	const clickedDoomguy = () => {
 		setClicked(true);
-		// TODO this could trigger a setState on unmounted component
-		setTimeout(() => {
+		if (clickedTimerRef.current) {
+			clearTimeout(clickedTimerRef.current);
+		}
+		clickedTimerRef.current = setTimeout(() => {
 			setClicked(false);
+			clickedTimerRef.current = null;
 		}, 2000);
 	};
 

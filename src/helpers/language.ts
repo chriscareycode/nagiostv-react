@@ -33,14 +33,14 @@ export const languages = [
 	{ name: "French", code: "fr" }
 ];
 
-export function translate(phrase, language) {
-	let word;
+export function translate(phrase: string, language: string): string {
+	let word: string | undefined;
 	switch(language) {
 		case 'Spanish':
-			word = spanish[phrase];
+			word = (spanish as Record<string, string>)[phrase];
 			break;
 		case 'French':
-			word = french[phrase];
+			word = (french as Record<string, string>)[phrase];
 			break;
 		default:
 			word = phrase;
@@ -48,6 +48,7 @@ export function translate(phrase, language) {
 	}
 	if (typeof word === 'undefined') {
 		console.log(`Word [${phrase}] not found in [${language}] language pack.`);
+		return phrase;
 	}
 	return word;
 }

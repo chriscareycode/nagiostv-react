@@ -8,7 +8,7 @@ import { commentlistAtom } from '../atoms/commentlistAtom';
 import _ from 'lodash';
 import axios from 'axios';
 import { programStatusAtom } from "atoms/programAtom";
-import { handleFetchFail } from "helpers/axios";
+import { handleFetchFail, responseHasJsonContentType } from "helpers/axios";
 // Types
 import { CommentListObject } from "types/commentTypes";
 
@@ -34,7 +34,7 @@ const DashboardFetch = () => {
 
 	// Functions
 
-	const fetchCommentData = () => {
+	const fetchCommentData = (signal?: AbortSignal) => {
 
 		let url = '';
 		if (useFakeSampleData) {
@@ -47,11 +47,14 @@ const DashboardFetch = () => {
 
 		axios.get(
 			url,
-			{timeout: 10 * 1000}
+			{ timeout: 10 * 1000, signal }
 		).then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchCommentData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setCommentlist(curr => ({
@@ -119,11 +122,14 @@ const DashboardFetch = () => {
 
 
 		}).catch((error) => {
+			if (signal?.aborted) {
+				return;
+			}
 			handleFetchFail(setCommentlist, error, url, true);
 		});
 	};
 
-	const fetchHostGroupData = () => {
+	const fetchHostGroupData = (signal?: AbortSignal) => {
 
 		let url = '';
 		if (useFakeSampleData) {
@@ -136,11 +142,14 @@ const DashboardFetch = () => {
 
 		axios.get(
 			url,
-			{ timeout: 10 * 1000 }
+			{ timeout: 10 * 1000, signal }
 		).then(response => {
+			if (signal?.aborted) {
+				return;
+			}
 
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchHostGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setHostgroup(curr => ({
@@ -163,11 +172,14 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
+			if (signal?.aborted) {
+				return;
+			}
 			handleFetchFail(setHostgroup, error, url, true);
 		});
 	};
 
-	const fetchServiceGroupData = () => {
+	const fetchServiceGroupData = (signal?: AbortSignal) => {
 
 		let url = '';
 		if (useFakeSampleData) {
@@ -180,11 +192,14 @@ const DashboardFetch = () => {
 
 		axios.get(
 			url,
-			{ timeout: 10 * 1000 }
+			{ timeout: 10 * 1000, signal }
 		).then((response) => {
+			if (signal?.aborted) {
+				return;
+			}
 
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
+			if (!responseHasJsonContentType(response.headers)) {
 				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
 				setServicegroup(curr => ({
@@ -207,11 +222,14 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
+			if (signal?.aborted) {
+				return;
+			}
 			handleFetchFail(setServicegroup, error, url, true);
 		});
 	};
 
-	const fetchProgramStatus = () => {
+	const fetchProgramStatus = (signal?: AbortSignal) => {
 
 		let url = '';
 		if (useFakeSampleData) {
@@ -224,14 +242,17 @@ const DashboardFetch = () => {
 
 		axios.get(
 			url,
-			{ timeout: 10 * 1000 }
+			{ timeout: 10 * 1000, signal }
 		).then(response => {
+			if (signal?.aborted) {
+				return;
+			}
 
 			// test that return data is json
-			if (response.headers && response.headers['content-type']?.indexOf('application/json') === -1) {
-				console.log('fetchServiceGroupData() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
+			if (!responseHasJsonContentType(response.headers)) {
+				console.log('fetchProgramStatus() ERROR: got response but result data is not JSON. Base URL setting is probably wrong.');
 
-				setServicegroup(curr => ({
+				setProgramStatus(curr => ({
 					...curr,
 					error: true,
 					errorMessage: 'ERROR: Result data is not JSON. Base URL setting is probably wrong.'
@@ -251,6 +272,9 @@ const DashboardFetch = () => {
 			});
 
 		}).catch(error => {
+			if (signal?.aborted) {
+				return;
+			}
 			handleFetchFail(setProgramStatus, error, url, true);
 		});
 	};
@@ -258,51 +282,81 @@ const DashboardFetch = () => {
 	// useEffect
 	useEffect(() => {
 		//console.log('DashboardFetch useEffect()');
+		let commentController: AbortController | null = null;
+		let groupController: AbortController | null = null;
+		let programController: AbortController | null = null;
+
+		const runCommentFetch = () => {
+			commentController?.abort();
+			commentController = new AbortController();
+			fetchCommentData(commentController.signal);
+		};
+
+		const runGroupFetches = () => {
+			groupController?.abort();
+			groupController = new AbortController();
+			fetchHostGroupData(groupController.signal);
+			fetchServiceGroupData(groupController.signal);
+		};
+
+		const runProgramFetch = () => {
+			programController?.abort();
+			programController = new AbortController();
+			fetchProgramStatus(programController.signal);
+		};
 
 		// If we are in demo mode then exit here
 		if (isDemoMode) {
-			setTimeout(() => {
-				fetchProgramStatus();
+			const demoTimeoutHandle = setTimeout(() => {
+				runProgramFetch();
 			}, 1000);
-			return;
+			return () => {
+				clearTimeout(demoTimeoutHandle);
+				programController?.abort();
+			};
 		}
 
 		// fetch the initial data after 1 second
-		setTimeout(() => {
+		const initialTimeoutHandle = setTimeout(() => {
 			// fetch data now
-			fetchProgramStatus();
-			fetchHostGroupData();
-			fetchServiceGroupData();
-			fetchCommentData();
+			runProgramFetch();
+			runGroupFetches();
+			runCommentFetch();
 		}, 1000);
 
 		// safetly net in case the interval value is bad
 		const fetchCommentFrequencySafe = (typeof fetchCommentFrequency === 'number' && fetchCommentFrequency >= 5) ? fetchCommentFrequency : clientSettingsInitial.fetchCommentFrequency;
 
 		let intervalHandleComment = setInterval(() => {
-			fetchCommentData();
+			runCommentFetch();
 		}, fetchCommentFrequencySafe * 1000);
 
 		// safetly net in case the interval value is bad
 		const fetchHostGroupFrequencySafe = (typeof fetchHostGroupFrequency === 'number' && fetchHostGroupFrequency >= 5) ? fetchHostGroupFrequency : clientSettingsInitial.fetchHostGroupFrequency;
 
 		let intervalHandleHostGroup = setInterval(() => {
-			fetchHostGroupData();
-			fetchServiceGroupData();
+			runGroupFetches();
 		}, fetchHostGroupFrequencySafe * 1000);
 
 		//let intervalHandleVersionCheck = null;
 
 		return () => {
 			//console.log('DashboardFetch useEffect() teardown');
+			clearTimeout(initialTimeoutHandle);
 			if (intervalHandleComment) { clearInterval(intervalHandleComment); }
 			if (intervalHandleHostGroup) { clearInterval(intervalHandleHostGroup); }
+			commentController?.abort();
+			groupController?.abort();
+			programController?.abort();
 			//if (intervalHandleVersionCheck) { clearInterval(intervalHandleVersionCheck); }
 		};
 
 	}, [
+		clientSettings.baseUrl,
+		clientSettings.dataSource,
 		clientSettings.fetchCommentFrequency,
 		clientSettings.fetchHostGroupFrequency,
+		clientSettings.livestatusPath,
 		isDemoMode,
 		useFakeSampleData,
 	]);

@@ -16,11 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export function ifQuietFor(nowtime, prevtime, minutes) {
-	let diff = prevtime - nowtime;
-	if (diff > minutes * 60 * 1000) {
-		return true;
-	} else {
-		return false;
-	}
+export function ifQuietFor(nowtime: number, prevtime: number, minutes: number): boolean {
+	const diff = prevtime - nowtime;
+	return diff > minutes * 60 * 1000;
 }

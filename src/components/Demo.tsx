@@ -222,6 +222,7 @@ const Demo = () => {
 
 	useEffect(() => {
 		//console.log('Demo isHostFakeDataSet changed');
+		const timers: ReturnType<typeof setTimeout>[] = [];
 
 		if (isHostFakeDataSet) {
 
@@ -233,19 +234,19 @@ const Demo = () => {
 			addHostDown();
 			addHostDown();
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeHostDown();
-			}, 10000);
+			}, 10000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeHostDown();
-			}, 25000);
+			}, 25000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeHostDown();
-			}, 40000);
+			}, 40000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeHostDown();
 
 				// now at the end of the longest part of this automation, we set isVisible to true
@@ -256,14 +257,19 @@ const Demo = () => {
 				// TODO: fix this later after refactoring so we can have access to data hostlist and servicelist
 				setIsVisible(true);
 
-			}, 35000);
+			}, 35000));
 
 		}
+
+		return () => {
+			timers.forEach(clearTimeout);
+		};
 
 	}, [isHostFakeDataSet]);
 
 	useEffect(() => {
 		//console.log('Demo isServiceFakeDataSet changed');
+		const timers: ReturnType<typeof setTimeout>[] = [];
 
 		if (isServiceFakeDataSet) {
 
@@ -276,32 +282,36 @@ const Demo = () => {
 			addServiceCritical();
 			addServiceCritical();
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeServiceWarning();
-			}, 6000);
+			}, 6000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				addServiceWarning();
-			}, 12000);
+			}, 12000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeServiceCritical();
-			}, 15000);
+			}, 15000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeServiceWarning();
-			}, 20000);
+			}, 20000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeServiceCritical();
-			}, 30000);
+			}, 30000));
 
-			setTimeout(() => {
+			timers.push(setTimeout(() => {
 				removeServiceWarning();
 				removeServiceWarning();
-			}, 35000);
+			}, 35000));
 
 		}
+
+		return () => {
+			timers.forEach(clearTimeout);
+		};
 
 	}, [isServiceFakeDataSet]);
 
