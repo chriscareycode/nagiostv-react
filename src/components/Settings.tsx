@@ -33,7 +33,6 @@ import * as clipboard from "clipboard-polyfill/text";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle, faTools } from '@fortawesome/free-solid-svg-icons';
 import { ClientSettings } from 'types/settings';
-import Doomguy from './Doomguy/Doomguy';
 import LlmModelSelector from './settings/LlmModelSelector';
 import { removeClientSettings, saveClientSettings } from '../helpers/persistence';
 import DataSourceSettings from './settings/DataSourceSettings';
@@ -41,6 +40,7 @@ import DateRegionSettings from './settings/DateRegionSettings';
 import DisplaySettings from './settings/DisplaySettings';
 import AlertHistorySettings from './settings/AlertHistorySettings';
 import AudioVisualSettings from './settings/AudioVisualSettings';
+import MenuSettings from './settings/MenuSettings';
 import {
 	SettingInputType,
 	SettingsChangeHandler,
@@ -271,99 +271,7 @@ const Settings = () => {
 						onSetValue={setSettingValue}
 					/>
 
-					{/* top and bottom menu */}
-					<table className="SettingsTable">
-						<thead>
-							<tr>
-								<td colSpan={2} className="SettingsTableHeader">Top and Bottom Menu</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<th style={{ padding: '0px', height: '3px' }}></th>
-								<td style={{ padding: '0px', height: '3px' }}></td>
-							</tr>
-							<tr>
-								<th>Title:</th>
-								<td><input type="text" value={clientSettingsTemp.titleString} onChange={handleChange('titleString', 'string')} /></td>
-							</tr>
-							<tr>
-								<th>Custom Logo:</th>
-								<td>
-									<select value={clientSettingsTemp.customLogoEnabled.toString()} onChange={handleChange('customLogoEnabled', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-								</td>
-							</tr>
-							{clientSettingsTemp.customLogoEnabled && <tr>
-								<th>Custom Logo URL:</th>
-								<td>
-									<input type="text" value={clientSettingsTemp.customLogoUrl} onChange={handleChange('customLogoUrl', 'string')} />
-								</td>
-							</tr>}
-							<tr>
-								<th>Doomguy:</th>
-								<td>
-									<select value={clientSettingsTemp.doomguyEnabled.toString()} onChange={handleChange('doomguyEnabled', 'boolean')}>
-										<option value={'true'}>On</option>
-										<option value={'false'}>Off</option>
-									</select>
-									<span style={{ position: 'relative' }}> &nbsp; The character from the 1993 video game Doom
-
-										<span style={{ position: 'absolute', top: 0, right: -56, height: 32, width: 24 }}>
-											<Doomguy scaleCss='0.5' style={{ position: 'absolute', top: -13 }} showBalloon={false} />
-										</span>
-									</span>
-								</td>
-							</tr>
-
-							{/** special colspan=2 section for doom guy settings */}
-							<tr>
-								<td colSpan={2}>
-									<div style={{ paddingLeft: '40px' }}>
-										<table style={{ width: '100%', border: '1px solid #5f5f5f' }}>
-											<tbody>
-												{clientSettingsTemp.doomguyEnabled && <tr>
-													<th>Doomguy concerned at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyConcernedAt} onChange={handleChange('doomguyConcernedAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
-												</tr>}
-												{clientSettingsTemp.doomguyEnabled && <tr>
-													<th>Doomguy angry at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyAngryAt} onChange={handleChange('doomguyAngryAt', 'number')} /> hosts DOWN, services WARNING or CRITICAL</td>
-												</tr>}
-												{clientSettingsTemp.doomguyEnabled && <tr>
-													<th>Doomguy bloody at</th>
-													<td><input type="number" min="0" max="100" value={clientSettingsTemp.doomguyBloodyAt} onChange={handleChange('doomguyBloodyAt', 'number')} /> hosts DOWN, services CRITICAL</td>
-												</tr>}
-											</tbody>
-										</table>
-									</div>
-								</td>
-							</tr>
-							{/** end special colspan=2 section for doom guy settings */}
-
-							<tr>
-								<th>Hamburger (Top) Menu:</th>
-								<td>
-									<select value={clientSettingsTemp.hideHamburgerMenu.toString()} onChange={handleChange('hideHamburgerMenu', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<th>Bottom Menu:</th>
-								<td>
-									<select value={clientSettingsTemp.hideBottomMenu.toString()} onChange={handleChange('hideBottomMenu', 'boolean')}>
-										<option value={'true'}>Hide</option>
-										<option value={'false'}>Show</option>
-									</select>
-								</td>
-							</tr>
-
-						</tbody>
-					</table>
+					<MenuSettings settings={clientSettingsTemp} onChange={handleChange} />
 
 					{/* LLM Settings */}
 					<table className="SettingsTable">
