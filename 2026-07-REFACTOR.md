@@ -121,13 +121,14 @@ This document records the findings from the July 2026 read-only project review. 
   - [x] Extract `LocalLLM` history storage, navigation, and current-response synchronization.
   - [x] Extract `LocalLLM` analysis execution, automatic triggers, cancellation, and timer cleanup into a controller hook.
 
-- [ ] Consolidate parallel host and service implementations where the behavior is genuinely shared.
+- [x] Consolidate parallel host and service implementations where the behavior is genuinely shared.
   - Candidate areas include polling lifecycle, filters, item lists, counters, and error presentation.
   - Do not erase meaningful host/service domain differences merely to reduce line count.
   - [x] Use shared visibility helpers for host/service item lists and centralize common state predicates.
   - [x] Consolidate host/service counters around shared monitoring-state predicates.
   - [x] Share host/service sorting mechanics while retaining domain-specific name ordering.
   - [x] Extract the shared animated item-list shell while retaining domain-specific rows.
+  - [x] Centralize monitoring error visibility and presentation across dashboard sections.
 
 ## Priority 5: Performance and dependency hygiene
 

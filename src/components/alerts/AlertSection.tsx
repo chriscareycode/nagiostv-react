@@ -28,6 +28,7 @@ import { useQueryParams } from '../../hooks/useQueryParams';
 import { translate } from '../../helpers/language';
 
 import PollingSpinner from '../widgets/PollingSpinner';
+import MonitoringError from '../monitoring/MonitoringError';
 import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
 import HistoryChart from '../widgets/HistoryChart';
@@ -353,8 +354,13 @@ const AlertSection = () => {
 				</motion.div>}
 			</AnimatePresence>
 
-			{/** Show Error Message - If we are not in demo mode and there is a alertlist error (ajax fetching) then show the error message here */}
-			{(!isDemoMode && alertState.error && (alertState.errorCount > 2 || alertlist.length === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {alertState.errorMessage}</div>}
+			<MonitoringError
+				error={alertState.error}
+				errorCount={alertState.errorCount}
+				errorMessage={alertState.errorMessage}
+				isDemoMode={isDemoMode}
+				itemCount={alertlist.length}
+			/>
 
 			{/* No alerts */}
 			{!alertState.error && alertlist.length === 0 && <div className="all-ok-item margin-top-10" style={{ opacity: 1, maxHeight: 'none' }}>

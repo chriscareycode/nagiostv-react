@@ -31,6 +31,7 @@ import {
 } from '../../helpers/nagiostv';
 
 import PollingSpinner from '../widgets/PollingSpinner';
+import MonitoringError from '../monitoring/MonitoringError';
 import ServiceItems from './ServiceItems';
 import ServiceFilters from './ServiceFilters';
 
@@ -263,9 +264,13 @@ const ServiceSection = () => {
 
 			</div>
 
-			{/** Show Error Message - If there is a servicelist error (ajax fetching) then show the error message here */}
-			{/* Disabled in Demo mode */}
-			{(!isDemoMode && serviceState.error && (serviceState.errorCount > 2 || howManyServices === 0)) && <div className="margin-top-10 border-red ServiceItemError"><span role="img" aria-label="error">⚠️</span> {serviceState.errorMessage}</div>}
+			<MonitoringError
+				error={serviceState.error}
+				errorCount={serviceState.errorCount}
+				errorMessage={serviceState.errorMessage}
+				isDemoMode={isDemoMode}
+				itemCount={howManyServices}
+			/>
 
 			<ServiceItems
 				serviceStateArray={sortedServiceStateArray}
