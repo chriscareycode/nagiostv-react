@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { ReactElement, useCallback, useEffect, useMemo } from 'react';
 import { Allotment, LayoutPriority } from "allotment";
 import { debounce } from 'lodash';
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
 import MiniMapMozilla from '../widgets/MiniMapMozilla';
 import { useAtom, useAtomValue } from 'jotai';
@@ -22,7 +22,7 @@ const isFirefox = (): boolean => {
 };
 
 interface MiniMapWrapProps {
-	children?: JSX.Element;
+	children?: ReactElement;
 }
 
 const MiniMapWrap = ({ children }: MiniMapWrapProps) => {

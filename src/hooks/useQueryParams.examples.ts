@@ -168,7 +168,7 @@
  * 
  * Notes:
  * ------
- * - The hook uses react-router-dom's useSearchParams under the hood
+ * - The hook uses react-router's useSearchParams under the hood
  * - By default, set() and remove() use replace mode (replace: true) to avoid polluting browser history
  * - Set replace: false if you want each change to create a new history entry
  * - Null and undefined values are automatically filtered out when setting params

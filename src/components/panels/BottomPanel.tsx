@@ -26,7 +26,7 @@ import { skipVersionAtom } from '../../atoms/skipVersionAtom';
 import {
 	NavLink,
 	useNavigate,
-} from "react-router-dom";
+} from "react-router";
 import './BottomPanel.css';
 
 // icons

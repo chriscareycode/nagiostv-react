@@ -1,5 +1,5 @@
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import './RightPanel.css';
 
 interface RightPanelProps {

@@ -20,7 +20,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { Tooltip } from 'react-tooltip';
 
 // React Router
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 import './LeftPanel.css';
 

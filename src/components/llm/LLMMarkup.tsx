@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { JSX } from 'react';
 import './LLMMarkup.css';
 
 interface LLMMarkupProps {

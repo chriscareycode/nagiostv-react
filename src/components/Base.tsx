@@ -35,7 +35,7 @@ import {
 	Route,
 	Routes,
 	useLocation,
-} from "react-router-dom";
+} from "react-router";
 // Import Various
 import SettingsLoad from './SettingsLoad';
 import Dashboard from './Dashboard';

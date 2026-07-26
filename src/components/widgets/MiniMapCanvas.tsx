@@ -1,6 +1,6 @@
 import { snapdom } from "@zumer/snapdom";
 import { useCallback, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import './MiniMapCanvas.css';
 import { hostAtom, hostHowManyAtom } from 'atoms/hostAtom';
 import { serviceAtom, serviceHowManyAtom } from 'atoms/serviceAtom';

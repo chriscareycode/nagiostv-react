@@ -21,7 +21,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 // CSS
 import './Settings.css';
 

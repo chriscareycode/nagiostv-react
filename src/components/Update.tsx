@@ -17,7 +17,7 @@
  */
 
 // React Router
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { useUpdateManager } from '../hooks/useUpdateManager';
 
 import './Update.css';

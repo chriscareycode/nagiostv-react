@@ -17,6 +17,7 @@
  */
 
 import { DateTime } from 'luxon';
+import type { JSX } from 'react';
 
 const locales = ['en', 'en-US', 'fr', 'de', 'es', 'ja', 'zh-CN', 'ru', 'ar', 'hi'];
 

@@ -12,8 +12,8 @@ vi.mock('./Update', () => ({ default: () => <div>Update route content</div> }));
 vi.mock('./Help', () => ({ default: () => <div>Help route content</div> }));
 vi.mock('./panels/TopPanel', () => ({ default: () => null }));
 vi.mock('./panels/LeftPanel', async () => {
-	const { Link } = await vi.importActual<typeof import('react-router-dom')>(
-		'react-router-dom',
+	const { Link } = await vi.importActual<typeof import('react-router')>(
+		'react-router',
 	);
 	return {
 		default: () => <Link to="/help">Test help navigation</Link>,
