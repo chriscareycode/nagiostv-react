@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider, createStore } from 'jotai';
 import { describe, expect, it, vi } from 'vitest';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
@@ -11,7 +11,14 @@ vi.mock('./Settings', () => ({ default: () => <div>Settings route content</div> 
 vi.mock('./Update', () => ({ default: () => <div>Update route content</div> }));
 vi.mock('./Help', () => ({ default: () => <div>Help route content</div> }));
 vi.mock('./panels/TopPanel', () => ({ default: () => null }));
-vi.mock('./panels/LeftPanel', () => ({ default: () => null }));
+vi.mock('./panels/LeftPanel', async () => {
+	const { Link } = await vi.importActual<typeof import('react-router-dom')>(
+		'react-router-dom',
+	);
+	return {
+		default: () => <Link to="/help">Test help navigation</Link>,
+	};
+});
 vi.mock('./panels/BottomPanel', () => ({ default: () => null }));
 vi.mock('./widgets/MiniMapWrap', () => ({
 	default: ({ children }: { children: React.ReactNode }) => (
@@ -59,5 +66,21 @@ describe('Base routes', () => {
 
 		expect(await screen.findByText('Deferred minimap loaded')).toBeInTheDocument();
 		expect(screen.getByText('Dashboard route content')).toBeInTheDocument();
+	});
+
+	it('supports direct hash routes with query parameters', async () => {
+		renderBase('/settings?alertSearch=database');
+
+		expect(await screen.findByText('Settings route content')).toBeInTheDocument();
+		expect(window.location.hash).toBe('#/settings?alertSearch=database');
+	});
+
+	it('navigates between hash routes using router links', async () => {
+		renderBase('/');
+
+		fireEvent.click(screen.getByRole('link', { name: 'Test help navigation' }));
+
+		expect(await screen.findByText('Help route content')).toBeInTheDocument();
+		expect(window.location.hash).toBe('#/help');
 	});
 });
