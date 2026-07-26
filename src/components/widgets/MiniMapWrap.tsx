@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useEffect, useMemo } from 'react';
 import { Allotment, LayoutPriority } from "allotment";
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { useLocation } from "react-router";
 import MiniMapCanvas from '../widgets/MiniMapCanvas';
 import MiniMapMozilla from '../widgets/MiniMapMozilla';

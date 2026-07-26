@@ -36,7 +36,7 @@ import ServiceItems from './ServiceItems';
 import ServiceFilters from './ServiceFilters';
 
 // 3rd party addons
-import _ from 'lodash';
+import get from 'lodash/get';
 
 // Types
 import { Service } from '../../types/hostAndServiceTypes';
@@ -156,7 +156,7 @@ const ServiceSection = () => {
 			// Success
 
 			// Make an array from the object
-			let my_list = _.get(
+			let my_list = get(
 				response.data.data,
 				'servicelist',
 				{},

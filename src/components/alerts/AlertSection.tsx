@@ -33,7 +33,8 @@ import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
 import DeferredHistoryChart from '../widgets/DeferredHistoryChart';
 
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import get from 'lodash/get';
 
 import './AlertSection.css';
 import { getJson, handleFetchFail } from '../../helpers/axios';
@@ -55,7 +56,7 @@ const AlertSection = () => {
 
 	// Debounce updating the URL query param so it doesn't update on every keystroke
 	const debouncedSetSearchText = useMemo(
-		() => _.debounce((value: string) => {
+		() => debounce((value: string) => {
 			if (value) {
 				queryParams.set({ alertSearch: value });
 			} else {
@@ -164,7 +165,7 @@ const AlertSection = () => {
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
-			const responseAlerts = _.get(response.data.data, 'alertlist', []) as Alert[];
+			const responseAlerts = get(response.data.data, 'alertlist', []) as Alert[];
 			let myAlertlist = [...responseAlerts].reverse();
 
 			// trim

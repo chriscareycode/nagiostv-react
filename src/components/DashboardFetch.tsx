@@ -5,7 +5,7 @@ import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atom
 import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
-import _ from 'lodash';
+import get from 'lodash/get';
 import { ProgramStatus, programStatusAtom } from "atoms/programAtom";
 import { getJson, handleFetchFail } from "helpers/axios";
 // Types
@@ -54,7 +54,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist = _.get(
+			const commentlist = get(
 				response.data.data,
 				'commentlist',
 				{},
@@ -137,7 +137,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the hostgrouplist result
-			const hostgroup = _.get(
+			const hostgroup = get(
 				response.data.data,
 				'hostgrouplist',
 				{},
@@ -175,7 +175,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the servicegrouplist result
-			const servicegroup = _.get(
+			const servicegroup = get(
 				response.data.data,
 				'servicegrouplist',
 				{},
@@ -212,7 +212,7 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the programstatus result
-			const programstatus = _.get(
+			const programstatus = get(
 				response.data.data,
 				'programstatus',
 				null,

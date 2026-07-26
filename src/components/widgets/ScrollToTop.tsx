@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
 import './ScrollToTop.css';
 
 const scrollAreaSelector = '.vertical-scroll-dash';
@@ -28,7 +28,7 @@ const ScrollToTop = () => {
 			setIsAtBottom(atBottom);
 		};
 
-		const debouncedScroll = _.debounce(handleScroll, 500);
+		const debouncedScroll = debounce(handleScroll, 500);
 		scrollDiv.addEventListener("scroll", debouncedScroll);
 
 		return () => {

@@ -37,7 +37,7 @@ import MonitoringError from '../monitoring/MonitoringError';
 
 // 3rd party addons
 import { DateTime } from 'luxon';
-import _ from 'lodash';
+import get from 'lodash/get';
 import { Host } from 'types/hostAndServiceTypes';
 import { getJson, handleFetchFail } from 'helpers/axios';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
@@ -164,7 +164,7 @@ const HostSection = () => {
 			// Success
 
 			// Make an array from the object
-			let my_list = _.get(
+			let my_list = get(
 				response.data.data,
 				'hostlist',
 				{},

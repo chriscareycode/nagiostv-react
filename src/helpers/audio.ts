@@ -22,7 +22,7 @@
  * Chrome autoplay policy
  * https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
  */
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { ClientSettings } from 'types/settings';
 
 // debounce the playSoundEffect function so multiple sounds at the same time wont freak out the audio engine

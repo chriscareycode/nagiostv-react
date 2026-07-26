@@ -94,12 +94,12 @@ may expose stricter JSX, ref, or event typings.
 
 - [x] Verify direct URLs for `#/`, `#/settings`, `#/update`, and `#/help`
   through automated route tests.
-- [ ] Verify hamburger and bottom navigation, back/forward navigation, active
+- [x] Verify hamburger and bottom navigation, back/forward navigation, active
   link styling, and route transitions.
 - [x] Verify query parameter reads, writes, removals, and hash-query precedence
   through automated tests.
 - [x] Verify lazy-loaded route fallback behavior through automated tests.
-- [ ] Verify minimap behavior during route changes.
+- [x] Verify minimap behavior during route changes.
 - [ ] Test the production build from the same static hosting paths used by
   NagiosTV deployments.
 - [x] Run `npm audit --omit=dev` and confirm the React Router advisory is gone.
