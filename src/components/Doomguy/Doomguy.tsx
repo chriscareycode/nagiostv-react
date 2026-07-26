@@ -20,7 +20,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 
 // State Management
 import { useAtomValue, useSetAtom } from 'jotai';
-import { clientSettingsAtom } from '../../atoms/settingsState';
+import { bigStateAtom, clientSettingsAtom } from '../../atoms/settingsState';
 import { hostAtom } from '../../atoms/hostAtom';
 import { serviceAtom } from '../../atoms/serviceAtom';
 import { llmIsLoadingAtom, llmHistoryAtom, llmCurrentHistoryIndexAtom, llmBalloonPoppedAtom } from '../../atoms/llmAtom';
@@ -54,6 +54,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	showBalloon?: boolean
 }) => {
 	const clientSettings = useAtomValue(clientSettingsAtom);
+	const { hideFilters } = useAtomValue(bigStateAtom);
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
 	const llmIsLoading = useAtomValue(llmIsLoadingAtom);
@@ -66,6 +67,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	const currentHistoryItem = llmHistory[llmCurrentHistoryIndex];
 	const llmShortResponse = currentHistoryItem?.shortResponse || '';
 	const llmHistoryColor = currentHistoryItem?.color || 'green';
+	const showBalloonBelow = !clientSettings.alwaysShowGroupFilters && hideFilters;
 
 	const [clicked, setClicked] = useState(false); // Clicking his face will temporarily make him angry
 	const [thinkingFrame, setThinkingFrame] = useState(thinkingAnimation[0]);
@@ -234,7 +236,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 		<div className="doomguy-wrap" style={style} ref={wrapRef}>
 			{showBalloon && llmShortResponse && !llmIsLoading && !llmBalloonPopped && !clientSettings.hideLocalLLMSection && (
 				<div
-					className="doomguy-speech-balloon-wrap"
+					className={`doomguy-speech-balloon-wrap${showBalloonBelow ? ' doomguy-speech-balloon-below' : ''}`}
 					style={{ '--balloon-max-width': balloonMaxWidth, cursor: 'pointer' } as React.CSSProperties}
 					onClick={() => setLlmBalloonPopped(true)}
 				>

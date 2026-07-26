@@ -205,3 +205,24 @@
 	border-style: solid;
 	border-color: #555 transparent transparent transparent;
 }
+
+.doomguy-speech-balloon-wrap.doomguy-speech-balloon-below {
+	top: 100%;
+	bottom: auto;
+	margin-top: 8px;
+	margin-bottom: 0;
+}
+
+.doomguy-speech-balloon-wrap.doomguy-speech-balloon-below::after {
+	top: -7px;
+	bottom: auto;
+	border-width: 0 5px 8px 5px;
+	border-color: transparent transparent #2a2a2a transparent;
+}
+
+.doomguy-speech-balloon-wrap.doomguy-speech-balloon-below::before {
+	top: -9px;
+	bottom: auto;
+	border-width: 0 6px 9px 6px;
+	border-color: transparent transparent #555 transparent;
+}
