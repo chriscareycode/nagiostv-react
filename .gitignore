@@ -32,3 +32,13 @@ yarn-error.log*
 # some of my scripts
 deploy-to-bigwood.sh
 deploy-to-nagiostv-demo.sh
+
+# Local refactoring notes
+/notes
+
+# Deploy scripts
+deploy-*
+
+# Dev environment config directories
+/.opencode
+/.vscode
