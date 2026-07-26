@@ -174,26 +174,30 @@ const BottomPanel = ({
 
 				{clientSettings.hideBottomMenu && <div className="bottom-panel-nagiostv-brand">NagiosTV</div>}
 
-				{clientSettings.hideBottomMenu === false && <div className="bottom-panel-area">
-					<div className="bottom-panel-area-text">
-						{/* current version */}
-						<span
-							className="current-version"
-							onClick={clickedNagiosTv}
-						>NagiosTV <span className="">v{currentVersionString}</span></span>
-
-						{/* update available */}
-						{(isUpdateAvailable && skipVersion.version !== latestVersion) && (
-							<span>
-								<span className="update-available">
-									<a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>
-									&nbsp;-&nbsp;
-									<a onClick={clickedSkipVersion}>skip this version</a>
-								</span>
+				{clientSettings.hideBottomMenu === false && (
+					<div
+						className="bottom-panel-area"
+						onClick={clickedNagiosTv}
+					>
+						<div className="bottom-panel-area-text">
+							{/* current version */}
+							<span className="current-version">
+								NagiosTV <span className="">v{currentVersionString}</span>
 							</span>
-						)}
+
+							{/* update available */}
+							{(isUpdateAvailable && skipVersion.version !== latestVersion) && (
+								<span>
+									<span className="update-available">
+										<a onClick={clickedUpdateAvailable}>v{latestVersionString} available</a>
+										&nbsp;-&nbsp;
+										<a onClick={clickedSkipVersion}>skip this version</a>
+									</span>
+								</span>
+							)}
+						</div>
 					</div>
-				</div>}
+				)}
 
 				<div className={isVisible ? 'bottom-panel-nav-area bottom-panel-nav-area-visible' : 'bottom-panel-nav-area'}>
 
