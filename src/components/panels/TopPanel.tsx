@@ -112,7 +112,7 @@ const TopPanel = () => {
 	return (
 		<>
 			{/* Shared tooltip instance for top panel controls */}
-			<Tooltip id="top-panel-tooltip" place="bottom" variant="dark" />
+			<Tooltip id="top-panel-tooltip" className="top-panel-tooltip" place="bottom" variant="dark" />
 
 			{/* Show the automatic scroll is enabled message */}
 			{automaticScroll && (
