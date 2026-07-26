@@ -86,8 +86,6 @@ const AlertItem = (props: AlertItemProps) => {
 	const { language, locale, dateFormat } = props;
 	const howMuchTimeIsQuietTime = 10;
 	const { e, i } = props;
-	const isSoft = e.state_type === 2;
-
 	return (
 		<div>
 			{/* show quiet for */}

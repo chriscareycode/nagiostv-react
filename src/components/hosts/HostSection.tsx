@@ -41,7 +41,10 @@ import _ from 'lodash';
 import { Host } from 'types/hostAndServiceTypes';
 import { getJson, handleFetchFail } from 'helpers/axios';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
-import { useCancellablePolling } from '../../hooks/useCancellablePolling';
+import {
+	getPollingRequestTimeoutMs,
+	useCancellablePolling,
+} from '../../hooks/useCancellablePolling';
 
 //import './HostSection.css';
 
@@ -57,7 +60,7 @@ const HostSection = () => {
 	const totalCount = useRef(0);
 	const fetchHostCountThenFetchDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	// State Management state (main)
-	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const bigState = useAtomValue(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	// Chop the bigState into vars
@@ -96,7 +99,10 @@ const HostSection = () => {
 		setHostIsFetching(true);
 
 		getJson(url, {
-			timeout: (fetchHostFrequency - 2) * 1000,
+			timeout: getPollingRequestTimeoutMs(
+				fetchHostFrequency,
+				clientSettingsInitial.fetchHostFrequency,
+			),
 			signal,
 		})
 		.then((response) => {
@@ -114,7 +120,6 @@ const HostSection = () => {
 			if (signal?.aborted) {
 				return;
 			}
-			console.log('fetchHostCountThenFetchData() ajax error');
 			setHostIsFetching(false);
 
 			handleFetchFail(setHostState, error, url, true);
@@ -145,7 +150,10 @@ const HostSection = () => {
 		getJson(
 			url,
 			{
-				timeout: (fetchHostFrequency - 2) * 1000,
+				timeout: getPollingRequestTimeoutMs(
+					fetchHostFrequency,
+					clientSettingsInitial.fetchHostFrequency,
+				),
 				signal,
 			}
 		)
@@ -156,7 +164,11 @@ const HostSection = () => {
 			// Success
 
 			// Make an array from the object
-			let my_list: Record<string, Host> = _.get(response.data.data, 'hostlist', {});
+			let my_list = _.get(
+				response.data.data,
+				'hostlist',
+				{},
+			) as Record<string, Host>;
 			// console.log('HostSection response.data.data', response.data.data);
 
 			// If we are in demo mode then clean the fake data

@@ -18,7 +18,7 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import './HistoryChart.css';
-import Highcharts, { PlotOptions } from 'highcharts';
+import Highcharts from 'highcharts';
 import { HighchartsReact } from 'highcharts-react-official';
 import { DateTime } from 'luxon';
 // Types
@@ -165,7 +165,6 @@ const HistoryChart = ({
 			const chart = chartComponentRef.current?.chart;
 
 			if (!chart) {
-				console.log('No chart found. Maybe hidden.');
 				return;
 			}
 

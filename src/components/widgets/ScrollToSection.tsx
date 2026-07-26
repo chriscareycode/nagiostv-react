@@ -176,7 +176,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 		if (debug) { console.log('ScrollToSection useEffect() Got sections', sections); }
 
-		let myCurrentSection = sections[currentIndex]; // start with the first section we have
+		const myCurrentSection = sections[currentIndex]; // start with the first section we have
 		if (debug) console.log('ScrollToSection() myCurrentSection', myCurrentSection);
 
 		// Determine how many items are down. We want to use Recoil for this in the future but for now will use DOM as a hack
@@ -200,7 +200,6 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 		const defaultAnimateSpeed = 4 * 1000; // default to 4s (before multiplier)
 		let animateSpeed = defaultAnimateSpeed;
-		let delayBeforeNextAnimation = animateSpeed + waitTime; // default to 5s
 		
 		if (myCurrentSection === 'top') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
@@ -214,7 +213,6 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 		}
 		if (myCurrentSection === 'above-alert') {
 			animateSpeed = howManyServiceDown * 1000;
-			delayBeforeNextAnimation = animateSpeed + (2 * 1000); // a shorter delay after this one, 2s instead of 5s
 		}
 		if (myCurrentSection === 'alert') {
 			animateSpeed = (howManyHostDown + howManyServiceDown) * 1000;
@@ -238,7 +236,7 @@ const ScrollToSection = ({ clientSettings }: ScrollToSectionProps) => {
 
 		// Trigger the next one to run by setting the next index after a wait delay that is longer than the animation delay
 		if (debug) console.log('ScrollToSection() starting setTimeout', animateSpeed + waitTime);
-		let handle = setTimeout(() => {
+		const handle = setTimeout(() => {
 			if (debug) console.log('ScrollToSection() running trigger - index', currentIndex);
 			
 			setCurrentIndex(curr => {

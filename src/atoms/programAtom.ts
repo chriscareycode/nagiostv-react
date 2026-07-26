@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 
 export const programStatusIsFetchingAtom = atom(false);
 
-interface ProgramStatus {
+export interface ProgramStatus {
 	program_start: number;
 	version: string;
 }

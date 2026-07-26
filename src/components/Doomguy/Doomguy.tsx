@@ -34,7 +34,6 @@ import {
 } from '../../helpers/nagiostv';
 
 import './Doomguy.css';
-// @ts-ignore-next-line
 import doomguyImage from './Doomguy.png';
 
 const smileClasses = ['doomguy20', 'doomguy21', 'doomguy22', 'doomguy23'];
@@ -182,7 +181,7 @@ const Doomguy = ({ scaleCss, style, showBalloon = true }: {
 	}, [llmIsLoading]);
 
 	let doomguyClass = 'doomguy';
-	let classes: any[] = [];
+	let classes: string[] = [];
 	if (howManyDown === -1) {
 		classes = smileClasses;
 	} else if (howManyDown === 0) {

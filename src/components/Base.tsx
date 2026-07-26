@@ -82,12 +82,10 @@ const AnimatedRoutes = () => {
 
 	const {
 		isDoneLoading,
-		isLeftPanelOpen,
 	} = bigState;
 
 	const {
 		automaticScroll,
-		automaticScrollTimeMultiplier,
 		showMiniMap,
 	} = clientSettings;
 

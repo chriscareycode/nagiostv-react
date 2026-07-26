@@ -18,7 +18,7 @@
 
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 // State Management
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 // React Router
 import { Link } from "react-router-dom";
@@ -48,7 +48,7 @@ import {
 const Settings = () => {
 
 	// State Management state
-	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const bigState = useAtomValue(bigStateAtom);
 	const [clientSettings, setClientSettings] = useAtom(clientSettingsAtom);
 
 	// Component state

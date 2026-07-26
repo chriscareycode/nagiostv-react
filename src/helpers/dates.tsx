@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DateTime, Duration, Info } from 'luxon';
+import { DateTime } from 'luxon';
 
 const locales = ['en', 'en-US', 'fr', 'de', 'es', 'ja', 'zh-CN', 'ru', 'ar', 'hi'];
 

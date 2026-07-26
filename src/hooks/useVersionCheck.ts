@@ -42,8 +42,6 @@ export function useVersionCheck() {
 		}
 
 		console.log('Running version check...');
-		lastVersionCheckTimeRef.current = nowTime;
-		saveLastVersionCheckTime(nowTime);
 
 		const controller = new AbortController();
 		requestControllerRef.current?.abort();
@@ -55,6 +53,8 @@ export function useVersionCheck() {
 				{ timeout: 5 * 1000, signal: controller.signal },
 			);
 			const result = response.data;
+			lastVersionCheckTimeRef.current = nowTime;
+			saveLastVersionCheckTime(nowTime);
 			console.log(`Latest NagiosTV release is ${result.version_string} (r${result.version}). You are running ${bigState.currentVersionString} (r${bigState.currentVersion})`);
 			setBigState(curr => ({
 				...curr,

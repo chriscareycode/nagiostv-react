@@ -40,7 +40,10 @@ import { getJson, handleFetchFail } from '../../helpers/axios';
 import { Alert } from '../../types/hostAndServiceTypes';
 import { shiftAlertsToNow } from './alert-functions';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
-import { useCancellablePolling } from '../../hooks/useCancellablePolling';
+import {
+	getPollingRequestTimeoutMs,
+	useCancellablePolling,
+} from '../../hooks/useCancellablePolling';
 
 const AlertSection = () => {
 
@@ -105,7 +108,6 @@ const AlertSection = () => {
 		hideAlertSoft,
 		language,
 		locale,
-		showEmoji,
 		alertDaysBack,
 		hostgroupFilter,
 		servicegroupFilter,
@@ -148,7 +150,10 @@ const AlertSection = () => {
 		getJson(
 			url,
 			{
-				timeout: (fetchAlertFrequency - 2) * 1000,
+					timeout: getPollingRequestTimeoutMs(
+						fetchAlertFrequency,
+						clientSettingsInitial.fetchAlertFrequency,
+					),
 				signal,
 			}
 		)
@@ -159,7 +164,8 @@ const AlertSection = () => {
 			// Success
 
 			// Make an array from the object, and reverse it (newest at the end of the array so we want them at the beginning)
-			let myAlertlist = _.get(response.data.data, 'alertlist', []).reverse() as Alert[];
+			const responseAlerts = _.get(response.data.data, 'alertlist', []) as Alert[];
+			let myAlertlist = [...responseAlerts].reverse();
 
 			// trim
 			if (myAlertlist.length > alertMaxItems) {

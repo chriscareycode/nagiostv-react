@@ -11,6 +11,7 @@ export default tseslint.config(
 			'public/**',
 		],
 	},
+	...tseslint.configs.recommended,
 	{
 		files: ['src/**/*.{ts,tsx}', 'vite.config.ts'],
 		languageOptions: {

@@ -58,8 +58,6 @@ const AlertFilters = ({
 		// we put this to solve the bubble issue where the click goes through the label then to the checkbox
 		if (typeof e.target.checked === 'undefined') { return; }
 
-		console.log('handleCheckboxChange going through');
-
 		let val: boolean | string = true;
 		if (dataType === 'checkbox') {
 			val = (!e.target.checked);

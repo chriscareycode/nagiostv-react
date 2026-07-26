@@ -52,12 +52,10 @@ const SettingsFakeData = () => {
 		if (bigState.useFakeSampleData) {
 			// Run one after 5s
 			initialTimeout = setTimeout(() => {
-				console.log('Running fakeOutTheData to fake out the fake data...');
 				fakeOutTheData();
 			}, startAfterSeconds * 1000);
 
 			// Start an interval of 1 minute to run the fakeOutTheData function
-			console.log('Starting an interval to call fakeOutTheData...');
 			interval = setInterval(() => {
 				fakeOutTheData();
 			}, fakeOutIntervalSeconds * 1000);

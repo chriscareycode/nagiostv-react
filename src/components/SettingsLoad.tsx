@@ -14,6 +14,10 @@ import {
 	readSkipVersion,
 } from '../helpers/persistence';
 import { useVersionCheck } from '../hooks/useVersionCheck';
+import {
+	getClientSettingsUrlParams,
+	parseClientSettingsUrlOverrides,
+} from '../helpers/settingsUrl';
 
 const SettingsLoad = () => {
 
@@ -49,41 +53,9 @@ const SettingsLoad = () => {
 	/* ************************************************************************************ */
 
 	const loadSettingsFromUrl = useCallback(() => {
-
-		// First try to get params from window.location.search (for regular URLs)
-		let urlParams = new URLSearchParams(window.location.search);
-		
-		// Also check for params in the hash portion of the URL (for HashRouter)
-		// HashRouter URLs look like: /#/?param=value or /#/path?param=value
-		const hash = window.location.hash;
-		if (hash) {
-			const hashQueryIndex = hash.indexOf('?');
-			if (hashQueryIndex !== -1) {
-				const hashParams = new URLSearchParams(hash.substring(hashQueryIndex));
-				// Merge hash params into urlParams (hash params take precedence)
-				for (const [key, value] of hashParams) {
-					urlParams.set(key, value);
-				}
-			}
-		}
-		
-		const urlObject: Record<string, unknown> = {};
-
-		for (var item of urlParams) {
-			//console.log('key: ' + item[0] + ', ' + 'value: ' + item[1]);
-
-			// special handling for when the value is true or false
-			// handle other special cases like this for other data types
-			if (item[1] === 'true') {
-				urlObject[item[0]] = true;
-			} else if (item[1] === 'false') {
-				urlObject[item[0]] = false;
-			} else {
-				urlObject[item[0]] = item[1];
-			}
-		}
-
-		//console.log('urlObject', urlObject);
+		const urlObject = parseClientSettingsUrlOverrides(
+			getClientSettingsUrlParams(window.location),
+		);
 
 		setClientSettings(curr => ({
 			...curr,
@@ -160,8 +132,6 @@ const SettingsLoad = () => {
 			}
 
 			// Got good server settings
-			console.log('Found server default settings client-settings.json - Loading default settings:', response.data);
-
 			// save settings to client settings state
 			setClientSettings(curr => ({
 				...curr,

@@ -133,7 +133,7 @@ export default function LLMMarkup({ content }: LLMMarkupProps) {
 
 		const parseTextWithBoldItalic = (text: string, startIndex: number): (string | JSX.Element)[] => {
 			const parts: (string | JSX.Element)[] = [];
-			let current = text;
+			const current = text;
 
 			// Handle bold (**text** or __text__)
 			// Match ** followed by content (non-greedy) followed by **

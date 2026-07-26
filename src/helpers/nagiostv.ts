@@ -51,7 +51,7 @@ export function cleanDemoDataServicelist(servicelist: ServiceList) {
 }
 
 export function convertHostObjectToArray(hostlist: Record<string, Host>) {
-	let hostStateArray: Host[] = [];
+	const hostStateArray: Host[] = [];
 
 	if (hostlist) {
 		Object.keys(hostlist).forEach((k) => {
@@ -69,7 +69,7 @@ export function convertHostObjectToArray(hostlist: Record<string, Host>) {
 }
 
 export function convertServiceObjectToArray(servicelist: Record<string, Record<string, Service>>) {
-	let serviceStateArray: Service[] = [];
+	const serviceStateArray: Service[] = [];
 
 	if (servicelist) {
 		Object.keys(servicelist).forEach((k) => {

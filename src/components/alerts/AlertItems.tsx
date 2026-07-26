@@ -71,17 +71,16 @@ const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
 		return true;
 	});
 
-	let trimmedItems = [...filteredHistoryArray];
-	trimmedItems.length = howManyToRender;
+	const trimmedItems = filteredHistoryArray.slice(0, howManyToRender);
 	const { language, locale, dateFormat } = settings;
 
 	return (
 			<div className="AlertItems">
 				{/* always show one quiet for (if we have at least 1 item) */}
-				{items.length > 1 &&
+				{filteredHistoryArray.length > 0 &&
 					<QuietFor
 						nowtime={new Date().getTime()}
-						prevtime={items[0].timestamp}
+						prevtime={filteredHistoryArray[0].timestamp}
 						//showEmoji={settings.showEmoji}
 						language={language}
 					/>
@@ -90,7 +89,7 @@ const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
 				{/* loop through the trimmed items */}
 				{trimmedItems.map((e, i) => {
 					const host = (e.object_type === 1 ? e.name : e.host_name);
-					const prevtime = (i > 0 ? items[i - 1].timestamp : 0);
+					const prevtime = (i > 0 ? trimmedItems[i - 1].timestamp : 0);
 					return (
 						<AlertItem
 							key={'alert-' + host + '-' + e.object_type + '-' + e.timestamp + '-' + i}
@@ -113,7 +112,7 @@ const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
 							<button className="uppercase-first" onClick={showLess}>{translate('show less', language)}</button>
 						</span>
 					}
-					{items.length > howManyToRender &&
+					{filteredHistoryArray.length > howManyToRender &&
 						<span>
 							<button className="uppercase-first" onClick={showMore}>{translate('show more', language)}</button>
 						</span>

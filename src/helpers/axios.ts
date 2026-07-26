@@ -1,5 +1,22 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { SetStateAction } from "jotai";
+interface NagiosJsonResponse {
+	data: Record<string, unknown> & {
+		count: Record<string, number>;
+	};
+	result: {
+		last_data_update: number;
+	};
+}
+
+interface FetchErrorState {
+	error: boolean;
+	errorCount: number;
+	errorMessage: string;
+}
+
+type FetchErrorSetter<T extends FetchErrorState> = (
+	update: (current: T) => T
+) => unknown;
 
 export const INVALID_JSON_RESPONSE_MESSAGE = 'ERROR: Result data is not JSON. Base URL setting is probably wrong.';
 
@@ -15,7 +32,7 @@ export const responseHasJsonContentType = (headers: AxiosResponse['headers']): b
 	return contentType == null || String(contentType).toLowerCase().includes('application/json');
 };
 
-export const getJson = async <T = any>(
+export const getJson = async <T = NagiosJsonResponse>(
 	url: string,
 	config: AxiosRequestConfig = {},
 ): Promise<AxiosResponse<T>> => {
@@ -44,18 +61,23 @@ export const getFetchErrorMessage = (error: unknown, url: string): string => {
 	return `UNKNOWN ERROR to ${url} check console`;
 };
 
-export const handleFetchFail = (setFn: SetStateAction<any>, error: unknown, url: string, incrementErrorCount: boolean) => {
+export const handleFetchFail = <T extends FetchErrorState>(
+	setFn: FetchErrorSetter<T>,
+	error: unknown,
+	url: string,
+	incrementErrorCount: boolean,
+) => {
 	const errorMessage = getFetchErrorMessage(error, url);
 
 	if (incrementErrorCount) {
-		setFn((curr: any) => ({
+		setFn((curr) => ({
 			...curr,
 			error: true,
 			errorCount: curr.errorCount + 1,
 			errorMessage
 		}));
 	} else {
-		setFn((curr: any) => ({
+		setFn((curr) => ({
 			...curr,
 			error: true,
 			errorMessage

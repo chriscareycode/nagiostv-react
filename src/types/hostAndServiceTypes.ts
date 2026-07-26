@@ -26,7 +26,7 @@ export interface HostWrap {
 	errorCount: number;
 	errorMessage: string;
 	lastUpdate: number;
-	response: Record<string, any>;
+	response: Record<string, unknown>;
 	stateArray: Host[]
 }
 
@@ -61,7 +61,7 @@ export interface ServiceWrap {
 	errorCount: number;
 	errorMessage: string;
 	lastUpdate: number;
-	response: Record<string, any>;
+	response: Record<string, unknown>;
 	stateArray: Service[]
 }
 
@@ -80,7 +80,7 @@ export interface AlertWrap {
 	errorCount: number;
 	errorMessage: string;
 	lastUpdate: number;
-	response: Record<string, any>;
+	response: Record<string, unknown>;
 	responseArray: Alert[]
 }
 

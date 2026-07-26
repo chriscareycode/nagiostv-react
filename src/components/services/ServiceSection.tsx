@@ -42,7 +42,10 @@ import _ from 'lodash';
 import { Service } from '../../types/hostAndServiceTypes';
 import { getJson, handleFetchFail } from 'helpers/axios';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
-import { useCancellablePolling } from '../../hooks/useCancellablePolling';
+import {
+	getPollingRequestTimeoutMs,
+	useCancellablePolling,
+} from '../../hooks/useCancellablePolling';
 
 const ServiceSection = () => {
 
@@ -56,7 +59,7 @@ const ServiceSection = () => {
 	const totalCount = useRef(0);
 	const fetchServiceCountThenFetchDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	// State Management state (main)
-	const [bigState, setBigState] = useAtom(bigStateAtom);
+	const bigState = useAtomValue(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 
 	// Chop the bigState into vars
@@ -87,7 +90,10 @@ const ServiceSection = () => {
 		setServiceIsFetching(true);
 
 		getJson(url, {
-			timeout: (fetchServiceFrequency - 2) * 1000,
+			timeout: getPollingRequestTimeoutMs(
+				fetchServiceFrequency,
+				clientSettingsInitial.fetchServiceFrequency,
+			),
 			signal,
 		})
 		.then((response) => {
@@ -136,7 +142,10 @@ const ServiceSection = () => {
 		getJson(
 			url,
 			{
-				timeout: (fetchServiceFrequency - 2) * 1000,
+				timeout: getPollingRequestTimeoutMs(
+					fetchServiceFrequency,
+					clientSettingsInitial.fetchServiceFrequency,
+				),
 				signal,
 			}
 		)
@@ -147,7 +156,11 @@ const ServiceSection = () => {
 			// Success
 
 			// Make an array from the object
-			let my_list: Record<string, Record<string, Service>> = _.get(response.data.data, 'servicelist', {});
+			let my_list = _.get(
+				response.data.data,
+				'servicelist',
+				{},
+			) as Record<string, Record<string, Service>>;
 
 			// If we are in demo mode then clean the fake data
 			if (isDemoMode) {

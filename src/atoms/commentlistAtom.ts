@@ -6,7 +6,7 @@ interface CommentListAtom {
 	errorCount: number;
 	errorMessage: string;
 	lastUpdate: number;
-	response: Record<string, any>;
+	response: Record<string, unknown>;
 	commentlistObject: {
 		hosts: Record<string, { comments: CommentListResponseObject[] }>;
 		services: Record<string, { comments: CommentListResponseObject[] }>;
@@ -26,4 +26,3 @@ const initialState: CommentListAtom = {
 };
 
 export const commentlistAtom = atom(initialState);
-

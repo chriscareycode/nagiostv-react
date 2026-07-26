@@ -17,7 +17,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { formatDateTime, formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
+import { formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
 import { translate } from '../../helpers/language';
@@ -106,7 +106,6 @@ const HostItem = (props: HostItemProps) => {
 
 		const isSoft = e.state_type === 0;
 		const { language } = settings;
-		const secondsToNextCheck = Math.floor((e.next_check - new Date().getTime()) / 1000);
 		const nowTime = new Date().getTime();
 		// When passive freshold check is done, this is reported as an active check (check_type=0)
 		// So we need another reliable way to determine if this is a stale passive alert.

@@ -20,7 +20,7 @@ import { memo } from 'react';
 import { translate } from '../../helpers/language';
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faCloudShowersHeavy, faCloudSunRain, faCloudSun, faSun } from '@fortawesome/free-solid-svg-icons';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 import './QuietFor.css';
 
@@ -73,14 +73,9 @@ const QuietFor = memo(({ nowtime, prevtime, language }: QuietForProps) => {
 			return foo;
 		};
 
-		const date_future = prevtime;
-		const date_now = nowtime;
-		const durationMs = Math.abs(date_future - date_now);
-		const hours = Math.floor(durationMs / (1000 * 60 * 60));
-
-		let icon = '';
-		let color = 'color-white';
-		let size = 'quietfor-normal-size'
+		const icon = '';
+		const color = 'color-white';
+		const size = 'quietfor-normal-size'
 		// if (hours > 12) {
 		//     icon = <FontAwesomeIcon className="color-green" icon={faSun} />;
 		//     color = 'color-green';

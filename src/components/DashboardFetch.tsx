@@ -6,10 +6,10 @@ import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
 // Libraries
 import _ from 'lodash';
-import { programStatusAtom } from "atoms/programAtom";
+import { ProgramStatus, programStatusAtom } from "atoms/programAtom";
 import { getJson, handleFetchFail } from "helpers/axios";
 // Types
-import { CommentListObject } from "types/commentTypes";
+import { CommentListObject, CommentListResponseObject } from "types/commentTypes";
 import { buildNagiosUrl } from '../helpers/nagiosUrls';
 import { useCancellablePolling } from '../hooks/useCancellablePolling';
 
@@ -54,7 +54,11 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the commentlist result
-			const commentlist = _.get(response.data.data, 'commentlist', {});
+			const commentlist = _.get(
+				response.data.data,
+				'commentlist',
+				{},
+			) as Record<string, CommentListResponseObject>;
 
 			// Massage the commentlist so we have one key per hostname
 			const commentlistObject: CommentListObject = {
@@ -133,7 +137,11 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the hostgrouplist result
-			const hostgroup = _.get(response.data.data, 'hostgrouplist', {});
+			const hostgroup = _.get(
+				response.data.data,
+				'hostgrouplist',
+				{},
+			) as Record<string, unknown>;
 
 			setHostgroup({
 				error: false,
@@ -167,7 +175,11 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the servicegrouplist result
-			const servicegroup = _.get(response.data.data, 'servicegrouplist', {});
+			const servicegroup = _.get(
+				response.data.data,
+				'servicegrouplist',
+				{},
+			) as Record<string, unknown>;
 
 			setServicegroup({
 				error: false,
@@ -200,7 +212,11 @@ const DashboardFetch = () => {
 			}
 
 			// Pluck out the programstatus result
-			const programstatus = _.get(response.data.data, 'programstatus', {});
+			const programstatus = _.get(
+				response.data.data,
+				'programstatus',
+				null,
+			) as ProgramStatus | null;
 
 			setProgramStatus({
 				error: false,

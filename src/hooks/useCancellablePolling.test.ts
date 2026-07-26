@@ -3,6 +3,7 @@ import { RefObject } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
 	getPollingIntervalMs,
+	getPollingRequestTimeoutMs,
 	PollingRequest,
 	useCancellablePolling,
 } from './useCancellablePolling';
@@ -12,6 +13,17 @@ describe('getPollingIntervalMs', () => {
 		expect(getPollingIntervalMs(30, 60)).toBe(30000);
 		expect(getPollingIntervalMs(2, 60)).toBe(60000);
 		expect(getPollingIntervalMs(Number.NaN, 60)).toBe(60000);
+	});
+});
+
+describe('getPollingRequestTimeoutMs', () => {
+	it('uses the sanitized polling interval for invalid values', () => {
+		expect(getPollingRequestTimeoutMs(1, 30)).toBe(28_000);
+		expect(getPollingRequestTimeoutMs(Number.NaN, 60)).toBe(58_000);
+	});
+
+	it('keeps request timeouts positive', () => {
+		expect(getPollingRequestTimeoutMs(5, 30)).toBe(3_000);
 	});
 });
 

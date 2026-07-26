@@ -27,6 +27,14 @@ export const getPollingIntervalMs = (
 	return safeIntervalSeconds * 1000;
 };
 
+export const getPollingRequestTimeoutMs = (
+	intervalSeconds: number,
+	fallbackIntervalSeconds: number,
+): number => Math.max(
+	1_000,
+	getPollingIntervalMs(intervalSeconds, fallbackIntervalSeconds) - 2_000,
+);
+
 export const useCancellablePolling = (
 	requestRef: RefObject<PollingRequest>,
 	{

@@ -6,7 +6,6 @@ import { hostHowManyAtom } from '../../atoms/hostAtom';
 import { serviceHowManyAtom } from '../../atoms/serviceAtom';
 import { alertAtom } from '../../atoms/alertAtom';
 import { clientSettingsAtom } from 'atoms/settingsState';
-import { programStatusAtom } from 'atoms/programAtom';
 
 // Helpers
 import Doomguy from 'components/Doomguy/Doomguy';

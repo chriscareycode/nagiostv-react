@@ -168,7 +168,7 @@ export async function speakAudio(words: string, voice: string) {
 	let sayWhat;
 	try {
 		sayWhat = new SpeechSynthesisUtterance(massagedWords);
-	} catch (e) {
+	} catch {
 		console.log('SpeechSynthesisUtterance not supported on this browser');
 		return;
 	}

@@ -114,6 +114,33 @@ describe('useVersionCheck', () => {
 		expect(persistenceMocks.saveLastVersionCheckTime).not.toHaveBeenCalled();
 	});
 
+	it('retries after a failed request without recording a successful check', async () => {
+		const store = createStore();
+		store.set(clientSettingsAtom, {
+			...clientSettingsInitial,
+			versionCheckDays: 2 / 24,
+		});
+		axiosMocks.get
+			.mockRejectedValueOnce(new Error('temporary network failure'))
+			.mockResolvedValueOnce({
+				data: { version: 100, version_string: '1.0.0' },
+			});
+
+		renderHook(() => useVersionCheck(), { wrapper: createWrapper(store) });
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(VERSION_CHECK_STORAGE_DELAY_MS);
+		});
+		expect(axiosMocks.get).toHaveBeenCalledTimes(1);
+		expect(persistenceMocks.saveLastVersionCheckTime).not.toHaveBeenCalled();
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(2 * 60 * 60 * 1_000);
+		});
+		expect(axiosMocks.get).toHaveBeenCalledTimes(2);
+		expect(persistenceMocks.saveLastVersionCheckTime).toHaveBeenCalledOnce();
+	});
+
 	it('aborts an active request on unmount', async () => {
 		const store = createStore();
 		let requestSignal: AbortSignal | undefined;
