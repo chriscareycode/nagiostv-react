@@ -34,7 +34,7 @@
     "@fortawesome/react-fontawesome": "^0.2.6",
     "@zumer/snapdom": "^2.8.0",
     "allotment": "^1.20.5",
-    "axios": "^1.16.0",
+    "axios": "^1.18.1",
     "clipboard-polyfill": "^3.0.3",
     "highcharts": "^12.6.0",
     "highcharts-react-official": "^3.2.3",
