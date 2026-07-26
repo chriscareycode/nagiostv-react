@@ -90,7 +90,12 @@ const LeftPanel = ({
 
 	return (
 		<div className={isLeftPanelOpen ? 'LeftPanel left-panel-open' : 'LeftPanel'}>
-			<Tooltip id="left-panel-tooltip" place="right" variant="dark" />
+			<Tooltip
+				id="left-panel-tooltip"
+				className="left-panel-tooltip"
+				place="right"
+				variant="dark"
+			/>
 
 			<div className="nav-sidebar-icon nav-dash">
 				<span data-tooltip-id="left-panel-tooltip" data-tooltip-content="Dashboard">

@@ -12,6 +12,11 @@
 
 .LeftPanel.left-panel-open {
 	left: 0px;
+	overflow: visible;
+}
+
+.left-panel-tooltip {
+	z-index: 14;
 }
 
 .LeftPanel .nav-sidebar-icon {
