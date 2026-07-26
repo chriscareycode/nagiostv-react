@@ -235,7 +235,7 @@ export default function MiniMapCanvas({
 				className="mmborder"
 			/>
 			{/* the snapshotted image */}
-			<img id="mmimg" src="" alt="Minimap preview" draggable="false" />
+			<img id="mmimg" alt="Minimap preview" draggable="false" />
 		</div>
 	);
 }
