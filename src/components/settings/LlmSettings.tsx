@@ -157,9 +157,10 @@ const LlmSettings = ({ onChange, settings }: LlmSettingsProps) => (
 								placeholder="Optional - leave empty for local servers"
 							/>
 							<br />
-							<span style={{ fontSize: '0.9em', color: '#888' }}>
-								API key for authentication (optional for most local LLM servers)
-							</span>
+								<span style={{ fontSize: '0.9em', color: '#888' }}>
+									API key for authentication (optional for most local LLM servers). For security,
+									this value is kept only in memory, is never exported, and is cleared when the page reloads.
+								</span>
 						</td>
 					</tr>
 					<tr>

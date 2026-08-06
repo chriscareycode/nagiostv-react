@@ -67,34 +67,50 @@ Install is all done!
 
 Preparing the client settings file (optional)
 ------------
-By default, settings are saved to a browser cookie. If you want to save settings on the server, so all users of NagiosTV will get those settings, you need to create a client-settings.json file. We do not include this file in the NagiosTV release so it will not be overwritten when you upgrade. NagiosTV will read this client-settings file when the app loads. If you want the NagiosTV web interface to be able to save to this server configuration file for you, you will also want to set permissions on that file. In the example below, I show the two options below, first chown and second with chmod. Change the www-data to your own apache user, which is often different depending on white Linux distro you are running:
+By default, settings are saved to browser localStorage. To provide shared defaults, create `client-settings.json` as an administrator. Do not put passwords, API keys, or other secrets in this public file. For manual management, the web server should be able to read the file but must not be able to write it. Change `www-data` to the read-only web-server group used by your system:
 
 ```console
-sudo touch client-settings.json
-sudo chown www-data:www-data client-settings.json 
-```
-or
-```console
-sudo touch client-settings.json
-sudo chmod 777 client-settings.json 
+sudo install -o root -g www-data -m 640 /path/to/prepared-client-settings.json client-settings.json
 ```
 
-One click updates
+Secure browser administration
 ------------
-As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. There is a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
+Browser-based settings saves and release updates are available when explicitly configured by an administrator. They require:
 
-* download the release
-* unarchive the release into temp/ folder
-* copying the release over the old NagiosTV
+- HTTPS;
+- a randomly generated `NAGIOSTV_ADMIN_TOKEN` of at least 32 characters configured in PHP/Apache;
+- a same-origin browser session and the CSRF token issued by the PHP endpoint;
+- write access for the PHP user to the NagiosTV directory.
 
-Preparing NagiosTV for one click update
-------------
-For one click upgrade to work, your NagiosTV folder needs to be owned by the apache user. The apache user is different on many different Linux distributions, so You could use `ps` or `ps -aux | grep apache` to find that username. In the example below, change `www-data` to your apache user, and change `usr/local/nagios/share/nagiostv` to be the path to your NagiosTV folder you just installed. 
+The administrator token is entered when performing an operation and is never persisted by NagiosTV. For a reverse proxy, set `NAGIOSTV_TRUST_PROXY=true` only when clients cannot connect directly to PHP. Plain HTTP administration can be enabled with `NAGIOSTV_ALLOW_INSECURE_ADMIN=true`, but this is unsafe and intended only for isolated development systems.
+
+The updater accepts only strict release versions, downloads from the fixed NagiosTV GitHub repository with TLS verification, rejects unsafe archive entries, and installs files without passing request data to a shell. Each downloaded release archive must also pass detached Ed25519 signature verification against the publisher key pinned in `nagiostv-release-ed25519.pub` before installation, and a failed install is rolled back to the previous files. Hardened administrative PHP files and the pinned signing key are intentionally protected from browser update and rollback replacement; update those files through the manual release process. Manual updates remain the recommended fallback.
+
+Until a real signing key is installed in `nagiostv-release-ed25519.pub`, browser updates fail closed. Generate a key pair once, keep the secret key offline, and paste only the public value into that file:
 
 ```console
-sudo chown -R www-data:www-data /usr/local/nagios/share/nagiostv
+php -r '$k=sodium_crypto_sign_keypair();
+  echo "secret ".base64_encode(sodium_crypto_sign_secretkey($k))."\n";
+  echo "public ".base64_encode(sodium_crypto_sign_publickey($k))."\n";'
 ```
-Then inside the application, navigate to the Update page, and read more instructions there.
+
+For each release, publish `nagiostv-<version>.tar.gz.sig` (base64 of a detached Ed25519 signature over the tarball) next to the release archive:
+
+```console
+php -r '$s=base64_decode(trim(file_get_contents($argv[2])));
+  echo base64_encode(sodium_crypto_sign_detached(file_get_contents($argv[1]),$s));' \
+  nagiostv-<version>.tar.gz secret.key > nagiostv-<version>.tar.gz.sig
+```
+
+Production HTTPS and security headers
+------------
+Serve NagiosTV over HTTPS and send security response headers from your web server. Reference configurations are in the `deploy/` folder:
+
+- `deploy/apache-nagiostv.conf` — Apache VirtualHost with HTTP-to-HTTPS redirect, HSTS, and a `Content-Security-Policy` plus `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `X-Frame-Options` for the NagiosTV subfolder.
+- `deploy/nagiostv.htaccess` — the same security headers as a `.htaccess` for the common subfolder install when you cannot edit the main Apache config.
+- `deploy/nginx-nagiostv.conf` — an nginx equivalent.
+
+These are starting points, not drop-ins. Review every value and adapt the paths, hostname, and TLS certificate lines to your environment. The default `connect-src 'self'` assumes the Nagios API, PHP endpoints, and any LLM endpoint are same-origin; if you point NagiosTV at a remote Nagios or an external LLM endpoint, add those exact origins to `connect-src`. Enable HSTS only after HTTPS is consistently deployed.
 
 Upgrading Manually
 ------------
@@ -111,8 +127,7 @@ sudo cp -r nagiostv/* /usr/local/nagios/share/nagiostv/
 
 Update CLI script
 -------------
-This command line autoupdate script can be used to upgrade or downgrade to any version easily. 
-This has been superceded by the one click within the NagiosTV UI. (see above)
+The legacy command-line updater remains available for local administrators, but manual updates with verified release artifacts are recommended.
 To update this way, go into your nagiostv/ folder and run this command for more instructions:
 ```
 sh autoupdate.sh
@@ -150,4 +165,3 @@ Created by
 ------------
 NagiosTV by Chris Carey https://nagiostv.com
 Copyright (C) 2008-2025 Chris Carey https://chriscarey.com
-

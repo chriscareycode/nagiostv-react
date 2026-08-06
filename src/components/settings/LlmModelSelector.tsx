@@ -19,6 +19,7 @@
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
 import { getLlmBackendPlugin } from 'helpers/llmBackends';
+import { validateLlmEndpoint } from 'helpers/llmEndpoint';
 import { LlmBackendType } from 'types/settings';
 
 interface LlmModelSelectorProps {
@@ -38,6 +39,12 @@ const LlmModelSelector = ({ llmBackendType, llmModel, llmServerBaseUrl, llmApiKe
 	const fetchLlmModels = async () => {
 		if (!llmServerBaseUrl) {
 			setLlmModelsError('Please enter a LLM Server Base URL first');
+			return;
+		}
+
+		const endpointValidation = validateLlmEndpoint(llmServerBaseUrl);
+		if (!endpointValidation.ok) {
+			setLlmModelsError(`LLM Server Base URL is not allowed because ${endpointValidation.reason}. Please use an http(s) URL.`);
 			return;
 		}
 

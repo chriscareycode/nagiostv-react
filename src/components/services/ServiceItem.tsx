@@ -23,6 +23,7 @@ import { serviceBorderClass, serviceTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosServiceStatus } from '../../helpers/nagios';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
 import { translate } from '../../helpers/language';
+import { openNagiosExtInfoPage } from '../../helpers/externalLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudRain, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import Progress from '../widgets/Progress';
@@ -106,22 +107,14 @@ const ServiceItem = (props: ServiceItemProps) => {
 			return;
 		}
 
-		const hostName = e.host_name;
-		
-		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
-		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${hostName}`);
-		const win = window.open(url, '_blank');
-		win?.focus();
+		openNagiosExtInfoPage(settings.externalLinkBaseUrl, { type: 1, host: e.host_name });
 	};
 
 	const openNagiosServicePage = () => {
 		if (isDemoMode) {
 			return;
 		}
-		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
-		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=2&host=${e.host_name}&service=${e.description}`);
-		const win = window.open(url, '_blank');
-		win?.focus();
+		openNagiosExtInfoPage(settings.externalLinkBaseUrl, { type: 2, host: e.host_name, service: e.description });
 	};
 
 		const isSoft = e.state_type === 0;

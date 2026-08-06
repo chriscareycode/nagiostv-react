@@ -31,6 +31,7 @@ describe('persistence', () => {
 	it('round-trips client settings through localStorage', () => {
 		const settings = {
 			...clientSettingsInitial,
+			llmApiKey: 'must-not-be-persisted',
 			titleString: 'Stored dashboard',
 		};
 
@@ -39,10 +40,26 @@ describe('persistence', () => {
 		expect(readClientSettings()).toMatchObject({
 			titleString: 'Stored dashboard',
 		});
+		expect(readClientSettings()).not.toHaveProperty('llmApiKey');
+		expect(window.localStorage.getItem(PERSISTED_KEYS.clientSettings)).not.toContain(
+			'must-not-be-persisted',
+		);
 
 		removeClientSettings();
 		expect(hasClientSettings()).toBe(false);
 		expect(readClientSettings()).toBeNull();
+	});
+
+	it('purges LLM API keys from previously stored settings', () => {
+		window.localStorage.setItem(PERSISTED_KEYS.clientSettings, JSON.stringify({
+			llmApiKey: 'legacy-secret',
+			titleString: 'Legacy dashboard',
+		}));
+
+		expect(readClientSettings()).toEqual({ titleString: 'Legacy dashboard' });
+		expect(window.localStorage.getItem(PERSISTED_KEYS.clientSettings)).toBe(
+			JSON.stringify({ titleString: 'Legacy dashboard' }),
+		);
 	});
 
 	it('rejects malformed JSON and invalid typed values', () => {

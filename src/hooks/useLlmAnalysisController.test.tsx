@@ -55,7 +55,7 @@ afterEach(() => {
 });
 
 describe('useLlmAnalysisController', () => {
-	it('runs the initial analysis after five seconds and stores the response', async () => {
+	it('requires explicit confirmation before sending the initial analysis', async () => {
 		const store = createStore();
 		transportMocks.requestLlmChat.mockResolvedValue({
 			content: '✅ All systems operational.',
@@ -69,7 +69,11 @@ describe('useLlmAnalysisController', () => {
 		await act(async () => {
 			await vi.advanceTimersByTimeAsync(5_000);
 		});
+		expect(transportMocks.requestLlmChat).not.toHaveBeenCalled();
 
+		await act(async () => {
+			result.current.analyze();
+		});
 		expect(transportMocks.requestLlmChat).toHaveBeenCalledOnce();
 		expect(result.current.history).toHaveLength(1);
 		expect(result.current.llmResponse).toBe('All systems operational.');
@@ -83,9 +87,13 @@ describe('useLlmAnalysisController', () => {
 			content: '⚠️ Host is down.',
 			model: 'test-model',
 		});
-		renderHook(() => useLlmAnalysisController(), {
+		const { result } = renderHook(() => useLlmAnalysisController(), {
 			wrapper: createWrapper(store),
 		});
+		await act(async () => {
+			result.current.analyze();
+		});
+		transportMocks.requestLlmChat.mockClear();
 
 		act(() => {
 			store.set(hostAtom, {
@@ -104,13 +112,13 @@ describe('useLlmAnalysisController', () => {
 		expect(transportMocks.requestLlmChat).toHaveBeenCalledOnce();
 	});
 
-	it('uses updated prompt settings without cancelling the initial analysis', async () => {
+	it('uses updated prompt settings for explicit analysis', async () => {
 		const store = createStore();
 		transportMocks.requestLlmChat.mockResolvedValue({
 			content: '✅ Updated prompt used.',
 			model: 'test-model',
 		});
-		renderHook(() => useLlmAnalysisController(), {
+		const { result } = renderHook(() => useLlmAnalysisController(), {
 			wrapper: createWrapper(store),
 		});
 
@@ -121,7 +129,7 @@ describe('useLlmAnalysisController', () => {
 			});
 		});
 		await act(async () => {
-			await vi.advanceTimersByTimeAsync(5_000);
+			result.current.analyze();
 		});
 
 		expect(transportMocks.requestLlmChat).toHaveBeenCalledOnce();
@@ -156,12 +164,12 @@ describe('useLlmAnalysisController', () => {
 				return new Promise(() => undefined);
 			},
 		);
-		const { unmount } = renderHook(() => useLlmAnalysisController(), {
+		const { result, unmount } = renderHook(() => useLlmAnalysisController(), {
 			wrapper: createWrapper(store),
 		});
 
 		await act(async () => {
-			await vi.advanceTimersByTimeAsync(5_000);
+			result.current.analyze();
 		});
 		unmount();
 

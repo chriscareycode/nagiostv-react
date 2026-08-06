@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
 import { bigStateAtom, clientSettingsAtom } from '../atoms/settingsState';
 import { skipVersionAtom } from '../atoms/skipVersionAtom';
+import { AdminCapabilities, fetchAdminCapabilities, postAdminJson } from '../helpers/adminApi';
 import { removeSkipVersion, saveSkipVersion } from '../helpers/persistence';
 
 interface GithubResult {
@@ -17,58 +18,36 @@ interface RequestState<Result> {
 	result: Result;
 }
 
-interface TestPhpResult {
-	whoami: string | null;
-	script: string | null;
-}
-
 interface LatestVersionResult {
 	version?: number;
 	version_string?: string;
 }
 
-interface UseUpdateManagerOptions {
-	currentVersionString: string;
+interface UpdateResult {
+	updated: boolean;
+	version: string;
+	message: string;
 }
 
-export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptions) {
+const emptyRequest = <Result,>(result: Result): RequestState<Result> => ({
+	loading: false,
+	error: false,
+	errorMessage: '',
+	result,
+});
+
+export function useUpdateManager({ currentVersionString }: { currentVersionString: string }) {
 	const [bigState, setBigState] = useAtom(bigStateAtom);
 	const clientSettings = useAtomValue(clientSettingsAtom);
 	const [skipVersion, setSkipVersion] = useAtom(skipVersionAtom);
+	const [adminToken, setAdminToken] = useState('');
+	const [capabilities, setCapabilities] = useState<AdminCapabilities | null>(null);
 	const [clickedCheckForUpdates, setClickedCheckForUpdates] = useState(false);
 	const [selected, setSelected] = useState('');
 	const controllers = useRef(new Set<AbortController>());
-
-	const [testPhpState, setTestPhpState] = useState<RequestState<TestPhpResult>>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: { whoami: null, script: null },
-	});
-	const [latestVersionState, setLatestVersionState] = useState<RequestState<LatestVersionResult>>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: {},
-	});
-	const [githubState, setGithubState] = useState<RequestState<GithubResult[] | null>>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: [],
-	});
-	const [updateState, setUpdateState] = useState<RequestState<string>>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: '',
-	});
-	const [downgradeState, setDowngradeState] = useState<RequestState<string>>({
-		loading: false,
-		error: false,
-		errorMessage: '',
-		result: '',
-	});
+	const [latestVersionState, setLatestVersionState] = useState(emptyRequest<LatestVersionResult>({}));
+	const [githubState, setGithubState] = useState(emptyRequest<GithubResult[] | null>([]));
+	const [updateState, setUpdateState] = useState(emptyRequest<UpdateResult | null>(null));
 
 	const createController = useCallback(() => {
 		const controller = new AbortController();
@@ -76,55 +55,27 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 		return controller;
 	}, []);
 
-	const releaseController = useCallback((controller: AbortController) => {
-		controllers.current.delete(controller);
-	}, []);
-
-	const testPhp = useCallback(async () => {
-		setTestPhpState(curr => ({ ...curr, loading: true }));
+	const loadCapabilities = useCallback(async () => {
 		const controller = createController();
-
 		try {
-			const response = await axios.get<TestPhpResult>('auto-version-switch.php?testphp=true', {
-				timeout: 10 * 1000,
-				signal: controller.signal,
-			});
-			setTestPhpState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: response.data,
-			});
-		} catch (error) {
-			if (!axios.isCancel(error)) {
-				setTestPhpState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error testing PHP',
-					result: { whoami: null, script: null },
-				});
-			}
+			setCapabilities(await fetchAdminCapabilities('auto-version-switch.php', controller.signal));
+		} catch {
+			setCapabilities(null);
 		} finally {
-			releaseController(controller);
+			controllers.current.delete(controller);
 		}
-	}, [createController, releaseController]);
+	}, [createController]);
 
 	const fetchLatestVersion = useCallback(async () => {
 		setLatestVersionState(curr => ({ ...curr, loading: true }));
 		const controller = createController();
-
 		try {
 			const response = await axios.get<LatestVersionResult>(
 				`https://nagiostv.com/version/nagiostv-react/?version=${currentVersionString}`,
-				{ timeout: 10 * 1000, signal: controller.signal },
+				{ timeout: 10_000, signal: controller.signal },
 			);
 			const result = response.data;
-			setLatestVersionState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result,
-			});
+			setLatestVersionState(emptyRequest(result));
 			setBigState(curr => ({
 				...curr,
 				latestVersion: result.version ?? 0,
@@ -133,123 +84,66 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 			}));
 		} catch (error) {
 			if (!axios.isCancel(error)) {
-				setLatestVersionState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error getting latest version from server',
-					result: {},
-				});
+				setLatestVersionState({ ...emptyRequest({}), error: true, errorMessage: 'Error getting latest version' });
 			}
 		} finally {
-			releaseController(controller);
+			controllers.current.delete(controller);
 		}
-	}, [createController, currentVersionString, releaseController, setBigState]);
+	}, [createController, currentVersionString, setBigState]);
 
-	const fetchReleasesFromGithub = useCallback(async () => {
+	const fetchReleases = useCallback(async () => {
 		setGithubState(curr => ({ ...curr, loading: true }));
 		const controller = createController();
-
 		try {
 			const response = await axios.get<GithubResult[]>(
 				'https://api.github.com/repos/chriscareycode/nagiostv-react/releases',
-				{ timeout: 10 * 1000, signal: controller.signal },
+				{ timeout: 10_000, signal: controller.signal },
 			);
-			setGithubState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: response.data,
-			});
+			setGithubState(emptyRequest(response.data));
 		} catch (error) {
 			if (!axios.isCancel(error)) {
-				setGithubState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error fetching from github',
-					result: null,
-				});
+				setGithubState({ ...emptyRequest<GithubResult[] | null>(null), error: true, errorMessage: 'Error fetching releases' });
 			}
 		} finally {
-			releaseController(controller);
+			controllers.current.delete(controller);
 		}
-	}, [createController, releaseController]);
+	}, [createController]);
 
 	const checkForUpdates = useCallback(() => {
-		void testPhp();
+		void loadCapabilities();
 		void fetchLatestVersion();
-		void fetchReleasesFromGithub();
+		void fetchReleases();
 		setClickedCheckForUpdates(true);
-	}, [fetchLatestVersion, fetchReleasesFromGithub, testPhp]);
+	}, [fetchLatestVersion, fetchReleases, loadCapabilities]);
 
-	const beginUpdate = useCallback(async () => {
-		setUpdateState(curr => ({ ...curr, loading: true }));
+	const installVersion = useCallback(async (version: string) => {
+		if (!capabilities?.csrfToken || !adminToken) {
+			return;
+		}
+		setUpdateState(curr => ({ ...curr, loading: true, error: false }));
 		const controller = createController();
-
 		try {
-			const response = await axios.get<string>(
-				`auto-version-switch.php?version=v${bigState.latestVersionString}`,
-				{ timeout: 30 * 1000, signal: controller.signal },
+			const result = await postAdminJson<UpdateResult>(
+				'auto-version-switch.php',
+				{ version },
+				adminToken,
+				capabilities.csrfToken,
+				controller.signal,
 			);
-			setUpdateState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: response.data,
-			});
+			setUpdateState(emptyRequest(result));
 		} catch (error) {
 			if (!axios.isCancel(error)) {
-				setUpdateState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error calling auto-version-switch.php',
-					result: '',
-				});
+				setUpdateState({ ...emptyRequest<UpdateResult | null>(null), error: true, errorMessage: 'Secure update failed. Check the administrator token and server logs.' });
 			}
 		} finally {
-			releaseController(controller);
+			controllers.current.delete(controller);
 		}
-	}, [bigState.latestVersionString, createController, releaseController]);
-
-	const beginDowngrade = useCallback(async () => {
-		setDowngradeState(curr => ({ ...curr, loading: true }));
-		const controller = createController();
-
-		try {
-			const response = await axios.get<string>(
-				`auto-version-switch.php?version=${selected}`,
-				{ timeout: 30 * 1000, signal: controller.signal },
-			);
-			setDowngradeState({
-				loading: false,
-				error: false,
-				errorMessage: '',
-				result: response.data,
-			});
-		} catch (error) {
-			if (!axios.isCancel(error)) {
-				setDowngradeState({
-					loading: false,
-					error: true,
-					errorMessage: 'Error calling auto-version-switch.php',
-					result: '',
-				});
-			}
-		} finally {
-			releaseController(controller);
-		}
-	}, [createController, releaseController, selected]);
-
-	const selectChanged = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-		setSelected(event.target.value);
-	}, []);
+	}, [adminToken, capabilities, createController]);
 
 	const clickedSkipVersion = useCallback(() => {
-		const skipVersionValue = {
-			version: bigState.latestVersion,
-			version_string: bigState.latestVersionString,
-		};
-		saveSkipVersion(skipVersionValue);
-		setSkipVersion(skipVersionValue);
+		const value = { version: bigState.latestVersion, version_string: bigState.latestVersionString };
+		saveSkipVersion(value);
+		setSkipVersion(value);
 	}, [bigState.latestVersion, bigState.latestVersionString, setSkipVersion]);
 
 	const clearSkipVersion = useCallback(() => {
@@ -272,20 +166,20 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 	}, []);
 
 	return {
-		beginDowngrade,
-		beginUpdate,
+		adminToken,
 		bigState,
+		capabilities,
 		checkForUpdates,
 		clearSkipVersion,
 		clickedCheckForUpdates,
 		clickedSkipVersion,
-		downgradeState,
 		githubState,
+		installVersion,
 		latestVersionState,
 		selected,
-		selectChanged,
+		selectChanged: (event: ChangeEvent<HTMLSelectElement>) => setSelected(event.target.value),
+		setAdminToken,
 		skipVersion,
-		testPhpState,
 		updateState,
 	};
 }

@@ -20,6 +20,7 @@ import {
 } from '../components/llm/llmAnalysis';
 import { requestLlmChat } from '../components/llm/llmTransport';
 import { speakAudio } from '../helpers/audio';
+import { validateLlmEndpoint } from '../helpers/llmEndpoint';
 import { filterHostStateArray, filterServiceStateArray } from '../helpers/nagiostv';
 import { useLlmHistory } from './useLlmHistory';
 
@@ -34,12 +35,10 @@ export function useLlmAnalysisController() {
 	const [error, setError] = useAtom(llmErrorAtom);
 	const historyState = useLlmHistory();
 	const addHistoryItem = historyState.addHistoryItem;
-	const historyLength = historyState.history.length;
 	const hasTriggeredAnalysisRef = useRef(false);
 	const pendingReanalysisRef = useRef(false);
 	const previousSignatureRef = useRef<string | null>(null);
 	const debounceTimerRef = useRef<number | null>(null);
-	const initialLoadTimerRef = useRef<number | null>(null);
 	const reanalysisTimerRef = useRef<number | null>(null);
 	const requestControllerRef = useRef<AbortController | null>(null);
 	const queryLlmRef = useRef<() => Promise<void>>(async () => undefined);
@@ -58,6 +57,12 @@ export function useLlmAnalysisController() {
 	const queryLLM = useCallback(async () => {
 		if (!clientSettings.llmServerBaseUrl) {
 			setError('LLM server base URL is not configured. Please configure it in settings.');
+			return;
+		}
+
+		const endpointValidation = validateLlmEndpoint(clientSettings.llmServerBaseUrl);
+		if (!endpointValidation.ok) {
+			setError(`LLM server URL is not allowed because ${endpointValidation.reason}. Please use an http(s) URL.`);
 			return;
 		}
 
@@ -197,28 +202,16 @@ export function useLlmAnalysisController() {
 
 		if (previousSignatureRef.current === null) {
 			previousSignatureRef.current = currentSignature;
-			initialLoadTimerRef.current = window.setTimeout(() => {
-				initialLoadTimerRef.current = null;
-				if (
-					!hasTriggeredAnalysisRef.current
-					&& !isLoading
-					&& historyLength === 0
-				) {
-					analyze();
-				}
-			}, 5_000);
-			return () => {
-				if (initialLoadTimerRef.current) {
-					window.clearTimeout(initialLoadTimerRef.current);
-					initialLoadTimerRef.current = null;
-				}
-			};
+			return;
 		}
 
 		if (previousSignatureRef.current === currentSignature) {
 			return;
 		}
 		previousSignatureRef.current = currentSignature;
+		if (!hasTriggeredAnalysisRef.current) {
+			return;
+		}
 
 		if (isLoading) {
 			pendingReanalysisRef.current = true;
@@ -243,16 +236,12 @@ export function useLlmAnalysisController() {
 		analyze,
 		clientSettings.llmServerBaseUrl,
 		currentSignature,
-		historyLength,
 		isLoading,
 	]);
 
 	useEffect(() => {
 		return () => {
 			requestControllerRef.current?.abort();
-			if (initialLoadTimerRef.current) {
-				window.clearTimeout(initialLoadTimerRef.current);
-			}
 			if (debounceTimerRef.current) {
 				window.clearTimeout(debounceTimerRef.current);
 			}

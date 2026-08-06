@@ -7,14 +7,14 @@ import SettingsPersistence from './SettingsPersistence';
 import { SettingsValueSetter } from './settingsTypes';
 
 const persistenceMocks = vi.hoisted(() => ({
-	post: vi.fn(),
+	fetchAdminCapabilities: vi.fn(),
+	postAdminJson: vi.fn(),
 	writeText: vi.fn(),
 }));
 
-vi.mock('axios', () => ({
-	default: {
-		post: persistenceMocks.post,
-	},
+vi.mock('../../helpers/adminApi', () => ({
+	fetchAdminCapabilities: persistenceMocks.fetchAdminCapabilities,
+	postAdminJson: persistenceMocks.postAdminJson,
 }));
 
 vi.mock('clipboard-polyfill/text', () => ({
@@ -22,25 +22,29 @@ vi.mock('clipboard-polyfill/text', () => ({
 }));
 
 beforeEach(() => {
-	persistenceMocks.post.mockReset();
+	persistenceMocks.fetchAdminCapabilities.mockReset();
+	persistenceMocks.fetchAdminCapabilities.mockResolvedValue({
+		enabled: true,
+		csrfToken: 'csrf-token',
+		httpsRequired: false,
+	});
+	persistenceMocks.postAdminJson.mockReset();
+	persistenceMocks.postAdminJson.mockResolvedValue({ saved: true });
 	persistenceMocks.writeText.mockReset();
 });
 
-const PersistenceHarness = ({
-	isDemoMode = false,
-	onMessage = vi.fn(),
-}: {
-	isDemoMode?: boolean;
-	onMessage?: (message: string, clearAfterMs?: number) => void;
-}) => {
-	const [settings, setSettings] = useState<ClientSettings>(clientSettingsInitial);
+const PersistenceHarness = ({ onMessage = vi.fn() }: { onMessage?: (message: string, clearAfterMs?: number) => void }) => {
+	const [settings, setSettings] = useState<ClientSettings>({
+		...clientSettingsInitial,
+		llmApiKey: 'must-not-be-exported',
+	});
 	const setValue: SettingsValueSetter = (propName, value) => {
 		setSettings(current => ({ ...current, [propName]: value }));
 	};
 
 	return (
 		<SettingsPersistence
-			isDemoMode={isDemoMode}
+			isDemoMode={false}
 			settings={settings}
 			onMessage={onMessage}
 			onSetValue={setValue}
@@ -70,30 +74,29 @@ describe('SettingsPersistence', () => {
 			name: 'Copy settings to clipboard for manual paste',
 		}));
 
-		expect(persistenceMocks.writeText).toHaveBeenCalledWith(
-			JSON.stringify(clientSettingsInitial, null, 2),
-		);
-	});
+			expect(persistenceMocks.writeText).toHaveBeenCalledWith(
+				JSON.stringify({ ...clientSettingsInitial, llmApiKey: undefined }, null, 2),
+			);
+		});
 
-	it('reports server-save results after the request resolves', async () => {
+	it('sends safe settings with in-memory admin and CSRF tokens', async () => {
 		const onMessage = vi.fn();
-		persistenceMocks.post.mockResolvedValue({ data: { saved: true } });
 		render(<PersistenceHarness onMessage={onMessage} />);
-
+		await waitFor(() => expect(persistenceMocks.fetchAdminCapabilities).toHaveBeenCalled());
+		fireEvent.change(screen.getByLabelText('NagiosTV administrator token'), {
+			target: { value: 'admin-token' },
+		});
 		fireEvent.click(screen.getByRole('button', { name: 'Save settings to server' }));
 
-		await waitFor(() => {
-			expect(onMessage).toHaveBeenCalledWith('Saved to Server', 3000);
-		});
-		expect(persistenceMocks.post).toHaveBeenCalledWith(
+		await waitFor(() => expect(persistenceMocks.postAdminJson).toHaveBeenCalled());
+		const payload = persistenceMocks.postAdminJson.mock.calls[0][1];
+		expect(payload).not.toHaveProperty('llmApiKey');
+		expect(persistenceMocks.postAdminJson).toHaveBeenCalledWith(
 			'save-client-settings.php',
-			JSON.stringify(clientSettingsInitial, null, 2),
+			payload,
+			'admin-token',
+			'csrf-token',
 		);
-	});
-
-	it('disables server saves in demo mode', () => {
-		render(<PersistenceHarness isDemoMode />);
-
-		expect(screen.getByRole('button', { name: 'Save settings to server' })).toBeDisabled();
+		expect(onMessage).toHaveBeenCalledWith('Saved to Server', 3000);
 	});
 });

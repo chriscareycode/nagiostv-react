@@ -1,2 +1,11 @@
 [livestatus]
 socket_path = /usr/local/nagios/var/rw/live.sock
+
+; Optional: exact browser origin allowed to read this connector cross-origin,
+; for example https://nagios.example.com. Leave unset for same-origin only.
+;allowed_origin =
+
+; Optional: require clients to send this token in the
+; X-NagiosTV-Connector-Token header. Leave unset to rely on web-server
+; authentication or network ACLs (the connector must remain behind one of these).
+;auth_token =

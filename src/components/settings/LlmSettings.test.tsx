@@ -38,6 +38,7 @@ describe('LlmSettings', () => {
 
 		expect(screen.getByRole('combobox', { name: 'LLM Backend Type' })).toBeInTheDocument();
 		expect(screen.getByTestId('model-selector')).toHaveTextContent('openai-compatible');
+		expect(screen.getByText(/kept only in memory/)).toBeInTheDocument();
 	});
 
 	it('updates backend, connection, and prompt settings', () => {

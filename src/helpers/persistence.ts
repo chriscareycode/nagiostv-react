@@ -37,6 +37,14 @@ const parseJsonRecord = (value: string | null | undefined): Record<string, unkno
 	}
 };
 
+export const sanitizePersistedClientSettings = (
+	settings: Partial<ClientSettings>,
+): Partial<ClientSettings> => {
+	const safeSettings = { ...settings };
+	delete safeSettings.llmApiKey;
+	return safeSettings;
+};
+
 const parseSkipVersion = (value: string | null | undefined): PersistedSkipVersion | null => {
 	const parsed = parseJsonRecord(value);
 	if (!parsed || typeof parsed.version !== 'number' || typeof parsed.version_string !== 'string') {
@@ -86,7 +94,10 @@ const writeRawValue = (key: string, value: string): boolean => {
 	}
 
 	try {
-		Cookie.set(key, value);
+		Cookie.set(key, value, {
+			sameSite: 'strict',
+			secure: window.location.protocol === 'https:',
+		});
 		return true;
 	} catch {
 		return false;
@@ -126,11 +137,25 @@ export const hasClientSettings = (): boolean => {
 };
 
 export const readClientSettings = (): Partial<ClientSettings> | null => {
-	return parseJsonRecord(readRawValue(PERSISTED_KEYS.clientSettings)) as Partial<ClientSettings> | null;
+	const parsed = parseJsonRecord(
+		readRawValue(PERSISTED_KEYS.clientSettings),
+	) as Partial<ClientSettings> | null;
+	if (!parsed) {
+		return null;
+	}
+
+	const safeSettings = sanitizePersistedClientSettings(parsed);
+	if (Object.prototype.hasOwnProperty.call(parsed, 'llmApiKey')) {
+		writeRawValue(PERSISTED_KEYS.clientSettings, JSON.stringify(safeSettings));
+	}
+	return safeSettings;
 };
 
 export const saveClientSettings = (settings: ClientSettings): boolean => {
-	return writeRawValue(PERSISTED_KEYS.clientSettings, JSON.stringify(settings));
+	return writeRawValue(
+		PERSISTED_KEYS.clientSettings,
+		JSON.stringify(sanitizePersistedClientSettings(settings)),
+	);
 };
 
 export const removeClientSettings = (): void => {

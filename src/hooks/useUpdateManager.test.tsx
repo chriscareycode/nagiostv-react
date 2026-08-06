@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { createStore, Provider } from 'jotai';
 import { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
+import { clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { useUpdateManager } from './useUpdateManager';
 
 const axiosMocks = vi.hoisted(() => ({
@@ -10,8 +10,18 @@ const axiosMocks = vi.hoisted(() => ({
 	isCancel: vi.fn(() => false),
 }));
 
+const adminMocks = vi.hoisted(() => ({
+	fetchAdminCapabilities: vi.fn(),
+	postAdminJson: vi.fn(),
+}));
+
 vi.mock('axios', () => ({
 	default: axiosMocks,
+}));
+
+vi.mock('../helpers/adminApi', () => ({
+	fetchAdminCapabilities: adminMocks.fetchAdminCapabilities,
+	postAdminJson: adminMocks.postAdminJson,
 }));
 
 const createWrapper = (store: ReturnType<typeof createStore>) => {
@@ -23,20 +33,20 @@ const createWrapper = (store: ReturnType<typeof createStore>) => {
 beforeEach(() => {
 	axiosMocks.get.mockReset();
 	axiosMocks.isCancel.mockClear();
+	adminMocks.fetchAdminCapabilities.mockReset();
+	adminMocks.fetchAdminCapabilities.mockResolvedValue({ enabled: true, csrfToken: 'csrf-token', httpsRequired: false });
+	adminMocks.postAdminJson.mockReset();
+	adminMocks.postAdminJson.mockResolvedValue({ updated: true, version: '1.0.0', message: 'done' });
 });
 
 describe('useUpdateManager', () => {
-	it('checks all update endpoints and stores the latest version', async () => {
+	it('checks versions and secure updater capabilities', async () => {
 		const store = createStore();
-		axiosMocks.get.mockImplementation((url: string) => {
-			if (url.includes('testphp=true')) {
-				return Promise.resolve({ data: { whoami: 'www-data', script: '/var/www/nagiostv' } });
-			}
-			if (url.includes('api.github.com')) {
-				return Promise.resolve({ data: [{ tag_name: 'v1.0.0', name: 'Release' }] });
-			}
-			return Promise.resolve({ data: { version: 100, version_string: '1.0.0' } });
-		});
+		axiosMocks.get.mockImplementation((url: string) => Promise.resolve({
+			data: url.includes('api.github.com')
+				? [{ tag_name: 'v1.0.0', name: 'Release' }]
+				: { version: 100, version_string: '1.0.0' },
+		}));
 
 		const { result } = renderHook(
 			() => useUpdateManager({ currentVersionString: '0.9.11' }),
@@ -44,15 +54,12 @@ describe('useUpdateManager', () => {
 		);
 
 		await waitFor(() => {
-			expect(axiosMocks.get).toHaveBeenCalledTimes(3);
+			expect(axiosMocks.get).toHaveBeenCalledTimes(2);
 			expect(result.current.bigState.latestVersion).toBe(100);
 		});
 
 		expect(result.current.clickedCheckForUpdates).toBe(true);
-		expect(result.current.testPhpState.result.whoami).toBe('www-data');
-		expect(result.current.githubState.result).toEqual([
-			{ tag_name: 'v1.0.0', name: 'Release' },
-		]);
+		expect(result.current.capabilities?.enabled).toBe(true);
 		expect(axiosMocks.get).toHaveBeenCalledWith(
 			'https://nagiostv.com/version/nagiostv-react/?version=0.9.11',
 			expect.objectContaining({ signal: expect.any(AbortSignal) }),
@@ -87,37 +94,40 @@ describe('useUpdateManager', () => {
 			{ wrapper: createWrapper(store) },
 		);
 
-		await waitFor(() => expect(signals).toHaveLength(3));
+		await waitFor(() => expect(signals).toHaveLength(2));
 		unmount();
 
 		expect(signals.every(signal => signal.aborted)).toBe(true);
 	});
 
-	it('uses the current latest version for one-click updates', async () => {
+	it('posts an authorized update with the CSRF token', async () => {
 		const store = createStore();
 		store.set(clientSettingsAtom, {
 			...clientSettingsInitial,
 			versionCheckDays: 0,
 		});
-		store.set(bigStateAtom, {
-			...store.get(bigStateAtom),
-			latestVersionString: '1.2.3',
-		});
-		axiosMocks.get.mockResolvedValue({ data: 'updated' });
-
 		const { result } = renderHook(
 			() => useUpdateManager({ currentVersionString: '0.9.11' }),
 			{ wrapper: createWrapper(store) },
 		);
 
 		await act(async () => {
-			await result.current.beginUpdate();
+			result.current.setAdminToken('admin-token');
+		});
+		await act(async () => {
+			result.current.checkForUpdates();
+		});
+		await waitFor(() => expect(result.current.capabilities).not.toBeNull());
+		await act(async () => {
+			await result.current.installVersion('v1.0.0');
 		});
 
-		expect(axiosMocks.get).toHaveBeenCalledWith(
-			'auto-version-switch.php?version=v1.2.3',
-			expect.objectContaining({ timeout: 30_000 }),
+		expect(adminMocks.postAdminJson).toHaveBeenCalledWith(
+			'auto-version-switch.php',
+			{ version: 'v1.0.0' },
+			'admin-token',
+			'csrf-token',
+			expect.any(AbortSignal),
 		);
-		expect(result.current.updateState.result).toBe('updated');
 	});
 });

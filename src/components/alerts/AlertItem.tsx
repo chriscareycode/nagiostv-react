@@ -21,6 +21,7 @@ import { formatDateTimeLocale } from '../../helpers/dates';
 import { ifQuietFor } from '../../helpers/date-math';
 import { alertTextClass, alertBorderClass } from '../../helpers/colors';
 import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios';
+import { openNagiosExtInfoPage } from '../../helpers/externalLinks';
 import QuietFor from './QuietFor';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
@@ -57,10 +58,7 @@ const AlertItem = (props: AlertItemProps) => {
 		if (e.object_type === 2) {
 			hostName = e.host_name;
 		}
-		const externalLinkBaseUrl = props.settings.externalLinkBaseUrl;
-		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${hostName}`);
-		const win = window.open(url, '_blank');
-		win?.focus();
+		openNagiosExtInfoPage(props.settings.externalLinkBaseUrl, { type: 1, host: hostName ?? '' });
 	}
 
 	const openNagiosServicePage = () => {
@@ -77,10 +75,7 @@ const AlertItem = (props: AlertItemProps) => {
 		if (e.object_type === 2) {
 			hostName = e.host_name;
 		}
-		const externalLinkBaseUrl = props.settings.externalLinkBaseUrl;
-		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=2&host=${hostName}&service=${e.description}`);
-		const win = window.open(url, '_blank');
-		win?.focus();
+		openNagiosExtInfoPage(props.settings.externalLinkBaseUrl, { type: 2, host: hostName ?? '', service: e.description });
 	}
 
 	const { language, locale, dateFormat } = props;

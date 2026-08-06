@@ -12,6 +12,7 @@ import {
 	migrateLegacyCookiesToLocalStorage,
 	readClientSettings,
 	readSkipVersion,
+	sanitizePersistedClientSettings,
 } from '../helpers/persistence';
 import { useVersionCheck } from '../hooks/useVersionCheck';
 import {
@@ -131,11 +132,13 @@ const SettingsLoad = () => {
 				return;
 			}
 
+			const remoteSettings = sanitizePersistedClientSettings(response.data);
+
 			// Got good server settings
 			// save settings to client settings state
 			setClientSettings(curr => ({
 				...curr,
-				...response.data,
+				...remoteSettings,
 			}));
 
 			// update a boolean so we know settings were loaded
@@ -145,11 +148,11 @@ const SettingsLoad = () => {
 			}));
 
 			// Now that we have loaded server settings, set the document.title from the title setting
-			if (response.data.titleString) { document.title = response.data.titleString; }
+			if (remoteSettings.titleString) { document.title = remoteSettings.titleString; }
 
 			// If serverSettingsTakePrecedence is true, skip loading local settings
 			// This means server settings will not be overwritten by local settings
-			if (response.data.serverSettingsTakePrecedence) {
+			if (remoteSettings.serverSettingsTakePrecedence) {
 				console.log('serverSettingsTakePrecedence is true - skipping local settings');
 				setBigState(curr => ({
 					...curr,

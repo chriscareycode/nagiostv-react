@@ -152,13 +152,6 @@ const Settings = () => {
 		setIsDirty(true);
 	};
 
-	const showSaveMessage = (message: string, clearAfterMs?: number) => {
-		setSaveMessage(message);
-		if (clearAfterMs !== undefined) {
-			clearSaveMessageAfter(clearAfterMs);
-		}
-	};
-
 	return (
 		<div className={`Settings`}>
 
@@ -248,11 +241,16 @@ const Settings = () => {
 
 					<LlmSettings settings={clientSettingsTemp} onChange={handleChange} />
 
-					<SettingsPersistence
-						isDemoMode={bigState.isDemoMode}
-						settings={clientSettingsTemp}
-						onMessage={showSaveMessage}
-						onSetValue={setSettingValue}
+						<SettingsPersistence
+							isDemoMode={bigState.isDemoMode}
+							settings={clientSettingsTemp}
+							onMessage={(message, clearAfterMs) => {
+								setSaveMessage(message);
+								if (clearAfterMs !== undefined) {
+									clearSaveMessageAfter(clearAfterMs);
+								}
+							}}
+							onSetValue={setSettingValue}
 					/>
 				</div>
 			</div>}

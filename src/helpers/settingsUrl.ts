@@ -7,15 +7,6 @@ type NumericRange = {
 };
 
 const numericRanges: Partial<Record<keyof ClientSettings, NumericRange>> = {
-	fetchHostFrequency: { min: 5, max: 86_400 },
-	fetchServiceFrequency: { min: 5, max: 86_400 },
-	fetchAlertFrequency: { min: 5, max: 86_400 },
-	fetchHostGroupFrequency: { min: 5, max: 86_400 },
-	fetchCommentFrequency: { min: 5, max: 86_400 },
-	alertDaysBack: { min: 1, max: 3_650 },
-	alertHoursBack: { min: 1, max: 87_600 },
-	alertMaxItems: { min: 1, max: 100_000 },
-	versionCheckDays: { min: 0, max: 3_650 },
 	doomguyConcernedAt: { min: 0, max: 100_000 },
 	doomguyAngryAt: { min: 0, max: 100_000 },
 	doomguyBloodyAt: { min: 0, max: 100_000 },
@@ -23,6 +14,58 @@ const numericRanges: Partial<Record<keyof ClientSettings, NumericRange>> = {
 	automaticScrollWaitSeconds: { min: 0, max: 86_400 },
 	miniMapWidth: { min: 0, max: 2_000 },
 };
+
+const URL_OVERRIDABLE_SETTINGS: ReadonlySet<keyof ClientSettings> = new Set([
+	'titleString',
+	'hostsAndServicesSideBySide',
+	'hideSummarySection',
+	'hideMostRecentAlertSection',
+	'hideServiceSection',
+	'hideServicePending',
+	'hideServiceOk',
+	'hideServiceWarning',
+	'hideServiceUnknown',
+	'hideServiceCritical',
+	'hideServiceAcked',
+	'hideServiceScheduled',
+	'hideServiceFlapping',
+	'hideServiceSoft',
+	'hideServiceNotificationsDisabled',
+	'serviceSortOrder',
+	'hideHostSection',
+	'hideHostPending',
+	'hideHostUp',
+	'hideHostDown',
+	'hideHostUnreachable',
+	'hideHostAcked',
+	'hideHostScheduled',
+	'hideHostFlapping',
+	'hideHostSoft',
+	'hideHostNotificationsDisabled',
+	'hostSortOrder',
+	'hideHistory',
+	'hideHistoryTitle',
+	'hideHistory24hChart',
+	'hideHistoryChart',
+	'hideAlertSoft',
+	'hostgroupFilter',
+	'servicegroupFilter',
+	'alwaysShowGroupFilters',
+	'fontSizeEm',
+	'doomguyEnabled',
+	'doomguyConcernedAt',
+	'doomguyAngryAt',
+	'doomguyBloodyAt',
+	'showEmoji',
+	'showNextCheckInProgressBar',
+	'hideHamburgerMenu',
+	'hideBottomMenu',
+	'automaticScroll',
+	'automaticScrollTimeMultiplier',
+	'automaticScrollWaitSeconds',
+	'showMiniMap',
+	'miniMapWidth',
+]);
 
 export const getClientSettingsUrlParams = (
 	location: Pick<Location, 'hash' | 'search'>,
@@ -53,6 +96,9 @@ export const parseClientSettingsUrlOverrides = (
 		}
 
 		const key = untypedKey as keyof ClientSettings;
+		if (!URL_OVERRIDABLE_SETTINGS.has(key)) {
+			continue;
+		}
 		const defaultValue = clientSettingsInitial[key];
 
 		if (typeof defaultValue === 'boolean') {

@@ -9,61 +9,43 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-// React Router
-import { Link } from "react-router";
+import { Link } from 'react-router';
 import { useUpdateManager } from '../hooks/useUpdateManager';
-
 import './Update.css';
-
-// icons
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 interface UpdateProps {
 	currentVersion: number;
 	currentVersionString: string;
 }
 
-const Update = ({
-	currentVersion,
-	currentVersionString,
-}: UpdateProps) => {
-
+const Update = ({ currentVersion, currentVersionString }: UpdateProps) => {
 	const {
-		beginDowngrade,
-		beginUpdate,
+		adminToken,
 		bigState,
+		capabilities,
 		checkForUpdates,
 		clearSkipVersion,
 		clickedCheckForUpdates,
 		clickedSkipVersion,
-		downgradeState,
 		githubState,
+		installVersion,
 		latestVersionState,
 		selected,
 		selectChanged,
+		setAdminToken,
 		skipVersion,
-		testPhpState,
 		updateState,
 	} = useUpdateManager({ currentVersionString });
-
-	/**
-	 * Start Render
-	 */
-
-	const options = githubState.result?.map((r, i) => {
-		return <option key={i} value={r.tag_name}>{r.tag_name} {r.name}</option>
-	});
-
 	const latestVersion = bigState.latestVersion;
 	const latestVersionString = bigState.latestVersionString;
+	const secureUpdateReady = Boolean(capabilities?.enabled && capabilities.csrfToken && adminToken);
 
 	return (
 		<div className="Update">
@@ -73,226 +55,112 @@ const Update = ({
 				<Link to="/"><button className="border border-[#6fbbf3] rounded py-[2px] px-[6px]">Back to Dashboard</button></Link>
 			</div>
 
+			<h3>Updates</h3>
 			<div className="update-help-message">
-				There are a number of ways to update NagiosTV.<br />
-				<span style={{ color: '#6fbbf3' }}>You only need to pick one of these:</span>
-				<ul className="list-disc pl-5">
-					<li>One-click update to latest</li>
-					<ul className="list-disc pl-5">
-						<li>You can use the one-click update routines inside the app here to update to the latest version. This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
-					</ul>
-					<li>Rollback to an older version</li>
-					<ul className="list-disc pl-5">
-						<li>You can switch to a previous version if you are having problems with a newer version.  This is a button within NagiosTV UI that will trigger a PHP script to download, extract, and overwrite the old version.</li>
-					</ul>
-					<li>Command-line (CLI)</li>
-					<ul className="list-disc pl-5">
-						<li>You can run the autoupdate.sh file in the NagiosTV directory to upgrade or downgrade versions.</li>
-					</ul>
-					<li>Manual Update</li>
-					<ul className="list-disc pl-5">
-						<li>You can go through the process manually by downloading the archive from GitHub and extacting it over top the old version.</li>
-					</ul>
-				</ul>
-				Your custom settings in <strong>client-settings.json</strong> and/or localStorage will not be overwritten
+				Secure browser updates require HTTPS and a server-side <code>NAGIOSTV_ADMIN_TOKEN</code>.
+				The token stays in memory for this page and is protected by same-origin and CSRF checks.
+				You can alternatively download a release from{' '}
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="https://github.com/chriscareycode/nagiostv-react/releases"
+				>
+					GitHub Releases
+				</a>
+				{' '}and follow the manual installation instructions.
 			</div>
 
-			{/* Manual Update */}
-			<h3>Manual Update</h3>
-
-			<div className="update-help-message">Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
-
-			{(clickedCheckForUpdates && latestVersionString) && <div>
-
-				{/* Automatic Update */}
-				<h3>One-click update to latest</h3>
-
+			{clickedCheckForUpdates && latestVersionString && (
 				<div className="update-help-message">
-
-					{/* latest version */}
-					<div style={{ marginTop: '0px' }}>
-						Latest version is:
-						{latestVersionState.loading && <span style={{ color: 'lime' }}> Loading...</span>}
-						{latestVersionState.error && <span style={{ color: 'red' }}> Error loading latest version. Try again.</span>}
-						{latestVersionString && <span>
-							<span style={{ color: 'lime' }}> v{latestVersionString}</span>
-							&nbsp;
-							<a target="_blank" rel="noopener noreferrer" href={`https://github.com/chriscareycode/nagiostv-react/releases/tag/v${latestVersionString}`}>See what's new in this version at GitHub</a>
-						</span>}
-					</div>
-
-					{/* you are running version 0.0.0 */}
 					<div>
-						You are running: <span style={{ color: 'lime' }}>v{currentVersionString}</span>
+						Latest version: <span style={{ color: 'lime' }}>v{latestVersionString}</span>{' '}
+						<a
+							target="_blank"
+							rel="noopener noreferrer"
+							href={`https://github.com/chriscareycode/nagiostv-react/releases/tag/v${latestVersionString}`}
+						>
+							See what changed
+						</a>
 					</div>
-
-					{/* you are running latest version */}
+					<div>You are running: <span style={{ color: 'lime' }}>v{currentVersionString}</span></div>
 					{currentVersion === latestVersion && <div style={{ color: 'lime' }}>You are running the latest version.</div>}
-
-					{/* you are running a newer version */}
-					{currentVersion > latestVersion && (
-						<div className="update-server-setup-instructions">
-							You are running a version newer than the latest announced release.<br />
-							This is fine, and usually means we are testing out the version with a few users before announcing the new version (which notifies all users of the update).
-							That being said, if you are seeing this and you notice any problems in this version, let me know in the GitHub issues! If you did notice issues which are preventing your dashboard from working, use the rollback feature to install a previous release.
-						</div>
+					{currentVersion > latestVersion && <div>You are running a version newer than the latest announced release.</div>}
+					<div style={{ marginTop: 20 }}>
+						<label>
+							Administrator token:{' '}
+							<input
+								aria-label="NagiosTV administrator token"
+								type="password"
+								value={adminToken}
+								onChange={event => setAdminToken(event.target.value)}
+								autoComplete="off"
+							/>
+						</label>
+					</div>
+					{capabilities?.httpsRequired && <div className="color-yellow">HTTPS is required for browser updates.</div>}
+					{capabilities && !capabilities.enabled && !capabilities.httpsRequired && (
+						<div className="color-yellow">Set NAGIOSTV_ADMIN_TOKEN on the web server to enable browser updates.</div>
+					)}
+					{currentVersion < latestVersion && (
+						<button
+							disabled={!secureUpdateReady || updateState.loading}
+							onClick={() => void installVersion(latestVersionString)}
+							className="auto-update-button"
+						>
+							{updateState.loading ? 'Installing...' : `Install v${latestVersionString}`}
+						</button>
 					)}
 
-					{/* php test */}
-					{testPhpState.loading && <div>Testing your server compatibility...</div>}
-					{testPhpState.error && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-						<FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. One-click update disabled.  Use the manual update
-						{currentVersion < latestVersion && <span>
-							, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {latestVersionString}</span>
-						</span>}
-					</div>}
-
-					{/* test if we have write access to the folder and all the files that we need */}
-
-					{/* update button */}
-					{(!testPhpState.error && currentVersion < latestVersion) && <div style={{ marginTop: '20px' }}>
-						<button disabled={updateState.loading} onClick={beginUpdate} className="auto-update-button">Begin update to latest version v{latestVersionString}</button>
-					</div>}
-
-
-					{/* update error */}
-					{updateState.error && <div>
-						<div>Update Error:</div>
-						{updateState.errorMessage}
-					</div>}
-
-					{/* update is working/loading */}
-					{updateState.loading && <div style={{ marginTop: '20px' }}>
-						<div>Update is working - Please Wait...</div>
-					</div>}
-
-					{/* update result */}
-					{updateState.result && <div style={{ marginTop: '20px' }}>
-						<div>Update Result:</div>
-						<textarea readOnly value={updateState.result}></textarea>
-					</div>}
-
+					<h3>Install a different release</h3>
+					<select aria-label="NagiosTV release" value={selected} onChange={selectChanged}>
+						<option value="">Select a release</option>
+						{githubState.result?.map(release => (
+							<option key={release.tag_name} value={release.tag_name}>{release.tag_name} {release.name}</option>
+						))}
+					</select>
+					<button
+						disabled={!secureUpdateReady || !selected || updateState.loading}
+						onClick={() => void installVersion(selected)}
+						className="auto-update-button"
+					>
+						Install selected release
+					</button>
+					{githubState.error && <div className="color-red">{githubState.errorMessage}</div>}
+					{updateState.error && <div className="color-red">{updateState.errorMessage}</div>}
+					{updateState.result && <div className="color-green">{updateState.result.message}</div>}
 				</div>
+			)}
 
-				<h3>Rollback to an older version</h3>
-
-				<div className="update-help-message">
-					<div>
-						You can roll back to an earlier version if you are having trouble with the latest version
-					</div>
-
-					{testPhpState.error && <div className="auto-update-error" style={{ marginTop: '20px' }}>
-						<FontAwesomeIcon icon={faExclamationTriangle} /> Error testing PHP. Rollback feature is disabled. Use the manual update
-						{currentVersion < latestVersion && <span>
-							, or the cli <span className="auto-update-chown-command">sh autoupdate.sh {latestVersionString}</span>
-						</span>}
-					</div>}
-
-					{!testPhpState.error && <div style={{ marginTop: '20px' }}>
-
-						{githubState.error && <div>
-							<div>Github Error:</div>
-							{githubState.errorMessage}
-						</div>}
-
-						<div style={{ marginTop: '20px' }}>
-							Select a version from Github:&nbsp;
-							<select onChange={selectChanged}>
-								<option></option>
-								{options}
-							</select>
-							{githubState.loading && <span> Loading...</span>}
-						</div>
-
-						{selected && <div style={{ marginTop: '20px' }}>
-							{/*<div>Selected version: {this.state.selected}</div>*/}
-							<button disabled={downgradeState.loading} onClick={beginDowngrade} className="auto-update-button">Begin version change to {selected}</button>
-						</div>}
-
-						{downgradeState.error && <div>
-							<div>Switch version Error:</div>
-							{downgradeState.errorMessage}
-						</div>}
-
-						{/* update is working/loading */}
-						{downgradeState.loading && <div style={{ marginTop: '20px' }}>
-							<div>Switch version is working - Please Wait...</div>
-						</div>}
-
-						{downgradeState.result && <div style={{ marginTop: '20px' }}>
-							<div>Switch version result:</div>
-							<textarea readOnly value={downgradeState.result}></textarea>
-						</div>}
-
-					</div>}
-				</div>
-
-
-				{/* upgrade prep instructions */}
-				{testPhpState.result.whoami && <div className="update-server-setup-instructions">
-					One-click update or version switch requires that the nagiostv folder and all the files within it are owned by the Apache user.<br />
-					Run the following command on the server to change ownership to the Apache user so the update routines can work:<br />
-					<div className="auto-update-chown-command">sudo chown -R {testPhpState.result.whoami}:{testPhpState.result.whoami} {testPhpState.result.script}</div>
-				</div>}
-
-				{/* downgrading warnings */}
-				{/*<div>
-          <br />
-          <br />
-          * If you downgrade to a version before v0.6.0, this auto update page will not exist on that old version.<br />
-          So, how do you get back up to a newer version? You can load this URL manually to switch again (take note of the URL or you can find it on the README at Github).
-          <div className="auto-update-chown-command">{document.location.href}auto-version-switch.php?version=v{this.state.latestVersion.version_string}</div>
-        </div>*/}
-			</div>}
-
-			{/* Check for Updates button */}
 			<h3>Check for Updates</h3>
 			<div className="update-help-message">
 				<button className="border border-[#6fbbf3] rounded py-[2px] px-[6px] text-[#6fbbf3]" onClick={checkForUpdates}>Check for Updates</button>
-
-				{/* Check for updates loading */}
-				{latestVersionState.loading && <span>
-					<span style={{ color: 'lime' }}> Loading...</span>
-				</span>}
-
-				{/* Check for updates error */}
-				{latestVersionState.error && <span>
-					<span style={{ color: 'red' }}> Error loading latest version. Try again.</span>
-				</span>}
+				{latestVersionState.loading && <span style={{ color: 'lime' }}> Loading...</span>}
+				{latestVersionState.error && <span style={{ color: 'red' }}> Error loading latest version. Try again.</span>}
 			</div>
 
-			{/* skip this version */}
-			<div>
-				<h3>Skip this version</h3>
-				<div style={{ marginTop: 10 }} className="update-help-message">
-
-					{bigState.latestVersionString && <div>
-						<button className="border border-[#6fbbf3] rounded py-[2px] px-[6px] text-[#6fbbf3]" disabled={skipVersion.version === bigState.latestVersion} onClick={clickedSkipVersion}>Skip version {bigState.latestVersionString} - Stop notifying me about it</button>
-					</div>}
-
-					{!skipVersion.version_string && bigState.latestVersionString === '' && <div>
-						Need to "Check for Updates" first to know which version to skip
-					</div>}
-
-					{skipVersion.version_string && <div style={{ color: 'yellow' }}>
-						You have chosen to skip version {skipVersion.version_string}. This will hide the update message until the next version is released.
-						&nbsp;
-						<button onClick={clearSkipVersion}>Cancel skip version for {skipVersion.version_string}</button>
-					</div>}
-
-				</div>
-
+			<h3>Skip this version</h3>
+			<div style={{ marginTop: 10 }} className="update-help-message">
+				{bigState.latestVersionString && (
+					<button
+						className="border border-[#6fbbf3] rounded py-[2px] px-[6px] text-[#6fbbf3]"
+						disabled={skipVersion.version === bigState.latestVersion}
+						onClick={clickedSkipVersion}
+					>
+						Skip version {bigState.latestVersionString}
+					</button>
+				)}
+				{!skipVersion.version_string && bigState.latestVersionString === '' && (
+					<div>Check for updates first to choose a version to skip.</div>
+				)}
+				{skipVersion.version_string && (
+					<div style={{ color: 'yellow' }}>
+						Version {skipVersion.version_string} is skipped.{' '}
+						<button onClick={clearSkipVersion}>Cancel skip</button>
+					</div>
+				)}
 			</div>
-
-			<br />
-			<br />
-			<br />
-			<br />
-			<br />
-
 		</div>
 	);
-
 };
 
 export default Update;

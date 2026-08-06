@@ -7,13 +7,13 @@ import {
 describe('client settings URL overrides', () => {
 	it('parses known settings using their declared runtime types', () => {
 		const overrides = parseClientSettingsUrlOverrides(new URLSearchParams({
-			fetchHostFrequency: '15',
+			doomguyConcernedAt: '15',
 			hideHostUp: 'false',
 			titleString: 'Wall display',
 		}));
 
 		expect(overrides).toEqual({
-			fetchHostFrequency: 15,
+			doomguyConcernedAt: 15,
 			hideHostUp: false,
 			titleString: 'Wall display',
 		});
@@ -22,18 +22,24 @@ describe('client settings URL overrides', () => {
 	it('ignores unknown, malformed, and out-of-range values', () => {
 		const overrides = parseClientSettingsUrlOverrides(new URLSearchParams({
 			unknownSetting: 'unexpected',
-			fetchHostFrequency: '1',
-			alertDaysBack: 'not-a-number',
+			doomguyConcernedAt: '-1',
 			hideHostUp: 'sometimes',
 		}));
 
 		expect(overrides).toEqual({});
 	});
 
-	it('allows zero to disable version checks', () => {
-		expect(parseClientSettingsUrlOverrides(
-			new URLSearchParams({ versionCheckDays: '0' }),
-		)).toEqual({ versionCheckDays: 0 });
+	it('rejects security-sensitive and network destination settings', () => {
+		expect(parseClientSettingsUrlOverrides(new URLSearchParams({
+			baseUrl: 'https://attacker.example/nagios',
+			externalLinkBaseUrl: 'https://attacker.example/',
+			fetchHostFrequency: '5',
+			hideLocalLLMSection: 'false',
+			llmApiKey: 'stored-secret',
+			llmServerBaseUrl: 'https://attacker.example/llm',
+			serverSettingsTakePrecedence: 'true',
+			versionCheckDays: '0',
+		}))).toEqual({});
 	});
 
 	it('gives hash-router parameters precedence over search parameters', () => {

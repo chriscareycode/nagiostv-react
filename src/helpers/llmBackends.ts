@@ -17,6 +17,7 @@
  */
 
 import { LlmBackendType, LlmThinkingLevel } from 'types/settings';
+import { assertLlmEndpoint } from './llmEndpoint';
 
 export interface LLMMessage {
 	role: 'system' | 'user' | 'assistant';
@@ -67,6 +68,7 @@ const DEFAULT_TIMEOUT_MS = 90_000;
 const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
 
 const joinUrl = (baseUrl: string, path: string): string => {
+	assertLlmEndpoint(baseUrl);
 	const normalizedBaseUrl = trimTrailingSlash(baseUrl.trim());
 	return `${normalizedBaseUrl}${path}`;
 };

@@ -23,11 +23,14 @@
 // See livestatus-settings.ini.sample for an example.
 $socket_path = "/usr/local/nagios/var/rw/live.sock";
 
+$config = array();
 # load the ini config if it exists. This allows us to override the socket path
 # in a way that will not overwrite when we get a new version of NagiosTV
 if (file_exists("livestatus-settings.ini")) {
 	$config = parse_ini_file("livestatus-settings.ini", true);
-	$socket_path = $config["livestatus"]["socket_path"];
+	if (isset($config["livestatus"]["socket_path"])) {
+		$socket_path = $config["livestatus"]["socket_path"];
+	}
 }
 
 /**
@@ -111,7 +114,7 @@ function queryLivestatus($query) {
 	#}
 
 	if($read === false) {
-		die("Livestatus error 1: ".socket_strerror(socket_last_error($sock))." Query: ".$query);
+		livestatus_fail("error 1: ".socket_strerror(socket_last_error($sock))." Query: ".$query);
 	}
 
 	$status = substr($read, 0, 3);
@@ -120,13 +123,13 @@ function queryLivestatus($query) {
 	$read = readSocket($len);
 	
 	if($read === false)
-	die("Livestatus error 2: ".socket_strerror(socket_last_error($sock)));
+	livestatus_fail("error 2: ".socket_strerror(socket_last_error($sock)));
 	
 	if($status != "200")
-	die("Livestatus error 3: ".$read);
+	livestatus_fail("error 3: ".$read);
 	
 	if(socket_last_error($sock) == 104)
-	die("Livestatus error: ".socket_strerror(socket_last_error($sock)));
+	livestatus_fail("error 104: ".socket_strerror(socket_last_error($sock)));
 
 	$result = socket_close($sock);
 	
@@ -196,9 +199,53 @@ function translateServiceAlertState($state) {
  * Start Program
  */
 
-# Add CORS header to the response if ORIGIN header is present
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-	header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN'] . "");
+# Fail with a generic message and log the detail server-side.
+function livestatus_fail($detail) {
+	error_log('NagiosTV livestatus connector: ' . $detail);
+	http_response_code(502);
+	header('Content-Type: application/json');
+	echo json_encode(array("error" => "Livestatus query failed. See the server error log for details."));
+	exit();
+}
+
+# Only GET and CORS preflight are supported.
+$requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+
+# Restrict CORS to an explicitly configured origin. Omit the header entirely
+# when no allowlist is set so the connector stays same-origin by default.
+$allowedOrigin = isset($config["livestatus"]["allowed_origin"]) ? trim($config["livestatus"]["allowed_origin"]) : '';
+$requestOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+header("Vary: Origin");
+if ($allowedOrigin !== '' && $requestOrigin !== '' && hash_equals($allowedOrigin, $requestOrigin)) {
+	header("Access-Control-Allow-Origin: " . $allowedOrigin);
+	header("Access-Control-Allow-Headers: X-NagiosTV-Connector-Token");
+}
+
+if ($requestMethod === 'OPTIONS') {
+	header("Allow: GET, OPTIONS");
+	http_response_code(204);
+	exit();
+}
+if ($requestMethod !== 'GET') {
+	header("Allow: GET, OPTIONS");
+	http_response_code(405);
+	header('Content-Type: application/json');
+	echo json_encode(array("error" => "Method not allowed"));
+	exit();
+}
+
+# Optional application-level authorization. When auth_token is configured the
+# client must send a matching X-NagiosTV-Connector-Token header. When it is not
+# configured, the connector must remain behind web-server auth or a network ACL.
+$configuredToken = isset($config["livestatus"]["auth_token"]) ? trim($config["livestatus"]["auth_token"]) : '';
+if ($configuredToken !== '') {
+	$providedToken = isset($_SERVER['HTTP_X_NAGIOSTV_CONNECTOR_TOKEN']) ? $_SERVER['HTTP_X_NAGIOSTV_CONNECTOR_TOKEN'] : '';
+	if ($providedToken === '' || !hash_equals($configuredToken, $providedToken)) {
+		http_response_code(403);
+		header('Content-Type: application/json');
+		echo json_encode(array("error" => "Authorization required"));
+		exit();
+	}
 }
 
 # get the query string from the URL
@@ -771,7 +818,9 @@ if ($query_string["query"] == "hostlist") {
 	print_r($encoded);
 
 } else {
-	print("unknown or no 'query' queryparam");
+	http_response_code(400);
+	header('Content-Type: application/json');
+	echo json_encode(array("error" => "Unknown or missing query parameter"));
 }
 
 ?>

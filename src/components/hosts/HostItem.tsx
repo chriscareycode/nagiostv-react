@@ -21,6 +21,7 @@ import { formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
 import { translate } from '../../helpers/language';
+import { openNagiosExtInfoPage } from '../../helpers/externalLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudRain, faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import { playSoundEffectDebounced, speakAudio } from '../../helpers/audio';
@@ -98,10 +99,7 @@ const HostItem = (props: HostItemProps) => {
 		if (isDemoMode) {
 			return;
 		}
-		const externalLinkBaseUrl = settings.externalLinkBaseUrl;
-		const url = encodeURI(`${externalLinkBaseUrl}extinfo.cgi?type=1&host=${e.name}`);
-		const win = window.open(url, '_blank');
-		win?.focus();
+		openNagiosExtInfoPage(settings.externalLinkBaseUrl, { type: 1, host: e.name });
 	};
 
 		const isSoft = e.state_type === 0;
