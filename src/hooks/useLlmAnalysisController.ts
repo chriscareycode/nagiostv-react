@@ -19,6 +19,8 @@ import {
 	parseLlmContent,
 } from '../components/llm/llmAnalysis';
 import { requestLlmChat } from '../components/llm/llmTransport';
+import { getLlmServerErrorDetail } from 'helpers/llmErrors';
+import { translate } from 'helpers/language';
 import { speakAudio } from '../helpers/audio';
 import { filterHostStateArray, filterServiceStateArray } from '../helpers/nagiostv';
 import { useLlmHistory } from './useLlmHistory';
@@ -143,10 +145,29 @@ export function useLlmAnalysisController() {
 					setError('Unauthorized. Please check your LLM API key.');
 				} else if (requestError.response?.status === 404) {
 					setError('LLM endpoint not found (404). Please check the server URL.');
+				} else if (requestError.response?.status === 400) {
+					const detail = getLlmServerErrorDetail(requestError.response.data);
+					const guidance = translate('The LLM server rejected the request (400). Check the selected backend, model, and thinking level in settings.', clientSettings.language);
+					setError(detail ? `${guidance} ${detail}` : guidance);
 				} else if (requestError.response?.status === 422) {
 					setError('Unprocessable Entity (422). The request was well-formed but contained semantic errors.');
 				} else if (requestError.response) {
-					setError(`LLM server error: ${requestError.response.status} - ${requestError.response.statusText}`);
+					const detail = getLlmServerErrorDetail(requestError.response.data);
+					setError(`LLM server error: ${requestError.response.status} - ${detail || requestError.response.statusText}`);
+				} else if (requestError.code === 'ERR_NETWORK') {
+					const message = translate('Cannot connect to the LLM server. Check that the server is running and the URL is correct.', clientSettings.language);
+					let isCrossOrigin = false;
+					try {
+						isCrossOrigin = new URL(clientSettings.llmServerBaseUrl, window.location.href).origin !== window.location.origin;
+					} catch {
+						// An invalid URL needs connection guidance rather than a CORS diagnosis.
+					}
+					// Browsers expose CORS blocks as network errors without the specific cause.
+					const corsHint = translate('Possible CORS error: Enable CORS on the LLM server and allow this dashboard origin:', clientSettings.language);
+					const consoleHint = translate('Check the browser console for CORS details.', clientSettings.language);
+					setError(isCrossOrigin
+						? `${message} ${corsHint} ${window.location.origin}. ${consoleHint}`
+						: message);
 				} else if (requestError.request) {
 					setError(`Cannot connect to LLM server at ${clientSettings.llmServerBaseUrl}. Please check the URL.`);
 				} else {

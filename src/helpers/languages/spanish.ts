@@ -1,4 +1,10 @@
 export const phrases = {
+	"Cannot connect to the LLM server. Check that the server is running and the URL is correct.": "No se puede conectar al servidor LLM. Comprueba que el servidor esté funcionando y que la URL sea correcta.",
+	"The LLM server rejected the request (400). Check the selected backend, model, and thinking level in settings.": "El servidor LLM rechazó la solicitud (400). Comprueba el backend, el modelo y el nivel de razonamiento seleccionados en la configuración.",
+	"Failed to fetch models: Network error. Check that the LLM server is running and the URL is correct.": "No se pudieron obtener los modelos: Error de red. Comprueba que el servidor LLM esté funcionando y que la URL sea correcta.",
+	"Possible CORS error: Enable CORS on the LLM server and allow this dashboard origin:": "Posible error de CORS: Activa CORS en el servidor LLM y permite este origen del panel:",
+	"Check the browser console for CORS details.": "Consulta la consola del navegador para ver los detalles de CORS.",
+
 
 	'host': 'computadora',
 	'hosts': 'computadoras',

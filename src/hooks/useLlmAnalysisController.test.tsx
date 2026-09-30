@@ -147,6 +147,59 @@ describe('useLlmAnalysisController', () => {
 		expect(result.current.error).toMatch(/base URL is not configured/);
 	});
 
+	it.each([
+		[{ error: { message: 'Model "missing-model" not found' } }, 'Model "missing-model" not found'],
+		[{ error: 'max_tokens exceeds the context window' }, 'max_tokens exceeds the context window'],
+		[{}, 'Check the selected backend, model, and thinking level in settings.'],
+	])('shows actionable guidance and server details for a 400 response', async (data, detail) => {
+		vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		transportMocks.requestLlmChat.mockRejectedValue({
+			isAxiosError: true,
+			response: { status: 400, statusText: 'Bad Request', data },
+		});
+		const { result } = renderHook(() => useLlmAnalysisController(), {
+			wrapper: createWrapper(createStore()),
+		});
+
+		await act(async () => {
+			result.current.analyze();
+		});
+
+		expect(result.current.error).toContain('The LLM server rejected the request (400).');
+		expect(result.current.error).toContain(detail);
+		expect(result.current.isLoading).toBe(false);
+		expect(result.current.history).toHaveLength(0);
+	});
+
+	it.each([
+		['http://10.200.0.82:1234', true],
+		[window.location.origin, false],
+	])('reports network failures at %s with appropriate CORS guidance', async (baseUrl, expectCors) => {
+		vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		const store = createStore();
+		store.set(clientSettingsAtom, { ...clientSettingsInitial, llmServerBaseUrl: baseUrl });
+		transportMocks.requestLlmChat.mockRejectedValue({
+			isAxiosError: true,
+			code: 'ERR_NETWORK',
+			message: 'Network Error',
+		});
+		const { result } = renderHook(() => useLlmAnalysisController(), {
+			wrapper: createWrapper(store),
+		});
+
+		await act(async () => {
+			result.current.analyze();
+		});
+
+		expect(result.current.error).toContain('Cannot connect to the LLM server.');
+		expect(result.current.error.includes('Possible CORS error')).toBe(expectCors);
+		if (expectCors) {
+			expect(result.current.error).toContain(`allow this dashboard origin: ${window.location.origin}`);
+			expect(result.current.error).toContain('Check the browser console for CORS details.');
+		}
+		expect(result.current.isLoading).toBe(false);
+	});
+
 	it('aborts an active analysis request on unmount', async () => {
 		const store = createStore();
 		let requestSignal: AbortSignal | undefined;

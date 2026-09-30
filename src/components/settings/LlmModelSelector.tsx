@@ -18,6 +18,9 @@
 
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
+import { useAtomValue } from 'jotai';
+import { clientSettingsAtom } from 'atoms/settingsState';
+import { translate } from 'helpers/language';
 import { getLlmBackendPlugin } from 'helpers/llmBackends';
 import { LlmBackendType } from 'types/settings';
 
@@ -30,6 +33,7 @@ interface LlmModelSelectorProps {
 }
 
 const LlmModelSelector = ({ llmBackendType, llmModel, llmServerBaseUrl, llmApiKey, onChange }: LlmModelSelectorProps) => {
+	const { language } = useAtomValue(clientSettingsAtom);
 	const [llmModels, setLlmModels] = useState<string[]>([]);
 	const [llmModelsLoading, setLlmModelsLoading] = useState(false);
 	const [llmModelsError, setLlmModelsError] = useState('');
@@ -45,9 +49,11 @@ const LlmModelSelector = ({ llmBackendType, llmModel, llmServerBaseUrl, llmApiKe
 		setLlmModelsError('');
 		setLlmModels([]);
 
+		let isCrossOrigin = false;
 		try {
 			const backendPlugin = getLlmBackendPlugin(llmBackendType);
 			const modelRequest = backendPlugin.buildModelListRequest(llmServerBaseUrl, llmApiKey);
+			isCrossOrigin = new URL(modelRequest.url, window.location.href).origin !== window.location.origin;
 			const response = await axios.get(modelRequest.url, {
 				headers: modelRequest.headers,
 				timeout: modelRequest.timeoutMs,
@@ -67,6 +73,14 @@ const LlmModelSelector = ({ llmBackendType, llmModel, llmServerBaseUrl, llmApiKe
 					setLlmModelsError('Authentication failed. Check your API key.');
 				} else if (error.response?.status === 404) {
 					setLlmModelsError('Models endpoint not found for this backend/server combination.');
+				} else if (error.code === 'ERR_NETWORK' && !error.response) {
+					// Browsers hide CORS failure details, so a network error cannot confirm CORS.
+					const message = translate('Failed to fetch models: Network error. Check that the LLM server is running and the URL is correct.', language);
+					const corsHint = translate('Possible CORS error: Enable CORS on the LLM server and allow this dashboard origin:', language);
+					const consoleHint = translate('Check the browser console for CORS details.', language);
+					setLlmModelsError(isCrossOrigin
+						? `${message} ${corsHint} ${window.location.origin}. ${consoleHint}`
+						: message);
 				} else {
 					setLlmModelsError(`Failed to fetch models: ${error.message}`);
 				}
