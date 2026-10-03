@@ -36,10 +36,9 @@ import HostFilters from './HostFilters';
 import MonitoringError from '../monitoring/MonitoringError';
 
 // 3rd party addons
-import { DateTime } from 'luxon';
 import get from 'lodash/get';
 import { Host } from 'types/hostAndServiceTypes';
-import { getJson, handleFetchFail } from 'helpers/axios';
+import { getDataAgeHours, getJson, handleFetchFail } from 'helpers/axios';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import {
 	getPollingRequestTimeoutMs,
@@ -183,11 +182,9 @@ const HostSection = () => {
 			// console.log('HostSection myArray:', myArray);
 
 			// check for old data (nagios down?)
-			const now = DateTime.now();
-			const lastUpdate = DateTime.fromMillis(response.data.result.last_data_update);
-			const hours = now.diff(lastUpdate, 'hours').hours.toFixed(1);
+			const hours = getDataAgeHours(response.data.result?.last_data_update);
 
-			if (isDemoMode === false && useFakeSampleData === false && parseFloat(hours) >= 1) {
+			if (isDemoMode === false && useFakeSampleData === false && hours !== null && parseFloat(hours) >= 1) {
 				// Data is stale
 				setHostIsFetching(false);
 

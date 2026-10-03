@@ -4,9 +4,17 @@ interface NagiosJsonResponse {
 		count: Record<string, number>;
 	};
 	result: {
-		last_data_update: number;
+		last_data_update?: number;
 	};
 }
+
+// Livestatus responses do not include Nagios CGI's last_data_update timestamp.
+export const getDataAgeHours = (lastDataUpdate: unknown, now = Date.now()): string | null => {
+	if (typeof lastDataUpdate !== 'number' || !Number.isFinite(lastDataUpdate)) {
+		return null;
+	}
+	return ((now - lastDataUpdate) / (1000 * 60 * 60)).toFixed(1);
+};
 
 interface FetchErrorState {
 	error: boolean;

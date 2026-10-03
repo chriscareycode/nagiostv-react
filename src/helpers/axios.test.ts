@@ -1,6 +1,7 @@
 import axios, { AxiosHeaders, AxiosResponse } from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+	getDataAgeHours,
 	getFetchErrorMessage,
 	getJson,
 	InvalidJsonResponseError,
@@ -75,5 +76,22 @@ describe('getFetchErrorMessage', () => {
 		expect(getFetchErrorMessage(error, '/status.json')).toBe(
 			'ERROR: ERR_NETWORK CONNECTION REFUSED Network Error /status.json',
 		);
+	});
+});
+
+
+describe('getDataAgeHours', () => {
+	it('skips stale-data checks when Livestatus omits the timestamp', () => {
+		expect(getDataAgeHours(undefined)).toBeNull();
+	});
+
+	it.each([null, '123', NaN, Infinity])('ignores invalid timestamp %s', (timestamp) => {
+		expect(getDataAgeHours(timestamp)).toBeNull();
+	});
+
+	it('preserves the age calculation for Nagios CGI timestamps', () => {
+		const now = 10_000_000;
+		expect(getDataAgeHours(now - 7_200_000, now)).toBe('2.0');
+		expect(getDataAgeHours(now, now)).toBe('0.0');
 	});
 });

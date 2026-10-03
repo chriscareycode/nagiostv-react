@@ -40,7 +40,7 @@ import get from 'lodash/get';
 
 // Types
 import { Service } from '../../types/hostAndServiceTypes';
-import { getJson, handleFetchFail } from 'helpers/axios';
+import { getDataAgeHours, getJson, handleFetchFail } from 'helpers/axios';
 import { buildGroupFilterParameters, buildNagiosUrl } from '../../helpers/nagiosUrls';
 import {
 	getPollingRequestTimeoutMs,
@@ -172,11 +172,10 @@ const ServiceSection = () => {
 			// console.log('ServiceSection myArray:', myArray);
 
 			// check for old stale data (detect if nagios is down)
-			const durationMs = new Date().getTime() - response.data.result.last_data_update;
-			const hours = (durationMs / (1000 * 60 * 60)).toFixed(1);
+			const hours = getDataAgeHours(response.data.result?.last_data_update);
 
 			// we disable the stale check if in demo mode since the demo data is always stale
-			if (isDemoMode === false && useFakeSampleData == false && parseFloat(hours) >= 1) {
+			if (isDemoMode === false && useFakeSampleData == false && hours !== null && parseFloat(hours) >= 1) {
 				setServiceIsFetching(false);
 				setServiceState(curr => ({
 					...curr,
