@@ -40,6 +40,18 @@ import { disablePwaOnClient } from './pwaCleanup';
 //   console.log('Had a problem clearing the serviceWorker cache.');
 // }
 
+
+// Dev-only: React 19.2 dev builds set ProfileMode on every root and emit one
+// performance.measure() User-Timing entry per component render/effect, but never
+// clear them. On pages that re-render over time this accumulates in the browser
+// performance timeline and can consume hundreds of MB. Nothing else in this app
+// uses User Timing, so periodically clearing measures caps the growth.
+if (import.meta.env.DEV) {
+  performance.clearMeasures();
+  setInterval(() => performance.clearMeasures(), 30 * 1000);
+}
+
+
 // React 17
 // ReactDOM.render(<App />, document.getElementById('root'));
 
