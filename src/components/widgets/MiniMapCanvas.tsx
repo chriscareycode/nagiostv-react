@@ -1,5 +1,5 @@
 import { snapdom } from "@zumer/snapdom";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useLocation } from "react-router";
 import './MiniMapCanvas.css';
 import { hostAtom, hostHowManyAtom } from 'atoms/hostAtom';
@@ -7,14 +7,43 @@ import { serviceAtom, serviceHowManyAtom } from 'atoms/serviceAtom';
 import { clientSettingsAtom } from 'atoms/settingsState';
 import { useAtomValue } from 'jotai';
 import { useSnapshotScheduler } from '../../hooks/useSnapshotScheduler';
+import { Host, Service } from '../../types/hostAndServiceTypes';
 
 interface MiniMapCanvasProps {
 	elementToSnapshot: string;
 	miniMapWidth: number;
 }
 
-// Fallback interval - only used when nothing else triggers a snapshot
-const fallbackRefreshSeconds = 1 * 60; // 1 minute(s)
+const buildHostMiniMapContentKey = (hosts: Host[]): string => JSON.stringify(
+	hosts.map(host => [
+		host.name,
+		host.status,
+		host.state_type,
+		host.current_attempt,
+		host.max_attempts,
+		host.notifications_enabled,
+		host.problem_has_been_acknowledged,
+		host.scheduled_downtime_depth,
+		host.is_flapping,
+		host.plugin_output,
+	]),
+);
+
+const buildServiceMiniMapContentKey = (services: Service[]): string => JSON.stringify(
+	services.map(service => [
+		service.host_name,
+		service.description,
+		service.status,
+		service.state_type,
+		service.current_attempt,
+		service.max_attempts,
+		service.notifications_enabled,
+		service.problem_has_been_acknowledged,
+		service.scheduled_downtime_depth,
+		service.is_flapping,
+		service.plugin_output,
+	]),
+);
 
 export default function MiniMapCanvas({
 	elementToSnapshot,
@@ -31,10 +60,20 @@ export default function MiniMapCanvas({
 	const scrollToYLastNumberRef = useRef<number>(0);
 	// Track whether we're currently dragging the minimap thumb
 	const isDraggingRef = useRef<boolean>(false);
+	// Track the active Blob URL so decoded image resources can be released.
+	const snapshotUrlRef = useRef<string | null>(null);
 	// Track route changes to trigger minimap updates
 	const location = useLocation();
+	const hostContentKey = useMemo(
+		() => buildHostMiniMapContentKey(hostState.stateArray),
+		[hostState.stateArray],
+	);
+	const serviceContentKey = useMemo(
+		() => buildServiceMiniMapContentKey(serviceState.stateArray),
+		[serviceState.stateArray],
+	);
 
-	const captureSnapshot = useCallback(async (): Promise<string | null> => {
+	const captureSnapshot = useCallback(async (): Promise<Blob | null> => {
 		const myElement: HTMLElement | null = document.querySelector(elementToSnapshot);
 		if (!myElement) {
 			return null;
@@ -45,19 +84,32 @@ export default function MiniMapCanvas({
 				scale: 0.25,
 				backgroundColor: '#111111',
 				fast: true,
-				cache: 'soft',
+				cache: 'disabled',
 			});
-			return result.url;
+			return await result.toBlob({ type: 'png' });
 		} catch (err) {
 			console.log('error doing snapdom', err);
 			return null;
 		}
 	}, [elementToSnapshot]);
 
-	const applySnapshot = useCallback((snapshot: string) => {
+	const applySnapshot = useCallback((snapshot: Blob) => {
 		const minimapImage = document.querySelector('#mmimg') as HTMLImageElement | null;
 		if (minimapImage) {
-			minimapImage.src = snapshot;
+			const previousUrl = snapshotUrlRef.current;
+			const nextUrl = URL.createObjectURL(snapshot);
+			snapshotUrlRef.current = nextUrl;
+			minimapImage.src = nextUrl;
+			if (previousUrl) {
+				URL.revokeObjectURL(previousUrl);
+			}
+		}
+	}, []);
+
+	useEffect(() => () => {
+		if (snapshotUrlRef.current) {
+			URL.revokeObjectURL(snapshotUrlRef.current);
+			snapshotUrlRef.current = null;
 		}
 	}, []);
 
@@ -70,8 +122,8 @@ export default function MiniMapCanvas({
 		requestSnapshot,
 		elementToSnapshot,
 		location.pathname,
-		hostState.lastUpdate,
-		serviceState.lastUpdate,
+		hostContentKey,
+		serviceContentKey,
 		hostHowMany.howManyHosts,
 		hostHowMany.howManyHostDown,
 		hostHowMany.howManyHostUnreachable,
@@ -110,16 +162,13 @@ export default function MiniMapCanvas({
 		clientSettings.servicegroupFilter,
 	]);
 
-	// Capture once more after initial layout settles, then only as a fallback.
+	// Capture once more after initial layout settles. Further captures are driven
+	// by content, filters, dimensions, or route changes above.
 	useEffect(() => {
 		const settledLayoutTimer = setTimeout(() => requestSnapshot(), 5000);
-		const int = setInterval(() => {
-			requestSnapshot();
-		}, fallbackRefreshSeconds * 1000);
 
 		return () => {
 			clearTimeout(settledLayoutTimer);
-			clearInterval(int);
 		};
 	}, [requestSnapshot]);
 

@@ -39,7 +39,7 @@ describe('useUpdateManager', () => {
 		});
 
 		const { result } = renderHook(
-			() => useUpdateManager({ currentVersionString: '0.9.11' }),
+			() => useUpdateManager({ currentVersionString: '0.10.0' }),
 			{ wrapper: createWrapper(store) },
 		);
 
@@ -54,7 +54,7 @@ describe('useUpdateManager', () => {
 			{ tag_name: 'v1.0.0', name: 'Release' },
 		]);
 		expect(axiosMocks.get).toHaveBeenCalledWith(
-			'https://nagiostv.com/version/nagiostv-react/?version=0.9.11',
+			'https://nagiostv.com/version/nagiostv-react/?version=0.10.0',
 			expect.objectContaining({ signal: expect.any(AbortSignal) }),
 		);
 	});
@@ -67,7 +67,7 @@ describe('useUpdateManager', () => {
 		});
 
 		renderHook(
-			() => useUpdateManager({ currentVersionString: '0.9.11' }),
+			() => useUpdateManager({ currentVersionString: '0.10.0' }),
 			{ wrapper: createWrapper(store) },
 		);
 
@@ -83,7 +83,7 @@ describe('useUpdateManager', () => {
 		});
 
 		const { unmount } = renderHook(
-			() => useUpdateManager({ currentVersionString: '0.9.11' }),
+			() => useUpdateManager({ currentVersionString: '0.10.0' }),
 			{ wrapper: createWrapper(store) },
 		);
 
@@ -106,7 +106,7 @@ describe('useUpdateManager', () => {
 		axiosMocks.get.mockResolvedValue({ data: 'updated' });
 
 		const { result } = renderHook(
-			() => useUpdateManager({ currentVersionString: '0.9.11' }),
+			() => useUpdateManager({ currentVersionString: '0.10.0' }),
 			{ wrapper: createWrapper(store) },
 		);
 

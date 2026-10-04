@@ -74,7 +74,7 @@ describe('useVersionCheck', () => {
 		});
 
 		expect(axiosMocks.get).toHaveBeenCalledWith(
-			'https://nagiostv.com/version/nagiostv-react/?version=0.9.11',
+			'https://nagiostv.com/version/nagiostv-react/?version=0.10.0',
 			expect.objectContaining({
 				timeout: 5_000,
 				signal: expect.any(AbortSignal),

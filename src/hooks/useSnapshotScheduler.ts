@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-type CaptureSnapshot = () => Promise<string | null>;
-type ApplySnapshot = (snapshot: string) => void;
+type CaptureSnapshot<T> = () => Promise<T | null>;
+type ApplySnapshot<T> = (snapshot: T) => void;
 
-export const useSnapshotScheduler = (
-	captureSnapshot: CaptureSnapshot,
-	applySnapshot: ApplySnapshot,
+export const useSnapshotScheduler = <T,>(
+	captureSnapshot: CaptureSnapshot<T>,
+	applySnapshot: ApplySnapshot<T>,
 	defaultDelayMs = 500,
 ) => {
 	const captureSnapshotRef = useRef(captureSnapshot);
