@@ -1,10 +1,12 @@
+import { commentlistAtom } from 'atoms/commentlistAtom';
 import { act, renderHook } from '@testing-library/react';
 import { createStore, Provider } from 'jotai';
 import { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { hostAtom } from '../atoms/hostAtom';
+import { serviceAtom } from '../atoms/serviceAtom';
 import { clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
-import { Host } from '../types/hostAndServiceTypes';
+import { Host, Service } from '../types/hostAndServiceTypes';
 import { useLlmAnalysisController } from './useLlmAnalysisController';
 
 const transportMocks = vi.hoisted(() => ({
@@ -102,6 +104,91 @@ describe('useLlmAnalysisController', () => {
 			await vi.advanceTimersByTimeAsync(1);
 		});
 		expect(transportMocks.requestLlmChat).toHaveBeenCalledOnce();
+	});
+
+	it('reanalyzes acknowledged services and sends their updated acknowledgement status', async () => {
+		const store = createStore();
+		const services: Service[] = ['HTTP', 'Disk'].map(description => ({
+			...createHost(16),
+			host_name: 'web-01',
+			description,
+			last_time_ok: 0,
+		}));
+		store.set(serviceAtom, { ...store.get(serviceAtom), stateArray: services });
+		store.set(clientSettingsAtom, { ...clientSettingsInitial, hideServiceAcked: false });
+		transportMocks.requestLlmChat.mockResolvedValue({ content: '⚠️ Service problems.' });
+		renderHook(() => useLlmAnalysisController(), { wrapper: createWrapper(store) });
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(5_000);
+		});
+		expect(transportMocks.requestLlmChat).toHaveBeenCalledOnce();
+
+		for (const acknowledged of [true, false]) {
+			const previousCalls = transportMocks.requestLlmChat.mock.calls.length;
+			act(() => {
+				store.set(serviceAtom, {
+					...store.get(serviceAtom),
+					stateArray: services.map(service => ({
+						...service,
+						problem_has_been_acknowledged: acknowledged,
+					})),
+				});
+			});
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(1_999);
+			});
+			expect(transportMocks.requestLlmChat).toHaveBeenCalledTimes(previousCalls);
+			await act(async () => {
+				await vi.advanceTimersByTimeAsync(1);
+			});
+			expect(transportMocks.requestLlmChat).toHaveBeenCalledTimes(previousCalls + 1);
+			const messages = transportMocks.requestLlmChat.mock.lastCall?.[0].messages;
+			expect(messages[1].content).toContain('Service Issues (2)');
+			expect(messages[1].content.match(/Acknowledged: (Yes|No)/g)).toEqual([
+				`Acknowledged: ${acknowledged ? 'Yes' : 'No'}`,
+				`Acknowledged: ${acknowledged ? 'Yes' : 'No'}`,
+			]);
+		}
+	});
+
+	it('reanalyzes when acknowledgement comments arrive after the status poll', async () => {
+		const store = createStore();
+		store.set(hostAtom, {
+			...store.get(hostAtom),
+			stateArray: [{ ...createHost(), problem_has_been_acknowledged: true }],
+		});
+		store.set(clientSettingsAtom, { ...clientSettingsInitial, hideHostAcked: false });
+		transportMocks.requestLlmChat.mockResolvedValue({ content: '⚠️ Acknowledged host.' });
+		renderHook(() => useLlmAnalysisController(), { wrapper: createWrapper(store) });
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(5_000);
+		});
+
+		const commentState = {
+			...store.get(commentlistAtom),
+			commentlistObject: {
+				hosts: { 'web-01': { comments: [{
+					host_name: 'web-01', service_description: '', comment_type: 1,
+					author: 'Chris', entry_time: Date.now(),
+					comment_data: 'Replacing the failed switch. ETA 15 minutes.',
+				}] } },
+				services: {},
+			},
+		};
+		act(() => { store.set(commentlistAtom, commentState); });
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(2_000);
+		});
+		expect(transportMocks.requestLlmChat).toHaveBeenCalledTimes(2);
+		expect(transportMocks.requestLlmChat.mock.lastCall?.[0].messages[1].content)
+			.toContain('Author: Chris; Comment: Replacing the failed switch. ETA 15 minutes.');
+
+		act(() => { store.set(commentlistAtom, { ...commentState, lastUpdate: Date.now() }); });
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(5_000);
+		});
+		expect(transportMocks.requestLlmChat).toHaveBeenCalledTimes(2);
 	});
 
 	it('uses updated prompt settings without cancelling the initial analysis', async () => {

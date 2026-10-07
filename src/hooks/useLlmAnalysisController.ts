@@ -1,3 +1,4 @@
+import { commentlistAtom } from 'atoms/commentlistAtom';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { useAtom, useAtomValue } from 'jotai';
@@ -28,6 +29,7 @@ import { useLlmHistory } from './useLlmHistory';
 const CONSOLE_DEBUG = false;
 
 export function useLlmAnalysisController() {
+	const comments = useAtomValue(commentlistAtom).commentlistObject;
 	const alertState = useAtomValue(alertAtom);
 	const hostState = useAtomValue(hostAtom);
 	const serviceState = useAtomValue(serviceAtom);
@@ -55,6 +57,7 @@ export function useLlmAnalysisController() {
 		hostStateArray,
 		serviceStateArray,
 		clientSettings,
+		comments,
 	);
 
 	const queryLLM = useCallback(async () => {
@@ -83,6 +86,7 @@ export function useLlmAnalysisController() {
 				filteredServiceStates,
 				recentAlerts,
 				clientSettings,
+				comments,
 			);
 
 			if (CONSOLE_DEBUG) {
@@ -193,6 +197,7 @@ export function useLlmAnalysisController() {
 			}
 		}
 	}, [
+		comments,
 		alertState.responseArray,
 		clientSettings,
 		addHistoryItem,

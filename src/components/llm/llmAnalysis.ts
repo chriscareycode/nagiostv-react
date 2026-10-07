@@ -1,3 +1,5 @@
+import { filterHostStateArray, filterServiceStateArray } from 'helpers/nagiostv';
+import { Comment, CommentListObject } from 'types/commentTypes';
 import { LLMHistoryColor } from '../../atoms/llmAtom';
 import { formatDateTimeAgo, formatDateTimeLocale } from '../../helpers/dates';
 import { LLMMessage } from '../../helpers/llmBackends';
@@ -53,10 +55,20 @@ export const formatResponseDuration = (durationMs?: number): string => {
 	return `${Math.max(1, Math.round(durationMs / 1000))}s`;
 };
 
+const formatIssueComments = (comments: Comment[] = []): string => {
+	if (comments.length === 0) return '';
+	return `
+  Monitoring Comments (including acknowledgement notes):
+${comments
+		.map(comment => `    - Author: ${comment.author}; Comment: ${comment.comment_data}`)
+		.join('\n')}`;
+};
+
 export const formatHostIssues = (
 	hosts: Host[],
 	locale: string,
 	dateFormat: string,
+	comments?: CommentListObject,
 ): string => {
 	if (hosts.length === 0) {
 		return 'No host issues detected.';
@@ -71,7 +83,7 @@ export const formatHostIssues = (
   Last Time Up: ${host.last_time_up ? formatDateTimeLocale(host.last_time_up, locale, dateFormat) : 'N/A'} (${timestampAgo} ago)
   Acknowledged: ${host.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${host.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
-  Flapping: ${host.is_flapping ? 'Yes' : 'No'}`;
+  Flapping: ${host.is_flapping ? 'Yes' : 'No'}${formatIssueComments(comments?.hosts[host.name]?.comments)}`;
 	}).join('\n\n');
 
 	return `Host Issues (${hosts.length}):\n\n${issues}`;
@@ -81,6 +93,7 @@ export const formatServiceIssues = (
 	services: Service[],
 	locale: string,
 	dateFormat: string,
+	comments?: CommentListObject,
 ): string => {
 	if (services.length === 0) {
 		return 'No service issues detected.';
@@ -96,7 +109,7 @@ export const formatServiceIssues = (
   Plugin Output: ${service.plugin_output || 'N/A'}
   Acknowledged: ${service.problem_has_been_acknowledged ? 'Yes' : 'No'}
   Scheduled Downtime: ${service.scheduled_downtime_depth > 0 ? 'Yes' : 'No'}
-  Flapping: ${service.is_flapping ? 'Yes' : 'No'}`;
+  Flapping: ${service.is_flapping ? 'Yes' : 'No'}${formatIssueComments(comments?.services[`${service.host_name}_${service.description}`]?.comments)}`;
 	}).join('\n\n');
 
 	return `Service Issues (${services.length}):\n\n${issues}`;
@@ -136,10 +149,11 @@ export const buildMonitoringSignature = (
 	hosts: Host[],
 	services: Service[],
 	settings: ClientSettings,
+	comments?: CommentListObject,
 ): string => {
-	const hostIds = hosts.map(host => `${host.name}:${host.status}`).sort().join(',');
+	const hostIds = hosts.map(host => `${host.name}:${host.status}:${host.problem_has_been_acknowledged}`).sort().join(',');
 	const serviceIds = services
-		.map(service => `${service.host_name}:${service.description}:${service.status}`)
+		.map(service => `${service.host_name}:${service.description}:${service.status}:${service.problem_has_been_acknowledged}`)
 		.sort()
 		.join(',');
 	const filterSignature = [
@@ -164,7 +178,20 @@ export const buildMonitoringSignature = (
 		settings.hideServiceNotificationsDisabled,
 	].map(value => value ? '1' : '0').join('');
 
-	return `${hosts.length}|${services.length}|${hostIds}|${serviceIds}|${filterSignature}`;
+	const commentSignature = (items: Comment[] = []) => items
+		.map(comment => JSON.stringify([comment.author, comment.entry_time, comment.comment_data]))
+		.sort();
+	const visibleHosts = filterHostStateArray(hosts, settings);
+	const visibleServices = filterServiceStateArray(services, settings);
+	const commentIds = JSON.stringify([
+		visibleHosts.map(host => [host.name, commentSignature(comments?.hosts[host.name]?.comments)])
+			.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))),
+		visibleServices.map(service => [service.host_name, service.description,
+			commentSignature(comments?.services[`${service.host_name}_${service.description}`]?.comments)])
+			.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))),
+	]);
+
+	return `${hosts.length}|${services.length}|${hostIds}|${serviceIds}|${filterSignature}|${commentIds}`;
 };
 
 export const buildSystemPrompt = (
@@ -192,6 +219,7 @@ export const buildAnalysisMessages = (
 	services: Service[],
 	recentAlerts: Alert[],
 	settings: ClientSettings,
+	comments?: CommentListObject,
 ): LLMMessage[] => {
 	const tooManyHosts = hosts.length > MAX_HOST_PROBLEMS_FOR_LLM;
 	const tooManyServices = services.length > MAX_SERVICE_PROBLEMS_FOR_LLM;
@@ -222,8 +250,8 @@ export const buildAnalysisMessages = (
 		];
 	}
 
-	const hostIssues = formatHostIssues(hosts, settings.locale, settings.dateFormat);
-	const serviceIssues = formatServiceIssues(services, settings.locale, settings.dateFormat);
+	const hostIssues = formatHostIssues(hosts, settings.locale, settings.dateFormat, comments);
+	const serviceIssues = formatServiceIssues(services, settings.locale, settings.dateFormat, comments);
 	const alerts = settings.hideMostRecentAlertSection
 		? ''
 		: formatRecentAlerts(recentAlerts, settings.locale, settings.dateFormat);

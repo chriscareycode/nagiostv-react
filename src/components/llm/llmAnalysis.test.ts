@@ -1,3 +1,4 @@
+import { CommentListObject } from 'types/commentTypes';
 import { describe, expect, it } from 'vitest';
 import { clientSettingsInitial } from '../../atoms/settingsState';
 import { Alert, Host, Service } from '../../types/hostAndServiceTypes';
@@ -102,6 +103,45 @@ describe('LocalLLM prompt preparation', () => {
 
 		expect(reordered).toBe(first);
 		expect(changed).not.toBe(first);
+	});
+
+	it('changes the signature when host or service acknowledgements change', () => {
+		const host = createHost();
+		const service = createService();
+		const original = buildMonitoringSignature([host], [service], clientSettingsInitial);
+
+		expect(buildMonitoringSignature(
+			[{ ...host, problem_has_been_acknowledged: true }],
+			[service],
+			clientSettingsInitial,
+		)).not.toBe(original);
+		expect(buildMonitoringSignature(
+			[host],
+			[{ ...service, problem_has_been_acknowledged: true }],
+			clientSettingsInitial,
+		)).not.toBe(original);
+	});
+
+	it('includes service comment authors and text and tracks comment changes', () => {
+		const service = createService({ problem_has_been_acknowledged: true });
+		const settings = { ...clientSettingsInitial, hideServiceAcked: false };
+		const comments: CommentListObject = {
+			hosts: {},
+			services: { 'web-01_HTTP': { comments: [{
+				host_name: 'web-01', service_description: 'HTTP', comment_type: 2,
+				author: 'Chris', entry_time: 1, comment_data: 'Deployment in progress.',
+			}] } },
+		};
+		const messages = buildAnalysisMessages('system', [], [service], [], settings, comments);
+		expect(messages[1].content).toContain('Author: Chris; Comment: Deployment in progress.');
+		const initial = buildMonitoringSignature([], [service], settings);
+		const updated = buildMonitoringSignature([], [service], settings, comments);
+		expect(updated).not.toBe(initial);
+		comments.services['web-01_HTTP'].comments[0].comment_data = 'Deployment complete.';
+		expect(buildMonitoringSignature([], [service], settings, comments)).not.toBe(updated);
+		const hiddenSettings = { ...settings, hideServiceAcked: true };
+		expect(buildMonitoringSignature([], [service], hiddenSettings, comments))
+			.toBe(buildMonitoringSignature([], [service], hiddenSettings));
 	});
 
 	it('uses the all-clear prompt when there are no problems', () => {
