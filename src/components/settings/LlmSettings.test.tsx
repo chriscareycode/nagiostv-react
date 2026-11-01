@@ -60,4 +60,17 @@ describe('LlmSettings', () => {
 		expect(screen.getByRole('textbox', { name: 'LLM Server Base URL' })).toHaveValue('http://localhost:9000');
 		expect(screen.getByRole('textbox', { name: 'Prompt (Issues)' })).toHaveValue('Prioritize critical services.');
 	});
+
+	it('keeps alarm-history questions disabled by default and shows the network warning', () => {
+		render(<LlmSettingsHarness />);
+		expect(clientSettingsInitial.llmAskQuestions).toBe(false);
+		fireEvent.change(screen.getByRole('combobox', { name: 'Local LLM' }), {
+			target: { value: 'false' },
+		});
+		const questionToggle = screen.getByRole('combobox', { name: 'Ask AI About Alarm History' });
+		expect(questionToggle).toHaveValue('false');
+		expect(screen.getByText(/private network where access to the LLM input is controlled/i)).toBeInTheDocument();
+		fireEvent.change(questionToggle, { target: { value: 'true' } });
+		expect(questionToggle).toHaveValue('true');
+	});
 });

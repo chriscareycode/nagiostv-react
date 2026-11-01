@@ -120,6 +120,7 @@ export interface ClientSettings {
 	llmApiKey: string;
 	llmThinkingLevel: LlmThinkingLevel;
 	llmSpeakResponse: boolean;
+	llmAskQuestions: boolean;
 	llmSystemPrompt: string;
 	llmDoomguyPrompt: string;
 	llmPromptAllOk: string;

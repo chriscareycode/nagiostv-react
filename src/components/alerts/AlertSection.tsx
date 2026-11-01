@@ -31,6 +31,7 @@ import PollingSpinner from '../widgets/PollingSpinner';
 import MonitoringError from '../monitoring/MonitoringError';
 import AlertItems from './AlertItems';
 import AlertFilters from './AlertFilters';
+import AlertHistoryQuestion from './AlertHistoryQuestion';
 import DeferredHistoryChart from '../widgets/DeferredHistoryChart';
 
 import debounce from 'lodash/debounce';
@@ -298,6 +299,10 @@ const AlertSection = () => {
 				/>
 
 			</div>
+
+			{!clientSettings.hideLocalLLMSection && clientSettings.llmAskQuestions && (
+				<AlertHistoryQuestion alerts={alertlistFiltered} settings={clientSettings} />
+			)}
 
 			{/* hourly alert chart */}
 

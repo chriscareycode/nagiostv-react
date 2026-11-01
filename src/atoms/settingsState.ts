@@ -165,6 +165,7 @@ export const clientSettingsInitial: ClientSettings = {
 	llmApiKey: '',
 	llmThinkingLevel: 'off',
 	llmSpeakResponse: false,
+	llmAskQuestions: false,
 	llmSystemPrompt: `
 You are a helpful assistant analyzing Nagios monitoring data. Provide concise insights about the current infrastructure health, identify critical issues, and suggest priorities for resolution. Today's date is {{DATE}}. The time is {{TIME}}. Day of the week is {{DAY_OF_WEEK}}. If you mention "flapping", capitalize it as "FLAPPING". Always add an emoji in the first position at the beginning of the response; it will be displayed as a "large icon" next to the response.
 

@@ -96,6 +96,15 @@ const LlmSettings = ({ onChange, settings }: LlmSettingsProps) => (
 			/>
 			{!settings.hideLocalLLMSection && (
 				<>
+					<BooleanSettingRow
+						description={<span className="text-[#c5a682]">Only enable this on a private network where access to the LLM input is controlled. Anyone with dashboard access can send questions and alarm data to the configured LLM.</span>}
+						falseLabel="Disabled"
+						onChange={onChange}
+						property="llmAskQuestions"
+						title="Ask AI About Alarm History"
+						trueLabel="Enabled"
+						value={settings.llmAskQuestions}
+					/>
 					<tr>
 						<th>LLM Backend Type:</th>
 						<td>
