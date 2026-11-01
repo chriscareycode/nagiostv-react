@@ -17,6 +17,8 @@
  */
 
 import { Alert } from '../../types/hostAndServiceTypes';
+import { DateTime } from 'luxon';
+import { nagiosAlertState, nagiosAlertStateType } from '../../helpers/nagios';
 
 export const MAX_LLM_QUESTION_LENGTH = 500;
 const MAX_ALARM_FIELD_LENGTH = 300;
@@ -34,15 +36,17 @@ export const cleanLlmInput = (value: unknown, maxLength: number): string => {
 		.slice(0, maxLength);
 };
 
-export const prepareAlarmForLlm = (alert: Alert) => {
-	const date = new Date(alert.timestamp);
+export const prepareAlarmForLlm = (alert: Alert, timeZone: string) => {
+	const date = DateTime.fromMillis(alert.timestamp, { zone: timeZone });
 	return {
-		time: Number.isNaN(date.getTime()) ? 'unknown' : date.toISOString(),
+		time: date.isValid ? date.toISO({ suppressMilliseconds: true }) : 'unknown',
 		type: alert.object_type === 1 ? 'host' : 'service',
 		host: cleanLlmInput(alert.object_type === 1 ? alert.name : alert.host_name, MAX_ALARM_FIELD_LENGTH),
-		...(alert.object_type === 1 ? {} : { service: cleanLlmInput(alert.name, MAX_ALARM_FIELD_LENGTH) }),
+		...(alert.object_type === 1 ? {} : { service: cleanLlmInput(alert.description, MAX_ALARM_FIELD_LENGTH) }),
 		state: alert.state,
+		stateLabel: nagiosAlertState(alert.state),
 		stateType: alert.state_type,
+		stateTypeLabel: nagiosAlertStateType(alert.state_type),
 		description: cleanLlmInput(alert.description, MAX_ALARM_FIELD_LENGTH),
 		output: cleanLlmInput(alert.plugin_output, MAX_ALARM_OUTPUT_LENGTH),
 	};

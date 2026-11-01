@@ -14,12 +14,12 @@ it('sends the question with recent alarms and displays the response', async () =
 		return { content: 'Two critical alarms.', thinkingContent: 'Checking alarms' };
 	});
 	const alerts = Array.from({ length: 105 }, (_, index) => ({
-		name: `service-${index}`,
+		name: '',
 		host_name: 'host-a',
 		timestamp: Date.UTC(2025, 0, 1) - index * 1000,
 		state: 16,
 		state_type: 1,
-		description: 'Critical',
+		description: `service-${index}`,
 		plugin_output: 'Check failed',
 		object_type: 2,
 	}));
@@ -31,6 +31,7 @@ it('sends the question with recent alarms and displays the response', async () =
 	await waitFor(() => expect(streamLlmChat).toHaveBeenCalledOnce());
 	const request = vi.mocked(streamLlmChat).mock.calls[0][0];
 	expect(request.messages[1].content).toContain('What happened?');
+	expect(request.messages[1].content).toContain('User timezone:');
 	expect(request.messages[1].content).toContain('100 of 105');
 	expect(request.messages[1].content).toContain('service-0');
 	expect(request.messages[1].content).not.toContain('service-100');
@@ -69,12 +70,12 @@ it('limits a quick ask to its time window and renders Markdown', async () => {
 	});
 	const now = Date.now();
 	const alerts = [2, 18, 30].map((hours, index) => ({
-		name: `service-${index}`,
+		name: '',
 		host_name: 'host-a',
 		timestamp: now - hours * 60 * 60 * 1000,
 		state: 16,
 		state_type: 1,
-		description: 'Critical',
+		description: `service-${index}`,
 		plugin_output: 'Check failed',
 		object_type: 2,
 	}));
@@ -90,6 +91,39 @@ it('limits a quick ask to its time window and renders Markdown', async () => {
 	expect(request.messages[1].content).not.toContain('service-1');
 	expect(await screen.findByRole('heading', { name: 'Trends' })).toBeInTheDocument();
 	expect(screen.getByRole('list')).toHaveTextContent('Critical alerts need attention.');
+});
+
+it('asks for one concise issue using the current alarm history', async () => {
+	vi.mocked(streamLlmChat).mockResolvedValue({ content: 'Check host-a first.' });
+	render(<AlertHistoryQuestion alerts={[]} settings={clientSettingsInitial} />);
+	fireEvent.click(screen.getByRole('button', { name: 'Ask AI about alarm history' }));
+	fireEvent.click(screen.getByRole('button', { name: 'Top issue to address' }));
+	await waitFor(() => expect(streamLlmChat).toHaveBeenCalledOnce());
+	const prompt = vi.mocked(streamLlmChat).mock.calls[0][0].messages[1].content;
+	expect(prompt).toContain('single most important issue');
+	expect(prompt).toContain('one or two sentences');
+	expect(prompt).toContain('recovery alerts');
+	expect(prompt).not.toContain('Time window:');
+});
+
+it('includes host recovery after a down event with correct state labels', async () => {
+	vi.mocked(streamLlmChat).mockResolvedValue({ content: 'The host recovered.' });
+	const baseAlert = {
+		name: 'docker', host_name: '', state_type: 1, description: '',
+		plugin_output: '', object_type: 1,
+	};
+	const alerts = [
+		{ ...baseAlert, timestamp: Date.UTC(2025, 6, 1, 15, 38), state: 1 },
+		{ ...baseAlert, timestamp: Date.UTC(2025, 6, 1, 14, 36), state: 2 },
+	];
+	render(<AlertHistoryQuestion alerts={alerts} settings={clientSettingsInitial} />);
+	fireEvent.click(screen.getByRole('button', { name: 'Ask AI about alarm history' }));
+	fireEvent.click(screen.getByRole('button', { name: 'Top issue to address' }));
+	await waitFor(() => expect(streamLlmChat).toHaveBeenCalledOnce());
+	const request = vi.mocked(streamLlmChat).mock.calls[0][0];
+	const events = JSON.parse(request.messages[1].content.slice(request.messages[1].content.indexOf('[{')));
+	expect(events.map((event: { stateLabel: string }) => event.stateLabel)).toEqual(['host up', 'host down']);
+	expect(request.messages[0].content).toContain('A later host UP or service OK is a recovery');
 });
 
 it('shows activity on the active quick ask until its request finishes', async () => {
