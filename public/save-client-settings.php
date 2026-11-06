@@ -18,19 +18,77 @@
    * along with this program.  If not, see <https://www.gnu.org/licenses/>.
    */
 
-  // capture JSON POST
-  $json = '';
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-          $json = file_get_contents("php://input");
+  /**
+   * Optional shared-secret gate.
+   *
+   * By default this script is reachable by anyone who can reach the web server.
+   * To require a secret token, copy nagiostv-server-config.sample.php to
+   * nagiostv-server-config.local.php (gitignored) and set 'write_token' to a
+   * long random string. Requests must then pass ?token=... or an
+   * X-NagiosTV-Token header containing the same value. When a token is
+   * configured, the "Save settings to server" button in the UI cannot write;
+   * use the manual copy/paste instructions instead.
+   */
+  function nagiostvTokenCheck() {
+    $configFile = __DIR__ . '/nagiostv-server-config.local.php';
+    if (!is_readable($configFile)) {
+      return true; // no token configured; other request checks still apply
+    }
+    $config = include $configFile;
+    $expected = (is_array($config) && isset($config['write_token'])) ? (string)$config['write_token'] : '';
+    if ($expected === '') {
+      return true;
+    }
+    $provided = isset($_GET['token']) ? (string)$_GET['token'] : '';
+    if ($provided === '' && isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN'])) {
+      $provided = (string)$_SERVER['HTTP_X_NAGIOSTV_TOKEN'];
+    }
+    return $provided !== '' && hash_equals($expected, $provided);
   }
+
+  header('X-Content-Type-Options: nosniff');
+  header('Content-Type: application/json');
+
+  // Only POST may write. A plain GET must never truncate the settings file.
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode(array('error' => 'Only POST is allowed'));
+    exit();
+  }
+
+  if (!nagiostvTokenCheck()) {
+    http_response_code(403);
+    echo json_encode(array('error' => 'Forbidden: missing or invalid token'));
+    exit();
+  }
+
+  // capture JSON POST
+  $json = file_get_contents("php://input");
+
+  // refuse oversized bodies
+  if (strlen($json) > 65536) {
+    http_response_code(413);
+    echo json_encode(array('error' => 'Settings payload too large'));
+    exit();
+  }
+
+  // only accept well-formed JSON objects/arrays, and store re-encoded JSON so
+  // arbitrary content can never be written to the file. This also blocks
+  // cross-site form posts, which cannot produce a JSON body.
+  $decoded = json_decode($json);
+  if ($json === '' || json_last_error() !== JSON_ERROR_NONE || !is_object($decoded)) {
+    http_response_code(400);
+    echo json_encode(array('error' => 'Body must be a JSON object'));
+    exit();
+  }
+  $json = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
   // write JSON to file
   $myfile = fopen("client-settings.json", "w") or die("Unable to open file!");
   fwrite($myfile, $json);
   fclose($myfile);
 
-  header('Content-Type: application/json');
-  //echo json_encode($json);
   echo $json;
 
 ?>

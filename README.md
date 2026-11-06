@@ -79,6 +79,10 @@ sudo touch client-settings.json
 sudo chmod 777 client-settings.json 
 ```
 
+The chown method is preferred; chmod 777 makes the file world-writable and is only shown for convenience.
+
+The save script (save-client-settings.php) only accepts POST requests with a valid JSON object, so other websites cannot overwrite your shared settings. For stronger protection against direct access, you can require a secret token: copy public/nagiostv-server-config.sample.php to public/nagiostv-server-config.local.php and set a long random write_token value. When a token is configured, the "Save settings to server" button cannot write (the browser does not know the secret); use the manual copy/paste instructions in the settings screen instead.
+
 One click updates
 ------------
 As of version v0.6.0 there is now an update routine included that you can run from within NagiosTV. There is a page within the NagiosTV UI that provides you with upgrade (and downgrade) with a click of the button. The script performs these actions:
@@ -86,6 +90,14 @@ As of version v0.6.0 there is now an update routine included that you can run fr
 * download the release
 * unarchive the release into temp/ folder
 * copying the release over the old NagiosTV
+
+The update script (auto-version-switch.php) only accepts plain version numbers and requires an X-NagiosTV-Update header that the NagiosTV UI sends automatically, so other websites cannot trigger an update in your browser. If you call the script yourself (for example with curl), add the header:
+
+```console
+curl -H "X-NagiosTV-Update: 1" "https://your-server/nagios/nagiostv/auto-version-switch.php?version=v0.10.0"
+```
+
+For stronger protection against direct access, you can require a secret token: copy public/nagiostv-server-config.sample.php to public/nagiostv-server-config.local.php and set a long random write_token value, then pass it as ?token=... or an X-NagiosTV-Token header. When a token is configured, the one click update button cannot trigger updates (the browser does not know the secret); use the manual upgrade steps or the update CLI script below instead.
 
 Preparing NagiosTV for one click update
 ------------

@@ -29,6 +29,9 @@ yarn-error.log*
 /node/settings.js
 /node/settings-nagios.js
 
+# PHP helper secrets (see public/nagiostv-server-config.sample.php)
+/public/nagiostv-server-config.local.php
+
 # some of my scripts
 deploy-to-bigwood.sh
 deploy-to-nagiostv-demo.sh

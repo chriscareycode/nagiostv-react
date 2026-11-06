@@ -188,7 +188,7 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 		try {
 			const response = await axios.get<string>(
 				`auto-version-switch.php?version=v${bigState.latestVersionString}`,
-				{ timeout: 30 * 1000, signal: controller.signal },
+				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1' } },
 			);
 			setUpdateState({
 				loading: false,
@@ -217,7 +217,7 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 		try {
 			const response = await axios.get<string>(
 				`auto-version-switch.php?version=${selected}`,
-				{ timeout: 30 * 1000, signal: controller.signal },
+				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1' } },
 			);
 			setDowngradeState({
 				loading: false,

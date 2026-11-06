@@ -19,6 +19,41 @@
    */
 
   /**
+   * Optional shared-secret gate.
+   *
+   * By default this script is reachable by anyone who can reach the web server.
+   * To require a secret token, copy nagiostv-server-config.sample.php to
+   * nagiostv-server-config.local.php (gitignored) and set 'write_token' to a
+   * long random string. Requests must then pass ?token=... or an
+   * X-NagiosTV-Token header containing the same value.
+   */
+  function nagiostvTokenCheck() {
+    $configFile = __DIR__ . '/nagiostv-server-config.local.php';
+    if (!is_readable($configFile)) {
+      return true; // no token configured; other request checks still apply
+    }
+    $config = include $configFile;
+    $expected = (is_array($config) && isset($config['write_token'])) ? (string)$config['write_token'] : '';
+    if ($expected === '') {
+      return true;
+    }
+    $provided = isset($_GET['token']) ? (string)$_GET['token'] : '';
+    if ($provided === '' && isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN'])) {
+      $provided = (string)$_SERVER['HTTP_X_NAGIOSTV_TOKEN'];
+    }
+    return $provided !== '' && hash_equals($expected, $provided);
+  }
+
+  header('X-Content-Type-Options: nosniff');
+
+  if (!nagiostvTokenCheck()) {
+    header('Content-Type: application/json');
+    http_response_code(403);
+    echo json_encode(array('error' => 'Forbidden: missing or invalid token'));
+    exit();
+  }
+
+  /**
    * Functions
    */
   function deleteFilesAndDirectories($dir) {
@@ -45,34 +80,45 @@
     // get the path name from the script filename with dirname()
     $data = [ 'name' => 'NagiosTV', 'script' => dirname($_SERVER['SCRIPT_FILENAME']), 'whoami' => $whoami ];
     header('Content-Type: application/json');
-    if (isset($_SERVER['HTTP_ORIGIN'])) {
-      header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-    }
     echo json_encode($data);
 
   } elseif (isset($_GET['version']) && $_GET['version']) {
 
-    // capture requested version
-    $version = $_GET['version'];
-    $version_without_v = $version;
-    $pos = strpos($version, "v");
-    //echo "pos found at [$pos]";
-    if ($pos !== false) {
-      $version_without_v = substr($version, $pos + 1);
+    // Only the NagiosTV web app sends this header. Requiring it blocks
+    // cross-site drive-by requests: browsers cannot attach custom headers to
+    // cross-origin requests without a CORS approval, which this script never
+    // grants.
+    $updateHeader = isset($_SERVER['HTTP_X_NAGIOSTV_UPDATE']) ? $_SERVER['HTTP_X_NAGIOSTV_UPDATE'] : '';
+    if ($updateHeader !== '1') {
+      header('Content-Type: application/json');
+      http_response_code(403);
+      echo json_encode(array('error' => 'Forbidden: missing X-NagiosTV-Update header'));
+      exit();
     }
-    
+
+    // Only plain release version numbers are accepted. This prevents shell
+    // metacharacters and URL path traversal from reaching the commands below.
+    $version = $_GET['version'];
+    if (!preg_match('/^v?\d+(\.\d+)*$/', $version)) {
+      header('Content-Type: application/json');
+      http_response_code(400);
+      echo json_encode(array('error' => 'Invalid version format'));
+      exit();
+    }
+    $version_without_v = ltrim($version, 'v');
+
     // download software from github
     // https://api.github.com/repos/chriscareycode/nagiostv-react/tags
     // https://api.github.com/repos/chriscareycode/nagiostv-react/releases
 
     $url = "https://github.com/chriscareycode/nagiostv-react/releases/download/v$version_without_v/nagiostv-$version_without_v.tar.gz";
 
-    // Use basename() function to return the base name of file  
-    $file_name = basename($url); 
-    
+    // Use basename() function to return the base name of file
+    $file_name = basename($url);
+
     // make temp directory if it does not exist
     if (!file_exists($temp_dir)) {
-      $mkdir_success = mkdir($temp_dir, 0777, true);
+      $mkdir_success = mkdir($temp_dir, 0755, true);
       if ($mkdir_success) {
         echo "Temp directory $temp_dir created.\n";
       } else {
@@ -85,37 +131,37 @@
       deleteFilesAndDirectories($temp_dir);
     }
 
-    // Use file_get_contents() function to get the file 
-    // from url and use file_put_contents() function to 
+    // Use file_get_contents() function to get the file
+    // from url and use file_put_contents() function to
     // save the file by using base name
     echo "Downloading $url to $temp_dir/\n";
 
-    if(file_put_contents("$temp_dir/$file_name", file_get_contents($url))) { 
-      echo "File $temp_dir/$file_name downloaded successfully.\n"; 
-    } 
-    else { 
-      echo "File $temp_dir/$file_name downloaded failed.\n"; 
+    if(file_put_contents("$temp_dir/$file_name", file_get_contents($url))) {
+      echo "File $temp_dir/$file_name downloaded successfully.\n";
+    }
+    else {
+      echo "File $temp_dir/$file_name downloaded failed.\n";
       exit();
-    } 
+    }
 
     // extract the file
-    
-    shell_exec("tar xvfz $temp_dir/$file_name --directory $temp_dir/");
-    echo "Done extracting. Copying files from temp directory over top of the old build..\n";
-    echo "cp -r $cwd/$temp_dir/nagiostv/* $cwd/\n";
 
-    // 
+    shell_exec('tar xvfz ' . escapeshellarg("$temp_dir/$file_name") . ' --directory ' . escapeshellarg($temp_dir . '/'));
+    echo "Done extracting. Copying files from temp directory over top of the old build..\n";
+    echo 'cp -r ' . escapeshellarg("$cwd/$temp_dir/nagiostv") . "/* $cwd/\n";
+
+    //
     /**
-     * TODO: clean up the old files - this is risky since if something 
+     * TODO: clean up the old files - this is risky since if something
      * up above did not work cleanly, then we could blow out their only good files before copy
-     * 
+     *
      * static/css/
      * static/js
-     * 
+     *
      */
 
     // copy the files over top ofo the old version
-    shell_exec("cp -r $cwd/$temp_dir/nagiostv/* $cwd/");
+    shell_exec('cp -r ' . escapeshellarg("$cwd/$temp_dir/nagiostv") . '/* ' . escapeshellarg($cwd) . '/');
     echo "Done copying.\n";
 
     echo "All done!\n";
@@ -128,7 +174,7 @@
     header('Content-Type: application/json');
     echo json_encode($data);
   }
-  
+
 
 
 ?>
