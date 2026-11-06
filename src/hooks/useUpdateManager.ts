@@ -88,6 +88,7 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 			const response = await axios.get<TestPhpResult>('auto-version-switch.php?testphp=true', {
 				timeout: 10 * 1000,
 				signal: controller.signal,
+				headers: { 'X-NagiosTV-Update': '1' },
 			});
 			setTestPhpState({
 				loading: false,

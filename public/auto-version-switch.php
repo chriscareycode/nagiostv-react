@@ -44,6 +44,21 @@
     return $provided !== '' && hash_equals($expected, $provided);
   }
 
+  // The NagiosTV web app sends this header on actions that expose server
+  // details or change state. Browsers cannot attach custom headers to
+  // cross-origin requests without a CORS approval, which this script never
+  // grants, so requiring it blocks cross-site requests and casual
+  // address-bar probing.
+  function nagiostvRequireUpdateHeader() {
+    $updateHeader = isset($_SERVER['HTTP_X_NAGIOSTV_UPDATE']) ? $_SERVER['HTTP_X_NAGIOSTV_UPDATE'] : '';
+    if ($updateHeader !== '1') {
+      header('Content-Type: application/json');
+      http_response_code(403);
+      echo json_encode(array('error' => 'Forbidden: missing X-NagiosTV-Update header'));
+      exit();
+    }
+  }
+
   header('X-Content-Type-Options: nosniff');
 
   if (!nagiostvTokenCheck()) {
@@ -77,6 +92,8 @@
   // test if php is installed, report back to browser
   if (isset($_GET['testphp']) && $_GET['testphp'] == 'true') {
 
+    nagiostvRequireUpdateHeader();
+
     // get the path name from the script filename with dirname()
     $data = [ 'name' => 'NagiosTV', 'script' => dirname($_SERVER['SCRIPT_FILENAME']), 'whoami' => $whoami ];
     header('Content-Type: application/json');
@@ -84,17 +101,7 @@
 
   } elseif (isset($_GET['version']) && $_GET['version']) {
 
-    // Only the NagiosTV web app sends this header. Requiring it blocks
-    // cross-site drive-by requests: browsers cannot attach custom headers to
-    // cross-origin requests without a CORS approval, which this script never
-    // grants.
-    $updateHeader = isset($_SERVER['HTTP_X_NAGIOSTV_UPDATE']) ? $_SERVER['HTTP_X_NAGIOSTV_UPDATE'] : '';
-    if ($updateHeader !== '1') {
-      header('Content-Type: application/json');
-      http_response_code(403);
-      echo json_encode(array('error' => 'Forbidden: missing X-NagiosTV-Update header'));
-      exit();
-    }
+    nagiostvRequireUpdateHeader();
 
     // Only plain release version numbers are accepted. This prevents shell
     // metacharacters and URL path traversal from reaching the commands below.
