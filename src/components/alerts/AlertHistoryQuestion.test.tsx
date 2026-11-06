@@ -1,11 +1,20 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, vi, expect, it } from 'vitest';
+import { createStore, Provider } from 'jotai';
 import { clientSettingsInitial } from '../../atoms/settingsState';
+import { hostAtom } from '../../atoms/hostAtom';
+import { serviceAtom } from '../../atoms/serviceAtom';
+import { Host, Service } from '../../types/hostAndServiceTypes';
 import { streamLlmChat } from '../llm/llmStream';
 import AlertHistoryQuestion from './AlertHistoryQuestion';
 
 vi.mock('../llm/llmStream', () => ({ streamLlmChat: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
+
+const alarmEventsFromPrompt = (content: string) => JSON.parse(content.slice(
+	content.indexOf('[{'),
+	content.indexOf('\n\nLive status snapshot'),
+));
 
 it('sends the question with recent alarms and displays the response', async () => {
 	vi.mocked(streamLlmChat).mockImplementation(async options => {
@@ -60,7 +69,7 @@ it('sends bounded, cleaned alarm text to the LLM', async () => {
 	expect(content).toContain('Question: Explain this');
 	expect(content).not.toContain('\u202e');
 	expect(content).not.toContain('\u200b');
-	expect(JSON.parse(content.slice(content.indexOf('[{')))[0].output).toHaveLength(500);
+	expect(alarmEventsFromPrompt(content)[0].output).toHaveLength(500);
 });
 
 it('limits a quick ask to its time window and renders Markdown', async () => {
@@ -102,7 +111,7 @@ it('asks for one concise issue using the current alarm history', async () => {
 	const prompt = vi.mocked(streamLlmChat).mock.calls[0][0].messages[1].content;
 	expect(prompt).toContain('single most important issue');
 	expect(prompt).toContain('one or two sentences');
-	expect(prompt).toContain('recovery alerts');
+	expect(prompt).toContain('Account for recoveries');
 	expect(prompt).not.toContain('Time window:');
 });
 
@@ -113,17 +122,43 @@ it('includes host recovery after a down event with correct state labels', async 
 		plugin_output: '', object_type: 1,
 	};
 	const alerts = [
-		{ ...baseAlert, timestamp: Date.UTC(2025, 6, 1, 15, 38), state: 1 },
 		{ ...baseAlert, timestamp: Date.UTC(2025, 6, 1, 14, 36), state: 2 },
+		{ ...baseAlert, timestamp: Date.UTC(2025, 6, 1, 15, 38), state: 1 },
 	];
 	render(<AlertHistoryQuestion alerts={alerts} settings={clientSettingsInitial} />);
 	fireEvent.click(screen.getByRole('button', { name: 'Ask AI about alarm history' }));
 	fireEvent.click(screen.getByRole('button', { name: 'Top issue to address' }));
 	await waitFor(() => expect(streamLlmChat).toHaveBeenCalledOnce());
 	const request = vi.mocked(streamLlmChat).mock.calls[0][0];
-	const events = JSON.parse(request.messages[1].content.slice(request.messages[1].content.indexOf('[{')));
+	const events = alarmEventsFromPrompt(request.messages[1].content);
 	expect(events.map((event: { stateLabel: string }) => event.stateLabel)).toEqual(['host up', 'host down']);
-	expect(request.messages[0].content).toContain('A later host UP or service OK is a recovery');
+	expect(request.messages[0].content).toContain('a live OK service or UP host means that earlier failure has recovered');
+});
+
+it('includes a live OK status for a service whose last history event is UNKNOWN', async () => {
+	vi.mocked(streamLlmChat).mockResolvedValue({ content: 'Recovered.' });
+	const now = Date.now();
+	const store = createStore();
+	store.set(hostAtom, { ...store.get(hostAtom), lastUpdate: now, stateArray: [{
+		name: 'zerow3-chris-work', status: 2, last_check: now,
+	} as Host] });
+	store.set(serviceAtom, { ...store.get(serviceAtom), lastUpdate: now, stateArray: [{
+		host_name: 'zerow3-chris-work', description: 'Check APT', status: 2, last_check: now,
+	} as Service] });
+	const alerts = [{
+		name: '', host_name: 'zerow3-chris-work', description: 'Check APT',
+		timestamp: now - 60_000, state: 64, state_type: 1,
+		plugin_output: 'APT UNKNOWN: timeout', object_type: 2,
+	}];
+	render(<Provider store={store}><AlertHistoryQuestion alerts={alerts} settings={clientSettingsInitial} /></Provider>);
+	fireEvent.click(screen.getByRole('button', { name: 'Ask AI about alarm history' }));
+	fireEvent.click(screen.getByRole('button', { name: 'Top issue to address' }));
+	await waitFor(() => expect(streamLlmChat).toHaveBeenCalledOnce());
+	const request = vi.mocked(streamLlmChat).mock.calls[0][0];
+	expect(alarmEventsFromPrompt(request.messages[1].content)[0].stateLabel).toBe('service unknown');
+	expect(request.messages[1].content).toContain('"service":"Check APT","status":"ok"');
+	expect(request.messages[1].content).toContain('"host":"zerow3-chris-work","status":"up"');
+	expect(request.messages[0].content).toContain('live status snapshot');
 });
 
 it('shows activity on the active quick ask until its request finishes', async () => {
