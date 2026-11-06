@@ -182,14 +182,14 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 		setClickedCheckForUpdates(true);
 	}, [fetchLatestVersion, fetchReleasesFromGithub, testPhp]);
 
-	const beginUpdate = useCallback(async () => {
+	const beginUpdate = useCallback(async (token: string) => {
 		setUpdateState(curr => ({ ...curr, loading: true }));
 		const controller = createController();
 
 		try {
 			const response = await axios.get<string>(
 				`auto-version-switch.php?version=v${bigState.latestVersionString}`,
-				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1' } },
+				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1', 'X-NagiosTV-Token': token } },
 			);
 			setUpdateState({
 				loading: false,
@@ -211,14 +211,14 @@ export function useUpdateManager({ currentVersionString }: UseUpdateManagerOptio
 		}
 	}, [bigState.latestVersionString, createController, releaseController]);
 
-	const beginDowngrade = useCallback(async () => {
+	const beginDowngrade = useCallback(async (token: string) => {
 		setDowngradeState(curr => ({ ...curr, loading: true }));
 		const controller = createController();
 
 		try {
 			const response = await axios.get<string>(
 				`auto-version-switch.php?version=${selected}`,
-				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1' } },
+				{ timeout: 30 * 1000, signal: controller.signal, headers: { 'X-NagiosTV-Update': '1', 'X-NagiosTV-Token': token } },
 			);
 			setDowngradeState({
 				loading: false,

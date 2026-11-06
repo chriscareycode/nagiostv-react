@@ -17,6 +17,7 @@
  */
 
 // React Router
+import { useState } from 'react';
 import { Link } from "react-router";
 import { useUpdateManager } from '../hooks/useUpdateManager';
 
@@ -35,6 +36,7 @@ const Update = ({
 	currentVersion,
 	currentVersionString,
 }: UpdateProps) => {
+	const [updateToken, setUpdateToken] = useState('');
 
 	const {
 		beginDowngrade,
@@ -103,6 +105,14 @@ const Update = ({
 			<div className="update-help-message">Go to <a target="_blank" rel="noopener noreferrer" href="https://github.com/chriscareycode/nagiostv-react/">GitHub</a> for manual install instructions</div>
 
 			{(clickedCheckForUpdates && latestVersionString) && <div>
+				<div className="update-help-message">
+					Version changes require a server write token configured in nagiostv-server-config.local.php.
+					Enter it here to update or roll back; it is not saved in browser storage.
+					<label>
+						Write token:{' '}
+						<input type="password" autoComplete="off" value={updateToken} onChange={event => setUpdateToken(event.target.value)} />
+					</label>
+				</div>
 
 				{/* Automatic Update */}
 				<h3>One-click update to latest</h3>
@@ -151,7 +161,7 @@ const Update = ({
 
 					{/* update button */}
 					{(!testPhpState.error && currentVersion < latestVersion) && <div style={{ marginTop: '20px' }}>
-						<button disabled={updateState.loading} onClick={beginUpdate} className="auto-update-button">Begin update to latest version v{latestVersionString}</button>
+						<button disabled={updateState.loading || !updateToken} onClick={() => void beginUpdate(updateToken)} className="auto-update-button">Begin update to latest version v{latestVersionString}</button>
 					</div>}
 
 
@@ -206,7 +216,7 @@ const Update = ({
 
 						{selected && <div style={{ marginTop: '20px' }}>
 							{/*<div>Selected version: {this.state.selected}</div>*/}
-							<button disabled={downgradeState.loading} onClick={beginDowngrade} className="auto-update-button">Begin version change to {selected}</button>
+							<button disabled={downgradeState.loading || !updateToken} onClick={() => void beginDowngrade(updateToken)} className="auto-update-button">Begin version change to {selected}</button>
 						</div>}
 
 						{downgradeState.error && <div>

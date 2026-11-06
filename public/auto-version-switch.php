@@ -19,29 +19,22 @@
    */
 
   /**
-   * Optional shared-secret gate.
-   *
-   * By default this script is reachable by anyone who can reach the web server.
-   * To require a secret token, copy nagiostv-server-config.sample.php to
-   * nagiostv-server-config.local.php (gitignored) and set 'write_token' to a
-   * long random string. Requests must then pass ?token=... or an
-   * X-NagiosTV-Token header containing the same value.
+   * Version changes require a shared secret in
+   * nagiostv-server-config.local.php (see the sample config). Send it in an
+   * X-NagiosTV-Token header; never put secrets in URLs or server access logs.
    */
   function nagiostvTokenCheck() {
     $configFile = __DIR__ . '/nagiostv-server-config.local.php';
-    if (!is_readable($configFile)) {
-      return true; // no token configured; other request checks still apply
+    if (!is_file($configFile) || !is_readable($configFile)) {
+      return false; // no configured secret means version changes are disabled
     }
     $config = include $configFile;
-    $expected = (is_array($config) && isset($config['write_token'])) ? (string)$config['write_token'] : '';
-    if ($expected === '') {
-      return true;
+    $expected = (is_array($config) && isset($config['write_token']) && is_string($config['write_token'])) ? $config['write_token'] : '';
+    if ($expected === '' || $expected === 'change-me-to-a-long-random-string') {
+      return false;
     }
-    $provided = isset($_GET['token']) ? (string)$_GET['token'] : '';
-    if ($provided === '' && isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN'])) {
-      $provided = (string)$_SERVER['HTTP_X_NAGIOSTV_TOKEN'];
-    }
-    return $provided !== '' && hash_equals($expected, $provided);
+    $provided = isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN']) ? $_SERVER['HTTP_X_NAGIOSTV_TOKEN'] : '';
+    return is_string($provided) && $provided !== '' && hash_equals($expected, $provided);
   }
 
   // The NagiosTV web app sends this header on actions that expose server
@@ -61,13 +54,6 @@
 
   header('X-Content-Type-Options: nosniff');
 
-  if (!nagiostvTokenCheck()) {
-    header('Content-Type: application/json');
-    http_response_code(403);
-    echo json_encode(array('error' => 'Forbidden: missing or invalid token'));
-    exit();
-  }
-
   /**
    * Functions
    */
@@ -85,8 +71,6 @@
   $temp_dir = 'temp';
   $cwd = getcwd();
 
-  $whoami = exec('whoami');
-
   //echo "cwd is $cwd\n";
 
   // test if php is installed, report back to browser
@@ -94,14 +78,25 @@
 
     nagiostvRequireUpdateHeader();
 
-    // get the path name from the script filename with dirname()
-    $data = [ 'name' => 'NagiosTV', 'script' => dirname($_SERVER['SCRIPT_FILENAME']), 'whoami' => $whoami ];
+    // Without a valid token, only report whether PHP is working. Do not
+    // disclose server paths or the web server username to unauthenticated callers.
+    $data = [ 'name' => 'NagiosTV', 'script' => null, 'whoami' => null ];
+    if (nagiostvTokenCheck()) {
+      $data['script'] = dirname($_SERVER['SCRIPT_FILENAME']);
+      $data['whoami'] = exec('whoami');
+    }
     header('Content-Type: application/json');
     echo json_encode($data);
 
   } elseif (isset($_GET['version']) && $_GET['version']) {
 
     nagiostvRequireUpdateHeader();
+    if (!nagiostvTokenCheck()) {
+      header('Content-Type: application/json');
+      http_response_code(403);
+      echo json_encode(array('error' => 'Forbidden: configure a write token and provide it in X-NagiosTV-Token'));
+      exit();
+    }
 
     // Only plain release version numbers are accepted. This prevents shell
     // metacharacters and URL path traversal from reaching the commands below.

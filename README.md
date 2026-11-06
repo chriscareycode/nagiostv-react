@@ -81,7 +81,7 @@ sudo chmod 777 client-settings.json
 
 The chown method is preferred; chmod 777 makes the file world-writable and is only shown for convenience.
 
-The save script (save-client-settings.php) only accepts POST requests with a valid JSON object, so other websites cannot overwrite your shared settings. For stronger protection against direct access, you can require a secret token: copy public/nagiostv-server-config.sample.php to public/nagiostv-server-config.local.php and set a long random write_token value. When a token is configured, the "Save settings to server" button cannot write (the browser does not know the secret); use the manual copy/paste instructions in the settings screen instead.
+The save script (save-client-settings.php) requires a POST with a JSON object, `Content-Type: application/json`, and an `X-NagiosTV-Settings: 1` header. The header blocks cross-site browser writes (this script does not allow cross-origin requests), but is not authentication: clients that can reach the server directly can send it. To restrict direct access, copy `public/nagiostv-server-config.sample.php` to `public/nagiostv-server-config.local.php` and set a long random `write_token`. When a token is configured, the "Save settings to server" button cannot write (the browser does not know the secret); use the manual copy/paste instructions in the settings screen instead. If the config file exists but is unreadable or has an invalid token, writes are denied.
 
 One click updates
 ------------
@@ -91,13 +91,13 @@ As of version v0.6.0 there is now an update routine included that you can run fr
 * unarchive the release into temp/ folder
 * copying the release over the old NagiosTV
 
-The update script (auto-version-switch.php) only accepts plain version numbers and requires an X-NagiosTV-Update header that the NagiosTV UI sends automatically, so other websites cannot trigger an update in your browser. If you call the script yourself (for example with curl), add the header:
+The update script (auto-version-switch.php) only accepts plain version numbers. **Updates and rollbacks require a server write token**: copy `public/nagiostv-server-config.sample.php` to `public/nagiostv-server-config.local.php` and set a long random `write_token`. Without a valid config and token, version changes are denied. Enter the token on the Update page to use the update/rollback buttons (it is not stored in the browser), or send it in an `X-NagiosTV-Token` header when calling the script yourself:
 
 ```console
-curl -H "X-NagiosTV-Update: 1" "https://your-server/nagios/nagiostv/auto-version-switch.php?version=v0.10.0"
+curl -H "X-NagiosTV-Update: 1" -H "X-NagiosTV-Token: YOUR_SECRET" "https://your-server/nagios/nagiostv/auto-version-switch.php?version=v0.10.0"
 ```
 
-For stronger protection against direct access, you can require a secret token: copy public/nagiostv-server-config.sample.php to public/nagiostv-server-config.local.php and set a long random write_token value, then pass it as ?token=... or an X-NagiosTV-Token header. When a token is configured, the one click update button cannot trigger updates (the browser does not know the secret); use the manual upgrade steps or the update CLI script below instead.
+Do not pass the token in a URL: URLs may be recorded in access logs. The `X-NagiosTV-Update` header blocks cross-site browser requests, but is not authentication on its own.
 
 Preparing NagiosTV for one click update
 ------------

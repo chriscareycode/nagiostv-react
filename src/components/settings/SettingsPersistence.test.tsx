@@ -88,6 +88,7 @@ describe('SettingsPersistence', () => {
 		expect(persistenceMocks.post).toHaveBeenCalledWith(
 			'save-client-settings.php',
 			JSON.stringify(clientSettingsInitial, null, 2),
+			{ headers: { 'Content-Type': 'application/json', 'X-NagiosTV-Settings': '1' } },
 		);
 	});
 

@@ -24,26 +24,26 @@
    * By default this script is reachable by anyone who can reach the web server.
    * To require a secret token, copy nagiostv-server-config.sample.php to
    * nagiostv-server-config.local.php (gitignored) and set 'write_token' to a
-   * long random string. Requests must then pass ?token=... or an
-   * X-NagiosTV-Token header containing the same value. When a token is
+   * long random string. Requests must then pass an X-NagiosTV-Token header
+   * containing the same value. When a token is
    * configured, the "Save settings to server" button in the UI cannot write;
    * use the manual copy/paste instructions instead.
    */
   function nagiostvTokenCheck() {
     $configFile = __DIR__ . '/nagiostv-server-config.local.php';
-    if (!is_readable($configFile)) {
-      return true; // no token configured; other request checks still apply
+    if (!file_exists($configFile) && !is_link($configFile)) {
+      return true; // optional for settings saves; the JSON header still blocks browser CSRF
+    }
+    if (!is_file($configFile) || !is_readable($configFile)) {
+      return false;
     }
     $config = include $configFile;
-    $expected = (is_array($config) && isset($config['write_token'])) ? (string)$config['write_token'] : '';
-    if ($expected === '') {
-      return true;
+    $expected = (is_array($config) && isset($config['write_token']) && is_string($config['write_token'])) ? $config['write_token'] : '';
+    if ($expected === '' || $expected === 'change-me-to-a-long-random-string') {
+      return false;
     }
-    $provided = isset($_GET['token']) ? (string)$_GET['token'] : '';
-    if ($provided === '' && isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN'])) {
-      $provided = (string)$_SERVER['HTTP_X_NAGIOSTV_TOKEN'];
-    }
-    return $provided !== '' && hash_equals($expected, $provided);
+    $provided = isset($_SERVER['HTTP_X_NAGIOSTV_TOKEN']) ? $_SERVER['HTTP_X_NAGIOSTV_TOKEN'] : '';
+    return is_string($provided) && $provided !== '' && hash_equals($expected, $provided);
   }
 
   header('X-Content-Type-Options: nosniff');
@@ -57,9 +57,22 @@
     exit();
   }
 
+  // Cross-site pages cannot send this non-safelisted header without a CORS
+  // preflight, and this endpoint does not grant cross-origin access.
+  if (!isset($_SERVER['HTTP_X_NAGIOSTV_SETTINGS']) || $_SERVER['HTTP_X_NAGIOSTV_SETTINGS'] !== '1') {
+    http_response_code(403);
+    echo json_encode(array('error' => 'Forbidden: missing X-NagiosTV-Settings header'));
+    exit();
+  }
+  $contentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+  if (!preg_match('/^application\/json(?:\s*;|\s*$)/i', $contentType)) {
+    http_response_code(415);
+    echo json_encode(array('error' => 'Content-Type must be application/json'));
+    exit();
+  }
   if (!nagiostvTokenCheck()) {
     http_response_code(403);
-    echo json_encode(array('error' => 'Forbidden: missing or invalid token'));
+    echo json_encode(array('error' => 'Forbidden: missing or invalid token or token configuration'));
     exit();
   }
 
@@ -74,8 +87,7 @@
   }
 
   // only accept well-formed JSON objects/arrays, and store re-encoded JSON so
-  // arbitrary content can never be written to the file. This also blocks
-  // cross-site form posts, which cannot produce a JSON body.
+  // arbitrary content can never be written to the file.
   $decoded = json_decode($json);
   if ($json === '' || json_last_error() !== JSON_ERROR_NONE || !is_object($decoded)) {
     http_response_code(400);

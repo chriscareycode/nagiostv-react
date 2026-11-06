@@ -24,6 +24,7 @@ const SettingsPersistence = ({
 			const response = await axios.post(
 				'save-client-settings.php',
 				JSON.stringify(settings, null, 2),
+				{ headers: { 'Content-Type': 'application/json', 'X-NagiosTV-Settings': '1' } },
 			);
 			onMessage(
 				typeof response.data === 'object' ? 'Saved to Server' : String(response.data),

@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { createStore, Provider } from 'jotai';
-import { ReactNode } from 'react';
+import { ChangeEvent, ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { useUpdateManager } from './useUpdateManager';
@@ -111,13 +111,38 @@ describe('useUpdateManager', () => {
 		);
 
 		await act(async () => {
-			await result.current.beginUpdate();
+			await result.current.beginUpdate('test-secret');
 		});
 
 		expect(axiosMocks.get).toHaveBeenCalledWith(
 			'auto-version-switch.php?version=v1.2.3',
-			expect.objectContaining({ timeout: 30_000 }),
+			expect.objectContaining({
+				timeout: 30_000,
+				headers: { 'X-NagiosTV-Update': '1', 'X-NagiosTV-Token': 'test-secret' },
+			}),
 		);
 		expect(result.current.updateState.result).toBe('updated');
+	});
+
+	it('sends the write token when rolling back', async () => {
+		const store = createStore();
+		store.set(clientSettingsAtom, { ...clientSettingsInitial, versionCheckDays: 0 });
+		axiosMocks.get.mockResolvedValue({ data: 'rolled back' });
+		const { result } = renderHook(
+			() => useUpdateManager({ currentVersionString: '0.10.0' }),
+			{ wrapper: createWrapper(store) },
+		);
+
+		act(() => result.current.selectChanged({ target: { value: 'v0.9.9' } } as ChangeEvent<HTMLSelectElement>));
+		await act(async () => {
+			await result.current.beginDowngrade('test-secret');
+		});
+
+		expect(axiosMocks.get).toHaveBeenCalledWith(
+			'auto-version-switch.php?version=v0.9.9',
+			expect.objectContaining({
+				headers: { 'X-NagiosTV-Update': '1', 'X-NagiosTV-Token': 'test-secret' },
+			}),
+		);
 	});
 });
