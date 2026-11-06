@@ -55,7 +55,20 @@ function loadSettingsNagios() {
 // Set up routes
 //=============================================================================
 
-app.use(cors());
+// Cross-origin requests are disabled by default (the web UI is served by this
+// same server, so it does not need CORS). The proxy injects Nagios credentials
+// server-side, so a permissive CORS policy would let any website the operator
+// visits read authenticated monitoring data. To allow another origin (for
+// example if you host the web UI elsewhere), add its origin to allowedOrigins
+// in settings.js.
+var allowedOrigins = (settings && Array.isArray(settings.allowedOrigins)) ? settings.allowedOrigins : [];
+app.use(cors({ origin: allowedOrigins.length > 0 ? allowedOrigins : false }));
+
+// Basic hardening headers for everything this server serves or proxies.
+app.use(function(req, res, next) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
 
 // to support JSON-encoded bodies
 app.use(bodyParser.json());
@@ -86,7 +99,11 @@ var proxyOptions = {
     //return url.path + '?' + url.query;
   },
   proxyReqOptDecorator: function(proxyReqOpts, originalReq) {
-    proxyReqOpts.rejectUnauthorized = false
+    // Validate TLS certificates by default. Set nagiosServerAllowSelfSigned to
+    // true in settings-nagios.js only if your Nagios server uses a self-signed
+    // or otherwise invalid certificate. Disabling validation would allow a
+    // man-in-the-middle to steal the Basic auth credentials injected below.
+    proxyReqOpts.rejectUnauthorized = !(settingsNagios && settingsNagios.nagiosServerAllowSelfSigned);
     return proxyReqOpts;
   }
 };
@@ -94,7 +111,7 @@ var proxyOptions = {
 // Add auth if it is enabled
 if (settingsNagios && settingsNagios.auth) {
   proxyOptions.headers = {
-    Authorization: "Basic " + new Buffer.from(settingsNagios.username + ':' + settingsNagios.password).toString('base64')
+    Authorization: "Basic " + Buffer.from(settingsNagios.username + ':' + settingsNagios.password).toString('base64')
   };
   //console.log('Adding proxy auth');
   //console.log(proxyOptions);
