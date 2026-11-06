@@ -129,6 +129,12 @@
       // temp dir exists. delete all files in there
       echo "Temp directory exists, deleting files in there..\n";
       deleteFilesAndDirectories($temp_dir);
+      // deleteFilesAndDirectories removes the directory itself, so re-create
+      // it or the download below fails on repeat updates.
+      if (!is_dir($temp_dir) && !mkdir($temp_dir, 0755, true)) {
+        echo "Failed re-creating temp directory.\n";
+        exit();
+      }
     }
 
     // Use file_get_contents() function to get the file
