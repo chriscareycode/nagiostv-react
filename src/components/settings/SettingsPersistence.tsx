@@ -76,10 +76,10 @@ const SettingsPersistence = ({
 							<h4>Option 1: If you have PHP enabled on your server</h4>
 							<div style={{ marginLeft: '30px' }}>
 								You will need to create a file <span style={{ color: 'lime' }}>client-settings.json</span> in
-								the nagiostv folder and chown 777 client-settings.json so the Apache web server has rights to write to it.
+								the nagiostv folder and give the Apache web server user rights to write to it (change www-data to your apache user if it differs).
 								<pre>
 									sudo touch client-settings.json<br />
-									sudo chmod 777 client-settings.json
+									sudo chown www-data:www-data client-settings.json
 								</pre>
 								After those steps, you can try this button:
 								<button
