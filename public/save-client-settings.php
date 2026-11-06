@@ -85,7 +85,12 @@
   $json = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
   // write JSON to file
-  $myfile = fopen("client-settings.json", "w") or die("Unable to open file!");
+  $myfile = fopen("client-settings.json", "w");
+  if (!$myfile) {
+    http_response_code(500);
+    echo json_encode(array('error' => 'Unable to open client-settings.json for writing. Check that the file exists and the web server user has write access.'));
+    exit();
+  }
   fwrite($myfile, $json);
   fclose($myfile);
 
