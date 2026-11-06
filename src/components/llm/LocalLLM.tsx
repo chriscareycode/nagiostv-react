@@ -179,8 +179,8 @@ export default function LocalLLM() {
 						{currentHistoryItem?.model && (
 							<div className="absolute bottom-1 right-2 text-[12px] text-gray-400 opacity-60">
 								{currentHistoryItem.responseDurationMs !== undefined
-									? `${formatResponseDuration(currentHistoryItem.responseDurationMs)} on ${currentHistoryItem.model}`
-									: currentHistoryItem.model}
+									? `${formatResponseDuration(currentHistoryItem.responseDurationMs)} on model: ${currentHistoryItem.model}`
+									: `Model: ${currentHistoryItem.model}`}
 							</div>
 						)}
 					</div>

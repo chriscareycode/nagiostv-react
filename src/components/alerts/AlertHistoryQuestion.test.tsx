@@ -48,6 +48,17 @@ it('sends the question with recent alarms and displays the response', async () =
 	expect(screen.getByText('Checking alarms')).toBeInTheDocument();
 });
 
+it('shows generation time and returned model at the lower right of the response', async () => {
+	vi.mocked(streamLlmChat).mockImplementation(async options => {
+		options.onDelta({ content: 'Summary' });
+		return { content: 'Summary', model: 'returned-model' };
+	});
+	render(<AlertHistoryQuestion alerts={[]} settings={clientSettingsInitial} />);
+	fireEvent.click(screen.getByRole('button', { name: 'Ask AI about alarm history' }));
+	fireEvent.click(screen.getByRole('button', { name: 'Top issue to address' }));
+	expect(await screen.findByText(/^\d+s on model: returned-model$/)).toHaveClass('alert-history-question-model');
+});
+
 it('sends bounded, cleaned alarm text to the LLM', async () => {
 	vi.mocked(streamLlmChat).mockResolvedValue({ content: 'Summary' });
 	const alerts = [{
@@ -244,7 +255,7 @@ it('follows streamed results until the user scrolls up, then resumes at the bott
 	fireEvent.click(screen.getByRole('button', { name: 'Last 12 hours summary' }));
 	await waitFor(() => expect(emitDelta).toBeDefined());
 	await act(async () => emitDelta?.({ content: 'First result' }));
-	const panel = document.querySelector('.alert-history-question-response') as HTMLDivElement;
+	const panel = document.querySelector('.alert-history-question-scroll') as HTMLDivElement;
 	let scrollHeight = 500;
 	Object.defineProperty(panel, 'scrollHeight', { get: () => scrollHeight });
 	Object.defineProperty(panel, 'clientHeight', { get: () => 100 });
@@ -285,7 +296,7 @@ it('shrinks an old response to a loading line and grows with new streamed conten
 	expect(panel).toBeInTheDocument();
 	expect(screen.getByText('Waiting for response…')).toBeInTheDocument();
 	await waitFor(() => expect(panel).toHaveStyle({ height: '44px' }));
-	const content = panel.firstElementChild as HTMLDivElement;
+	const content = panel.querySelector('.alert-history-question-content') as HTMLDivElement;
 	let contentHeight = 180;
 	Object.defineProperty(content, 'scrollHeight', { get: () => contentHeight });
 	await act(async () => emitDelta?.({ content: 'New answer' }));

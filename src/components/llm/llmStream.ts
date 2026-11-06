@@ -13,25 +13,30 @@ interface StreamLlmChatOptions {
 	onDelta: (delta: { content?: string; thinkingContent?: string }) => void;
 }
 
-const parseEvent = (data: string, backendType: LlmBackendType): { content?: string; thinkingContent?: string } => {
+const parseEvent = (data: string, backendType: LlmBackendType): { content?: string; thinkingContent?: string; model?: string } => {
 	if (data === '[DONE]') return {};
 	const event = JSON.parse(data) as Record<string, unknown>;
 	if (event.error) throw new Error(getLlmServerErrorDetail(event.error) || 'LLM stream failed.');
+	const message = event.message as { model?: string } | undefined;
+	const model = typeof event.model === 'string' ? event.model
+		: typeof event.model_instance_id === 'string' ? event.model_instance_id : message?.model;
 	if (backendType === 'anthropic') {
 		const delta = event.delta as { type?: string; text?: string; thinking?: string } | undefined;
 		return {
+			model,
 			content: delta?.type === 'text_delta' ? delta.text : undefined,
 			thinkingContent: delta?.type === 'thinking_delta' ? delta.thinking : undefined,
 		};
 	}
 	const choice = (event.choices as Array<{ delta?: { content?: string; reasoning?: string; reasoning_content?: string } }> | undefined)?.[0];
 	const delta = choice?.delta;
-	if (delta) return { content: delta.content, thinkingContent: delta.reasoning_content || delta.reasoning };
+	if (delta) return { model, content: delta.content, thinkingContent: delta.reasoning_content || delta.reasoning };
 	// LM Studio's native chat endpoint streams typed output events.
 	const type = event.type as string | undefined;
 	const value = event.content || event.text || event.delta;
-	if (typeof value !== 'string') return {};
+	if (typeof value !== 'string') return { model };
 	return {
+		model,
 		content: type?.includes('message') ? value : undefined,
 		thinkingContent: type?.includes('reasoning') ? value : undefined,
 	};
@@ -82,13 +87,15 @@ export async function streamLlmChat(options: StreamLlmChatOptions): Promise<Norm
 
 	let content = '';
 	let thinkingContent = '';
+	let responseModel: string | undefined;
 	let buffer = '';
 	const reader = response.body.getReader();
 	const decoder = new TextDecoder();
 	const consumeEvent = (rawEvent: string) => {
 		const data = rawEvent.split('\n').filter(line => line.startsWith('data:')).map(line => line.slice(5).trimStart()).join('\n');
 		if (!data || data === '[DONE]') return;
-		const delta = parseEvent(data, options.backendType);
+		const { model, ...delta } = parseEvent(data, options.backendType);
+		if (model) responseModel = model;
 		if (delta.content) content += delta.content;
 		if (delta.thinkingContent) thinkingContent += delta.thinkingContent;
 		if (delta.content || delta.thinkingContent) options.onDelta(delta);
@@ -109,5 +116,5 @@ export async function streamLlmChat(options: StreamLlmChatOptions): Promise<Norm
 	} finally {
 		reader.releaseLock();
 	}
-	return content || thinkingContent ? { content, thinkingContent } : null;
+	return content || thinkingContent ? { content, thinkingContent, ...(responseModel ? { model: responseModel } : {}) } : null;
 }

@@ -28,6 +28,7 @@ import { Alert } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
 import { streamLlmChat } from '../llm/llmStream';
 import LLMMarkup from '../llm/LLMMarkup';
+import { formatResponseDuration } from '../llm/llmAnalysis';
 import { getLlmServerErrorDetail } from 'helpers/llmErrors';
 import {
 	cleanLlmInput,
@@ -54,6 +55,8 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 	const [question, setQuestion] = useState('');
 	const [answer, setAnswer] = useState('');
 	const [thinking, setThinking] = useState('');
+	const [responseModel, setResponseModel] = useState('');
+	const [responseDurationMs, setResponseDurationMs] = useState<number | undefined>();
 	const [error, setError] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [activeQuickAsk, setActiveQuickAsk] = useState<string | null>(null);
@@ -61,6 +64,7 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 	const [responseHeight, setResponseHeight] = useState<number | null>(null);
 	const controllerRef = useRef<AbortController | null>(null);
 	const responseRef = useRef<HTMLDivElement | null>(null);
+	const responseScrollRef = useRef<HTMLDivElement | null>(null);
 	const responseContentRef = useRef<HTMLDivElement | null>(null);
 	const resizeFrameRef = useRef<number | null>(null);
 	const followResponseRef = useRef(true);
@@ -70,7 +74,7 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 		if (resizeFrameRef.current !== null) cancelAnimationFrame(resizeFrameRef.current);
 	}, []);
 	useEffect(() => {
-		const responsePanel = responseRef.current;
+		const responsePanel = responseScrollRef.current;
 		const responseContent = responseContentRef.current;
 		if (responsePanel && responseContent && (answer || thinking)) {
 			setResponseHeight(Math.min(300, Math.max(100, responseContent.scrollHeight + 20)));
@@ -103,6 +107,8 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 		setError('');
 		setAnswer('');
 		setThinking('');
+		setResponseModel(settings.llmModel || 'openai/gpt-oss-20b');
+		setResponseDurationMs(undefined);
 		followResponseRef.current = true;
 		if (previousResponseHeight) {
 			resizeFrameRef.current = requestAnimationFrame(() => {
@@ -130,6 +136,7 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 		);
 
 		try {
+			const requestStartedAt = performance.now();
 			const response = await streamLlmChat({
 				baseUrl: settings.llmServerBaseUrl,
 				backendType: settings.llmBackendType || 'openai-compatible',
@@ -148,6 +155,8 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 				],
 			});
 			if (!controller.signal.aborted) {
+				setResponseDurationMs(performance.now() - requestStartedAt);
+				if (response?.model) setResponseModel(response.model);
 				if (!response?.content && !response?.thinkingContent) setError('No response received from LLM server.');
 			}
 		} catch (requestError) {
@@ -207,12 +216,17 @@ export default function AlertHistoryQuestion({ alerts, settings }: AlertHistoryQ
 				))}
 			</div>
 			{error && <div className="alert-history-question-error" role="alert">{error}</div>}
-			{(isLoading || thinking || answer) && <div className={`alert-history-question-response${isLoading ? ' is-loading' : ''}`} style={responseHeight === null ? undefined : { height: responseHeight }} ref={responseRef} onScroll={handleResponseScroll} aria-live="polite">
-				<div ref={responseContentRef}>
+			{(isLoading || thinking || answer) && <div className={`alert-history-question-response${isLoading ? ' is-loading' : ''}`} style={responseHeight === null ? undefined : { height: responseHeight }} ref={responseRef} aria-live="polite">
+				<div className="alert-history-question-scroll" ref={responseScrollRef} onScroll={handleResponseScroll}>
+				<div className="alert-history-question-content" ref={responseContentRef}>
 					{isLoading && !thinking && !answer && <div className="alert-history-question-waiting"><span className="alert-history-quick-ask-spinner" aria-hidden="true" /> Waiting for response…</div>}
 					{thinking && <details className="alert-history-question-thinking" open={isLoading}><summary>Thinking</summary><LLMMarkup content={thinking} /></details>}
 					{answer && <div className="alert-history-question-answer"><LLMMarkup content={answer} /></div>}
 				</div>
+				</div>
+				{responseModel && (thinking || answer) && <span className="alert-history-question-model" title={responseModel}>
+					{responseDurationMs === undefined ? `Model: ${responseModel}` : `${formatResponseDuration(responseDurationMs)} on model: ${responseModel}`}
+				</span>}
 			</div>}
 			</div>
 			</div>

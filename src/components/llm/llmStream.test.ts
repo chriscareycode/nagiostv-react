@@ -8,7 +8,7 @@ it('emits answer and thinking deltas before the stream ends', async () => {
 	let finishStream: (() => void) | undefined;
 	const body = new ReadableStream<Uint8Array>({
 		start(controller) {
-			controller.enqueue(encoder.encode('data: {"choices":[{"delta":{"reasoning_content":"Checking "}}]}\n\n'));
+			controller.enqueue(encoder.encode('data: {"model":"returned-model","choices":[{"delta":{"reasoning_content":"Checking "}}]}\n\n'));
 			controller.enqueue(encoder.encode('data: {"choices":[{"delta":{"content":"## Result\\n"}}]}\n\n'));
 			finishStream = () => {
 				controller.enqueue(encoder.encode('data: {"choices":[{"delta":{"content":"All clear."}}]}\n\n'));
@@ -31,7 +31,7 @@ it('emits answer and thinking deltas before the stream ends', async () => {
 	expect(onDelta).toHaveBeenNthCalledWith(1, { content: undefined, thinkingContent: 'Checking ' });
 	expect(onDelta).toHaveBeenNthCalledWith(2, { content: '## Result\n', thinkingContent: undefined });
 	finishStream?.();
-	expect(await resultPromise).toEqual({ content: '## Result\nAll clear.', thinkingContent: 'Checking ' });
+	expect(await resultPromise).toEqual({ content: '## Result\nAll clear.', thinkingContent: 'Checking ', model: 'returned-model' });
 	expect(fetch).toHaveBeenCalledWith('http://localhost:1234/v1/chat/completions', expect.objectContaining({
 		body: expect.stringContaining('"stream":true'),
 	}));
