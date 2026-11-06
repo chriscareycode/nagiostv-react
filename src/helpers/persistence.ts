@@ -58,6 +58,14 @@ const parseTimestamp = (value: string | null | undefined): number => {
 	return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 };
 
+// Legacy cookie store hardening: never share these cookies cross-site, and
+// only mark them Secure when the app itself is served over HTTPS (a Secure
+// cookie cannot be set or removed over plain HTTP).
+const cookieAttributes = (): Cookies.CookieAttributes => ({
+	sameSite: 'strict',
+	...(window.location.protocol === 'https:' ? { secure: true } : {}),
+});
+
 const readRawValue = (key: string): string | null => {
 	const storage = getLocalStorage();
 	if (storage) {
@@ -86,7 +94,7 @@ const writeRawValue = (key: string, value: string): boolean => {
 	}
 
 	try {
-		Cookie.set(key, value);
+		Cookie.set(key, value, cookieAttributes());
 		return true;
 	} catch {
 		return false;
@@ -102,7 +110,7 @@ const removeRawValue = (key: string): void => {
 			// The cookie removal below is still useful if storage is blocked.
 		}
 	}
-	Cookie.remove(key);
+	Cookie.remove(key, cookieAttributes());
 };
 
 export const isLocalStorageAvailable = (): boolean => {
@@ -187,7 +195,7 @@ export const migrateLegacyCookiesToLocalStorage = (): boolean => {
 			if (storage.getItem(key) === null) {
 				storage.setItem(key, cookieValue);
 			}
-			Cookie.remove(key);
+			Cookie.remove(key, cookieAttributes());
 		} catch {
 			return false;
 		}
