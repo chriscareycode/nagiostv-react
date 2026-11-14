@@ -398,6 +398,12 @@ if ($query_string["query"] == "hostlist") {
 	$query_arr[] = "GET log";
 	$query_arr[] = "Filter: class = 1";
 	$query_arr[] = "Filter: time >= " . $alert_starttime;
+	# only request the columns we need, otherwise livestatus sends all log
+	# table columns (hundreds) and large time windows can exhaust the
+	# PHP memory_limit while json_decoding/json_encoding the response
+	$query_arr[] = "Columns: time host_name service_description state state_type type plugin_output";
+	# keep the first row as column names, the same as when no Columns: is given
+	$query_arr[] = "ColumnHeaders: on";
 	$query_arr[] = "OutputFormat: json";
 	$query_arr[] = "ResponseHeader: fixed16";
 	$query = implode("\n", $query_arr);
