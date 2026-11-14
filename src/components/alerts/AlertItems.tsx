@@ -17,6 +17,9 @@
  */
 
 import { useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { hostAliasAtom } from 'atoms/hostAliasAtom';
+import { hostAlias } from 'helpers/hostAliases';
 import { translate } from '../../helpers/language';
 
 import AlertItem from './AlertItem';
@@ -37,6 +40,7 @@ interface AlertItemsProps {
 }
 
 const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
+	const aliases = useAtomValue(hostAliasAtom);
 
 	const queryParams = useQueryParams();
 	const alertSearchText = queryParams.get('alertSearch') || '';
@@ -60,6 +64,7 @@ const AlertItems = ({ items, settings, isDemoMode }: AlertItemsProps) => {
 		if (alertSearchText) {
 			const searchLower = alertSearchText.toLowerCase();
 			const matchesSearch =
+				(settings.showHostAlias && hostAlias(aliases, item.object_type === 1 ? item.name : item.host_name).toLowerCase().includes(searchLower)) ||
 				(item.name && item.name.toLowerCase().includes(searchLower)) ||
 				(item.host_name && item.host_name.toLowerCase().includes(searchLower)) ||
 				(item.description && item.description.toLowerCase().includes(searchLower)) ||

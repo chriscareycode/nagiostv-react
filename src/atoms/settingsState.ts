@@ -114,6 +114,7 @@ export const clientSettingsInitial: ClientSettings = {
 	hideHostSoft: false,
 	hideHostNotificationsDisabled: false,
 	hostSortOrder: 'newest',
+	showHostAlias: false,
 
 	hideHistory: false,
 	hideHistoryTitle: false,

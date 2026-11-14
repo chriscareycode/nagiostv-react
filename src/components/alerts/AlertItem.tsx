@@ -29,6 +29,9 @@ import { faUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 import './AlertItem.css';
 import { Alert } from 'types/hostAndServiceTypes';
 import { ClientSettings } from 'types/settings';
+import { useAtomValue } from 'jotai';
+import { hostAliasAtom } from 'atoms/hostAliasAtom';
+import { hostAlias } from 'helpers/hostAliases';
 
 interface AlertItemProps {
 	isDemoMode: boolean;
@@ -42,6 +45,7 @@ interface AlertItemProps {
 }
 
 const AlertItem = (props: AlertItemProps) => {
+	const aliases = useAtomValue(hostAliasAtom);
 
 	const openNagiosHostPage = () => {
 		const isDemoMode = props.isDemoMode;
@@ -86,6 +90,9 @@ const AlertItem = (props: AlertItemProps) => {
 	const { language, locale, dateFormat } = props;
 	const howMuchTimeIsQuietTime = 10;
 	const { e, i } = props;
+	const alias = props.settings.showHostAlias
+		? hostAlias(aliases, e.object_type === 1 ? e.name : e.host_name)
+		: '';
 	return (
 		<div>
 			{/* show quiet for */}
@@ -115,10 +122,10 @@ const AlertItem = (props: AlertItemProps) => {
 
 					<div style={{ marginTop: '2px' }}>
 						{/* host */}
-						{e.object_type === 1 && <span className="alert-item-host-name">{e.name}</span>}
+						{e.object_type === 1 && <span className="alert-item-host-name">{e.name}{alias && <> {alias}</>}</span>}
 						{e.object_type === 1 && <span className="ml-2 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>}
 						{/* service */}
-						{e.object_type === 2 && <span className="alert-item-host-name">{e.host_name}</span>}
+						{e.object_type === 2 && <span className="alert-item-host-name">{e.host_name}{alias && <> {alias}</>}</span>}
 						{e.object_type === 2 && <span className="ml-2 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>}
 						{' '}
 						{e.object_type === 2 && <span className="alert-item-description">{e.description}</span>}

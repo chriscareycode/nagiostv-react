@@ -20,6 +20,9 @@ describe('buildNagiosUrl', () => {
 		expect(buildNagiosUrl(cgiSettings, 'hostgrouplist')).toBe(
 			'/nagios/cgi-bin/objectjson.cgi?query=hostgrouplist&details=true',
 		);
+		expect(buildNagiosUrl(cgiSettings, 'hostaliaslist')).toBe(
+			'/nagios/cgi-bin/objectjson.cgi?query=hostlist&details=true',
+		);
 		expect(buildNagiosUrl(cgiSettings, 'alertlist')).toBe(
 			'/nagios/cgi-bin/archivejson.cgi?query=alertlist',
 		);
@@ -34,6 +37,9 @@ describe('buildNagiosUrl', () => {
 	it('routes every query through the configured livestatus connector', () => {
 		expect(buildNagiosUrl(livestatusSettings, 'servicegrouplist')).toBe(
 			'/connectors/livestatus.php?query=servicegrouplist',
+		);
+		expect(buildNagiosUrl(livestatusSettings, 'hostaliaslist')).toBe(
+			'/connectors/livestatus.php?query=hostaliaslist',
 		);
 	});
 

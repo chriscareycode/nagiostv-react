@@ -67,6 +67,7 @@ export interface ClientSettings {
 	hideHostSoft: boolean;
 	hideHostNotificationsDisabled: boolean;
 	hostSortOrder: string;
+	showHostAlias: boolean;
 
 	hideHistory: boolean;
 	hideHistoryTitle: boolean;

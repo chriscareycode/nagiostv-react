@@ -206,7 +206,16 @@ $query_string = array();
 parse_str($_SERVER['QUERY_STRING'], $query_string);
 
 # based on the query passed in, we query livestatus in different ways and massage the results
-if ($query_string["query"] == "hostlist") {
+if ($query_string["query"] == "hostaliaslist") {
+	$query = "GET hosts\nColumns: name alias\nOutputFormat: json\nResponseHeader: fixed16";
+	$decoded = json_decode(queryLivestatus($query), true);
+	$list = array();
+	for ($x = 1; $x < sizeof($decoded); $x++) {
+		$list[$decoded[$x][0]] = array("alias" => $decoded[$x][1]);
+	}
+	header('Content-Type: application/json');
+	print_r(json_encode(array("data" => array("hostlist" => $list))));
+} elseif ($query_string["query"] == "hostlist") {
 
 	# hostlist
 

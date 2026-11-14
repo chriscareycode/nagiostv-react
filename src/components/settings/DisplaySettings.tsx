@@ -50,6 +50,13 @@ const booleanControls: BooleanControl[] = [
 		falseLabel: 'Show',
 	},
 	{
+		property: 'showHostAlias',
+		title: 'Host aliases',
+		trueLabel: 'Show with hostname',
+		falseLabel: 'Hide',
+		description: 'Also use the alias when speaking host and service alerts.',
+	},
+	{
 		property: 'hideServiceSection',
 		title: 'Services',
 		trueLabel: 'Hide',
