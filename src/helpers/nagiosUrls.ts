@@ -6,6 +6,7 @@ export type NagiosQuery =
 	| 'hostcount'
 	| 'hostgrouplist'
 	| 'hostlist'
+	| 'hostaliaslist'
 	| 'programstatus'
 	| 'servicecount'
 	| 'servicegrouplist'
@@ -21,6 +22,7 @@ const cgiScripts: Record<NagiosQuery, string> = {
 	hostcount: 'statusjson.cgi',
 	hostgrouplist: 'objectjson.cgi',
 	hostlist: 'statusjson.cgi',
+	hostaliaslist: 'objectjson.cgi',
 	programstatus: 'statusjson.cgi',
 	servicecount: 'statusjson.cgi',
 	servicegrouplist: 'objectjson.cgi',
@@ -31,6 +33,7 @@ const detailedQueries = new Set<NagiosQuery>([
 	'commentlist',
 	'hostgrouplist',
 	'hostlist',
+	'hostaliaslist',
 	'servicegrouplist',
 	'servicelist',
 ]);
@@ -48,7 +51,9 @@ export const buildNagiosUrl = (
 	const path = isLivestatus
 		? settings.livestatusPath
 		: appendPath(settings.baseUrl, cgiScripts[query]);
-	const searchParams = new URLSearchParams({ query });
+	const searchParams = new URLSearchParams({
+		query: query === 'hostaliaslist' && !isLivestatus ? 'hostlist' : query,
+	});
 
 	if (!isLivestatus && detailedQueries.has(query)) {
 		searchParams.set('details', 'true');

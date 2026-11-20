@@ -17,6 +17,9 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { useAtomValue } from 'jotai';
+import { hostAliasAtom, hostAliasesLoadedAtom } from 'atoms/hostAliasAtom';
+import { hostAlias } from 'helpers/hostAliases';
 import './ServiceItem.css';
 import { formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { serviceBorderClass, serviceTextClass } from '../../helpers/colors';
@@ -33,6 +36,7 @@ import { CommentListResponseObject } from 'types/commentTypes';
 import NextCheckIn from 'components/widgets/NextCheckIn';
 
 interface ServiceItemProps {
+	alias?: string;
 	settings: ClientSettings;
 	serviceItem: Service;
 	isDemoMode: boolean;
@@ -54,12 +58,12 @@ const doSoundEffect = ({ serviceItem, settings }: ServiceItemProps) => {
 		}
 };
 
-const doSpeakIntro = ({ serviceItem, settings }: ServiceItemProps) => {
+const doSpeakIntro = ({ serviceItem, settings, alias }: ServiceItemProps) => {
 		const { language } = settings;
 		const voice = settings.speakItemsVoice;
 
 		let words = translate('service', language) + ' ' + serviceItem.description +
-			' ' + translate('on', language) + ' ' + serviceItem.host_name + ' ' + translate('is', language) + ' '
+			' ' + translate('on', language) + ' ' + (alias || serviceItem.host_name) + ' ' + translate('is', language) + ' '
 			+ translate(nagiosServiceStatus(serviceItem.status), language);
 
 		if (serviceItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
@@ -69,24 +73,33 @@ const doSpeakIntro = ({ serviceItem, settings }: ServiceItemProps) => {
 		speakAudio(words, voice);
 };
 
-const doSpeakOutro = ({ serviceItem, settings }: ServiceItemProps) => {
+const doSpeakOutro = ({ serviceItem, settings, alias }: ServiceItemProps) => {
 		const { language } = settings;
 		const voice = settings.speakItemsVoice;
-		const speakWords = translate('service', language) + ' ' + serviceItem.description + ' ' + translate('on', language) + ' ' + serviceItem.host_name + ' ' + translate('ok', language);
+		const speakWords = translate('service', language) + ' ' + serviceItem.description + ' ' + translate('on', language) + ' ' + (alias || serviceItem.host_name) + ' ' + translate('ok', language);
 
 		speakAudio(speakWords, voice);
 };
 
 const ServiceItem = (props: ServiceItemProps) => {
 	const { settings, serviceItem: e, isDemoMode, howManyDown, comments } = props;
-	const initialProps = useRef(props);
-	const latestProps = useRef(props);
-	latestProps.current = props;
+	const aliases = useAtomValue(hostAliasAtom);
+	const aliasesLoaded = useAtomValue(hostAliasesLoadedAtom);
+	const itemProps = { ...props, alias: settings.showHostAlias ? hostAlias(aliases, e.host_name) : '' };
+	const initialProps = useRef(itemProps);
+	const latestProps = useRef(itemProps);
+	latestProps.current = itemProps;
+	const spokeIntro = useRef(false);
+	useEffect(() => {
+		if (!spokeIntro.current && settings.speakItems && (!settings.showHostAlias || aliasesLoaded)) {
+			spokeIntro.current = true;
+			doSpeakIntro(latestProps.current);
+		}
+	}, [aliasesLoaded, itemProps.alias, settings.showHostAlias, settings.speakItems]);
 
 	useEffect(() => {
 		const mountedProps = initialProps.current;
 		if (mountedProps.settings.playSoundEffects) { doSoundEffect(mountedProps); }
-		if (mountedProps.settings.speakItems) { doSpeakIntro(mountedProps); }
 
 		return () => {
 			const currentProps = latestProps.current;
@@ -178,7 +191,7 @@ const ServiceItem = (props: ServiceItemProps) => {
 						{settings.showEmoji && e.status === 16 && <span className="mr-1" role="img" aria-label="critical">🔥</span>}
 						{settings.showEmoji && e.status === 4 && <span className="mr-1" role="img" aria-label="warning">⚠️</span>}
 
-						<div className="service-item-host-name">{e.host_name}</div>
+						<div className="service-item-host-name">{e.host_name}{itemProps.alias && <> {itemProps.alias}</>}</div>
 						<span className="ml-1.5 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 
 						<span className="service-item-description">{e.description}</span>

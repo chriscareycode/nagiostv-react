@@ -17,6 +17,9 @@
  */
 
 import { useEffect, useRef } from 'react';
+import { useAtomValue } from 'jotai';
+import { hostAliasAtom, hostAliasesLoadedAtom } from 'atoms/hostAliasAtom';
+import { hostAlias } from 'helpers/hostAliases';
 import { formatDateTimeAgo, formatDateTimeAgoColor } from '../../helpers/dates';
 import { hostBorderClass, hostTextClass } from '../../helpers/colors';
 import { nagiosStateType, nagiosHostStatus } from '../../helpers/nagios';
@@ -31,6 +34,7 @@ import { Comment, Host } from 'types/hostAndServiceTypes.js';
 import NextCheckIn from 'components/widgets/NextCheckIn';
 
 interface HostItemProps {
+	alias?: string;
 	settings: ClientSettings;
 	hostItem: Host;
 	isDemoMode: boolean;
@@ -52,11 +56,11 @@ const doSoundEffect = ({ hostItem, settings }: HostItemProps) => {
 		}
 };
 
-const doSpeakIntro = ({ hostItem, settings }: HostItemProps) => {
+const doSpeakIntro = ({ hostItem, settings, alias }: HostItemProps) => {
 		const { language } = settings;
 		const voice = settings.speakItemsVoice;
 
-		let words = translate('host', language) + ' ' + hostItem.name + ' '
+		let words = translate('host', language) + ' ' + (alias || hostItem.name) + ' '
 			+ translate('is', language) + ' ' + translate(nagiosHostStatus(hostItem.status), language);
 
 		if (hostItem.is_flapping) { words += ' ' + translate('and', language) + ' ' + translate('flapping', language); }
@@ -66,24 +70,33 @@ const doSpeakIntro = ({ hostItem, settings }: HostItemProps) => {
 		speakAudio(words, voice);
 };
 
-const doSpeakOutro = ({ hostItem, settings }: HostItemProps) => {
+const doSpeakOutro = ({ hostItem, settings, alias }: HostItemProps) => {
 		const { language } = settings;
 		const voice = settings.speakItemsVoice;
-		const speakWords = translate('host', language) + ' ' + hostItem.name + ' ' + translate('ok', language);
+		const speakWords = translate('host', language) + ' ' + (alias || hostItem.name) + ' ' + translate('ok', language);
 
 		speakAudio(speakWords, voice);
 };
 
 const HostItem = (props: HostItemProps) => {
 	const { settings, hostItem: e, isDemoMode, howManyDown, comments } = props;
-	const initialProps = useRef(props);
-	const latestProps = useRef(props);
-	latestProps.current = props;
+	const aliases = useAtomValue(hostAliasAtom);
+	const aliasesLoaded = useAtomValue(hostAliasesLoadedAtom);
+	const itemProps = { ...props, alias: settings.showHostAlias ? hostAlias(aliases, e.name) : '' };
+	const initialProps = useRef(itemProps);
+	const latestProps = useRef(itemProps);
+	latestProps.current = itemProps;
+	const spokeIntro = useRef(false);
+	useEffect(() => {
+		if (!spokeIntro.current && settings.speakItems && (!settings.showHostAlias || aliasesLoaded)) {
+			spokeIntro.current = true;
+			doSpeakIntro(latestProps.current);
+		}
+	}, [aliasesLoaded, itemProps.alias, settings.showHostAlias, settings.speakItems]);
 
 	useEffect(() => {
 		const mountedProps = initialProps.current;
 		if (mountedProps.settings.playSoundEffects) { doSoundEffect(mountedProps); }
-		if (mountedProps.settings.speakItems) { doSpeakIntro(mountedProps); }
 
 		return () => {
 			const currentProps = latestProps.current;
@@ -154,7 +167,7 @@ const HostItem = (props: HostItemProps) => {
 
 					<div>
 
-						<div className="host-item-host-name">{e.name}</div>
+						<div className="host-item-host-name">{e.name}{itemProps.alias && <> {itemProps.alias}</>}</div>
 
 						<span className="ml-1.5 cursor-pointer" onClick={openNagiosHostPage}><FontAwesomeIcon icon={faUpRightFromSquare} size="xs" /></span>
 

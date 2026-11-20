@@ -1,9 +1,11 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 // State Management
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bigStateAtom, clientSettingsAtom, clientSettingsInitial } from '../atoms/settingsState';
 import { hostgroupAtom, servicegroupAtom } from '../atoms/hostgroupAtom';
 import { commentlistAtom } from '../atoms/commentlistAtom';
+import { hostAliasAtom, hostAliasesLoadedAtom } from '../atoms/hostAliasAtom';
+import { parseHostAliases } from '../helpers/hostAliases';
 // Libraries
 import get from 'lodash/get';
 import { ProgramStatus, programStatusAtom } from "atoms/programAtom";
@@ -20,11 +22,14 @@ const DashboardFetch = () => {
 	const setHostgroup = useSetAtom(hostgroupAtom);
 	const setServicegroup = useSetAtom(servicegroupAtom);
 	const setCommentlist = useSetAtom(commentlistAtom);
+	const setHostAliases = useSetAtom(hostAliasAtom);
+	const setHostAliasesLoaded = useSetAtom(hostAliasesLoadedAtom);
 	const setProgramStatus = useSetAtom(programStatusAtom)
 	const fetchCommentDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	const fetchHostGroupDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	const fetchServiceGroupDataRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 	const fetchProgramStatusRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
+	const fetchHostAliasesRef = useRef<(signal?: AbortSignal) => void>(() => undefined);
 
 	// Chop the bigState into vars
 	const {
@@ -38,6 +43,17 @@ const DashboardFetch = () => {
 	} = clientSettings;
 
 	// Functions
+	const fetchHostAliases = (signal?: AbortSignal) => {
+		const url = buildNagiosUrl(clientSettings, 'hostaliaslist');
+		getJson(url, { timeout: 10 * 1000, signal }).then(response => {
+			if (!signal?.aborted) {
+				setHostAliases(parseHostAliases(response.data.data?.hostlist));
+				setHostAliasesLoaded(true);
+			}
+		}).catch(() => {
+			if (!signal?.aborted) setHostAliasesLoaded(true);
+		});
+	};
 
 	const fetchCommentData = (signal?: AbortSignal) => {
 
@@ -238,6 +254,7 @@ const DashboardFetch = () => {
 	fetchHostGroupDataRef.current = fetchHostGroupData;
 	fetchServiceGroupDataRef.current = fetchServiceGroupData;
 	fetchProgramStatusRef.current = fetchProgramStatus;
+	fetchHostAliasesRef.current = fetchHostAliases;
 
 	const requestKey = JSON.stringify([
 		clientSettings.baseUrl,
@@ -246,6 +263,17 @@ const DashboardFetch = () => {
 		isDemoMode,
 		useFakeSampleData,
 	]);
+	useEffect(() => {
+		setHostAliases({});
+		setHostAliasesLoaded(useFakeSampleData);
+	}, [requestKey, setHostAliases, setHostAliasesLoaded, useFakeSampleData]);
+
+	useCancellablePolling(fetchHostAliasesRef, {
+		enabled: clientSettings.showHostAlias && !useFakeSampleData,
+		fallbackIntervalSeconds: clientSettingsInitial.fetchHostGroupFrequency,
+		intervalSeconds: clientSettings.fetchHostGroupFrequency,
+		requestKey,
+	});
 
 	useCancellablePolling(fetchProgramStatusRef, {
 		fallbackIntervalSeconds: clientSettingsInitial.fetchHostGroupFrequency,
